@@ -38,60 +38,34 @@ color:white;
 padding-bottom:90px;
 }
 
-/* HEADER */
-
 .header{
     padding:15px 20px;
     display:grid;
     grid-template-columns:180px 1fr 180px;
     align-items:center;
     gap:15px;
-}
-    
-.logo{
-width:55px;
-height:55px;
-background:transparent;
-padding:0;
-object-fit:contain;
+
+    position:relative;
 }
 
-.title{
-text-align:center;
-flex:1;
-}
+.header::after{
+    content:"";
+    position:absolute;
+    bottom:0;
+    left:20px;
+    right:20px;
+    height:2px;
 
-.title h1{
-font-size:18px;
-font-weight:700;
-}
+    background:linear-gradient(
+        90deg,
+        transparent,
+        #FFD700 20%,
+        #5CC8FF 50%,
+        #FFD700 80%,
+        transparent
+    );
 
-.title p{
-font-size:12px;
-opacity:.9;
-}
-
-/* HERO */
-
-.hero{
-padding:25px;
-}
-
-.hero-card{
-    background:
-        linear-gradient(rgba(255,255,255,.12), rgba(255,255,255,.12)) padding-box,
-        linear-gradient(90deg, #FFD700, #4DB8FF) border-box;
-
-    backdrop-filter:blur(15px);
-
-    border:2px solid transparent;
-    border-radius:25px;
-
-    padding:25px;
-
-    box-shadow:
-        0 8px 30px rgba(0,0,0,.2),
-        0 0 20px rgba(77,184,255,.15);
+    box-shadow:0 0 10px rgba(255,215,0,.35);
 }
 
 .hero-card h2{
