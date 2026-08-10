@@ -666,22 +666,24 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
 
 </div>
 
-    function closePopup(){
+<script>
+
+function closePopup(){
 document.getElementById("successPopup").style.display = "none";
 }
 
 async function openConcerns(){
 
-    document.getElementById("concernsModal").style.display = "block";
+document.getElementById("concernsModal").style.display = "block";
 
-    document.getElementById("concernsList").innerHTML = "Loading concerns...";
+document.getElementById("concernsList").innerHTML =
+"Loading concerns...";
 
-    try{
+const response = await fetch(SCRIPT_URL);
 
-        const response = await fetch(SCRIPT_URL);
-        const data = await response.json();
+}
 
-        let html = "";
+</script>
 
         data.reverse().forEach(item => {
 
