@@ -532,6 +532,20 @@ days + "d " + hours + "h " + minutes + "m";
 
 },1000);
 
+
+    onAuthStateChanged(auth, (user) => {
+  if (user) {
+    document.getElementById("userName").textContent =
+      user.displayName || "User";
+
+    document.getElementById("userEmail").textContent =
+      user.email || "";
+
+    document.getElementById("userPhoto").src =
+      user.photoURL || "default-user.png";
+  }
+});
+
 </script>
 
     <div id="loginModal" class="modal">
@@ -628,6 +642,12 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 </script>
+
+<div class="profile-card">
+  <img id="userPhoto" src="" alt="Profile">
+  <h3 id="userName">Guest User</h3>
+  <p id="userEmail">Not logged in</p>
+</div>
     
 </body>
 </html>
