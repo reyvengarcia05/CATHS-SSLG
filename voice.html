@@ -537,11 +537,10 @@ or suggestions to help improve our school community.
 <label>Full Name</label>
 <input type="text" id="name" placeholder="Enter your name">
 
-<label>
-<input type="checkbox" id="anonymous">
-Submit Anonymously
-</label>
-
+<div class="checkbox">
+    <input type="checkbox" id="anonymous">
+    <label for="anonymous">Submit Anonymously</label>
+</div>
 
 <input type="text" id="section" placeholder="Example: 12-Shakespeare" required>
 
@@ -725,8 +724,32 @@ const response = await fetch(SCRIPT_URL);
 
 </script>
 
-    <script>
-        
+  <script>
+
+function closePopup(){
+    document.getElementById("successPopup").style.display = "none";
+}
+
+async function openConcerns(){
+
+    document.getElementById("concernsModal").style.display = "block";
+
+    document.getElementById("concernsList").innerHTML = `
+    <div class="loading-dots">
+        <span>.</span>
+        <span>.</span>
+        <span>.</span>
+        <span>.</span>
+    </div>
+    `;
+
+    try{
+
+        const response = await fetch(SCRIPT_URL);
+        const data = await response.json();
+
+        let html = "";
+
         data.reverse().forEach(item => {
 
             html += `
@@ -737,6 +760,7 @@ const response = await fetch(SCRIPT_URL);
                 <small>📌 Status: ${item.status}</small>
             </div>
             `;
+
         });
 
         document.getElementById("concernsList").innerHTML =
@@ -748,8 +772,10 @@ const response = await fetch(SCRIPT_URL);
 
         document.getElementById("concernsList").innerHTML =
             "<p>Failed to load concerns.</p>";
+
     }
 }
+
 </script>
 </body>
 </html>
