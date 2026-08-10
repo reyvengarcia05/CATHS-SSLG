@@ -241,7 +241,67 @@ color:#FFD700;
         opacity:1;
     }
 }
-  
+
+.inbox-btn{
+    width:100%;
+    margin-top:15px;
+    padding:18px;
+    border:none;
+    border-radius:20px;
+    background:white;
+    color:#1f3c88;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.inbox-modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.6);
+    z-index:9999;
+}
+
+.inbox-content{
+    width:90%;
+    max-width:800px;
+    max-height:80vh;
+    overflow-y:auto;
+    margin:40px auto;
+    padding:25px;
+    border-radius:25px;
+    background:white;
+}
+
+.close-btn{
+    float:right;
+    font-size:35px;
+    cursor:pointer;
+}
+
+.concern-card{
+    background:#f5f5f5;
+    padding:15px;
+    border-radius:15px;
+    margin-top:15px;
+}
+
+.pending{
+    background:#ffd54f;
+    padding:5px 12px;
+    border-radius:10px;
+    font-size:12px;
+}
+
+.resolved{
+    background:#4caf50;
+    color:white;
+    padding:5px 12px;
+    border-radius:10px;
+    font-size:12px;
+}
+    
 </style>
 </head>
 
@@ -297,8 +357,12 @@ or suggestions to help improve our school community.
 id="concern"
 placeholder="Type your concern or suggestion here..."
 required></textarea>
-<button type="submit" class="submit-btn">
+<button type="submit">
 Submit Concern
+</button>
+
+<button type="button" onclick="openInbox()" class="inbox-btn">
+📥 View Concerns
 </button>
 
 </form>
@@ -425,5 +489,68 @@ function closePopup(){
     </div>
 </div>
 
+<div id="inboxModal" class="inbox-modal">
+
+    <div class="inbox-content">
+
+        <span class="close-btn" onclick="closeInbox()">&times;</span>
+
+        <h2>📥 Student Voice Inbox</h2>
+
+        <div id="inboxList">
+            Loading...
+        </div>
+
+    </div>
+
+</div>
+
+    <script>
+
+const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec";
+
+function openInbox(){
+
+    document.getElementById("inboxModal").style.display = "block";
+
+    fetch(SCRIPT_URL)
+    .then(res => res.json())
+    .then(data => {
+
+        let html = "";
+
+        data.reverse().forEach(item => {
+
+            const statusClass =
+            item.status === "Resolved"
+            ? "resolved"
+            : "pending";
+
+            html += `
+            <div class="concern-card">
+
+                <p>${item.concern}</p>
+
+                <span class="${statusClass}">
+                    ${item.status}
+                </span>
+
+            </div>
+            `;
+        });
+
+        document.getElementById("inboxList").innerHTML = html;
+
+    });
+
+}
+
+function closeInbox(){
+    document.getElementById("inboxModal").style.display = "none";
+}
+
+</script>
+    
 </body>
 </html>
