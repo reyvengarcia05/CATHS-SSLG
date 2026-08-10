@@ -375,9 +375,9 @@ color:white;
 
     <img src="sslg-logo.png" class="logo">
 
-    <button class="login-btn" onclick="openLogin()">
-        👤 Login
-    </button>
+   <button id="headerLoginBtn" class="login-btn" onclick="openLogin()">
+    👤 Login
+</button>
 
 </div>
 
@@ -630,16 +630,25 @@ window.logoutUser = async function () {
 onAuthStateChanged(auth, (user) => {
   if (user) {
     console.log("Logged in:", user.displayName);
+      document.getElementById("loginModal").style.display = "none";
 
-    const loginBtn = document.getElementById("googleLoginBtn");
-    if (loginBtn) {
-      loginBtn.innerHTML = `
-        <img src="${user.photoURL}" 
-             style="width:32px;height:32px;border-radius:50%;vertical-align:middle;">
-        ${user.displayName}
-      `;
-    }
-  }
+  const headerBtn = document.getElementById("headerLoginBtn");
+
+if (headerBtn) {
+  headerBtn.innerHTML = `
+    <img src="${user.photoURL}"
+    style="
+      width:28px;
+      height:28px;
+      border-radius:50%;
+      margin-right:8px;
+      vertical-align:middle;
+    ">
+    ${user.displayName}
+  `;
+
+  headerBtn.onclick = null;
+}
 });
 </script>
 
