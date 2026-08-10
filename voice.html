@@ -502,7 +502,7 @@ required></textarea>
 <button type="submit" class="submit-btn">
     Submit Concern
 </button>
-<button onclick="openConcerns()" class="view-btn">
+<button type="button" onclick="openConcerns()" class="view-btn">
 📥 View Concerns
 </button>
 
@@ -642,13 +642,19 @@ function closePopup(){
 </div>
 
     <script>
-function openConcerns() {
+async function openConcerns(){
 
-    document.getElementById("concernsModal").style.display = "flex";
+    document.getElementById("concernsModal").style.display = "block";
 
-    fetch(SCRIPT_URL)
-    .then(response => response.json())
-    .then(data => {
+    document.getElementById("concernsList").innerHTML = "Loading concerns...";
+
+    try{
+
+        const response = await fetch(
+        "https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec"
+        );
+
+        const data = await response.json();
 
         let html = "";
 
@@ -662,26 +668,20 @@ function openConcerns() {
                 <small>📌 Status: ${item.status}</small>
             </div>
             `;
-
         });
 
-        document.getElementById("concernsList").innerHTML = html;
+        document.getElementById("concernsList").innerHTML =
+        html || "<p>No concerns submitted yet.</p>";
 
-    })
-    .catch(error => {
+    }catch(err){
 
         document.getElementById("concernsList").innerHTML =
         "<p>Failed to load concerns.</p>";
 
-        console.error(error);
+        console.error(err);
 
-    });
-
+    }
 }
-function closeConcerns() {
-    document.getElementById("concernsModal").style.display = "none";
-}
-        
 </script>
 </body>
 </html>
