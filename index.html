@@ -360,25 +360,74 @@ background:#1877F2;
 color:white;
 }
 
-    .logout-menu{
-  display:none;
-  position:absolute;
-  top:85px;
-  left:90px;
-  background:white;
-  border-radius:12px;
-  padding:10px;
-  box-shadow:0 10px 25px rgba(0,0,0,.2);
-  z-index:9999;
+   .profile-menu {
+    display: none;
+    position: fixed;
+    bottom: 85px;
+    right: 15px;
+    width: 260px;
+    background: rgba(255,255,255,.95);
+    color: #00296B;
+    border-radius: 18px;
+    padding: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.3);
+    z-index: 9999;
+    backdrop-filter: blur(15px);
 }
 
-.logout-menu button{
-  border:none;
-  background:none;
-  cursor:pointer;
-  font-size:15px;
-  padding:8px 12px;
-  width:100%;
+.profile-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.profile-info img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-details {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.profile-details strong {
+    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.profile-details small {
+    font-size: 11px;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.profile-divider {
+    height: 1px;
+    background: #ddd;
+    margin: 12px 0;
+}
+
+.logout-button {
+    width: 100%;
+    padding: 11px;
+    border: none;
+    border-radius: 10px;
+    background: #00296B;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.logout-button:hover {
+    background: #003DA5;
 }
 
 </style>
@@ -524,15 +573,73 @@ and connect with the school community.
         <span>Polls</span>
     </a>
 
-    <a href="profile.html" class="nav-item">
-        <div>👤</div>
-        <span>Profile</span>
-    </a>
+  <a href="javascript:void(0)" class="nav-item" onclick="toggleProfileMenu()">
+    <div id="profileNavPhoto">👤</div>
+    <span>Profile</span>
+</a>
 
 </div>
 
+<script>
+function toggleLogoutMenu() {
+    const menu = document.getElementById("logoutMenu");
 
+    if (menu.style.display === "block") {
+        menu.style.display = "none";
+    } else {
+        menu.style.display = "block";
+    }
+}
 
+    function toggleLogoutMenu() {
+    const menu = document.getElementById("logoutMenu");
+
+    if (menu.style.display === "block") {
+        menu.style.display = "none";
+    } else {
+        menu.style.display = "block";
+    }
+}
+
+    function toggleProfileMenu() {
+
+    const menu = document.getElementById("logoutMenu");
+
+    const name = localStorage.getItem("userName");
+    const photo = localStorage.getItem("userPhoto");
+    const email = localStorage.getItem("userEmail");
+
+    if (name) {
+        document.getElementById("profileName").textContent = name;
+    }
+
+    if (email) {
+        document.getElementById("profileEmail").textContent = email;
+    }
+
+    if (photo) {
+        document.getElementById("profilePhoto").src = photo;
+
+        document.getElementById("profileNavPhoto").innerHTML = `
+            <img src="${photo}"
+                 style="
+                    width:32px;
+                    height:32px;
+                    border-radius:50%;
+                    object-fit:cover;
+                 ">
+        `;
+    }
+
+    if (menu.style.display === "block") {
+        menu.style.display = "none";
+    } else {
+        menu.style.display = "block";
+    }
+}
+
+</script>
+    
 <script>
 
 const targetDate = new Date("August 15, 2026 08:00:00").getTime();
@@ -697,8 +804,23 @@ onAuthStateChanged(auth, (user) => {
 
 </script>
 
-    <div id="logoutMenu" class="logout-menu">
-  <button onclick="logoutUser()">🚪 Log Out</button>
+    <div id="logoutMenu" class="profile-menu">
+
+    <div class="profile-info">
+        <img id="profilePhoto" src="" alt="Profile Photo">
+
+        <div class="profile-details">
+            <strong id="profileName">User</strong>
+            <small id="profileEmail"> </small>
+        </div>
+    </div>
+
+    <div class="profile-divider"></div>
+
+    <button onclick="logoutUser()" class="logout-button">
+        🚪 Log Out
+    </button>
+
 </div>
     
 </body>
