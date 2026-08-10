@@ -443,6 +443,23 @@ color:#FFD700;
     cursor:pointer;
     margin-bottom:10px;
 }
+
+    .close-btn{
+    position:absolute;
+    top:15px;
+    right:20px;
+    background:none;
+    border:none;
+    font-size:32px;
+    font-weight:bold;
+    color:#1e3a8a;
+    cursor:pointer;
+    z-index:9999;
+}
+
+.close-btn:hover{
+    color:red;
+}
     
 </style>
 </head>
@@ -610,8 +627,8 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
 
 });
 
-function closePopup(){
-    document.getElementById("successPopup").style.display = "none";
+    function closeConcerns(){
+    document.getElementById("concernsModal").style.display = "none";
 }
 </script>
 
@@ -631,14 +648,17 @@ function closePopup(){
 </div>
 
 <div id="concernsModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeConcerns()">&times;</span>
-    <h2>📥 Student Concerns</h2>
 
-    <div id="concernsList">
-      Loading concerns...
+    <div class="modal-content">
+
+        <button class="close-btn" onclick="closeConcerns()">✕</button>
+
+        <h2>📥 Student Concerns</h2>
+
+        <div id="concernsList"></div>
+
     </div>
-  </div>
+
 </div>
 
     <script>
