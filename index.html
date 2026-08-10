@@ -602,11 +602,21 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 window.googleLogin = async function () {
+
+  alert("Google button clicked");
+
   try {
+
     await signInWithPopup(auth, provider);
+
+    alert("Login successful");
+
   } catch (err) {
-    alert(err.message);
+
+    alert("ERROR: " + err.message);
+
   }
+
 };
 
 window.logoutUser = async function () {
