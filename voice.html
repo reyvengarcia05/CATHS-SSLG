@@ -167,6 +167,61 @@ margin-bottom:4px;
 .active{
 color:#FFD700;
 }
+
+.popup{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.6);
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.popup-content{
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    text-align:center;
+    max-width:350px;
+    width:90%;
+    animation:pop .3s ease;
+}
+
+.checkmark{
+    font-size:60px;
+    margin-bottom:10px;
+}
+
+.popup-content h2{
+    color:#1f4ed8;
+    margin-bottom:10px;
+}
+
+.popup-content button{
+    margin-top:15px;
+    padding:10px 25px;
+    border:none;
+    border-radius:10px;
+    background:#1f4ed8;
+    color:white;
+    cursor:pointer;
+}
+
+@keyframes pop{
+    from{
+        transform:scale(.8);
+        opacity:0;
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+  
 </style>
 </head>
 
@@ -198,33 +253,25 @@ or suggestions to help improve our school community.
 
 <form id="voiceForm">
 
-<label>Full Name</label>
-<input type="text" id="name" placeholder="Enter your name">
+<input type="text" id="name" placeholder="Enter your name" required>
 
-<div class="checkbox">
-<input type="checkbox" id="anonymous">
-<label for="anonymous">Submit Anonymously</label>
-</div>
+<input type="text" id="section" placeholder="Example: 11-Twain" required>
 
-<label>Grade & Section</label>
-<input type="text" id="section" placeholder="Example: 11-Twain">
-
-<label>Category</label>
-
-<select id="category">
-<option>Facilities</option>
-<option>Academics</option>
-<option>Bullying</option>
-<option>Guidance Concern</option>
-<option>School Event</option>
-<option>SSLG Suggestion</option>
-<option>Others</option>
+<select id="category" required>
+    <option value="">Select Category</option>
+    <option>Facilities</option>
+    <option>Academics</option>
+    <option>Bullying</option>
+    <option>Guidance Concern</option>
+    <option>School Event</option>
+    <option>SSLG Suggestion</option>
+    <option>Others</option>
 </select>
 
-<label>Concern / Suggestion</label>
-
-<textarea id="concern" placeholder="Type your concern or suggestion here..." required></textarea>
-
+<textarea
+id="concern"
+placeholder="Type your concern or suggestion here..."
+required></textarea>
 <button type="submit" class="submit-btn">
 Submit Concern
 </button>
@@ -234,6 +281,7 @@ Submit Concern
 <div class="success" id="successMsg">
 ✅ Thank you! Your concern has been submitted.
 </div>
+  
 
 </div>
 
@@ -271,9 +319,34 @@ Submit Concern
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec";
 
-document.getElementById("voiceForm").addEventListener("submit", async function(e){
+<script>
+document.getElementById("voiceForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
 
-e.preventDefault();
+    const name = document.getElementById("name").value.trim();
+    const section = document.getElementById("section").value.trim();
+    const concern = document.getElementById("concern").value.trim();
+    const category = document.getElementById("category").value;
+
+    if (!name || !section || !concern || !category) {
+        alert("Please complete all fields.");
+        return;
+    }
+
+    const data = {
+        name: name,
+        section: section,
+        concern: concern
+    };
+
+    await fetch("PASTE_MO_DITO_YUNG_APPS_SCRIPT_URL", {
+        method: "POST",
+        body: JSON.stringify(data)
+    });
+
+    alert("Concern submitted successfully!");
+});
+</script>
 
 let name = document.getElementById("anonymous").checked
 ? "Anonymous"
@@ -300,6 +373,12 @@ headers:{
 body:JSON.stringify(data)
 });
 
+  document.getElementById("successPopup").style.display = "flex";
+
+document.getElementById("successSound").play();
+
+document.getElementById("voiceForm").reset();
+
 document.getElementById("successMsg").style.display="block";
 
 this.reset();
@@ -314,5 +393,37 @@ console.log(error);
 });
 </script>
 
+  <script>
+const anonymous = document.getElementById("anonymous");
+const nameInput = document.getElementById("name");
+
+anonymous.addEventListener("change", () => {
+    if (anonymous.checked) {
+        nameInput.value = "Anonymous";
+        nameInput.disabled = true;
+    } else {
+        nameInput.value = "";
+        nameInput.disabled = false;
+    }
+});
+</script>
+
+<audio id="successSound">
+    <source src="success.mp3" type="audio/mpeg">
+</audio>
+
+<div id="successPopup" class="popup">
+    <div class="popup-content">
+        <div class="checkmark">✅</div>
+        <h2>Thank You!</h2>
+       alert("🎉 Thank You!\n\nYour concern has been submitted successfully.\nThe SSLG team will review it as soon as possible.");
+        <button onclick="closePopup()">OK</button>
+    </div>
+</div>  
+
+  function closePopup(){
+    document.getElementById("successPopup").style.display = "none";
+}
+  
 </body>
 </html>
