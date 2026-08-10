@@ -703,192 +703,272 @@ modal.style.display="none";
 
 </script>
 
-    <script type="module">
+<script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
 import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signOut,
-  onAuthStateChanged
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    signOut,
+    onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
+
 const firebaseConfig = {
-  apiKey: "AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",
-  authDomain: "caths-page.firebaseapp.com",
-  projectId: "caths-page",
-  storageBucket: "caths-page.firebasestorage.app",
-  messagingSenderId: "945498022620",
-  appId: "1:945498022620:web:71aeb4cd2472e061aeca19",
-  measurementId: "G-CBG1YSK13G"
+    apiKey: "AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",
+    authDomain: "caths-page.firebaseapp.com",
+    projectId: "caths-page",
+    storageBucket: "caths-page.firebasestorage.app",
+    messagingSenderId: "945498022620",
+    appId: "1:945498022620:web:71aeb4cd2472e061aeca19",
+    measurementId: "G-CBG1YSK13G"
 };
+
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
+
+// =========================
+// GOOGLE LOGIN
+// =========================
+
 window.googleLogin = async function () {
 
-  alert("Google button clicked");
+    try {
 
-  try {
+        await signInWithPopup(auth, provider);
 
-    await signInWithPopup(auth, provider);
+    } catch (error) {
 
-    alert("Login successful");
+        console.error("Login error:", error);
 
-  } catch (err) {
+        alert("Login failed: " + error.message);
 
-    alert("ERROR: " + err.message);
-
-  }
+    }
 
 };
 
-window.logoutUser = async function () {
-    try {
-        const button = document.getElementById("logoutButton");
 
-        if (button) {
-            button.disabled = true;
-            button.innerHTML = "Logging out...";
-        }
+// =========================
+// LOGOUT
+// =========================
+
+window.logoutUser = async function () {
+
+    try {
+
+        console.log("Logout button clicked");
 
         await signOut(auth);
 
-        // Remove saved user information
         localStorage.removeItem("userName");
         localStorage.removeItem("userPhoto");
         localStorage.removeItem("userEmail");
 
-        // Hide profile menu
         const menu = document.getElementById("logoutMenu");
 
         if (menu) {
             menu.style.display = "none";
         }
 
-        // Return to logged-out state
         location.reload();
 
     } catch (error) {
+
         console.error("Logout error:", error);
 
-        alert("Unable to log out. Please try again.");
+        alert("Logout failed: " + error.message);
 
-        const button = document.getElementById("logoutButton");
-
-        if (button) {
-            button.disabled = false;
-            button.innerHTML = "🚪 Log Out";
-        }
     }
+
 };
 
-        <div id="logoutMenu" class="profile-menu">
 
-    <div class="profile-info">
-        <img id="profilePhoto" src="" alt="Profile Photo">
-
-        <div class="profile-details">
-            <strong id="profileName">User</strong>
-            <small id="profileEmail"></small>
-        </div>
-    </div>
-
-    <div class="profile-divider"></div>
-
-    <button type="button" class="logout-button" id="logoutButton">
-        🚪 Log Out
-    </button>
-
-</div>
+// =========================
+// AUTH STATE
+// =========================
 
 onAuthStateChanged(auth, (user) => {
 
- if (user) {
+    const headerBtn =
+        document.getElementById("headerLoginBtn");
 
-    localStorage.setItem("userName", user.displayName || "User");
-    localStorage.setItem("userPhoto", user.photoURL || "");
-    localStorage.setItem("userEmail", user.email || "");
+    const profileName =
+        document.getElementById("profileName");
 
-    document.getElementById("loginModal").style.display = "none";
+    const profileEmail =
+        document.getElementById("profileEmail");
 
-    const profileName = document.getElementById("profileName");
-    const profileEmail = document.getElementById("profileEmail");
-    const profilePhoto = document.getElementById("profilePhoto");
+    const profilePhoto =
+        document.getElementById("profilePhoto");
 
-    if (profileName) {
-        profileName.textContent = user.displayName || "User";
+    const profileNavPhoto =
+        document.getElementById("profileNavPhoto");
+
+
+    if (user) {
+
+        console.log("User logged in:", user.displayName);
+
+
+        // SAVE USER INFORMATION
+
+        localStorage.setItem(
+            "userName",
+            user.displayName || "User"
+        );
+
+        localStorage.setItem(
+            "userPhoto",
+            user.photoURL || ""
+        );
+
+        localStorage.setItem(
+            "userEmail",
+            user.email || ""
+        );
+
+
+        // PROFILE MENU
+
+        if (profileName) {
+            profileName.textContent =
+                user.displayName || "User";
+        }
+
+        if (profileEmail) {
+            profileEmail.textContent =
+                user.email || "";
+        }
+
+        if (profilePhoto && user.photoURL) {
+            profilePhoto.src =
+                user.photoURL;
+        }
+
+
+        // PROFILE PHOTO IN NAVIGATION
+
+        if (profileNavPhoto && user.photoURL) {
+
+            profileNavPhoto.innerHTML = `
+                <img
+                    src="${user.photoURL}"
+                    style="
+                        width:32px;
+                        height:32px;
+                        border-radius:50%;
+                        object-fit:cover;
+                    "
+                >
+            `;
+
+        }
+
+
+        // CHANGE HEADER LOGIN BUTTON
+
+        if (headerBtn) {
+
+            headerBtn.innerHTML = `
+                <img
+                    src="${user.photoURL || ''}"
+                    style="
+                        width:32px;
+                        height:32px;
+                        border-radius:50%;
+                        object-fit:cover;
+                        margin-right:8px;
+                        vertical-align:middle;
+                    "
+                >
+                ${user.displayName || "User"} ▼
+            `;
+
+
+            headerBtn.onclick = function () {
+
+                const menu =
+                    document.getElementById("logoutMenu");
+
+                if (menu.style.display === "block") {
+
+                    menu.style.display = "none";
+
+                } else {
+
+                    menu.style.display = "block";
+
+                }
+
+            };
+
+        }
+
+
+    } else {
+
+        console.log("No user logged in");
+
+
+        // RESET HEADER
+
+        if (headerBtn) {
+
+            headerBtn.innerHTML = "👤 Login";
+
+            headerBtn.onclick = function () {
+                openLogin();
+            };
+
+        }
+
+
+        // RESET PROFILE
+
+        if (profileNavPhoto) {
+            profileNavPhoto.innerHTML = "👤";
+        }
+
     }
-
-    if (profileEmail) {
-        profileEmail.textContent = user.email || "";
-    }
-
-    if (profilePhoto && user.photoURL) {
-        profilePhoto.src = user.photoURL;
-    }
-
-}
-
-    document.getElementById("loginModal").style.display = "none";
-
-    const headerBtn = document.getElementById("headerLoginBtn");
-
-    if(headerBtn){
-
-        headerBtn.onclick = () => {
-
-  const menu =
-    document.getElementById("logoutMenu");
-
-  if(menu.style.display === "block"){
-    menu.style.display = "none";
-  }else{
-    menu.style.display = "block";
-  }
-
-};
-
-      headerBtn.innerHTML = `
-  <img src="${user.photoURL}"
-  style="
-    width:32px;
-    height:32px;
-    border-radius:50%;
-    object-fit:cover;
-    margin-right:8px;
-    vertical-align:middle;
-  ">
-  ${user.displayName}
-  ▼
-`;
-      headerBtn.onclick = null;
-    }
-
-  }
 
 });
-
 </script>
 
     <div id="logoutMenu" class="profile-menu">
 
     <div class="profile-info">
-        <img id="profilePhoto" src="" alt="Profile Photo">
+
+        <img id="profilePhoto"
+             src=""
+             alt="Profile Photo">
 
         <div class="profile-details">
-            <strong id="profileName">User</strong>
-            <small id="profileEmail"> </small>
+
+            <strong id="profileName">
+                User
+            </strong>
+
+            <small id="profileEmail"></small>
+
         </div>
+
     </div>
 
     <div class="profile-divider"></div>
 
-  <button type="button" class="logout-button" id="logoutButton">
-    🚪 Log Out
-</button>
+    <button
+        type="button"
+        class="logout-button"
+        id="logoutButton"
+        onclick="logoutUser()">
+
+        🚪 Log Out
+
+    </button>
 
 </div>
     
