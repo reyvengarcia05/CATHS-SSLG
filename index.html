@@ -45,10 +45,6 @@ position:sticky;
 top:0;
 z-index:100;
 }
-
-<a href="login.html" class="login-btn">
-    👤 Student Login
-</a>
     
 .logo{
 width:55px;
@@ -119,14 +115,22 @@ grid-template-columns:repeat(2,1fr);
 gap:15px;
 }
 
-    .quick-wrapper{
+   .quick-wrapper{
 display:flex;
 gap:20px;
 align-items:flex-start;
 }
 
+.grid{
+flex:1;
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:15px;
+}
+
 .event-panel{
-width:300px;
+width:260px;
+flex-shrink:0;
 background:rgba(255,255,255,.12);
 backdrop-filter:blur(15px);
 border-radius:20px;
@@ -371,7 +375,10 @@ color:white;
 <h1>CATHS-MAIN Student Voice</h1>
 <p>Official SSLG Communication Platform</p>
 </div>
-
+<button class="login-btn" onclick="openLogin()">
+    👤 Login
+</button>
+    
 <img src="caths-logo.png" class="logo">
 
 </div>
@@ -465,8 +472,6 @@ and connect with the school community.
 </div>
 
 <!-- NAVIGATION -->
-
-<div class="bottom-nav">
 
 <div class="bottom-nav">
 
