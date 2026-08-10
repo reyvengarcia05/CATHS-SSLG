@@ -327,29 +327,108 @@ color:#FFD700;
 }
 
 .modal-content{
-    background:white;
+    background:#ffffff;
     width:90%;
-    max-width:800px;
+    max-width:850px;
     max-height:80vh;
     overflow-y:auto;
     margin:5% auto;
-    padding:25px;
-    border-radius:20px;
+    padding:30px;
+    border-radius:25px;
+    box-shadow:0 20px 50px rgba(0,0,0,.25);
+}
+
+.modal-content h2{
+    color:#183c8c;
+    font-size:32px;
+    margin-bottom:20px;
+    text-align:center;
+}
+
+.concern-card{
+    background:#f8faff;
+    border-left:6px solid #183c8c;
+    border-radius:15px;
+    padding:18px;
+    margin:15px 0;
+    color:#222;
+}
+
+.concern-card h3{
+    color:#183c8c;
+    margin-bottom:8px;
+    font-size:20px;
+}
+
+.concern-card p{
+    color:#333;
+    margin:5px 0;
+    line-height:1.5;
+}
+
+.concern-card small{
+    color:#666;
+    font-weight:600;
 }
 
 .close{
     float:right;
     font-size:35px;
+    color:#183c8c;
     cursor:pointer;
     font-weight:bold;
 }
 
-.concern-card{
-    background:#f5f7ff;
-    border-left:5px solid #1f3b8f;
-    padding:15px;
-    margin:10px 0;
-    border-radius:10px;
+    .concern-card{
+    background:#ffffff;
+    color:#222;
+    padding:18px;
+    border-radius:15px;
+    margin-bottom:15px;
+    box-shadow:0 4px 12px rgba(0,0,0,.1);
+    border-left:5px solid #2f4fa2;
+}
+
+.concern-card h3{
+    margin:0 0 10px;
+    color:#2f4fa2;
+    font-size:20px;
+}
+
+.concern-card p{
+    margin:6px 0;
+    line-height:1.5;
+    color:#333;
+}
+
+.concern-card small{
+    display:block;
+    margin-top:10px;
+    color:#666;
+    font-weight:600;
+}
+
+    .popup-content{
+    position:relative;
+}
+
+.close-btn{
+    position:absolute;
+    top:15px;
+    right:15px;
+    width:40px;
+    height:40px;
+    border:none;
+    border-radius:50%;
+    background:#e74c3c;
+    color:white;
+    font-size:20px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.close-btn:hover{
+    transform:scale(1.1);
 }
     
 </style>
@@ -576,18 +655,16 @@ function openInbox(){
             ? "resolved"
             : "pending";
 
-            html += `
-            <div class="concern-card">
-
-                <p>${item.concern}</p>
-
-                <span class="${statusClass}">
-                    ${item.status}
-                </span>
-
-            </div>
-            `;
-        });
+            data.forEach(item => {
+    html += `
+    <div class="concern-card">
+        <h3>👤 ${item.name}</h3>
+        <p><strong>Section:</strong> ${item.section}</p>
+        <p><strong>Concern:</strong> ${item.concern}</p>
+        <small>📌 Status: ${item.status}</small>
+    </div>
+    `;
+});
 
         document.getElementById("inboxList").innerHTML = html;
 
@@ -604,7 +681,7 @@ function closeInbox(){
     <div id="concernsModal" class="modal">
   <div class="modal-content">
     <span class="close" onclick="closeConcerns()">&times;</span>
-
+<button class="close-btn" onclick="closeConcerns()">✕</button>
     <h2>📥 Student Concerns</h2>
 
     <div id="concernsList">
@@ -633,6 +710,7 @@ function openConcerns(){
 function closeConcerns(){
     document.getElementById("concernsModal").style.display = "none";
 }
+        
 </script>
     
 </body>
