@@ -623,25 +623,29 @@ window.logoutUser = async function () {
   await signOut(auth);
 };
 
-oonAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, (user) => {
 
   if (user) {
 
+    localStorage.setItem("userName", user.displayName);
+    localStorage.setItem("userPhoto", user.photoURL);
+    localStorage.setItem("userEmail", user.email);
+
     document.getElementById("loginModal").style.display = "none";
 
-    const headerBtn =
-      document.getElementById("headerLoginBtn");
+    const headerBtn = document.getElementById("headerLoginBtn");
 
     if(headerBtn){
 
       headerBtn.innerHTML = `
         <img src="${user.photoURL}"
         style="
-          width:28px;
-          height:28px;
-          border-radius:50%;
-          margin-right:8px;
-          vertical-align:middle;
+        width:32px;
+        height:32px;
+        border-radius:50%;
+        object-fit:cover;
+        margin-right:8px;
+        vertical-align:middle;
         ">
         ${user.displayName}
       `;
@@ -649,17 +653,10 @@ oonAuthStateChanged(auth, (user) => {
       headerBtn.onclick = null;
     }
 
-    document.getElementById("userName").textContent =
-      user.displayName;
-
-    document.getElementById("userEmail").textContent =
-      user.email;
-
-    document.getElementById("userPhoto").src =
-      user.photoURL;
   }
 
 });
+
 </script>
 
 <div class="profile-card">
