@@ -430,6 +430,19 @@ color:#FFD700;
 .close-btn:hover{
     transform:scale(1.1);
 }
+
+.view-btn{
+    width:100%;
+    height:80px;
+    border:none;
+    border-radius:25px;
+    background:white;
+    color:#0d2c7a;
+    font-size:20px;
+    font-weight:700;
+    cursor:pointer;
+    margin-bottom:10px;
+}
     
 </style>
 </head>
@@ -638,8 +651,7 @@ function closePopup(){
 const SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec";
 
-function openInbox(){
-
+        {
     document.getElementById("inboxModal").style.display = "block";
 
     fetch(SCRIPT_URL)
@@ -696,8 +708,9 @@ async function openConcerns(){
 
     document.getElementById("concernsList").innerHTML = "Loading concerns...";
 
-    const response = await fetch
-        (https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec);
+    const response = await fetch(
+    "https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec"
+    );
 
     const data = await response.json();
 
@@ -707,36 +720,20 @@ async function openConcerns(){
 
         html += `
         <div class="concern-card">
+            <h3>👤 ${item.name}</h3>
+            <p><strong>Section:</strong> ${item.section}</p>
             <p><strong>Concern:</strong> ${item.concern}</p>
-            <p><strong>Status:</strong> ${item.status}</p>
+            <small>📌 Status: ${item.status}</small>
         </div>
         `;
-
     });
 
     document.getElementById("concernsList").innerHTML =
         html || "<p>No concerns submitted yet.</p>";
-}{
-    document.getElementById("concernsModal").style.display = "block";
-
-    document.getElementById("concernsList").innerHTML = `
-        <div class="concern-card">
-            <strong>Anonymous</strong><br>
-            Broken electric fan in Room 203
-        </div>
-
-        <div class="concern-card">
-            <strong>11-Twain</strong><br>
-            Need more trash bins near canteen
-        </div>
-    `;
 }
 
 function closeConcerns(){
     document.getElementById("concernsModal").style.display = "none";
 }
-        
-</script>
-    
 </body>
 </html>
