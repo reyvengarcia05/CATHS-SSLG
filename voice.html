@@ -377,6 +377,11 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
         console.log(err);
     }
 });
+<script>
+document.getElementById("voiceForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    alert("Button working!");
+});
 </script>
 
 </body>
