@@ -272,26 +272,24 @@ margin-bottom:3px;
 color:var(--yellow);
 }
 
-    .login-btn{
-    position:absolute;
-    top:20px;
-    right:20px;
+   .login-btn{
     background:rgba(255,255,255,.15);
     backdrop-filter:blur(10px);
     color:white;
-    text-decoration:none;
-    padding:10px 18px;
+    border:none;
+    padding:8px 15px;
     border-radius:12px;
     font-weight:600;
+    cursor:pointer;
     transition:.3s;
-    border:1px solid rgba(255,255,255,.2);
+    margin-left:10px;
+    white-space:nowrap;
 }
 
 .login-btn:hover{
-    transform:translateY(-2px);
     background:rgba(255,255,255,.25);
 }
-
+}
     .modal{
 display:none;
 position:fixed;
@@ -367,19 +365,22 @@ color:white;
 
 <div class="header">
 
-<img src="sslg-logo.png" class="logo">
+<div style="display:flex;align-items:center;gap:10px;">
+
+    <img src="sslg-logo.png" class="logo">
+
+    <button class="login-btn" onclick="openLogin()">
+        👤 Login
+    </button>
+
+</div>
 
 <div class="title">
-<h1>CATHS-MAIN Student Voice</h1>
-<p>Official SSLG Communication Platform</p>
+    <h1>CATHS-MAIN Student Voice</h1>
+    <p>Official SSLG Communication Platform</p>
 </div>
-<button class="login-btn" onclick="openLogin()">
-    👤 Login
-</button>
-    
-<img src="caths-logo.png" class="logo">
 
-</div>
+<img src="caths-logo.png" class="logo">
 
 <!-- HERO -->
 
