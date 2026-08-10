@@ -115,6 +115,36 @@ grid-template-columns:repeat(2,1fr);
 gap:15px;
 }
 
+    .quick-wrapper{
+display:flex;
+gap:20px;
+align-items:flex-start;
+}
+
+.event-panel{
+width:300px;
+background:rgba(255,255,255,.12);
+backdrop-filter:blur(15px);
+border-radius:20px;
+padding:20px;
+}
+
+.event-card{
+margin-top:15px;
+}
+
+.event-card h4{
+color:#FFD700;
+margin-bottom:8px;
+}
+
+#countdown{
+margin-top:15px;
+font-size:24px;
+font-weight:700;
+color:#FFD700;
+}
+
 .card{
 background:rgba(255,255,255,.12);
 backdrop-filter:blur(15px);
@@ -276,10 +306,9 @@ and connect with the school community.
 
 <div class="section-title">Quick Actions</div>
 
-<div class="grid">
+<div class="quick-wrapper">
 
 <div class="grid">
-
 <a href="news.html" class="card">
 <div class="icon">📢</div>
 <h3>Announcements</h3>
@@ -314,10 +343,22 @@ and connect with the school community.
 
 </div>
 
+<div class="event-panel">
+    <h3>📅 Upcoming Event</h3>
+
+    <div class="event-card">
+        <h4>SSLG General Assembly</h4>
+        <p>August 15, 2026</p>
+
+        <div id="countdown">
+            Loading...
+        </div>
+    </div>
+</div>
+
 </div>
 
 <!-- ANNOUNCEMENTS -->
-
 <div class="section">
 
 <div class="section-title">Latest Announcements</div>
@@ -369,6 +410,25 @@ and connect with the school community.
 
 </div>
 
+<script>
 
+const targetDate = new Date("August 15, 2026 08:00:00").getTime();
+
+setInterval(() => {
+
+const now = new Date().getTime();
+const distance = targetDate - now;
+
+const days = Math.floor(distance / (1000*60*60*24));
+const hours = Math.floor((distance % (1000*60*60*24)) / (1000*60*60));
+const minutes = Math.floor((distance % (1000*60*60)) / (1000*60));
+
+document.getElementById("countdown").innerHTML =
+days + "d " + hours + "h " + minutes + "m";
+
+},1000);
+
+</script>
+    
 </body>
 </html>
