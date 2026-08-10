@@ -502,7 +502,7 @@ required></textarea>
 <button type="submit" class="submit-btn">
     Submit Concern
 </button>
-<button type="button" onclick="openConcerns()" class="view-btn">
+<button onclick="openConcerns()" class="view-btn">
 📥 View Concerns
 </button>
 
@@ -630,7 +630,7 @@ function closePopup(){
     </div>
 </div>
 
-    <div id="concernsModal" class="modal">
+<div id="concernsModal" class="modal">
   <div class="modal-content">
     <span class="close" onclick="closeConcerns()">&times;</span>
     <h2>📥 Student Concerns</h2>
@@ -675,62 +675,6 @@ async function openConcerns(){
 function closeConcerns(){
     document.getElementById("concernsModal").style.display = "none";
 }
-
-<div id="concernsModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeConcerns()">&times;</span>
-
-        <h2>📥 Student Concerns</h2>
-
-        <div id="concernsList">
-            Loading concerns...
-        </div>
-    </div>
-</div>
-
-<script>
-async function openConcerns(){
-
-    document.getElementById("concernsModal").style.display = "block";
-
-    document.getElementById("concernsList").innerHTML =
-    "Loading concerns...";
-
-    try{
-
-        const response = await fetch(SCRIPT_URL);
-        const data = await response.json();
-
-        let html = "";
-
-        data.reverse().forEach(item => {
-
-            html += `
-            <div class="concern-card">
-                <h3>👤 ${item.name}</h3>
-                <p><strong>Section:</strong> ${item.section}</p>
-                <p><strong>Concern:</strong> ${item.concern}</p>
-                <small>📌 Status: ${item.status}</small>
-            </div>
-            `;
-        });
-
-        document.getElementById("concernsList").innerHTML =
-        html || "<p>No concerns submitted yet.</p>";
-
-    }catch(error){
-
-        document.getElementById("concernsList").innerHTML =
-        "<p>Failed to load concerns.</p>";
-
-        console.error(error);
-    }
-}
-
-function closeConcerns(){
-    document.getElementById("concernsModal").style.display = "none";
-}
 </script>
-        
 </body>
 </html>
