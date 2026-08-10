@@ -255,6 +255,11 @@ or suggestions to help improve our school community.
 
 <input type="text" id="name" placeholder="Enter your name" required>
 
+<div class="checkbox">
+    <input type="checkbox" id="anonymous">
+    <label for="anonymous">Submit Anonymously</label>
+</div>
+
 <input type="text" id="section" placeholder="Example: 11-Twain" required>
 
 <select id="category" required>
@@ -319,11 +324,12 @@ Submit Concern
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec";
 
-<script>
 document.getElementById("voiceForm").addEventListener("submit", async function(e) {
     e.preventDefault();
 
-    const name = document.getElementById("name").value.trim();
+   const name = document.getElementById("anonymous").checked
+    ? "Anonymous"
+    : document.getElementById("name").value.trim();
     const section = document.getElementById("section").value.trim();
     const concern = document.getElementById("concern").value.trim();
     const category = document.getElementById("category").value;
@@ -339,7 +345,7 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
         concern: concern
     };
 
-    await fetch("PASTE_MO_DITO_YUNG_APPS_SCRIPT_URL", {
+    await fetch(https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec", {
         method: "POST",
         body: JSON.stringify(data)
     });
@@ -348,47 +354,7 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
 });
 </script>
 
-let name = document.getElementById("anonymous").checked
-? "Anonymous"
-: document.getElementById("name").value;
 
-const data = {
-name:name,
-section:document.getElementById("section").value,
-concern:
-"[" +
-document.getElementById("category").value +
-"] " +
-document.getElementById("concern").value
-};
-
-try{
-
-await fetch(SCRIPT_URL,{
-method:"POST",
-mode:"no-cors",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify(data)
-});
-
-  document.getElementById("successPopup").style.display = "flex";
-
-document.getElementById("successSound").play();
-
-document.getElementById("voiceForm").reset();
-
-document.getElementById("successMsg").style.display="block";
-
-this.reset();
-
-}catch(error){
-
-alert("Submission Failed");
-console.log(error);
-
-}
 
 });
 </script>
@@ -424,6 +390,23 @@ anonymous.addEventListener("change", () => {
   function closePopup(){
     document.getElementById("successPopup").style.display = "none";
 }
+
+    <script>
+const anonymous = document.getElementById("anonymous");
+const nameInput = document.getElementById("name");
+
+anonymous.addEventListener("change", function() {
+
+    if(this.checked){
+        nameInput.value = "Anonymous";
+        nameInput.readOnly = true;
+    }else{
+        nameInput.value = "";
+        nameInput.readOnly = false;
+    }
+
+});
+</script>
   
 </body>
 </html>
