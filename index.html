@@ -360,7 +360,26 @@ background:#1877F2;
 color:white;
 }
 
-    
+    .logout-menu{
+  display:none;
+  position:absolute;
+  top:85px;
+  left:90px;
+  background:white;
+  border-radius:12px;
+  padding:10px;
+  box-shadow:0 10px 25px rgba(0,0,0,.2);
+  z-index:9999;
+}
+
+.logout-menu button{
+  border:none;
+  background:none;
+  cursor:pointer;
+  font-size:15px;
+  padding:8px 12px;
+  width:100%;
+}
 
 </style>
 </head>
@@ -620,7 +639,13 @@ window.googleLogin = async function () {
 };
 
 window.logoutUser = async function () {
+
   await signOut(auth);
+
+  localStorage.clear();
+
+  location.reload();
+
 };
 
 onAuthStateChanged(auth, (user) => {
@@ -637,19 +662,32 @@ onAuthStateChanged(auth, (user) => {
 
     if(headerBtn){
 
-      headerBtn.innerHTML = `
-        <img src="${user.photoURL}"
-        style="
-        width:32px;
-        height:32px;
-        border-radius:50%;
-        object-fit:cover;
-        margin-right:8px;
-        vertical-align:middle;
-        ">
-        ${user.displayName}
-      `;
+        headerBtn.onclick = () => {
 
+  const menu =
+    document.getElementById("logoutMenu");
+
+  if(menu.style.display === "block"){
+    menu.style.display = "none";
+  }else{
+    menu.style.display = "block";
+  }
+
+};
+
+      headerBtn.innerHTML = `
+  <img src="${user.photoURL}"
+  style="
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    object-fit:cover;
+    margin-right:8px;
+    vertical-align:middle;
+  ">
+  ${user.displayName}
+  ▼
+`;
       headerBtn.onclick = null;
     }
 
@@ -659,10 +697,8 @@ onAuthStateChanged(auth, (user) => {
 
 </script>
 
-<div class="profile-card">
-  <img id="userPhoto" src="" alt="Profile">
-  <h3 id="userName">Guest User</h3>
-  <p id="userEmail">Not logged in</p>
+    <div id="logoutMenu" class="logout-menu">
+  <button onclick="logoutUser()">🚪 Log Out</button>
 </div>
     
 </body>
