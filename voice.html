@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CATHS-MAIN Student Voice</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#00296B,#003DA5,#FFD700);
+min-height:100vh;
+color:white;
+padding-bottom:100px;
+}
+
+/* HEADER */
+
+.header{
+padding:20px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(12px);
+}
+
+.logo{
+width:65px;
+height:65px;
+border-radius:50%;
+background:white;
+padding:5px;
+object-fit:contain;
+}
+
+.header-center{
+text-align:center;
+flex:1;
+}
+
+.header-center h1{
+font-size:20px;
+font-weight:700;
+}
+
+.header-center p{
+font-size:12px;
+opacity:.9;
+}
+
+/* MAIN */
+
+.container{
+padding:20px;
+max-width:800px;
+margin:auto;
+}
+
+.voice-card{
+background:rgba(255,255,255,.12);
+backdrop-filter:blur(15px);
+padding:25px;
+border-radius:25px;
+box-shadow:0 10px 30px rgba(0,0,0,.2);
+}
+
+.voice-card h2{
+margin-bottom:10px;
+}
+
+.voice-card p{
+margin-bottom:20px;
+opacity:.9;
+}
+
+/* FORM */
+
+label{
+display:block;
+margin-bottom:8px;
+margin-top:15px;
+font-weight:600;
+}
+
+input,
+select,
+textarea{
+width:100%;
+padding:15px;
+border:none;
+outline:none;
+border-radius:15px;
+font-size:14px;
+}
+
+textarea{
+height:150px;
+resize:none;
+}
+
+.checkbox{
+display:flex;
+align-items:center;
+gap:10px;
+margin-top:15px;
+}
+
+.checkbox input{
+width:auto;
+}
+
+button{
+width:100%;
+padding:15px;
+margin-top:20px;
+border:none;
+border-radius:15px;
+background:#FFD700;
+color:#00296B;
+font-size:16px;
+font-weight:700;
+cursor:pointer;
+transition:.3s;
+}
+
+button:hover{
+transform:translateY(-3px);
+}
+
+.success{
+display:none;
+background:#28a745;
+padding:15px;
+border-radius:15px;
+margin-top:15px;
+text-align:center;
+}
+
+/* NAVIGATION */
+
+.bottom-nav{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+height:85px;
+background:linear-gradient(90deg,#1e3a8a,#b59f1a);
+display:flex;
+justify-content:space-around;
+align-items:center;
+z-index:999;
+box-shadow:0 -5px 20px rgba(0,0,0,.2);
+}
+
+.nav-item{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+text-decoration:none;
+color:white;
+font-size:11px;
+font-weight:500;
+}
+
+.nav-item div{
+font-size:24px;
+margin-bottom:4px;
+}
+
+.active{
+color:#FFD700;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<div class="header">
+
+<img src="sslg-logo.png" class="logo">
+
+<div class="header-center">
+<h1>CATHS-MAIN Student Voice</h1>
+<p>Official SSLG Communication Platform</p>
+</div>
+
+<img src="caths-logo.png" class="logo">
+
+</div>
+
+<!-- CONTENT -->
+
+<div class="container">
+
+<div class="voice-card">
+
+<h2>🗣️ Submit a Concern or Suggestion</h2>
+
+<p>
+Your voice matters. Share your concerns, ideas,
+or suggestions to help improve our school community.
+</p>
+
+<form id="voiceForm">
+
+<label>Full Name</label>
+<input type="text" id="name" placeholder="Enter your name">
+
+<div class="checkbox">
+<input type="checkbox" id="anonymous">
+<label for="anonymous">Submit Anonymously</label>
+</div>
+
+<label>Grade & Section</label>
+<input type="text" id="section" placeholder="Example: 11-Twain">
+
+<label>Category</label>
+
+<select id="category">
+<option>Facilities</option>
+<option>Academics</option>
+<option>Bullying</option>
+<option>Guidance Concern</option>
+<option>School Event</option>
+<option>SSLG Suggestion</option>
+<option>Others</option>
+</select>
+
+<label>Concern / Suggestion</label>
+
+<textarea id="concern"
+placeholder="Type your concern or suggestion here..."></textarea>
+
+<button type="submit">
+Submit Concern
+</button>
+
+</form>
+
+<div class="success" id="successMsg">
+✅ Thank you! Your concern has been submitted.
+</div>
+
+</div>
+
+</div>
+
+<!-- BOTTOM NAVIGATION -->
+
+<div class="bottom-nav">
+
+<a href="index.html" class="nav-item">
+<div>🏠</div>
+<span>Home</span>
+</a>
+
+<a href="news.html" class="nav-item">
+<div>📢</div>
+<span>News</span>
+</a>
+
+<a href="voice.html" class="nav-item active">
+<div>🗣️</div>
+<span>Student Voice</span>
+</a>
+
+<a href="events.html" class="nav-item">
+<div>📅</div>
+<span>Events</span>
+</a>
+
+<a href="profile.html" class="nav-item">
+<div>👤</div>
+<span>Profile</span>
+</a>
+
+</div>
+
+<script>
+
+// PALITAN MO ITO NG APPS SCRIPT URL MO
+const scriptURL = "PASTE_YOUR_GOOGLE_SCRIPT_URL_HERE";
+
+document.getElementById("voiceForm")
+.addEventListener("submit",function(e){
+
+e.preventDefault();
+
+let name =
+document.getElementById("name").value;
+
+if(document.getElementById("anonymous").checked){
+name = "Anonymous";
+}
+
+const data = {
+name:name,
+section:document.getElementById("section").value,
+category:document.getElementById("category").value,
+concern:document.getElementById("concern").value
+};
+
+if(scriptURL === "PASTE_YOUR_GOOGLE_SCRIPT_URL_HERE"){
+document.getElementById("successMsg").style.display="block";
+this.reset();
+return;
+}
+
+fetch(scriptURL,{
+method:"POST",
+body:JSON.stringify(data)
+})
+.then(res=>{
+document.getElementById("successMsg").style.display="block";
+document.getElementById("voiceForm").reset();
+})
+.catch(err=>{
+alert("Submission Failed");
+console.log(err);
+});
+
+});
+
+</script>
+
+</body>
+</html>
