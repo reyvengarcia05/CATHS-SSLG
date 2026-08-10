@@ -564,7 +564,9 @@ required></textarea>
 </div>
 
 <script>
-const SCRIPT_URL = https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec
+
+    
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec";
     
 const anonymous = document.getElementById("anonymous");
 const nameInput = document.getElementById("name");
@@ -661,6 +663,10 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
 
 </div>
 
+    function closePopup(){
+    document.getElementById("successPopup").style.display = "none";
+}
+
     <script>
 async function openConcerns(){
 
@@ -670,10 +676,7 @@ async function openConcerns(){
 
     try{
 
-        const response = await fetch(
-        "https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec"
-        );
-
+        const response = await fetch(SCRIPT_URL);
         const data = await response.json();
 
         let html = "";
@@ -691,15 +694,14 @@ async function openConcerns(){
         });
 
         document.getElementById("concernsList").innerHTML =
-        html || "<p>No concerns submitted yet.</p>";
+            html || "<p>No concerns submitted yet.</p>";
 
-    }catch(err){
+    }catch(error){
+
+        console.error(error);
 
         document.getElementById("concernsList").innerHTML =
-        "<p>Failed to load concerns.</p>";
-
-        console.error(err);
-
+            "<p>Failed to load concerns.</p>";
     }
 }
 </script>
