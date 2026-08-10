@@ -9,7 +9,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-
 *{
 margin:0;
 padding:0;
@@ -24,8 +23,6 @@ color:white;
 padding-bottom:100px;
 }
 
-/* HEADER */
-
 .header{
 padding:20px;
 display:flex;
@@ -36,35 +33,30 @@ backdrop-filter:blur(12px);
 }
 
 .logo{
-    width:80px;
-    height:80px;
-    object-fit:contain;
-    background:transparent;
-    padding:0;
-    border:none;
+width:80px;
+height:80px;
+object-fit:contain;
 }
 
 .header-center{
-text-align:center;
 flex:1;
+text-align:center;
 }
 
 .header-center h1{
-font-size:20px;
+font-size:22px;
 font-weight:700;
 }
 
 .header-center p{
-font-size:12px;
+font-size:13px;
 opacity:.9;
 }
 
-/* MAIN */
-
 .container{
-padding:20px;
 max-width:800px;
 margin:auto;
+padding:20px;
 }
 
 .voice-card{
@@ -84,12 +76,10 @@ margin-bottom:20px;
 opacity:.9;
 }
 
-/* FORM */
-
 label{
 display:block;
-margin-bottom:8px;
 margin-top:15px;
+margin-bottom:8px;
 font-weight:600;
 }
 
@@ -120,7 +110,7 @@ margin-top:15px;
 width:auto;
 }
 
-button{
+.submit-btn{
 width:100%;
 padding:15px;
 margin-top:20px;
@@ -134,7 +124,7 @@ cursor:pointer;
 transition:.3s;
 }
 
-button:hover{
+.submit-btn:hover{
 transform:translateY(-3px);
 }
 
@@ -147,8 +137,6 @@ margin-top:15px;
 text-align:center;
 }
 
-/* NAVIGATION */
-
 .bottom-nav{
 position:fixed;
 bottom:0;
@@ -160,18 +148,15 @@ display:flex;
 justify-content:space-around;
 align-items:center;
 z-index:999;
-box-shadow:0 -5px 20px rgba(0,0,0,.2);
 }
 
 .nav-item{
 display:flex;
 flex-direction:column;
 align-items:center;
-justify-content:center;
 text-decoration:none;
 color:white;
 font-size:11px;
-font-weight:500;
 }
 
 .nav-item div{
@@ -182,13 +167,10 @@ margin-bottom:4px;
 .active{
 color:#FFD700;
 }
-
 </style>
 </head>
 
 <body>
-
-<!-- HEADER -->
 
 <div class="header">
 
@@ -202,8 +184,6 @@ color:#FFD700;
 <img src="caths-logo.png" class="logo">
 
 </div>
-
-<!-- CONTENT -->
 
 <div class="container">
 
@@ -243,10 +223,9 @@ or suggestions to help improve our school community.
 
 <label>Concern / Suggestion</label>
 
-<textarea id="concern"
-placeholder="Type your concern or suggestion here..."></textarea>
+<textarea id="concern" placeholder="Type your concern or suggestion here..." required></textarea>
 
-<button type="submit">
+<button type="submit" class="submit-btn">
 Submit Concern
 </button>
 
@@ -259,8 +238,6 @@ Submit Concern
 </div>
 
 </div>
-
-<!-- BOTTOM NAVIGATION -->
 
 <div class="bottom-nav">
 
@@ -292,99 +269,50 @@ Submit Concern
 </div>
 
 <script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec";
 
-// PALITAN MO ITO NG APPS SCRIPT URL MO
-const scriptURL = "PASTE_YOUR_GOOGLE_SCRIPT_URL_HERE";
-
-document.getElementById("voiceForm")
-.addEventListener("submit",function(e){
+document.getElementById("voiceForm").addEventListener("submit", async function(e){
 
 e.preventDefault();
 
-let name =
-document.getElementById("name").value;
-
-if(document.getElementById("anonymous").checked){
-name = "Anonymous";
-}
+let name = document.getElementById("anonymous").checked
+? "Anonymous"
+: document.getElementById("name").value;
 
 const data = {
 name:name,
 section:document.getElementById("section").value,
-category:document.getElementById("category").value,
-concern:document.getElementById("concern").value
+concern:
+"[" +
+document.getElementById("category").value +
+"] " +
+document.getElementById("concern").value
 };
 
-if(scriptURL === "PASTE_YOUR_GOOGLE_SCRIPT_URL_HERE"){
+try{
+
+await fetch(SCRIPT_URL,{
+method:"POST",
+mode:"no-cors",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify(data)
+});
+
 document.getElementById("successMsg").style.display="block";
+
 this.reset();
-return;
+
+}catch(error){
+
+alert("Submission Failed");
+console.log(error);
+
 }
 
-fetch(scriptURL,{
-method:"POST",
-body:JSON.stringify(data)
-})
-.then(res=>{
-document.getElementById("successMsg").style.display="block";
-document.getElementById("voiceForm").reset();
-})
-.catch(err=>{
-alert("Submission Failed");
-console.log(err);
-});
-
-});
-
-</script>
-
-    <script>
-document.getElementById("voiceForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
-
-    let name = document.getElementById("anonymous").checked
-        ? "Anonymous"
-        : document.getElementById("name").value;
-
-    let section = document.getElementById("section").value;
-
-    let concern =
-        "[" + document.getElementById("category").value + "] " +
-        document.getElementById("concern").value;
-
-    let data = {
-        name: name,
-        section: section,
-        concern: concern
-    };
-
-    try {
-        await fetch("https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec", {
-            method: "POST",
-            mode: "no-cors",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        });
-
-        alert("✅ Concern submitted successfully!");
-
-        document.getElementById("voiceForm").reset();
-
-    } catch(err) {
-        alert("❌ Failed to submit concern.");
-        console.log(err);
-    }
-});
-        
-<script>
-document.getElementById("voiceForm").addEventListener("submit", function(e){
-
-    e.preventDefault();
-
-    alert("Gumagana ang submit button!");
-
 });
 </script>
+
+</body>
 </html>
