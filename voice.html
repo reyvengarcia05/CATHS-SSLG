@@ -322,7 +322,74 @@ Submit Concern
 </div>
 
 <script>
+<script>
+
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec";
+
+const anonymous = document.getElementById("anonymous");
+const nameInput = document.getElementById("name");
+
+anonymous.addEventListener("change", function(){
+
+    if(this.checked){
+        nameInput.value = "Anonymous";
+        nameInput.readOnly = true;
+    }else{
+        nameInput.value = "";
+        nameInput.readOnly = false;
+    }
+
+});
+
+document.getElementById("voiceForm").addEventListener("submit", async function(e){
+
+    e.preventDefault();
+
+    const name = anonymous.checked
+        ? "Anonymous"
+        : document.getElementById("name").value.trim();
+
+    const section = document.getElementById("section").value.trim();
+    const concern = document.getElementById("concern").value.trim();
+    const category = document.getElementById("category").value;
+
+    if(!name || !section || !concern || !category){
+        alert("Please complete all fields.");
+        return;
+    }
+
+    const data = {
+        name: name,
+        section: section,
+        concern: "[" + category + "] " + concern
+    };
+
+    try{
+
+        await fetch(SCRIPT_URL,{
+            method:"POST",
+            body:JSON.stringify(data)
+        });
+
+        document.getElementById("successPopup").style.display = "flex";
+
+        const sound = document.getElementById("successSound");
+        if(sound) sound.play();
+
+        document.getElementById("voiceForm").reset();
+        nameInput.readOnly = false;
+
+    }catch(error){
+        alert("Error submitting concern.");
+    }
+
+});
+
+function closePopup(){
+    document.getElementById("successPopup").style.display = "none";
+}
+
+</script>
 
 document.getElementById("voiceForm").addEventListener("submit", async function(e) {
     e.preventDefault();
@@ -354,11 +421,6 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
 });
 </script>
 
-
-
-});
-</script>
-
   <script>
 const anonymous = document.getElementById("anonymous");
 const nameInput = document.getElementById("name");
@@ -377,19 +439,14 @@ anonymous.addEventListener("change", () => {
 <audio id="successSound">
     <source src="success.mp3" type="audio/mpeg">
 </audio>
-
 <div id="successPopup" class="popup">
     <div class="popup-content">
         <div class="checkmark">✅</div>
         <h2>Thank You!</h2>
-       alert("🎉 Thank You!\n\nYour concern has been submitted successfully.\nThe SSLG team will review it as soon as possible.");
+        <p>Your concern has been submitted successfully.</p>
         <button onclick="closePopup()">OK</button>
     </div>
-</div>  
-
-  function closePopup(){
-    document.getElementById("successPopup").style.display = "none";
-}
+</div>
 
     <script>
 const anonymous = document.getElementById("anonymous");
