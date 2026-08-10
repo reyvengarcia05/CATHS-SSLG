@@ -338,5 +338,46 @@ console.log(err);
 
 </script>
 
+    <script>
+document.getElementById("voiceForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    let name = document.getElementById("anonymous").checked
+        ? "Anonymous"
+        : document.getElementById("name").value;
+
+    let section = document.getElementById("section").value;
+
+    let concern =
+        "[" + document.getElementById("category").value + "] " +
+        document.getElementById("concern").value;
+
+    let data = {
+        name: name,
+        section: section,
+        concern: concern
+    };
+
+    try {
+        await fetch("https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec", {
+            method: "POST",
+            mode: "no-cors",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        alert("✅ Concern submitted successfully!");
+
+        document.getElementById("voiceForm").reset();
+
+    } catch(err) {
+        alert("❌ Failed to submit concern.");
+        console.log(err);
+    }
+});
+</script>
+
 </body>
 </html>
