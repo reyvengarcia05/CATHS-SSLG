@@ -532,20 +532,6 @@ days + "d " + hours + "h " + minutes + "m";
 
 },1000);
 
-
-    onAuthStateChanged(auth, (user) => {
-  if (user) {
-    document.getElementById("userName").textContent =
-      user.displayName || "User";
-
-    document.getElementById("userEmail").textContent =
-      user.email || "";
-
-    document.getElementById("userPhoto").src =
-      user.photoURL || "default-user.png";
-  }
-});
-
 </script>
 
     <div id="loginModal" class="modal">
@@ -627,28 +613,42 @@ window.logoutUser = async function () {
   await signOut(auth);
 };
 
-onAuthStateChanged(auth, (user) => {
+oonAuthStateChanged(auth, (user) => {
+
   if (user) {
-    console.log("Logged in:", user.displayName);
-      document.getElementById("loginModal").style.display = "none";
 
-  const headerBtn = document.getElementById("headerLoginBtn");
+    document.getElementById("loginModal").style.display = "none";
 
-if (headerBtn) {
-  headerBtn.innerHTML = `
-    <img src="${user.photoURL}"
-    style="
-      width:28px;
-      height:28px;
-      border-radius:50%;
-      margin-right:8px;
-      vertical-align:middle;
-    ">
-    ${user.displayName}
-  `;
+    const headerBtn =
+      document.getElementById("headerLoginBtn");
 
-  headerBtn.onclick = null;
-}
+    if(headerBtn){
+
+      headerBtn.innerHTML = `
+        <img src="${user.photoURL}"
+        style="
+          width:28px;
+          height:28px;
+          border-radius:50%;
+          margin-right:8px;
+          vertical-align:middle;
+        ">
+        ${user.displayName}
+      `;
+
+      headerBtn.onclick = null;
+    }
+
+    document.getElementById("userName").textContent =
+      user.displayName;
+
+    document.getElementById("userEmail").textContent =
+      user.email;
+
+    document.getElementById("userPhoto").src =
+      user.photoURL;
+  }
+
 });
 </script>
 
