@@ -3,779 +3,132 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>CATHS-MAIN Student Voice</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins',sans-serif;
-}
-
-body{
-background:linear-gradient(135deg,#00296B,#003DA5,#FFD700);
-min-height:100vh;
-color:white;
-padding-bottom:100px;
-}
-
-.header{
-padding:20px;
-display:flex;
-align-items:center;
-justify-content:space-between;
-background:rgba(255,255,255,.08);
-backdrop-filter:blur(12px);
-}
-
-.logo{
-width:80px;
-height:80px;
-object-fit:contain;
-}
-
-.header-center{
-flex:1;
-text-align:center;
-}
-
-.header-center h1{
-font-size:22px;
-font-weight:700;
-}
-
-.header-center p{
-font-size:13px;
-opacity:.9;
-}
-
-.container{
-max-width:800px;
-margin:auto;
-padding:20px;
-}
-
-.voice-card{
-background:rgba(255,255,255,.12);
-backdrop-filter:blur(15px);
-padding:25px;
-border-radius:25px;
-box-shadow:0 10px 30px rgba(0,0,0,.2);
-}
-
-.voice-card h2{
-margin-bottom:10px;
-}
-
-.voice-card p{
-margin-bottom:20px;
-opacity:.9;
-}
-
-label{
-display:block;
-margin-top:15px;
-margin-bottom:8px;
-font-weight:600;
-}
-
-input,
-select,
-textarea{
-width:100%;
-padding:15px;
-border:none;
-outline:none;
-border-radius:15px;
-font-size:14px;
-margin-bottom:25px;
-}
-
-    .checkbox{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin:20px 0 25px 0;
-}
-
-.checkbox input{
-    width:22px;
-    height:22px;
-    margin:0;
-}
-
-.checkbox label{
-    margin:0;
-    color:white;
-    font-weight:600;
-}
-
-textarea{
-height:150px;
-resize:none;
-}
-
-.checkbox{
-display:flex;
-align-items:center;
-gap:10px;
-margin-top:15px;
-}
-
-.checkbox input{
-width:auto;
-}
-
-.submit-btn{
-width:100%;
-padding:15px;
-margin-top:20px;
-border:none;
-border-radius:15px;
-background:#FFD700;
-color:#00296B;
-font-size:16px;
-font-weight:700;
-cursor:pointer;
-transition:.3s;
-}
-
-.submit-btn:hover{
-transform:translateY(-3px);
-}
-
-.success{
-display:none;
-background:#28a745;
-padding:15px;
-border-radius:15px;
-margin-top:15px;
-text-align:center;
-}
-
-.bottom-nav{
-position:fixed;
-bottom:0;
-left:0;
-right:0;
-height:85px;
-background:linear-gradient(90deg,#1e3a8a,#b59f1a);
-display:flex;
-justify-content:space-around;
-align-items:center;
-z-index:999;
-}
-
-.nav-item{
-display:flex;
-flex-direction:column;
-align-items:center;
-text-decoration:none;
-color:white;
-font-size:11px;
-}
-
-.nav-item div{
-font-size:24px;
-margin-bottom:4px;
-}
-
-.active{
-color:#FFD700;
-}
-
-.popup{
-    display:none;
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,.6);
-    justify-content:center;
-    align-items:center;
-    z-index:9999;
-}
-
-.popup-content{
-    background:white;
-    padding:30px;
-    border-radius:20px;
-    text-align:center;
-    max-width:350px;
-    width:90%;
-    animation:pop .3s ease;
-}
-
-.checkmark{
-    font-size:60px;
-    margin-bottom:10px;
-}
-
-.popup-content h2{
-    color:#1f4ed8;
-    margin-bottom:10px;
-}
-
-.popup-content button{
-    margin-top:15px;
-    padding:10px 25px;
-    border:none;
-    border-radius:10px;
-    background:#1f4ed8;
-    color:white;
-    cursor:pointer;
-}
-
-@keyframes pop{
-    from{
-        transform:scale(.8);
-        opacity:0;
-    }
-    to{
-        transform:scale(1);
-        opacity:1;
-    }
-}
-
-.inbox-btn{
-    width:100%;
-    margin-top:15px;
-    padding:18px;
-    border:none;
-    border-radius:20px;
-    background:white;
-    color:#1f3c88;
-    font-size:18px;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-.inbox-modal{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.6);
-    z-index:9999;
-}
-
-.inbox-content{
-    width:90%;
-    max-width:800px;
-    max-height:80vh;
-    overflow-y:auto;
-    margin:40px auto;
-    padding:25px;
-    border-radius:25px;
-    background:white;
-}
-
-.close-btn{
-    float:right;
-    font-size:35px;
-    cursor:pointer;
-}
-
-.concern-card{
-    background:#f5f5f5;
-    padding:15px;
-    border-radius:15px;
-    margin-top:15px;
-}
-
-.pending{
-    background:#ffd54f;
-    padding:5px 12px;
-    border-radius:10px;
-    font-size:12px;
-}
-
-.resolved{
-    background:#4caf50;
-    color:white;
-    padding:5px 12px;
-    border-radius:10px;
-    font-size:12px;
-}
-
-    .submit-btn{
-    width:100%;
-    height:80px;
-    border:none;
-    border-radius:25px;
-    background:#FFD93D;
-    color:#0d2c7a;
-    font-size:20px;
-    font-weight:700;
-    cursor:pointer;
-    margin:20px 0;
-}
-.modal{
-    display:none;
-    position:fixed;
-    z-index:9999;
-    left:0;
-    top:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,.6);
-    backdrop-filter:blur(5px);
-}
-
-.modal-content{
-    background:#ffffff;
-    width:90%;
-    max-width:850px;
-    max-height:80vh;
-    overflow-y:auto;
-    margin:5% auto;
-    padding:30px;
-    border-radius:25px;
-    box-shadow:0 20px 50px rgba(0,0,0,.25);
-}
-
-.modal-content h2{
-    color:#183c8c;
-    font-size:32px;
-    margin-bottom:20px;
-    text-align:center;
-}
-
-.concern-card{
-    background:#f8faff;
-    border-left:6px solid #183c8c;
-    border-radius:15px;
-    padding:18px;
-    margin:15px 0;
-    color:#222;
-}
-
-.concern-card h3{
-    color:#183c8c;
-    margin-bottom:8px;
-    font-size:20px;
-}
-
-.concern-card p{
-    color:#333;
-    margin:5px 0;
-    line-height:1.5;
-}
-
-.concern-card small{
-    color:#666;
-    font-weight:600;
-}
-
-.close{
-    float:right;
-    font-size:35px;
-    color:#183c8c;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-    .concern-card{
-    background:#ffffff;
-    color:#222;
-    padding:18px;
-    border-radius:15px;
-    margin-bottom:15px;
-    box-shadow:0 4px 12px rgba(0,0,0,.1);
-    border-left:5px solid #2f4fa2;
-}
-
-.concern-card h3{
-    margin:0 0 10px;
-    color:#2f4fa2;
-    font-size:20px;
-}
-
-.concern-card p{
-    margin:6px 0;
-    line-height:1.5;
-    color:#333;
-}
-
-.concern-card small{
-    display:block;
-    margin-top:10px;
-    color:#666;
-    font-weight:600;
-}
-
-    .popup-content{
-    position:relative;
-}
-
-.close-btn{
-    position:absolute;
-    top:15px;
-    right:15px;
-    width:40px;
-    height:40px;
-    border:none;
-    border-radius:50%;
-    background:#e74c3c;
-    color:white;
-    font-size:20px;
-    cursor:pointer;
-    transition:.3s;
-}
-
-.close-btn:hover{
-    transform:scale(1.1);
-}
-
-.view-btn{
-    width:100%;
-    height:80px;
-    border:none;
-    border-radius:25px;
-    background:white;
-    color:#0d2c7a;
-    font-size:20px;
-    font-weight:700;
-    cursor:pointer;
-    margin-bottom:10px;
-}
-    
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+body{background:linear-gradient(135deg,#00296B,#003DA5,#FFD700);min-height:100vh;color:#fff;padding-bottom:100px}
+.container{max-width:900px;margin:auto;padding:20px}
+.voice-card{background:rgba(255,255,255,.12);backdrop-filter:blur(15px);padding:25px;border-radius:25px}
+input,select,textarea{width:100%;padding:15px;border:none;border-radius:15px;margin-bottom:15px}
+textarea{height:150px}
+.checkbox{display:flex;align-items:center;gap:10px;margin:15px 0}
+.checkbox input{width:auto}
+.submit-btn,.view-btn{width:100%;height:70px;border:none;border-radius:20px;font-size:20px;font-weight:700;cursor:pointer}
+.submit-btn{background:#FFD700;color:#00296B;margin-bottom:12px}
+.view-btn{background:#fff;color:#00296B}
+.popup,.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999}
+.popup{justify-content:center;align-items:center}
+.popup-content,.modal-content{background:#fff;color:#222;border-radius:20px;padding:25px}
+.popup-content{max-width:350px;width:90%;text-align:center}
+.modal-content{width:90%;max-width:850px;max-height:80vh;overflow:auto;margin:5% auto}
+.close{float:right;font-size:35px;cursor:pointer;color:#183c8c}
+.concern-card{background:#fff;border-left:5px solid #2f4fa2;padding:15px;border-radius:15px;margin:10px 0;color:#222;box-shadow:0 2px 8px rgba(0,0,0,.1)}
 </style>
 </head>
-
 <body>
 
-<div class="header">
-
-<img src="sslg-logo.png" class="logo">
-
-<div class="header-center">
-<h1>CATHS-MAIN Student Voice</h1>
-<p>Official SSLG Communication Platform</p>
-</div>
-
-<img src="caths-logo.png" class="logo">
-
-</div>
-
 <div class="container">
-
 <div class="voice-card">
-
 <h2>🗣️ Submit a Concern or Suggestion</h2>
-
-<p>
-Your voice matters. Share your concerns, ideas,
-or suggestions to help improve our school community.
-</p>
-
 <form id="voiceForm">
-
 <input type="text" id="name" placeholder="Enter your name" required>
 
 <div class="checkbox">
-    <input type="checkbox" id="anonymous">
-    <label for="anonymous">Submit Anonymously</label>
+<input type="checkbox" id="anonymous">
+<label for="anonymous">Submit Anonymously</label>
 </div>
 
 <input type="text" id="section" placeholder="Example: 11-Twain" required>
 
 <select id="category" required>
-    <option value="">Select Category</option>
-    <option>Facilities</option>
-    <option>Academics</option>
-    <option>Bullying</option>
-    <option>Guidance Concern</option>
-    <option>School Event</option>
-    <option>SSLG Suggestion</option>
-    <option>Others</option>
+<option value="">Select Category</option>
+<option>Facilities</option>
+<option>Academics</option>
+<option>Bullying</option>
+<option>Guidance Concern</option>
+<option>School Event</option>
+<option>SSLG Suggestion</option>
+<option>Others</option>
 </select>
 
-<textarea
-id="concern"
-placeholder="Type your concern or suggestion here..."
-required></textarea>
-<button type="submit" class="submit-btn">
-    Submit Concern
-</button>
-<button type="button" onclick="openConcerns()" class="view-btn">
-📥 View Concerns
-</button>
+<textarea id="concern" placeholder="Type your concern..." required></textarea>
 
+<button type="submit" class="submit-btn">Submit Concern</button>
+<button type="button" onclick="openConcerns()" class="view-btn">📥 View Concerns</button>
 </form>
-
-<div class="success" id="successMsg">
-✅ Thank you! Your concern has been submitted.
 </div>
-  
-
 </div>
 
+<div id="successPopup" class="popup">
+<div class="popup-content">
+<h2>✅ Thank You!</h2>
+<p>Your concern has been submitted successfully.</p>
+<button onclick="closePopup()">OK</button>
+</div>
 </div>
 
-<div class="bottom-nav">
-
-<a href="index.html" class="nav-item">
-<div>🏠</div>
-<span>Home</span>
-</a>
-
-<a href="news.html" class="nav-item">
-<div>📢</div>
-<span>News</span>
-</a>
-
-<a href="voice.html" class="nav-item active">
-<div>🗣️</div>
-<span>Student Voice</span>
-</a>
-
-<a href="events.html" class="nav-item">
-<div>📅</div>
-<span>Events</span>
-</a>
-
-<a href="profile.html" class="nav-item">
-<div>👤</div>
-<span>Profile</span>
-</a>
-
+<div id="concernsModal" class="modal">
+<div class="modal-content">
+<span class="close" onclick="closeConcerns()">&times;</span>
+<h2>📥 Student Concerns</h2>
+<div id="concernsList">Loading concerns...</div>
+</div>
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec";
+const SCRIPT_URL="https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec";
 
-const anonymous = document.getElementById("anonymous");
-const nameInput = document.getElementById("name");
+const anonymous=document.getElementById("anonymous");
+const nameInput=document.getElementById("name");
 
-anonymous.addEventListener("change", function(){
-
-    if(this.checked){
-        nameInput.value = "Anonymous";
-        nameInput.readOnly = true;
-    }else{
-        nameInput.value = "";
-        nameInput.readOnly = false;
-    }
-
+anonymous.addEventListener("change",()=>{
+ if(anonymous.checked){nameInput.value="Anonymous";nameInput.readOnly=true;}
+ else {nameInput.value="";nameInput.readOnly=false;}
 });
 
-document.getElementById("voiceForm").addEventListener("submit", async function(e){
+document.getElementById("voiceForm").addEventListener("submit",async(e)=>{
+ e.preventDefault();
+ const data={
+  name: anonymous.checked?"Anonymous":nameInput.value,
+  section: document.getElementById("section").value,
+  concern: "["+document.getElementById("category").value+"] "+document.getElementById("concern").value
+ };
 
-    e.preventDefault();
-
-    const name = anonymous.checked
-        ? "Anonymous"
-        : document.getElementById("name").value.trim();
-
-    const section = document.getElementById("section").value.trim();
-    const concern = document.getElementById("concern").value.trim();
-    const category = document.getElementById("category").value;
-
-    if(!name || !section || !concern || !category){
-        alert("Please complete all fields.");
-        return;
-    }
-
-    const data = {
-        name: name,
-        section: section,
-        concern: "[" + category + "] " + concern
-    };
-
-    try{
-
-        await fetch(SCRIPT_URL,{
-            method:"POST",
-            body:JSON.stringify(data)
-        });
-
-        document.getElementById("successPopup").style.display = "flex";
-
-        const sound = document.getElementById("successSound");
-        if(sound){
-            sound.play().catch(()=>{});
-        }
-
-        document.getElementById("voiceForm").reset();
-        nameInput.readOnly = false;
-
-    }catch(error){
-        alert("Failed to submit concern.");
-    }
-
+ try{
+   await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify(data)});
+   document.getElementById("successPopup").style.display="flex";
+   document.getElementById("voiceForm").reset();
+ }catch(err){alert("Failed to submit.");}
 });
 
 function closePopup(){
-    document.getElementById("successPopup").style.display = "none";
-}
-</script>
-
-<audio id="successSound">
-    <source src="success.mp3" type="audio/mpeg">
-</audio>
-
-<div id="successPopup" class="popup">
-    <div class="popup-content">
-        <div class="checkmark">✅</div>
-        <h2>Thank You!</h2>
-        <p style="color:#333">
-            Your concern has been submitted successfully.
-        </p>
-        <button onclick="closePopup()">OK</button>
-    </div>
-</div>
-
-const SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec";
-
-        {
-    document.getElementById("inboxModal").style.display = "block";
-
-    fetch(SCRIPT_URL)
-    .then(res => res.json())
-    .then(data => {
-
-        let html = "";
-
-        data.reverse().forEach(item => {
-
-            const statusClass =
-            item.status === "Resolved"
-            ? "resolved"
-            : "pending";
-
-            data.forEach(item => {
-    html += `
-    <div class="concern-card">
-        <h3>👤 ${item.name}</h3>
-        <p><strong>Section:</strong> ${item.section}</p>
-        <p><strong>Concern:</strong> ${item.concern}</p>
-        <small>📌 Status: ${item.status}</small>
-    </div>
-    `;
-});
-
-        document.getElementById("inboxList").innerHTML = html;
-
-    });
-
+ document.getElementById("successPopup").style.display="none";
 }
 
-function closeInbox(){
-    document.getElementById("inboxModal").style.display = "none";
-}
-
-</script>
-
-    <div id="concernsModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeConcerns()">&times;</span>
-    <h2>📥 Student Concerns</h2>
-
-    <div id="concernsList">
-      Loading concerns...
-    </div>
-  </div>
-</div>
-
-    <script>
 async function openConcerns(){
-
-    document.getElementById("concernsModal").style.display = "block";
-
-    document.getElementById("concernsList").innerHTML = "Loading concerns...";
-
-    const response = await fetch(
-    "https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec"
-    );
-
-    const data = await response.json();
-
-    let html = "";
-
-    data.reverse().forEach(item => {
-
-        html += `
-        <div class="concern-card">
-            <h3>👤 ${item.name}</h3>
-            <p><strong>Section:</strong> ${item.section}</p>
-            <p><strong>Concern:</strong> ${item.concern}</p>
-            <small>📌 Status: ${item.status}</small>
-        </div>
-        `;
-    });
-
-    document.getElementById("concernsList").innerHTML =
-        html || "<p>No concerns submitted yet.</p>";
+ document.getElementById("concernsModal").style.display="block";
+ try{
+   const res=await fetch(SCRIPT_URL);
+   const data=await res.json();
+   let html="";
+   data.reverse().forEach(item=>{
+     html+=`<div class="concern-card">
+       <h3>👤 ${item.name}</h3>
+       <p><b>Section:</b> ${item.section}</p>
+       <p><b>Concern:</b> ${item.concern}</p>
+       <small>📌 Status: ${item.status}</small>
+     </div>`;
+   });
+   document.getElementById("concernsList").innerHTML=html||"No concerns yet.";
+ }catch(e){
+   document.getElementById("concernsList").innerHTML="Failed to load concerns.";
+ }
 }
 
 function closeConcerns(){
-    document.getElementById("concernsModal").style.display = "none";
-}
-
-<div id="concernsModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeConcerns()">&times;</span>
-
-        <h2>📥 Student Concerns</h2>
-
-        <div id="concernsList">
-            Loading concerns...
-        </div>
-    </div>
-</div>
-
-<script>
-async function openConcerns(){
-
-    document.getElementById("concernsModal").style.display = "block";
-
-    document.getElementById("concernsList").innerHTML =
-    "Loading concerns...";
-
-    try{
-
-        const response = await fetch(
-        "https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec"
-        );
-
-        const data = await response.json();
-
-        let html = "";
-
-        data.reverse().forEach(item => {
-
-            html += `
-            <div class="concern-card">
-                <h3>👤 ${item.name}</h3>
-                <p><strong>Section:</strong> ${item.section}</p>
-                <p><strong>Concern:</strong> ${item.concern}</p>
-                <small>📌 Status: ${item.status}</small>
-            </div>
-            `;
-        });
-
-        document.getElementById("concernsList").innerHTML =
-        html || "<p>No concerns submitted yet.</p>";
-
-    }catch(error){
-
-        document.getElementById("concernsList").innerHTML =
-        "<p>Failed to load concerns.</p>";
-
-        console.error(error);
-    }
-}
-
-function closeConcerns(){
-    document.getElementById("concernsModal").style.display = "none";
+ document.getElementById("concernsModal").style.display="none";
 }
 </script>
-        
 </body>
 </html>
