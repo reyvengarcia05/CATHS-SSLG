@@ -746,22 +746,91 @@ window.googleLogin = async function () {
 };
 
 window.logoutUser = async function () {
+    try {
+        const button = document.getElementById("logoutButton");
 
-  await signOut(auth);
+        if (button) {
+            button.disabled = true;
+            button.innerHTML = "Logging out...";
+        }
 
-  localStorage.clear();
+        await signOut(auth);
 
-  location.reload();
+        // Remove saved user information
+        localStorage.removeItem("userName");
+        localStorage.removeItem("userPhoto");
+        localStorage.removeItem("userEmail");
 
+        // Hide profile menu
+        const menu = document.getElementById("logoutMenu");
+
+        if (menu) {
+            menu.style.display = "none";
+        }
+
+        // Return to logged-out state
+        location.reload();
+
+    } catch (error) {
+        console.error("Logout error:", error);
+
+        alert("Unable to log out. Please try again.");
+
+        const button = document.getElementById("logoutButton");
+
+        if (button) {
+            button.disabled = false;
+            button.innerHTML = "🚪 Log Out";
+        }
+    }
 };
+
+        <div id="logoutMenu" class="profile-menu">
+
+    <div class="profile-info">
+        <img id="profilePhoto" src="" alt="Profile Photo">
+
+        <div class="profile-details">
+            <strong id="profileName">User</strong>
+            <small id="profileEmail"></small>
+        </div>
+    </div>
+
+    <div class="profile-divider"></div>
+
+    <button type="button" class="logout-button" id="logoutButton">
+        🚪 Log Out
+    </button>
+
+</div>
 
 onAuthStateChanged(auth, (user) => {
 
-  if (user) {
+ if (user) {
 
-    localStorage.setItem("userName", user.displayName);
-    localStorage.setItem("userPhoto", user.photoURL);
-    localStorage.setItem("userEmail", user.email);
+    localStorage.setItem("userName", user.displayName || "User");
+    localStorage.setItem("userPhoto", user.photoURL || "");
+    localStorage.setItem("userEmail", user.email || "");
+
+    document.getElementById("loginModal").style.display = "none";
+
+    const profileName = document.getElementById("profileName");
+    const profileEmail = document.getElementById("profileEmail");
+    const profilePhoto = document.getElementById("profilePhoto");
+
+    if (profileName) {
+        profileName.textContent = user.displayName || "User";
+    }
+
+    if (profileEmail) {
+        profileEmail.textContent = user.email || "";
+    }
+
+    if (profilePhoto && user.photoURL) {
+        profilePhoto.src = user.photoURL;
+    }
+
+}
 
     document.getElementById("loginModal").style.display = "none";
 
@@ -817,9 +886,9 @@ onAuthStateChanged(auth, (user) => {
 
     <div class="profile-divider"></div>
 
-    <button onclick="logoutUser()" class="logout-button">
-        🚪 Log Out
-    </button>
+  <button type="button" class="logout-button" id="logoutButton">
+    🚪 Log Out
+</button>
 
 </div>
     
