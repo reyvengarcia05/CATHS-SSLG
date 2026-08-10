@@ -430,6 +430,369 @@ color:white;
     background: #003DA5;
 }
 
+
+/* =========================================================
+   MOBILE RESPONSIVE DESIGN
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    body {
+        padding-bottom: 82px;
+        overflow-x: hidden;
+    }
+
+    /* HEADER */
+    .header {
+        padding: 10px 12px;
+        min-height: 68px;
+        gap: 8px;
+    }
+
+    .header > div:first-child {
+        gap: 6px !important;
+        flex-shrink: 0;
+    }
+
+    .header .logo {
+        width: 42px;
+        height: 42px;
+    }
+
+    .title {
+        min-width: 0;
+        padding: 0 4px;
+    }
+
+    .title h1 {
+        font-size: 14px;
+        line-height: 1.2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .title p {
+        font-size: 8px;
+        line-height: 1.3;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .login-btn {
+        font-size: 10px;
+        padding: 7px 9px;
+        margin-left: 0;
+        max-width: 115px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* HERO */
+    .hero {
+        padding: 14px 12px 8px;
+    }
+
+    .hero-card {
+        border-radius: 20px;
+        padding: 20px 17px;
+    }
+
+    .hero-card h2 {
+        font-size: 23px;
+        margin-bottom: 8px;
+    }
+
+    .hero-card p {
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    /* SECTIONS */
+    .section {
+        padding: 14px 12px;
+    }
+
+    .section-title {
+        font-size: 16px;
+        margin-bottom: 11px;
+    }
+
+    /* QUICK ACTIONS + EVENT */
+    .quick-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        width: 100%;
+    }
+
+    .grid {
+        width: 100%;
+        flex: none;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .card {
+        min-height: 105px;
+        padding: 16px 12px;
+        border-radius: 17px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    .card:active {
+        transform: scale(.98);
+    }
+
+    .card h3 {
+        font-size: 12px;
+        line-height: 1.3;
+        margin-top: 7px;
+    }
+
+    .icon {
+        font-size: 26px;
+    }
+
+    .event-panel {
+        width: 100%;
+        flex-shrink: 0;
+        padding: 16px;
+        border-radius: 18px;
+    }
+
+    .event-panel h3 {
+        font-size: 15px;
+    }
+
+    .event-card {
+        margin-top: 10px;
+    }
+
+    .event-card h4 {
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
+    .event-card p {
+        font-size: 12px;
+    }
+
+    #countdown {
+        font-size: 20px;
+        margin-top: 10px;
+    }
+
+    /* ANNOUNCEMENTS */
+    .announcement {
+        padding: 13px;
+        border-radius: 15px;
+        margin-bottom: 9px;
+    }
+
+    .announcement h4 {
+        font-size: 13px;
+    }
+
+    .announcement p {
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+        height: 70px;
+        padding: 5px 3px calc(5px + env(safe-area-inset-bottom));
+        z-index: 9000;
+    }
+
+    .nav-item {
+        min-width: 52px;
+        font-size: 9px;
+        line-height: 1.1;
+        padding: 4px 3px;
+    }
+
+    .nav-item div {
+        font-size: 21px;
+        margin-bottom: 2px;
+        line-height: 1;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #profileNavPhoto img {
+        width: 25px !important;
+        height: 25px !important;
+    }
+
+    /* PROFILE MENU */
+    .profile-menu {
+        bottom: 78px;
+        right: 10px;
+        width: min(280px, calc(100vw - 20px));
+        border-radius: 18px;
+        padding: 14px;
+    }
+
+    .profile-info img {
+        width: 46px;
+        height: 46px;
+    }
+
+    .profile-details strong {
+        font-size: 14px;
+    }
+
+    .profile-details small {
+        font-size: 10px;
+    }
+
+    .logout-button {
+        padding: 12px;
+        font-size: 13px;
+    }
+
+    /* LOGIN MODAL */
+    .modal {
+        padding: 16px;
+    }
+
+    .modal-content {
+        width: 100%;
+        max-width: 360px;
+        margin: 18vh auto 0;
+        padding: 23px 18px;
+        border-radius: 21px;
+    }
+
+    .modal-content h2 {
+        font-size: 21px;
+    }
+
+    .modal-content p {
+        font-size: 12px;
+    }
+
+    .google-login,
+    .facebook-login,
+    #googleLoginBtn {
+        padding: 13px;
+        font-size: 13px;
+    }
+
+    .close {
+        font-size: 25px;
+    }
+
+    /* TOUCH FRIENDLY */
+    button,
+    .card,
+    .nav-item {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+}
+
+/* SMALL PHONES */
+@media (max-width: 380px) {
+
+    .header {
+        padding: 9px 8px;
+    }
+
+    .header .logo {
+        width: 37px;
+        height: 37px;
+    }
+
+    .title h1 {
+        font-size: 12px;
+    }
+
+    .title p {
+        font-size: 7px;
+    }
+
+    .login-btn {
+        font-size: 9px;
+        padding: 6px 7px;
+        max-width: 95px;
+    }
+
+    .hero-card {
+        padding: 17px 14px;
+    }
+
+    .hero-card h2 {
+        font-size: 20px;
+    }
+
+    .hero-card p {
+        font-size: 11px;
+    }
+
+    .section {
+        padding: 12px 9px;
+    }
+
+    .grid {
+        gap: 8px;
+    }
+
+    .card {
+        min-height: 95px;
+        padding: 13px 10px;
+    }
+
+    .icon {
+        font-size: 23px;
+    }
+
+    .card h3 {
+        font-size: 11px;
+    }
+
+    .nav-item {
+        font-size: 8px;
+        min-width: 48px;
+    }
+
+    .nav-item div {
+        font-size: 19px;
+    }
+}
+
+/* LANDSCAPE PHONES */
+@media (max-width: 768px) and (orientation: landscape) {
+
+    .header {
+        min-height: 58px;
+    }
+
+    .hero {
+        padding-top: 10px;
+    }
+
+    .hero-card {
+        padding: 15px;
+    }
+
+    .bottom-nav {
+        height: 62px;
+    }
+
+    .profile-menu {
+        bottom: 68px;
+    }
+}
+
 </style>
 </head>
 
