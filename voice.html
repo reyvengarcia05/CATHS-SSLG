@@ -492,6 +492,16 @@ or suggestions to help improve our school community.
 
 <form id="voiceForm">
 
+<label>Full Name</label>
+<input type="text" id="name" placeholder="Enter your name">
+
+<div class="checkbox">
+    <input type="checkbox" id="anonymous">
+    <label for="anonymous">Submit Anonymously</label>
+</div>
+
+...
+    
 <input type="text" id="name" placeholder="Enter your name" required>
 
 <div class="checkbox">
@@ -566,16 +576,14 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRju
 const anonymous = document.getElementById("anonymous");
 const nameInput = document.getElementById("name");
 
-anonymous.addEventListener("change", function(){
-
-    if(this.checked){
+anonymous.addEventListener("change", () => {
+    if (anonymous.checked) {
         nameInput.value = "Anonymous";
         nameInput.readOnly = true;
-    }else{
+    } else {
         nameInput.value = "";
         nameInput.readOnly = false;
     }
-
 });
 
 document.getElementById("voiceForm").addEventListener("submit", async function(e){
@@ -661,6 +669,8 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
     function closePopup(){
     document.getElementById("successPopup").style.display = "none";
 }
+
+    </script>
 
     <script>
 async function openConcerns(){
