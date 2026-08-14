@@ -843,12 +843,13 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
+  apiKey: "AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",
   authDomain: "caths-page.firebaseapp.com",
   projectId: "caths-page",
   storageBucket: "caths-page.firebasestorage.app",
   messagingSenderId: "945498022620",
-  appId: "1:945498022620:web:71aeb4cd2472e061aeca19"
+  appId: "1:945498022620:web:71aeb4cd2472e061aeca19",
+  measurementId: "G-CBG1YSK13G"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -864,35 +865,41 @@ window.logoutUser = async () => {
     await signOut(auth);
 };
 
-onAuthStateChanged(auth, (user)=>{
+onAuthStateChanged(auth, (user) => {
 
     const btn = document.getElementById("headerLoginBtn");
     const name = document.getElementById("name");
 
-    if(user){
+    if (user) {
+
+        closeLogin();
 
         name.value = user.displayName;
         name.readOnly = true;
 
         btn.innerHTML = `
-        <img src="${user.photoURL}"
-        style="width:28px;height:28px;border-radius:50%;vertical-align:middle;margin-right:6px;">
-        ${user.displayName}
+            <img src="${user.photoURL}"
+                 style="width:28px;height:28px;border-radius:50%;object-fit:cover;margin-right:8px;">
+            ${user.displayName} ▼
         `;
 
-        btn.onclick = logoutUser;
+        btn.onclick = () => {
+            if (confirm("Log out from your account?")) {
+                logoutUser();
+            }
+        };
 
-    }else{
+    } else {
 
         name.value = "";
         name.readOnly = false;
 
         btn.innerHTML = "👤 Login";
         btn.onclick = openLogin;
-
     }
 
 });
+        
 </script>
     
 </body>
