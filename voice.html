@@ -82,10 +82,23 @@ width:80px;
 height:80px;
 object-fit:contain;
 }
+    .logo-group{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.caths-logo{
+    width:80px;
+    height:80px;
+    object-fit:contain;
+}
 
 .header-center{
-flex:1;
-text-align:center;
+    flex:1;
+    text-align:center;
+    margin-left:0;
+    margin-right:0;
 }
 
 .header-center h1{
@@ -602,18 +615,7 @@ color:#FFD700;
     margin:0;
 }
 
-    .header-logos{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-.logo{
-    width:80px;
-    height:80px;
-    object-fit:contain;
-}
-    
+   
 </style>
 </head>
 
@@ -621,14 +623,13 @@ color:#FFD700;
 
 <div class="header">
 
-<div class="header">
-
-  <div class="header-logos">
+  <div class="logo-group">
     <img src="sslg-logo.png" class="logo">
-    <img src="caths-logo.png" class="logo">
+    <img src="caths-logo.png" class="caths-logo">
   </div>
 
   <div class="header-center">
+      
     <h1>CATHS-MAIN Student Voice</h1>
     <p>Official SSLG Communication Platform</p>
   </div>
