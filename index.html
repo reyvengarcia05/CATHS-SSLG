@@ -885,9 +885,9 @@ and connect with the school community.
 <h3>Achievements</h3>
 </a>
 
-<a href="voice.html" class="card">
-<div class="icon">🗣️</div>
-<h3>Student Voice</h3>
+<a href="#" class="card" onclick="openStudentVoice(event)">
+    <div class="icon">🗣️</div>
+    <h3>Student Voice</h3>
 </a>
 
     <a href="profile.html" class="card">
@@ -947,10 +947,10 @@ and connect with the school community.
         <span>News</span>
     </a>
 
-    <a href="voice.html" class="nav-item">
-        <div>🗣️</div>
-        <span>Student Voice</span>
-    </a>
+   <a href="#" class="nav-item" onclick="openStudentVoice(event)">
+    <div>🗣️</div>
+    <span>Student Voice</span>
+</a>
 
     <a href="polls.html" class="nav-item">
         <div>🗳️</div>
@@ -1113,24 +1113,41 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
+   window.openStudentVoice = function(event) {
+
+    event.preventDefault();
+
+    if (auth.currentUser) {
+        window.location.href = "voice.html";
+    } else {
+        openLogin();
+    }
+
+};
 
 
    //* GOOGLE DITO JUSKO PARA DI NAKAKALITO *//
 
 window.googleLogin = async function () {
-    try {
-        const result = await signInWithPopup(auth, provider);
 
-        // Isara agad ang login modal
+    try {
+
+        await signInWithPopup(auth, provider);
+
         closeLogin();
 
-        // Optional: isara rin kung sakaling naka-display pa
         document.getElementById("loginModal").style.display = "none";
 
+        // Punta agad sa Student Voice pagkatapos mag-login
+        window.location.href = "voice.html";
+
     } catch (error) {
+
         console.error("Login error:", error);
         alert("Login failed: " + error.message);
+
     }
+
 };
 
 // LOG OUT FUNCTION DITO HAHAHA BWISET
