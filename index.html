@@ -842,8 +842,6 @@ color:white;
 
 </div>
 
-</div>
-
 <!-- HERO -->
 
 <div class="hero">
@@ -1174,154 +1172,51 @@ window.logoutUser = async function () {
 
 onAuthStateChanged(auth, (user) => {
 
-   if (user) {
-
-    closeLogin(); // <-- idagdag ito
-
-    console.log("User logged in:", user.displayName);
-
-    const headerBtn =
-        document.getElementById("headerLoginBtn");
-
-    const profileName =
-        document.getElementById("profileName");
-
-    const profileEmail =
-        document.getElementById("profileEmail");
-
-    const profilePhoto =
-        document.getElementById("profilePhoto");
-
-    const profileNavPhoto =
-        document.getElementById("profileNavPhoto");
-
+    const headerBtn = document.getElementById("headerLoginBtn");
+    const profileName = document.getElementById("profileName");
+    const profileEmail = document.getElementById("profileEmail");
+    const profilePhoto = document.getElementById("profilePhoto");
+    const profileNavPhoto = document.getElementById("profileNavPhoto");
 
     if (user) {
 
-        console.log("User logged in:", user.displayName);
+        // Auto close login modal
+        closeLogin();
 
+        // Save user
+        localStorage.setItem("userName", user.displayName || "User");
+        localStorage.setItem("userPhoto", user.photoURL || "");
+        localStorage.setItem("userEmail", user.email || "");
 
-        // SAVE USER INFORMATION
+        // Profile menu
+        profileName.textContent = user.displayName || "User";
+        profileEmail.textContent = user.email || "";
 
-        localStorage.setItem(
-            "userName",
-            user.displayName || "User"
-        );
-
-        localStorage.setItem(
-            "userPhoto",
-            user.photoURL || ""
-        );
-
-        localStorage.setItem(
-            "userEmail",
-            user.email || ""
-        );
-
-
-        // PROFILE MENU
-
-        if (profileName) {
-            profileName.textContent =
-                user.displayName || "User";
-        }
-
-        if (profileEmail) {
-            profileEmail.textContent =
-                user.email || "";
-        }
-
-        if (profilePhoto && user.photoURL) {
-            profilePhoto.src =
-                user.photoURL;
-        }
-
-
-        // PROFILE PHOTO IN NAVIGATION
-
-        if (profileNavPhoto && user.photoURL) {
+        if (user.photoURL) {
+            profilePhoto.src = user.photoURL;
 
             profileNavPhoto.innerHTML = `
-                <img
-                    src="${user.photoURL}"
-                    style="
-                        width:32px;
-                        height:32px;
-                        border-radius:50%;
-                        object-fit:cover;
-                    "
-                >
+                <img src="${user.photoURL}"
+                     style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
             `;
-
         }
 
+        // Header button
+        headerBtn.innerHTML = `
+            <img src="${user.photoURL || ''}"
+                 style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
+            <span>${user.displayName || "User"}</span> ▼
+        `;
 
-        // CHANGE HEADER LOGIN BUTTON
-
-        if (headerBtn) {
-
-            headerBtn.innerHTML = `
-                <img
-                    src="${user.photoURL || ''}"
-                    style="
-                        width:32px;
-                        height:32px;
-                        border-radius:50%;
-                        object-fit:cover;
-                        margin-right:8px;
-                        vertical-align:middle;
-                    "
-                >
-                ${user.displayName || "User"} ▼
-            `;
-
-
-            headerBtn.onclick = function () {
-
-                const menu =
-                    document.getElementById("logoutMenu");
-
-                if (menu.style.display === "block") {
-
-                    menu.style.display = "none";
-
-                } else {
-
-                    menu.style.display = "block";
-
-                }
-
-            };
-
-        }
-
+        headerBtn.onclick = () => toggleProfileMenu();
 
     } else {
 
-        console.log("No user logged in");
+        headerBtn.innerHTML = "👤 Login";
+        headerBtn.onclick = () => openLogin();
 
-
-        // RESET HEADER
-
-        if (headerBtn) {
-
-            headerBtn.innerHTML = "👤 Login";
-
-            headerBtn.onclick = function () {
-                openLogin();
-            };
-
-        }
-
-
-        // RESET PROFILE
-
-        if (profileNavPhoto) {
-            profileNavPhoto.innerHTML = "👤";
-        }
-
+        profileNavPhoto.innerHTML = "👤";
     }
-
 });
 </script>
 
