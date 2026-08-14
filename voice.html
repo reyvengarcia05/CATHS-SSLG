@@ -980,35 +980,43 @@ window.logoutUser = async () => {
     location.reload();
 };
 
-        let firebaseUser = null;
+let firebaseUser = null;
 
-      onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, (user) => {
 
     firebaseUser = user;
 
     const btn = document.getElementById("headerLoginBtn");
+    const name = document.getElementById("name");
 
     if(user){
 
         closeLogin();
 
-        name.value = user.displayName;
+        name.value = user.displayName || "";
         name.readOnly = true;
 
-        document.getElementById("profileName").textContent = user.displayName;
-        document.getElementById("profileEmail").textContent = user.email;
-        document.getElementById("profilePhoto").src = user.photoURL;
+        document.getElementById("profileName").textContent = user.displayName || "User";
+        document.getElementById("profileEmail").textContent = user.email || "";
+        document.getElementById("profilePhoto").src = user.photoURL || "";
 
         btn.innerHTML = `
-            <img src="${user.photoURL}"
+            <img src="${user.photoURL || ''}"
                  style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
-            <span>${user.displayName}</span> ▼
+            <span>${user.displayName || "User"}</span> ▼
         `;
 
         btn.onclick = toggleProfileMenu;
 
     }else{
-        window.location.href = "index.html";
+
+        name.value = "";
+        name.readOnly = false;
+
+        document.getElementById("logoutMenu").style.display = "none";
+
+        btn.innerHTML = "👤 Login";
+        btn.onclick = openLogin;
 
     }
 
