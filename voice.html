@@ -362,13 +362,13 @@ color:#FFD700;
 .modal{
     display:none;
     position:fixed;
-    z-index:9999;
-    left:0;
-    top:0;
-    width:100%;
-    height:100%;
+    inset:0;
     background:rgba(0,0,0,.6);
-    backdrop-filter:blur(5px);
+    backdrop-filter:blur(8px);
+    z-index:10000;
+
+    justify-content:center;
+    align-items:center;
 }
 
 .modal-content{
@@ -453,8 +453,15 @@ color:#FFD700;
     font-weight:600;
 }
 
-    .popup-content{
+ .popup-content{
     position:relative;
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    width:90%;
+    max-width:350px;
+    animation:pop .3s ease;
+    margin:0;
 }
 
 .close-btn{
@@ -506,15 +513,22 @@ color:#FFD700;
     color:red;
 }
 
-    .login-btn{
+   .login-btn{
     background:rgba(255,255,255,.15);
     backdrop-filter:blur(10px);
     color:white;
     border:none;
-    padding:10px 16px;
+    padding:8px 15px;
     border-radius:12px;
     font-weight:600;
     cursor:pointer;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    width:auto;
+    white-space:nowrap;
 }
 
 .login-btn:hover{
@@ -868,7 +882,7 @@ async function openConcerns(){
 
     <script>
 function openLogin(){
-    document.getElementById("loginModal").style.display = "block";
+    document.getElementById("loginModal").style.display = "flex";
 }
 
 function closeLogin(){
@@ -929,48 +943,55 @@ window.googleLogin = async () => {
 };
 
 window.logoutUser = async () => {
+
     await signOut(auth);
+
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userPhoto");
+    localStorage.removeItem("userEmail");
+
+    // Isara agad ang profile menu
+    document.getElementById("logoutMenu").style.display = "none";
+
+    // Ibalik ang login button
+    document.getElementById("headerLoginBtn").innerHTML = "👤 Login";
+    document.getElementById("headerLoginBtn").onclick = openLogin;
+
+    location.reload();
 };
 
-onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, (user) => {
 
-    const headerBtn = document.getElementById("headerLoginBtn");
-    const nameInput = document.getElementById("name");
-    const profileName = document.getElementById("profileName");
-    const profileEmail = document.getElementById("profileEmail");
-    const profilePhoto = document.getElementById("profilePhoto");
+    const btn = document.getElementById("headerLoginBtn");
+    const name = document.getElementById("name");
 
-    if (user) {
+    if(user){
 
         closeLogin();
 
-        localStorage.setItem("userName", user.displayName || "User");
-        localStorage.setItem("userPhoto", user.photoURL || "");
-        localStorage.setItem("userEmail", user.email || "");
+        name.value = user.displayName;
+        name.readOnly = true;
 
-        // Auto fill name
-        nameInput.value = user.displayName || "";
-        nameInput.readOnly = true;
+        document.getElementById("profileName").textContent = user.displayName;
+        document.getElementById("profileEmail").textContent = user.email;
+        document.getElementById("profilePhoto").src = user.photoURL;
 
-        profileName.textContent = user.displayName;
-        profileEmail.textContent = user.email;
-        profilePhoto.src = user.photoURL;
-
-        headerBtn.innerHTML = `
-            <img src="${user.photoURL}"
-            style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
+        btn.innerHTML = `
+            <img src="${user.photoURL}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
             <span>${user.displayName}</span> ▼
         `;
 
-        headerBtn.onclick = () => toggleProfileMenu();
+        btn.onclick = toggleProfileMenu;
 
-    } else {
+    }else{
 
-        nameInput.value = "";
-        nameInput.readOnly = false;
+        name.value = "";
+        name.readOnly = false;
 
-        headerBtn.innerHTML = "👤 Login";
-        headerBtn.onclick = () => openLogin();
+        document.getElementById("logoutMenu").style.display = "none";
+
+        btn.innerHTML = "👤 Login";
+        btn.onclick = openLogin;
 
     }
 
@@ -996,17 +1017,6 @@ onAuthStateChanged(auth, (user) => {
   </button>
 
 </div>
-
-    <div id="logoutMenu" class="profile-menu">
-
-  <div class="profile-info">
-    <img id="profilePhoto" src="" alt="Profile">
-
-    <div class="profile-details">
-      <strong id="profileName">User</strong>
-      <small id="profileEmail"></small>
-    </div>
-  </div>
 
   <div class="profile-divider"></div>
 
