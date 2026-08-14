@@ -711,26 +711,56 @@ const anonymous = document.getElementById("anonymous");
 const nameInput = document.getElementById("name");
 
 anonymous.addEventListener("change", () => {
+
     if (anonymous.checked) {
+
+        // Anonymous mode
         nameInput.value = "Anonymous";
         nameInput.readOnly = true;
+
     } else {
-        nameInput.value = "";
+
         nameInput.readOnly = false;
+
+        if (firebaseUser) {
+            nameInput.value = firebaseUser.displayName || "";
+        } else {
+            nameInput.value = "";
+        }
+
     }
+
 });
 
 document.getElementById("voiceForm").addEventListener("submit", async function(e){
 
     e.preventDefault();
 
-    const name = anonymous.checked
-        ? "Anonymous"
-        : firebaseUser.displayName;
-
     const section = document.getElementById("section").value.trim();
     const concern = document.getElementById("concern").value.trim();
     const category = document.getElementById("category").value;
+
+
+    let name = "";
+    let email = "";
+
+    const name = anonymous.checked
+    ? "Anonymous"
+    : nameInput.value.trim();
+
+        name = firebaseUser.displayName || "User";
+        email = firebaseUser.email || "";
+
+    } else {
+
+        // Guest / logged out user
+        name = document.getElementById("name").value.trim();
+
+        if (!name) {
+            alert("Please enter your name or choose Submit Anonymously.");
+            return;
+        }
+    }
 
     if(!section || !concern || !category){
         alert("Please complete all fields.");
@@ -741,27 +771,34 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
         name: name,
         section: section,
         concern: "[" + category + "] " + concern,
-        email: firebaseUser.email
+        email: email
     };
 
     try{
 
-        await fetch(SCRIPT_URL,{
-            method:"POST",
-            body:JSON.stringify(data)
+        await fetch(SCRIPT_URL, {
+            method: "POST",
+            body: JSON.stringify(data)
         });
 
         document.getElementById("successPopup").style.display = "flex";
 
         const sound = document.getElementById("successSound");
+
         if(sound){
-            sound.play().catch(()=>{});
+            sound.play().catch(() => {});
         }
 
         document.getElementById("voiceForm").reset();
 
+        // Restore anonymous/name state
+        nameInput.readOnly = false;
+
     }catch(error){
+
+        console.error(error);
         alert("Failed to submit concern.");
+
     }
 
 });
@@ -984,41 +1021,45 @@ let firebaseUser = null;
 
 onAuthStateChanged(auth, (user) => {
 
+if(user){
+
     firebaseUser = user;
 
-    const btn = document.getElementById("headerLoginBtn");
-    const name = document.getElementById("name");
+    closeLogin();
 
-    if(user){
+    name.value = user.displayName || "";
+    name.readOnly = true;
 
-        closeLogin();
+    document.getElementById("profileName").textContent =
+        user.displayName || "User";
 
-        name.value = user.displayName || "";
-        name.readOnly = true;
+    document.getElementById("profileEmail").textContent =
+        user.email || "";
 
-        document.getElementById("profileName").textContent = user.displayName || "User";
-        document.getElementById("profileEmail").textContent = user.email || "";
-        document.getElementById("profilePhoto").src = user.photoURL || "";
+    document.getElementById("profilePhoto").src =
+        user.photoURL || "";
 
-        btn.innerHTML = `
-            <img src="${user.photoURL || ''}"
-                 style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
-            <span>${user.displayName || "User"}</span> ▼
-        `;
+    btn.innerHTML = `
+        <img src="${user.photoURL || ''}"
+             style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
+        <span>${user.displayName || "User"}</span> ▼
+    `;
 
-        btn.onclick = toggleProfileMenu;
+    btn.onclick = toggleProfileMenu;
 
-    }else{
+}else{
 
-        name.value = "";
-        name.readOnly = false;
+    firebaseUser = null;
 
-        document.getElementById("logoutMenu").style.display = "none";
+    name.value = "";
+    name.readOnly = false;
 
-        btn.innerHTML = "👤 Login";
-        btn.onclick = openLogin;
+    document.getElementById("logoutMenu").style.display = "none";
 
-    }
+    btn.innerHTML = "👤 Login";
+    btn.onclick = openLogin;
+
+}
 
 });
         
