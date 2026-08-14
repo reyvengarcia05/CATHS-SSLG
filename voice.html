@@ -724,15 +724,21 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
 
     e.preventDefault();
 
+    if (!firebaseUser) {
+        alert("Please log in first before submitting a concern.");
+        openLogin();
+        return;
+    }
+
     const name = anonymous.checked
         ? "Anonymous"
-        : document.getElementById("name").value.trim();
+        : firebaseUser.displayName;
 
     const section = document.getElementById("section").value.trim();
     const concern = document.getElementById("concern").value.trim();
     const category = document.getElementById("category").value;
 
-    if(!name || !section || !concern || !category){
+    if(!section || !concern || !category){
         alert("Please complete all fields.");
         return;
     }
@@ -740,7 +746,8 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
     const data = {
         name: name,
         section: section,
-        concern: "[" + category + "] " + concern
+        concern: "[" + category + "] " + concern,
+        email: firebaseUser.email
     };
 
     try{
@@ -758,7 +765,6 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
         }
 
         document.getElementById("voiceForm").reset();
-        nameInput.readOnly = false;
 
     }catch(error){
         alert("Failed to submit concern.");
@@ -979,6 +985,8 @@ window.logoutUser = async () => {
 
     location.reload();
 };
+
+        let firebaseUser = null;
 
         onAuthStateChanged(auth, (user) => {
 
