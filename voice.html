@@ -520,6 +520,57 @@ color:#FFD700;
 .login-btn:hover{
     background:rgba(255,255,255,.25);
 }
+
+/* PROFILE DROPDOWN */
+.profile-menu{
+    display:none;
+    position:fixed;
+    bottom:90px;
+    right:15px;
+    width:260px;
+    background:rgba(255,255,255,.95);
+    color:#00296B;
+    border-radius:18px;
+    padding:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,.3);
+    z-index:9999;
+    backdrop-filter:blur(15px);
+}
+
+.profile-info{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.profile-info img{
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+.profile-details{
+    display:flex;
+    flex-direction:column;
+}
+
+.profile-divider{
+    height:1px;
+    background:#ddd;
+    margin:12px 0;
+}
+
+.logout-button{
+    width:100%;
+    padding:11px;
+    border:none;
+    border-radius:10px;
+    background:#00296B;
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+}
     
 </style>
 </head>
@@ -832,6 +883,20 @@ window.onclick = function(e){
 }
 </script>
 
+<script>
+function toggleProfileMenu(){
+
+    const menu = document.getElementById("logoutMenu");
+
+    if(menu.style.display === "block"){
+        menu.style.display = "none";
+    }else{
+        menu.style.display = "block";
+    }
+
+}
+</script>
+    
     <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import {
@@ -843,13 +908,13 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",
-  authDomain: "caths-page.firebaseapp.com",
-  projectId: "caths-page",
-  storageBucket: "caths-page.firebasestorage.app",
-  messagingSenderId: "945498022620",
-  appId: "1:945498022620:web:71aeb4cd2472e061aeca19",
-  measurementId: "G-CBG1YSK13G"
+    apiKey: "AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",
+    authDomain: "caths-page.firebaseapp.com",
+    projectId: "caths-page",
+    storageBucket: "caths-page.firebasestorage.app",
+    messagingSenderId: "945498022620",
+    appId: "1:945498022620:web:71aeb4cd2472e061aeca19",
+    measurementId: "G-CBG1YSK13G"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -859,6 +924,8 @@ const provider = new GoogleAuthProvider();
 window.googleLogin = async () => {
     await signInWithPopup(auth, provider);
     closeLogin();
+
+    
 };
 
 window.logoutUser = async () => {
@@ -867,40 +934,87 @@ window.logoutUser = async () => {
 
 onAuthStateChanged(auth, (user) => {
 
-    const btn = document.getElementById("headerLoginBtn");
-    const name = document.getElementById("name");
+    const headerBtn = document.getElementById("headerLoginBtn");
+    const nameInput = document.getElementById("name");
+    const profileName = document.getElementById("profileName");
+    const profileEmail = document.getElementById("profileEmail");
+    const profilePhoto = document.getElementById("profilePhoto");
 
     if (user) {
 
         closeLogin();
 
-        name.value = user.displayName;
-        name.readOnly = true;
+        localStorage.setItem("userName", user.displayName || "User");
+        localStorage.setItem("userPhoto", user.photoURL || "");
+        localStorage.setItem("userEmail", user.email || "");
 
-        btn.innerHTML = `
+        // Auto fill name
+        nameInput.value = user.displayName || "";
+        nameInput.readOnly = true;
+
+        profileName.textContent = user.displayName;
+        profileEmail.textContent = user.email;
+        profilePhoto.src = user.photoURL;
+
+        headerBtn.innerHTML = `
             <img src="${user.photoURL}"
-                 style="width:28px;height:28px;border-radius:50%;object-fit:cover;margin-right:8px;">
-            ${user.displayName} ▼
+            style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
+            <span>${user.displayName}</span> ▼
         `;
 
-        btn.onclick = () => {
-            if (confirm("Log out from your account?")) {
-                logoutUser();
-            }
-        };
+        headerBtn.onclick = () => toggleProfileMenu();
 
     } else {
 
-        name.value = "";
-        name.readOnly = false;
+        nameInput.value = "";
+        nameInput.readOnly = false;
 
-        btn.innerHTML = "👤 Login";
-        btn.onclick = openLogin;
+        headerBtn.innerHTML = "👤 Login";
+        headerBtn.onclick = () => openLogin();
+
     }
 
 });
         
 </script>
+
+    <div id="logoutMenu" class="profile-menu">
+
+  <div class="profile-info">
+    <img id="profilePhoto" src="" alt="Profile Photo">
+
+    <div class="profile-details">
+      <strong id="profileName">User</strong>
+      <small id="profileEmail"></small>
+    </div>
+  </div>
+
+  <div class="profile-divider"></div>
+
+  <button class="logout-button" onclick="logoutUser()">
+    🚪 Log Out
+  </button>
+
+</div>
+
+    <div id="logoutMenu" class="profile-menu">
+
+  <div class="profile-info">
+    <img id="profilePhoto" src="" alt="Profile">
+
+    <div class="profile-details">
+      <strong id="profileName">User</strong>
+      <small id="profileEmail"></small>
+    </div>
+  </div>
+
+  <div class="profile-divider"></div>
+
+  <button class="logout-button" onclick="logoutUser()">
+    🚪 Log Out
+  </button>
+
+</div>
     
 </body>
 </html>
