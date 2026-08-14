@@ -601,6 +601,18 @@ color:#FFD700;
     cursor:pointer;
     margin:0;
 }
+
+    .header-logos{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo{
+    width:80px;
+    height:80px;
+    object-fit:contain;
+}
     
 </style>
 </head>
@@ -609,7 +621,12 @@ color:#FFD700;
 
 <div class="header">
 
-  <img src="sslg-logo.png" class="logo">
+<div class="header">
+
+  <div class="header-logos">
+    <img src="sslg-logo.png" class="logo">
+    <img src="caths-logo.png" class="logo">
+  </div>
 
   <div class="header-center">
     <h1>CATHS-MAIN Student Voice</h1>
@@ -773,34 +790,42 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
         email: email
     };
 
-    try {
+try {
 
-        await fetch(SCRIPT_URL, {
-            method: "POST",
-            body: JSON.stringify(data)
-        });
+    document.getElementById("submittingPopup").style.display = "flex";
 
-        document.getElementById("successPopup").style.display = "flex";
+    await fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify(data)
+    });
 
-        const sound = document.getElementById("successSound");
-        if (sound) {
-            sound.play().catch(() => {});
-        }
 
-        document.getElementById("voiceForm").reset();
+    document.getElementById("submittingPopup").style.display = "none";
 
-        // Restore logged-in user's name
-        if (firebaseUser) {
-            nameInput.value = firebaseUser.displayName || "";
-            nameInput.readOnly = true;
-        }
+ 
+    document.getElementById("successPopup").style.display = "flex";
 
-    } catch (error) {
+    const sound = document.getElementById("successSound");
 
-        console.error(error);
-        alert("Failed to submit concern.");
-
+    if (sound) {
+        sound.play().catch(() => {});
     }
+
+    document.getElementById("voiceForm").reset();
+
+    if (firebaseUser) {
+        nameInput.value = firebaseUser.displayName || "";
+        nameInput.readOnly = true;
+    }
+
+} catch (error) {
+
+    document.getElementById("submittingPopup").style.display = "none";
+
+    console.error(error);
+    alert("Failed to submit concern.");
+
+}
 
 });
 
@@ -816,6 +841,16 @@ function closePopup() {
 <audio id="successSound">
     <source src="success.mp3" type="audio/mpeg">
 </audio>
+
+    <div id="submittingPopup" class="popup">
+    <div class="popup-content">
+        <div class="checkmark">⏳</div>
+        <h2>Submitting...</h2>
+        <p style="color:white;">
+            Please wait while we submit your concern.
+        </p>
+    </div>
+</div>
 
 <div id="successPopup" class="popup">
     <div class="popup-content">
