@@ -703,10 +703,10 @@ required></textarea>
 </div>
 
 <script>
-
-    
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec";
-    
+
+let firebaseUser = null;
+
 const anonymous = document.getElementById("anonymous");
 const nameInput = document.getElementById("name");
 
@@ -714,7 +714,6 @@ anonymous.addEventListener("change", () => {
 
     if (anonymous.checked) {
 
-        // Anonymous mode
         nameInput.value = "Anonymous";
         nameInput.readOnly = true;
 
@@ -732,7 +731,8 @@ anonymous.addEventListener("change", () => {
 
 });
 
-document.getElementById("voiceForm").addEventListener("submit", async function(e){
+
+document.getElementById("voiceForm").addEventListener("submit", async function(e) {
 
     e.preventDefault();
 
@@ -740,29 +740,42 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
     const concern = document.getElementById("concern").value.trim();
     const category = document.getElementById("category").value;
 
-
     let name = "";
     let email = "";
 
-    const name = anonymous.checked
-    ? "Anonymous"
-    : nameInput.value.trim();
+    // ANONYMOUS
+    if (anonymous.checked) {
 
-        name = firebaseUser.displayName || "User";
+        name = "Anonymous";
+
+    }
+
+    // LOGGED IN
+    else if (firebaseUser) {
+
+        name = nameInput.value.trim();
         email = firebaseUser.email || "";
 
-    } else {
+        if (!name) {
+            alert("Please enter your name.");
+            return;
+        }
 
-        // Guest / logged out user
-        name = document.getElementById("name").value.trim();
+    }
+
+    // GUEST / LOGGED OUT
+    else {
+
+        name = nameInput.value.trim();
 
         if (!name) {
             alert("Please enter your name or choose Submit Anonymously.");
             return;
         }
+
     }
 
-    if(!section || !concern || !category){
+    if (!section || !concern || !category) {
         alert("Please complete all fields.");
         return;
     }
@@ -774,7 +787,7 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
         email: email
     };
 
-    try{
+    try {
 
         await fetch(SCRIPT_URL, {
             method: "POST",
@@ -785,16 +798,22 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
 
         const sound = document.getElementById("successSound");
 
-        if(sound){
+        if (sound) {
             sound.play().catch(() => {});
         }
 
         document.getElementById("voiceForm").reset();
 
-        // Restore anonymous/name state
-        nameInput.readOnly = false;
+        // Restore name after reset
+        if (firebaseUser) {
+            nameInput.value = firebaseUser.displayName || "";
+            nameInput.readOnly = true;
+        } else {
+            nameInput.value = "";
+            nameInput.readOnly = false;
+        }
 
-    }catch(error){
+    } catch (error) {
 
         console.error(error);
         alert("Failed to submit concern.");
@@ -803,8 +822,13 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
 
 });
 
-    function closeConcerns(){
+
+function closeConcerns() {
     document.getElementById("concernsModal").style.display = "none";
+}
+
+function closePopup() {
+    document.getElementById("successPopup").style.display = "none";
 }
 </script>
 
@@ -968,14 +992,14 @@ function toggleProfileMenu(){
 }
 </script>
     
-    <script type="module">
+   <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signOut,
-  onAuthStateChanged
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    signOut,
+    onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 const firebaseConfig = {
@@ -993,76 +1017,83 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 window.googleLogin = async () => {
-    await signInWithPopup(auth, provider);
-    closeLogin();
-
-    
+    try {
+        await signInWithPopup(auth, provider);
+        closeLogin();
+    } catch (error) {
+        console.error(error);
+        alert("Login failed.");
+    }
 };
 
 window.logoutUser = async () => {
 
-    await signOut(auth);
+    try {
 
-    localStorage.removeItem("userName");
-    localStorage.removeItem("userPhoto");
-    localStorage.removeItem("userEmail");
+        await signOut(auth);
 
-    // Isara agad ang profile menu
-    document.getElementById("logoutMenu").style.display = "none";
+        localStorage.removeItem("userName");
+        localStorage.removeItem("userPhoto");
+        localStorage.removeItem("userEmail");
 
-    // Ibalik ang login button
-    document.getElementById("headerLoginBtn").innerHTML = "👤 Login";
-    document.getElementById("headerLoginBtn").onclick = openLogin;
+        document.getElementById("logoutMenu").style.display = "none";
 
-    location.reload();
+        location.reload();
+
+    } catch (error) {
+        console.error(error);
+        alert("Logout failed.");
+    }
 };
 
-let firebaseUser = null;
 
 onAuthStateChanged(auth, (user) => {
 
-if(user){
+    const btn = document.getElementById("headerLoginBtn");
+    const nameInput = document.getElementById("name");
 
-    firebaseUser = user;
+    if (user) {
 
-    closeLogin();
+        firebaseUser = user;
 
-    name.value = user.displayName || "";
-    name.readOnly = true;
+        closeLogin();
 
-    document.getElementById("profileName").textContent =
-        user.displayName || "User";
+        // Automatic Google name
+        nameInput.value = user.displayName || "";
+        nameInput.readOnly = true;
 
-    document.getElementById("profileEmail").textContent =
-        user.email || "";
+        document.getElementById("profileName").textContent =
+            user.displayName || "User";
 
-    document.getElementById("profilePhoto").src =
-        user.photoURL || "";
+        document.getElementById("profileEmail").textContent =
+            user.email || "";
 
-    btn.innerHTML = `
-        <img src="${user.photoURL || ''}"
-             style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
-        <span>${user.displayName || "User"}</span> ▼
-    `;
+        document.getElementById("profilePhoto").src =
+            user.photoURL || "";
 
-    btn.onclick = toggleProfileMenu;
+        btn.innerHTML = `
+            <img src="${user.photoURL || ''}"
+                 style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
+            <span>${user.displayName || "User"}</span> ▼
+        `;
 
-}else{
+        btn.onclick = toggleProfileMenu;
 
-    firebaseUser = null;
+    } else {
 
-    name.value = "";
-    name.readOnly = false;
+        firebaseUser = null;
 
-    document.getElementById("logoutMenu").style.display = "none";
+        nameInput.value = "";
+        nameInput.readOnly = false;
 
-    btn.innerHTML = "👤 Login";
-    btn.onclick = openLogin;
+        document.getElementById("logoutMenu").style.display = "none";
 
-}
+        btn.innerHTML = "👤 Login";
+        btn.onclick = openLogin;
+
+    }
 
 });
-        
 </script>
 
     <div id="logoutMenu" class="profile-menu">
