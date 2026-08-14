@@ -43,9 +43,35 @@ padding-bottom:90px;
 .header{
     padding:15px 20px;
     display:grid;
-    grid-template-columns:180px 1fr 180px;
+    grid-template-columns:220px 1fr 220px;
     align-items:center;
     gap:15px;
+}
+
+.header-left,
+.header-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.header-right{
+    justify-content:flex-end;
+}
+
+.logo{
+    width:58px;
+    height:58px;
+    object-fit:contain;
+}
+
+.login-btn{
+    width:auto;
+    margin:0;
+    padding:10px 16px;
+    display:flex;
+    align-items:center;
+    gap:8px;
 }
     
 .logo{
@@ -798,22 +824,23 @@ color:white;
 
 <div class="header">
 
-<div style="display:flex;align-items:center;gap:10px;">
+    <div class="header-left">
+        <img src="sslg-logo.png" class="logo">
+        <img src="caths-logo.png" class="logo">
+    </div>
 
-    <img src="sslg-logo.png" class="logo">
+    <div class="title">
+        <h1>CATHS-MAIN Student Voice</h1>
+        <p>Official SSLG Communication Platform</p>
+    </div>
 
-   <button id="headerLoginBtn" class="login-btn" onclick="openLogin()">
-    👤 Login
-</button>
+    <div class="header-right">
+        <button id="headerLoginBtn" class="login-btn" onclick="openLogin()">
+            👤 Login
+        </button>
+    </div>
 
 </div>
-
-<div class="title">
-    <h1>CATHS-MAIN Student Voice</h1>
-    <p>Official SSLG Communication Platform</p>
-</div>
-
-<img src="caths-logo.png" class="logo">
 
 </div>
 
