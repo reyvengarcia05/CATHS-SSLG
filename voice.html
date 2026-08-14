@@ -719,12 +719,12 @@ anonymous.addEventListener("change", () => {
 
     } else {
 
-        nameInput.readOnly = false;
-
         if (firebaseUser) {
             nameInput.value = firebaseUser.displayName || "";
+            nameInput.readOnly = true;
         } else {
             nameInput.value = "";
+            nameInput.readOnly = false;
         }
 
     }
@@ -732,9 +732,15 @@ anonymous.addEventListener("change", () => {
 });
 
 
-document.getElementById("voiceForm").addEventListener("submit", async function(e) {
+document.getElementById("voiceForm").addEventListener("submit", async function(e){
 
     e.preventDefault();
+
+    // REQUIRE LOGIN
+    if (!firebaseUser) {
+        openLogin();
+        return;
+    }
 
     const section = document.getElementById("section").value.trim();
     const concern = document.getElementById("concern").value.trim();
@@ -743,16 +749,9 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
     let name = "";
     let email = "";
 
-    // ANONYMOUS
     if (anonymous.checked) {
-
         name = "Anonymous";
-
-    }
-
-    // LOGGED IN
-    else if (firebaseUser) {
-
+    } else {
         name = nameInput.value.trim();
         email = firebaseUser.email || "";
 
@@ -760,19 +759,6 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
             alert("Please enter your name.");
             return;
         }
-
-    }
-
-    // GUEST / LOGGED OUT
-    else {
-
-        name = nameInput.value.trim();
-
-        if (!name) {
-            alert("Please enter your name or choose Submit Anonymously.");
-            return;
-        }
-
     }
 
     if (!section || !concern || !category) {
@@ -797,20 +783,16 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
         document.getElementById("successPopup").style.display = "flex";
 
         const sound = document.getElementById("successSound");
-
         if (sound) {
             sound.play().catch(() => {});
         }
 
         document.getElementById("voiceForm").reset();
 
-        // Restore name after reset
+        // Restore logged-in user's name
         if (firebaseUser) {
             nameInput.value = firebaseUser.displayName || "";
             nameInput.readOnly = true;
-        } else {
-            nameInput.value = "";
-            nameInput.readOnly = false;
         }
 
     } catch (error) {
@@ -821,7 +803,6 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
     }
 
 });
-
 
 function closeConcerns() {
     document.getElementById("concernsModal").style.display = "none";
@@ -840,9 +821,9 @@ function closePopup() {
     <div class="popup-content">
         <div class="checkmark">✅</div>
         <h2>Thank You!</h2>
-        <p style="color:#333">
-            Your concern has been submitted successfully.
-        </p>
+       <p style="color:white;">
+    Your concern has been submitted successfully.
+</p>
         <button onclick="closePopup()">OK</button>
     </div>
 </div>
