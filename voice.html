@@ -486,19 +486,30 @@ color:#FFD700;
 
 #loginModal .close-btn{
     position:absolute;
-    top:18px;
-    right:22px;
-    background:none;
+    top:14px;
+    right:16px;
+    background:transparent;
     border:none;
-    width:auto;
-    height:auto;
     padding:0;
-    font-size:42px;
-    font-weight:300;
-    color:white;
+    margin:0;
+    width:28px;
+    height:28px;
+
+    font-size:20px;
+    line-height:1;
+    font-weight:500;
+    color:#FFD93D;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
     cursor:pointer;
-    z-index:9999;
-    transition:.2s;
+    transition:.2s ease;
+}
+
+#loginModal .close-btn:hover{
+    color:#FFE66D;
+    transform:scale(1.08);
 }
 
 #loginModal .close-btn:hover{
