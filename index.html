@@ -1117,30 +1117,25 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 
-// =========================
-// GOOGLE LOGIN
-// =========================
+   //* GOOGLE DITO JUSKO PARA DI NAKAKALITO *//
 
 window.googleLogin = async function () {
-
     try {
+        const result = await signInWithPopup(auth, provider);
 
-        await signInWithPopup(auth, provider);
+        // Isara agad ang login modal
+        closeLogin();
+
+        // Optional: isara rin kung sakaling naka-display pa
+        document.getElementById("loginModal").style.display = "none";
 
     } catch (error) {
-
         console.error("Login error:", error);
-
         alert("Login failed: " + error.message);
-
     }
-
 };
 
-
-// =========================
-// LOGOUT
-// =========================
+// LOG OUT FUNCTION DITO HAHAHA BWISET
 
 window.logoutUser = async function () {
 
@@ -1178,6 +1173,12 @@ window.logoutUser = async function () {
 // =========================
 
 onAuthStateChanged(auth, (user) => {
+
+   if (user) {
+
+    closeLogin(); // <-- idagdag ito
+
+    console.log("User logged in:", user.displayName);
 
     const headerBtn =
         document.getElementById("headerLoginBtn");
