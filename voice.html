@@ -724,12 +724,6 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
 
     e.preventDefault();
 
-    if (!firebaseUser) {
-        alert("Please log in first before submitting a concern.");
-        openLogin();
-        return;
-    }
-
     const name = anonymous.checked
         ? "Anonymous"
         : firebaseUser.displayName;
@@ -988,10 +982,11 @@ window.logoutUser = async () => {
 
         let firebaseUser = null;
 
-        onAuthStateChanged(auth, (user) => {
+      onAuthStateChanged(auth, (user) => {
+
+    firebaseUser = user;
 
     const btn = document.getElementById("headerLoginBtn");
-    const name = document.getElementById("name");
 
     if(user){
 
@@ -1005,21 +1000,15 @@ window.logoutUser = async () => {
         document.getElementById("profilePhoto").src = user.photoURL;
 
         btn.innerHTML = `
-            <img src="${user.photoURL}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
+            <img src="${user.photoURL}"
+                 style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
             <span>${user.displayName}</span> ▼
         `;
 
         btn.onclick = toggleProfileMenu;
 
     }else{
-
-        name.value = "";
-        name.readOnly = false;
-
-        document.getElementById("logoutMenu").style.display = "none";
-
-        btn.innerHTML = "👤 Login";
-        btn.onclick = openLogin;
+        window.location.href = "index.html";
 
     }
 
