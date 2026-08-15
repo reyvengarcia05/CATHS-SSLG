@@ -1139,12 +1139,13 @@ required></textarea>
 <span>Events</span>
 </a>
 
-<a href="profile.html" class="nav-item">
+<a href="javascript:void(0)" class="nav-item" onclick="toggleProfileMenu()">
     <div id="profileNavPhoto">
         👤
     </div>
     <span>Profile</span>
 </a>
+    
 </div>
 
 <script>
@@ -1425,14 +1426,33 @@ window.onclick = function(e){
 <script>
 function toggleProfileMenu(){
 
+    // Kapag hindi naka-login, Login modal ang lalabas
+    if (!firebaseUser) {
+        openLogin();
+        return;
+    }
+
     const menu = document.getElementById("logoutMenu");
 
+    // Update profile information
+    document.getElementById("profileName").textContent =
+        firebaseUser.displayName || "User";
+
+    document.getElementById("profileEmail").textContent =
+        firebaseUser.email || "";
+
+    const photo = firebaseUser.photoURL;
+
+    if (photo) {
+        document.getElementById("profilePhoto").src = photo;
+    }
+
+    // Toggle menu
     if(menu.style.display === "block"){
         menu.style.display = "none";
     }else{
         menu.style.display = "block";
     }
-
 }
 </script>
     
