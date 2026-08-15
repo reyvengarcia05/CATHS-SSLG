@@ -987,6 +987,12 @@ function toggleLogoutMenu() {
 
     function toggleProfileMenu() {
 
+
+    if (!auth.currentUser) {
+        openLogin();
+        return;
+    }
+
     const menu = document.getElementById("logoutMenu");
 
     const name = localStorage.getItem("userName");
@@ -1021,7 +1027,7 @@ function toggleLogoutMenu() {
         menu.style.display = "block";
     }
 }
-
+   
 </script>
     
 <script>
