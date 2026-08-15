@@ -726,11 +726,31 @@ CELLPHONE DITO BE AHHAHAAHHAA
         font-size:23px;
     }
 
-    #profileNavPhoto{
-        width:25px;
-        height:25px;
-        margin-bottom:2px;
-    }
+   #profileNavPhoto{
+    width:25px !important;
+    height:25px !important;
+
+    min-width:25px !important;
+    max-width:25px !important;
+
+    min-height:25px !important;
+    max-height:25px !important;
+
+    flex:0 0 25px !important;
+
+    margin-bottom:2px !important;
+}
+
+#profileNavPhoto img{
+    width:25px !important;
+    height:25px !important;
+
+    min-width:25px !important;
+    max-width:25px !important;
+
+    min-height:25px !important;
+    max-height:25px !important;
+}
 
     body{
         padding-bottom:85px;
@@ -1077,25 +1097,47 @@ CELLPHONE DITO BE AHHAHAAHHAA
         font-size:19px;
     }
 }
+#profileNavPhoto{
+    width:32px !important;
+    height:32px !important;
 
-    #profileNavPhoto{
-    width:32px;
-    height:32px;
-    border-radius:50%;
-    overflow:hidden;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    margin-bottom:4px;
+    min-width:32px !important;
+    max-width:32px !important;
+
+    min-height:32px !important;
+    max-height:32px !important;
+
+    flex:0 0 32px !important;
+
+    border-radius:50% !important;
+    overflow:hidden !important;
+
+    padding:0 !important;
+    margin:0 0 4px 0 !important;
+
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+
+    font-size:20px !important;
+    line-height:1 !important;
 }
 
 #profileNavPhoto img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    display:block;
+    width:32px !important;
+    height:32px !important;
+
+    min-width:32px !important;
+    max-width:32px !important;
+
+    min-height:32px !important;
+    max-height:32px !important;
+
+    border-radius:50% !important;
+    object-fit:cover !important;
+
+    display:block !important;
 }
-    
 </style>
 </head>
 
@@ -1205,7 +1247,7 @@ required></textarea>
 <span>Events</span>
 </a>
 
-<a href="javascript:void(0)" class="nav-item" onclick="toggleProfileMenu()">
+<a href="#" class="nav-item" onclick="event.preventDefault(); toggleProfileMenu()">
     <div id="profileNavPhoto">
         👤
     </div>
