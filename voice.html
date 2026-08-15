@@ -593,52 +593,111 @@ color:#FFD700;
     display:none;
     position:fixed;
     bottom:90px;
-    right:15px;
-    width:260px;
-    background:rgba(255,255,255,.95);
-    color:#00296B;
+    right:20px;
+    width:345px;
+    max-width:calc(100vw - 30px);
+
+    background:#fff;
+    color:#1d3575;
+
     border-radius:18px;
-    padding:15px;
-    box-shadow:0 10px 30px rgba(0,0,0,.3);
-    z-index:9999;
-    backdrop-filter:blur(15px);
+    padding:20px;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.25);
+    z-index:99999;
+
+    animation:profilePop .2s ease;
 }
 
 .profile-info{
     display:flex;
     align-items:center;
-    gap:12px;
+    gap:16px;
 }
 
 .profile-info img{
-    width:50px;
-    height:50px;
+    width:76px;
+    height:76px;
     border-radius:50%;
     object-fit:cover;
+    flex-shrink:0;
 }
 
 .profile-details{
+    min-width:0;
     display:flex;
     flex-direction:column;
+    justify-content:center;
+}
+
+.profile-details strong{
+    color:#1d3575;
+    font-size:22px;
+    font-weight:700;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.profile-details small{
+    color:#666;
+    font-size:16px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 
 .profile-divider{
+    width:100%;
     height:1px;
     background:#ddd;
-    margin:12px 0;
+    margin:18px 0;
 }
 
 .logout-button{
     width:100%;
-    padding:11px;
+    height:64px;
+
     border:none;
-    border-radius:10px;
-    background:#00296B;
+    border-radius:16px;
+
+    background:#1d3575;
     color:white;
-    font-weight:600;
+
+    font-size:19px;
+    font-weight:700;
+
     cursor:pointer;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+
+    transition:.25s ease;
 }
 
+.logout-button:hover{
+    background:#173064;
+    transform:translateY(-2px);
+    box-shadow:0 8px 18px rgba(29,53,117,.25);
+}
+
+.logout-button:active{
+    transform:scale(.98);
+}
+
+@keyframes profilePop{
+    from{
+        opacity:0;
+        transform:translateY(10px) scale(.97);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+}
     #googleLoginBtn{
     width:100%;
     height:58px;
@@ -658,15 +717,13 @@ CELLPHONE DITO BE AHHAHAAHHAA
 
 @media (max-width: 768px){
 
-#concernsModal .close-btn{
-    width:40px;
-    height:40px;
-    top:10px;
-    right:10px;
-    font-size:23px;
-}
-
-@media (max-width:768px){
+    #concernsModal .close-btn{
+        width:40px;
+        height:40px;
+        top:10px;
+        right:10px;
+        font-size:23px;
+    }
 
     #profileNavPhoto{
         width:25px;
@@ -674,7 +731,12 @@ CELLPHONE DITO BE AHHAHAAHHAA
         margin-bottom:2px;
     }
 
-}
+    body{
+        padding-bottom:85px;
+        overflow-x:hidden;
+    }
+
+    /* CONTINUE THE REST OF YOUR MOBILE CSS HERE */
     
     body{
         padding-bottom:85px;
@@ -923,32 +985,35 @@ CELLPHONE DITO BE AHHAHAAHHAA
         font-size:11px;
     }
 
-    /* PROFILE MENU */
-    .profile-menu{
-        width:calc(100vw - 20px);
-        max-width:300px;
-        right:10px;
-        bottom:82px;
-        padding:13px;
-    }
+.profile-menu{
+    width:calc(100vw - 24px);
+    max-width:345px;
+    right:12px;
+    bottom:82px;
+    padding:18px;
+    border-radius:18px;
+}
 
-    .profile-info img{
-        width:45px;
-        height:45px;
-    }
+.profile-info{
+    gap:13px;
+}
 
-    .profile-details strong{
-        font-size:13px;
-    }
+.profile-info img{
+    width:62px;
+    height:62px;
+}
 
-    .profile-details small{
-        font-size:10px;
-    }
+.profile-details strong{
+    font-size:18px;
+}
 
-    .logout-button{
-        padding:11px;
-        font-size:13px;
-    }
+.profile-details small{
+    font-size:13px;
+}
+
+.logout-button{
+    height:58px;
+    font-size:17px;
 }
 
 
@@ -1571,16 +1636,23 @@ if (user.photoURL) {
 });
 </script>
 
-    <div id="logoutMenu" class="profile-menu">
+   <div id="logoutMenu" class="profile-menu">
 
-  <div class="profile-info">
-    <img id="profilePhoto" src="" alt="Profile Photo">
+    <div class="profile-info">
 
-    <div class="profile-details">
-      <strong id="profileName">User</strong>
-      <small id="profileEmail"></small>
+        <img id="profilePhoto"
+             src=""
+             alt="Profile Picture">
+
+        <div class="profile-details">
+
+            <strong id="profileName">User</strong>
+
+            <small id="profileEmail"></small>
+
+        </div>
+
     </div>
-  </div>
 
   <div class="profile-divider"></div>
 
