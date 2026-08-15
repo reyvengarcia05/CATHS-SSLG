@@ -665,6 +665,16 @@ CELLPHONE DITO BE AHHAHAAHHAA
     right:10px;
     font-size:23px;
 }
+
+@media (max-width:768px){
+
+    #profileNavPhoto{
+        width:25px;
+        height:25px;
+        margin-bottom:2px;
+    }
+
+}
     
     body{
         padding-bottom:85px;
@@ -1001,6 +1011,24 @@ CELLPHONE DITO BE AHHAHAAHHAA
         font-size:19px;
     }
 }
+
+    #profileNavPhoto{
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:4px;
+}
+
+#profileNavPhoto img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
     
 </style>
 </head>
@@ -1112,10 +1140,11 @@ required></textarea>
 </a>
 
 <a href="profile.html" class="nav-item">
-<div>👤</div>
-<span>Profile</span>
+    <div id="profileNavPhoto">
+        👤
+    </div>
+    <span>Profile</span>
 </a>
-
 </div>
 
 <script>
@@ -1486,6 +1515,16 @@ onAuthStateChanged(auth, (user) => {
         document.getElementById("profilePhoto").src =
             user.photoURL || "";
 
+        const navPhoto = document.getElementById("profileNavPhoto");
+
+if (user.photoURL) {
+    navPhoto.innerHTML = `
+        <img src="${user.photoURL}" alt="Profile">
+    `;
+} else {
+    navPhoto.innerHTML = "👤";
+}
+
         btn.innerHTML = `
             <img src="${user.photoURL || ''}"
                  style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
@@ -1502,6 +1541,7 @@ onAuthStateChanged(auth, (user) => {
         nameInput.readOnly = false;
 
         document.getElementById("logoutMenu").style.display = "none";
+        document.getElementById("profileNavPhoto").innerHTML = "👤";
 
         btn.innerHTML = "👤 Login";
         btn.onclick = openLogin;
