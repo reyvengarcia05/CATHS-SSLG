@@ -985,41 +985,17 @@ function toggleLogoutMenu() {
     }
 }
 
-    function toggleProfileMenu() {
+   window.userLoggedIn = false;
 
+   function toggleProfileMenu() {
 
-    if (!auth.currentUser) {
+    if (!window.userLoggedIn) {
         openLogin();
         return;
     }
 
+
     const menu = document.getElementById("logoutMenu");
-
-    const name = localStorage.getItem("userName");
-    const photo = localStorage.getItem("userPhoto");
-    const email = localStorage.getItem("userEmail");
-
-    if (name) {
-        document.getElementById("profileName").textContent = name;
-    }
-
-    if (email) {
-        document.getElementById("profileEmail").textContent = email;
-    }
-
-    if (photo) {
-        document.getElementById("profilePhoto").src = photo;
-
-        document.getElementById("profileNavPhoto").innerHTML = `
-            <img src="${photo}"
-                 style="
-                    width:32px;
-                    height:32px;
-                    border-radius:50%;
-                    object-fit:cover;
-                 ">
-        `;
-    }
 
     if (menu.style.display === "block") {
         menu.style.display = "none";
@@ -1190,11 +1166,12 @@ window.logoutUser = async function () {
 
 
 // =========================
-// AUTH STATE
+// AUTH STATE JUSKO HAHAHAHA NAHIHILO NAKO BYE
 // =========================
 
 onAuthStateChanged(auth, (user) => {
-
+   
+ window.userLoggedIn = !!user;
     const headerBtn = document.getElementById("headerLoginBtn");
     const profileName = document.getElementById("profileName");
     const profileEmail = document.getElementById("profileEmail");
