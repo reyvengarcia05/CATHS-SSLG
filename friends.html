@@ -118,6 +118,15 @@ input{
   display:flex;align-items:center;gap:12px
 }
 .row-info{flex:1;min-width:0}
+
+.friend-profile-link{
+  display:flex;align-items:center;gap:12px;flex:1;min-width:0;
+  text-decoration:none;color:inherit;border-radius:12px;padding:4px;
+  transition:.2s ease;
+}
+.friend-profile-link:hover{background:#eef4ff;transform:translateX(2px)}
+.friend-profile-link:active{transform:scale(.99)}
+.friend-profile-link .row-info{min-width:0}
 .row-info strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row-info small{display:block;color:#64748b;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .actions{display:flex;gap:7px}
@@ -953,11 +962,13 @@ async function loadFriends(){
       const row = document.createElement('div');
       row.className = 'friend-row';
       row.innerHTML = `
-        ${avatarHtml({photoURL:friend.photoURL,nickname:friend.nickname,username:friend.username})}
-        <div class="row-info">
-          <strong>${escapeHtml(friend.nickname || friend.username || 'Student')}</strong>
-          <small>@${escapeHtml(friend.username || '')}</small>
-        </div>
+        <a class="friend-profile-link" href="user-profile.html?uid=${encodeURIComponent(friend.uid)}" aria-label="View ${escapeHtml(friend.nickname || friend.username || 'student')} profile">
+          ${avatarHtml({photoURL:friend.photoURL,nickname:friend.nickname,username:friend.username})}
+          <div class="row-info">
+            <strong>${escapeHtml(friend.nickname || friend.username || 'Student')}</strong>
+            <small>@${escapeHtml(friend.username || '')}</small>
+          </div>
+        </a>
         <div class="actions">
           <button class="btn btn-danger">Remove Friend</button>
         </div>
