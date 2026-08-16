@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CATHS-MAIN • Messages</title>
+<link rel="icon" type="image/png" href="sslg-logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#003DA5;--dark:#00296B;--yellow:#FFD93D;--white:#fff;--muted:#6b7891;--line:#e6ebf4}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
+body{min-height:100vh;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700);color:#fff;padding-bottom:86px}
+.header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:rgba(0,0,0,.16);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.logo-group{display:flex;gap:7px;align-items:center}.logo{width:46px;height:46px;object-fit:contain}.header-center{text-align:center;flex:1;padding:0 10px}.header-center h1{font-size:19px;font-weight:800}.header-center p{font-size:10px;opacity:.82}.header-right{width:96px}
+.container{max-width:1120px;margin:auto;padding:22px 16px 110px}.messenger{display:grid;grid-template-columns:320px 1fr;min-height:650px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.16);border-radius:26px;overflow:hidden;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 18px 50px rgba(0,0,0,.2)}
+.sidebar{background:rgba(255,255,255,.1);border-right:1px solid rgba(255,255,255,.13);padding:18px;display:flex;flex-direction:column;min-width:0}.side-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.side-title h2{font-size:18px}.count-pill{background:var(--yellow);color:var(--dark);padding:4px 9px;border-radius:999px;font-size:10px;font-weight:800}.search{width:100%;padding:11px 13px;border:none;outline:none;border-radius:13px;background:#fff;color:#183c8c;font-size:12px;margin-bottom:12px}.friend-list{display:flex;flex-direction:column;gap:8px;overflow:auto;padding-right:3px}.friend-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:15px;background:rgba(255,255,255,.08);border:1px solid transparent;cursor:pointer;transition:.18s;text-align:left;color:#fff}.friend-item:hover{background:rgba(255,255,255,.14);transform:translateX(2px)}.friend-item.active{background:#fff;color:#183c8c;border-color:#fff}.friend-avatar{width:44px;height:44px;flex:0 0 44px;border-radius:50%;overflow:hidden;background:#e8eef7;color:#183c8c;display:flex;align-items:center;justify-content:center;font-weight:800}.friend-avatar img{width:100%;height:100%;object-fit:cover}.friend-info{min-width:0;flex:1}.friend-info strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.friend-info small{display:block;font-size:10px;opacity:.72;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.friend-item.active .friend-info small{opacity:.65}
+.chat{display:flex;flex-direction:column;min-width:0;background:rgba(255,255,255,.05)}.chat-empty{height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px}.empty-inner{max-width:360px}.empty-icon{font-size:56px;margin-bottom:10px}.empty-inner h3{font-size:22px;margin-bottom:6px}.empty-inner p{font-size:12px;opacity:.78;line-height:1.6}
+.chat-head{display:flex;align-items:center;gap:12px;padding:15px 18px;background:rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.1)}.chat-back{display:none}.chat-avatar{width:46px;height:46px;border-radius:50%;overflow:hidden;background:#e8eef7;color:#183c8c;display:flex;align-items:center;justify-content:center;font-weight:800;flex:0 0 46px}.chat-avatar img{width:100%;height:100%;object-fit:cover}.chat-person{min-width:0}.chat-person strong{display:block;font-size:14px}.chat-person small{font-size:10px;opacity:.72}.messages{flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:8px;min-height:0}.message-row{display:flex;width:100%}.message-row.mine{justify-content:flex-end}.bubble{max-width:min(72%,520px);padding:10px 13px;border-radius:17px;background:#fff;color:#183c8c;box-shadow:0 6px 18px rgba(0,0,0,.08);font-size:12px;line-height:1.55;word-break:break-word}.message-row.mine .bubble{background:var(--yellow);color:#183c8c;border-bottom-right-radius:5px}.message-row:not(.mine) .bubble{border-bottom-left-radius:5px}.bubble small{display:block;margin-top:5px;font-size:8px;opacity:.58}.message-compose{display:flex;gap:8px;padding:13px 15px;background:rgba(0,0,0,.12);border-top:1px solid rgba(255,255,255,.1)}.message-input{flex:1;min-width:0;border:none;outline:none;border-radius:14px;padding:12px 13px;font-size:12px;background:#fff;color:#183c8c;resize:none;height:44px}.send-btn{border:none;border-radius:14px;padding:0 17px;background:var(--yellow);color:var(--dark);font-weight:800;cursor:pointer;min-width:76px}.send-btn:disabled{opacity:.6;cursor:not-allowed}
+.loading{padding:28px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:9px;font-size:11px;opacity:.86}.spinner{width:30px;height:30px;border:3px solid rgba(255,255,255,.25);border-top-color:var(--yellow);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.no-friends{padding:20px 12px;text-align:center;font-size:11px;opacity:.75;line-height:1.6}.toast{position:fixed;left:50%;bottom:98px;transform:translate(-50%,18px);opacity:0;pointer-events:none;background:#101827;color:#fff;padding:11px 15px;border-radius:999px;font-size:11px;transition:.25s;z-index:100}.toast.show{opacity:1;transform:translate(-50%,0)}
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;height:78px;background:linear-gradient(90deg,#1e3a8a,#b59f1a);display:flex;justify-content:space-around;align-items:center;z-index:60;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}.nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#fff;font-size:9px;min-width:60px;transition:.22s}.nav-item div{font-size:22px;height:26px;display:flex;align-items:center;justify-content:center;margin-bottom:3px}.nav-item.active{color:var(--yellow);transform:translateY(-6px) scale(1.07);font-weight:700}.nav-item.active div{font-size:25px}
+@media(max-width:800px){.messenger{grid-template-columns:1fr;min-height:calc(100vh - 160px)}.sidebar{border-right:none;border-bottom:1px solid rgba(255,255,255,.13);max-height:290px}.chat{min-height:480px}.chat-back{display:block;border:none;background:rgba(255,255,255,.12);color:#fff;width:34px;height:34px;border-radius:10px;cursor:pointer}.bubble{max-width:82%}}
+@media(max-width:520px){.container{padding:10px 8px 100px}.messenger{border-radius:20px}.sidebar{padding:13px}.chat-head{padding:12px}.messages{padding:14px 10px}.message-compose{padding:10px}.send-btn{padding:0 13px;min-width:62px}.nav-item{min-width:52px;font-size:8px}.nav-item div{font-size:20px}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="logo-group"><img src="sslg-logo.png" class="logo" alt="SSLG"><img src="caths-logo.png" class="logo" alt="CATHS"></div>
+  <div class="header-center"><h1>CATHS-MAIN Messages</h1><p>Private messages between friends</p></div>
+  <div class="header-right"></div>
+</header>
+
+<main class="container">
+  <section class="messenger">
+    <aside class="sidebar">
+      <div class="side-title"><h2>💬 Messages</h2><span id="friendCount" class="count-pill">0</span></div>
+      <input id="friendSearch" class="search" placeholder="Search friends..." autocomplete="off">
+      <div id="friendList" class="friend-list"><div class="loading"><div class="spinner"></div><div>Loading friends...</div></div></div>
+    </aside>
+
+    <section id="chatPane" class="chat">
+      <div class="chat-empty">
+        <div class="empty-inner"><div class="empty-icon">💬</div><h3>Select a friend</h3><p>Choose a friend from the list to start a private conversation.</p></div>
+      </div>
+    </section>
+  </section>
+</main>
+
+<div id="toast" class="toast"></div>
+
+<nav class="bottom-nav">
+  <a href="index.html" class="nav-item"><div>🏠</div><span>Home</span></a>
+  <a href="news.html" class="nav-item"><div>📢</div><span>News</span></a>
+  <a href="voice.html" class="nav-item"><div>🗣️</div><span>Student Voice</span></a>
+  <a href="friends.html" class="nav-item"><div>👥</div><span>Friends</span></a>
+  <a href="profile.html" class="nav-item active"><div>💬</div><span>Messages</span></a>
+</nav>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+import {getFirestore,doc,getDoc,collection,getDocs,query,where,limit,addDoc,serverTimestamp,onSnapshot,orderBy} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+const firebaseConfig={apiKey:"AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",authDomain:"caths-page.firebaseapp.com",projectId:"caths-page",storageBucket:"caths-page.firebasestorage.app",messagingSenderId:"945498022620",appId:"1:945498022620:web:71aeb4cd2472e061aeca19",measurementId:"G-CBG1YSK13G"};
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+const $=id=>document.getElementById(id);
+const params=new URLSearchParams(location.search);let targetUid=params.get('uid')||'';let friends=[];let activeFriend=null;let unsubscribeMessages=null;
+const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+function showToast(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>el.classList.remove('show'),2400)}
+function avatarHtml(p,className='friend-avatar'){return p?.photoURL?`<div class="${className}"><img src="${esc(p.photoURL)}" alt=""></div>`:`<div class="${className}">${esc((p?.nickname||p?.username||p?.name||'U').charAt(0).toUpperCase())}</div>`}
+function chatId(a,b){return [a,b].sort().join('_')}
+function formatTime(ts){try{const d=ts?.toDate?ts.toDate():new Date(ts);return d.toLocaleString([],{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});}catch{return ''}}
+async function getUserProfile(uid){const s=await getDoc(doc(db,'users',uid));return s.exists()?{uid,...s.data()}:({uid,name:'Student',nickname:'Student'});}
+async function loadFriends(){
+  const me=auth.currentUser;if(!me)return;
+  $('friendList').innerHTML='<div class="loading"><div class="spinner"></div><div>Loading friends...</div></div>';
+  try{
+    const snap=await getDocs(query(collection(db,'friends',me.uid,'list'),limit(100)));
+    friends=await Promise.all(snap.docs.map(async d=>{const base={uid:d.id,...d.data()};try{return await getUserProfile(d.id).then(p=>({...base,...p}));}catch{return base;}}));
+    friends.sort((a,b)=>String(a.nickname||a.name||a.username||'').localeCompare(String(b.nickname||b.name||b.username||'')));
+    $('friendCount').textContent=String(friends.length);
+    renderFriendList(friends);
+    if(targetUid){const match=friends.find(f=>f.uid===targetUid);if(match)openChat(match);}
+  }catch(e){console.error(e);$('friendList').innerHTML='<div class="no-friends">Could not load friends.<br>Check your Firestore Rules.</div>';}
+}
+function renderFriendList(list){
+  if(!list.length){$('friendList').innerHTML='<div class="no-friends">You have no friends yet.<br>Add friends first to start messaging.</div>';return;}
+  $('friendList').innerHTML=list.map(f=>`<button type="button" class="friend-item ${activeFriend?.uid===f.uid?'active':''}" data-uid="${esc(f.uid)}">${avatarHtml(f)}<span class="friend-info"><strong>${esc(f.nickname||f.name||f.displayName||'Student')}</strong><small>${f.username?'@'+esc(f.username):'Friend'}</small></span></button>`).join('');
+  $('friendList').querySelectorAll('.friend-item').forEach(btn=>btn.addEventListener('click',()=>{const f=friends.find(x=>x.uid===btn.dataset.uid);if(f)openChat(f)}));
+}
+$('friendSearch').addEventListener('input',()=>{const q=$('friendSearch').value.trim().toLowerCase();renderFriendList(friends.filter(f=>String(f.nickname||f.name||f.username||'').toLowerCase().includes(q)))});
+async function ensureFriend(otherUid){const me=auth.currentUser;if(!me||!otherUid||me.uid===otherUid)return false;const s=await getDoc(doc(db,'friends',me.uid,'list',otherUid));return s.exists()}
+async function openChat(friend){
+  const me=auth.currentUser;if(!me||!friend)return;
+  if(!(await ensureFriend(friend.uid))){showToast('You can only message your friends.');return;}
+  activeFriend=friend;targetUid=friend.uid;history.replaceState(null,'',`messages.html?uid=${encodeURIComponent(friend.uid)}`);renderFriendList(friends);
+  $('chatPane').innerHTML=`<div class="chat-head"><button class="chat-back" type="button" onclick="clearChatSelection()">←</button>${avatarHtml(friend,'chat-avatar')}<div class="chat-person"><strong>${esc(friend.nickname||friend.name||friend.displayName||'Student')}</strong><small>${friend.username?'@'+esc(friend.username):'Friend'}</small></div></div><div id="messages" class="messages"><div class="loading"><div class="spinner"></div><div>Loading messages...</div></div></div><form id="messageForm" class="message-compose"><input id="messageInput" class="message-input" maxlength="1000" placeholder="Write a message..." autocomplete="off"><button id="sendBtn" class="send-btn" type="submit">Send</button></form>`;
+  $('messageForm').addEventListener('submit',sendMessage);$('messageInput').focus();listenMessages(me.uid,friend.uid);
+}
+window.clearChatSelection=()=>{activeFriend=null;if(unsubscribeMessages)unsubscribeMessages();$('chatPane').innerHTML='<div class="chat-empty"><div class="empty-inner"><div class="empty-icon">💬</div><h3>Select a friend</h3><p>Choose a friend from the list to start a private conversation.</p></div></div>';renderFriendList(friends)};
+function listenMessages(a,b){if(unsubscribeMessages)unsubscribeMessages();const id=chatId(a,b);const ref=collection(db,'conversations',id,'messages');const q=query(ref,orderBy('createdAt','asc'),limit(200));unsubscribeMessages=onSnapshot(q,snap=>{const box=$('messages');if(!box)return;if(snap.empty){box.innerHTML='<div class="chat-empty" style="min-height:100%"><div class="empty-inner"><div class="empty-icon">👋</div><h3>Start the conversation</h3><p>Send your first message to this friend.</p></div></div>';return}box.innerHTML=snap.docs.map(d=>{const m=d.data()||{};const mine=m.senderUid===a;return `<div class="message-row ${mine?'mine':''}"><div class="bubble">${esc(m.text||'')}<small>${formatTime(m.createdAt)}</small></div></div>`}).join('');box.scrollTop=box.scrollHeight},e=>{console.error(e);const box=$('messages');if(box)box.innerHTML='<div class="no-friends">Could not load messages. Check your Firestore Rules.</div>'});}
+async function sendMessage(e){e.preventDefault();const me=auth.currentUser;if(!me||!activeFriend)return;const input=$('messageInput'),btn=$('sendBtn');const text=input.value.trim();if(!text)return;btn.disabled=true;btn.textContent='Sending...';try{if(!(await ensureFriend(activeFriend.uid))){showToast('You are no longer friends with this student.');return}const id=chatId(me.uid,activeFriend.uid);await addDoc(collection(db,'conversations',id,'messages'),{senderUid:me.uid,receiverUid:activeFriend.uid,text,createdAt:serverTimestamp()});input.value='';input.focus();}catch(err){console.error(err);showToast(err?.code==='permission-denied'?'Messaging is blocked by Firestore Rules.':'Could not send message.');}finally{btn.disabled=false;btn.textContent='Send'}}
+onAuthStateChanged(auth,user=>{if(!user){location.href='profile.html';return}loadFriends()});
+</script>
+</body>
+</html>
