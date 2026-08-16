@@ -676,8 +676,9 @@ window.addFriendFromReaction=addFriendFromReaction;
 .post-manage-btn{border:none;background:rgba(255,255,255,.10);color:#fff;width:32px;height:32px;border-radius:10px;cursor:pointer;font-size:17px;transition:.2s}
 .post-manage-btn:hover{background:rgba(255,255,255,.18);transform:translateY(-1px)}
 .post-menu-backdrop{position:fixed;inset:0;display:none;z-index:100000}.post-menu-backdrop.open{display:block}
-.post-menu{position:fixed;left:0;top:0;min-width:205px;background:#fff;color:#183c8c;border-radius:15px;padding:7px;box-shadow:0 18px 45px rgba(0,0,0,.28);z-index:100001}
+.post-menu{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);min-width:260px;max-width:calc(100vw - 32px);background:#fff;color:#183c8c;border-radius:18px;padding:9px;box-shadow:0 24px 60px rgba(0,0,0,.32);z-index:100001;animation:postMenuPop .2s ease-out}
 .post-menu button{width:100%;border:none;background:transparent;text-align:left;padding:11px 12px;border-radius:10px;color:#183c8c;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.post-menu button:hover{background:#eef4ff}.post-menu button.pin{color:#183c8c}.post-menu button.pin:hover{background:#eef4ff}.post-menu button.danger{color:#c0392b}.post-menu button.danger:hover{background:#fff0ee}
+@keyframes postMenuPop{from{opacity:0;transform:translate(-50%,-46%) scale(.96)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
 .manage-modal,.privacy-modal{position:fixed;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:18px;z-index:100002}.manage-modal.open,.privacy-modal.open{display:flex}
 .manage-box,.privacy-box{width:100%;max-width:440px;background:#fff;color:#183c8c;border-radius:24px;padding:24px;box-shadow:0 24px 70px rgba(0,0,0,.35);animation:postPop .22s ease}
 .manage-box h3,.privacy-box h3{font-size:20px;margin-bottom:7px}.manage-box p,.privacy-box p{font-size:12px;color:#6f7b91;line-height:1.55}
@@ -2229,25 +2230,13 @@ function togglePostMenu(postId,event){
     document.querySelectorAll('.post-menu-backdrop.open').forEach(el=>el.classList.remove('open'));
     const backdrop=document.getElementById('menu-backdrop-'+postId);
     if(!backdrop) return;
-    const button=event.currentTarget;
     const menu=backdrop.querySelector('.post-menu');
-    backdrop.classList.add('open');
-    if(menu && button){
-        const rect=button.getBoundingClientRect();
-        const gap=8;
-        requestAnimationFrame(()=>{
-            const menuWidth=menu.offsetWidth;
-            const menuHeight=menu.offsetHeight;
-            let left=rect.right-menuWidth;
-            let top=rect.bottom+gap;
-            if(left<8) left=8;
-            if(left+menuWidth>window.innerWidth-8) left=window.innerWidth-menuWidth-8;
-            if(top+menuHeight>window.innerHeight-8) top=rect.top-menuHeight-gap;
-            if(top<8) top=8;
-            menu.style.left=`${left}px`;
-            menu.style.top=`${top}px`;
-        });
+    if(menu){
+        menu.style.left='50%';
+        menu.style.top='50%';
+        menu.style.transform='translate(-50%,-50%)';
     }
+    backdrop.classList.add('open');
 }
 window.togglePostMenu=togglePostMenu;
 function closePostMenu(postId,event){if(event)event.stopPropagation();document.getElementById('menu-backdrop-'+postId)?.classList.remove('open');}
