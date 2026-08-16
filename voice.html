@@ -654,7 +654,7 @@ color:#FFD700;
     display:none;
 
     position:absolute;
-    top:calc(100% + 10px);
+    top:calc(100% + 4px);
     right:0;
 
     width:280px;
@@ -1115,7 +1115,7 @@ CELLPHONE DITO BE AHHAHAAHHAA
     }
 
 .profile-menu{
-    top:calc(100% + 8px);
+    top:calc(100% + 4px);
     right:0;
 
     width:calc(100vw - 20px);
@@ -1615,14 +1615,13 @@ required></textarea>
 <span>Events</span>
 </a>
 
-<a
-    href="#"
-    class="nav-item"
-    onclick="event.preventDefault(); toggleProfileMenu()">
-
+<a href="profile.html" class="nav-item">
     <div id="profileNavPhoto">
         👤
     </div>
+
+    <span id="profileNavText">Profile</span>
+</a>
 
     <span>Profile</span>
 </a>
@@ -2117,6 +2116,11 @@ onAuthStateChanged(
                 "profileNavPhoto"
             );
 
+        const navText =
+    document.getElementById(
+        "profileNavText"
+    );
+
 
         if(user){
 
@@ -2181,25 +2185,28 @@ onAuthStateChanged(
 
             /* BOTTOM PHOTO */
 
-            if(navPhoto){
+          if(navPhoto){
 
-                if(user.photoURL){
+    if(user.photoURL){
 
-                    navPhoto.innerHTML = `
-                        <img
-                            src="${user.photoURL}"
-                            alt="Profile"
-                        >
-                    `;
+        navPhoto.innerHTML = `
+            <img
+                src="${user.photoURL}"
+                alt="Profile"
+            >
+        `;
 
-                }else{
+    }else{
 
-                    navPhoto.innerHTML =
-                        "👤";
+        navPhoto.innerHTML = "👤";
 
-                }
+    }
 
-            }
+}
+
+if(navText){
+    navText.textContent = "Profile";
+}
 
 
             /* HEADER PROFILE */
@@ -2274,11 +2281,13 @@ onAuthStateChanged(
             }
 
 
-            if(navPhoto){
+         if(navPhoto){
+    navPhoto.innerHTML = "🔐";
+}
 
-                navPhoto.innerHTML = "👤";
-
-            }
+if(navText){
+    navText.textContent = "Login";
+}
 
 
             if(btn){
