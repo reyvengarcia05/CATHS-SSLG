@@ -426,6 +426,27 @@ body{
 
 .nav-item.active{
     color:#FFD700;
+    transform:translateY(-7px) scale(1.08);
+    font-weight:700;
+}
+
+.nav-item.active div{
+    font-size:28px;
+    margin-bottom:5px;
+}
+
+.nav-item.active:hover{
+    transform:translateY(-8px) scale(1.09);
+}
+
+@media(max-width:768px){
+    .nav-item.active{
+        transform:translateY(-6px) scale(1.06);
+    }
+
+    .nav-item.active div{
+        font-size:24px;
+    }
 }
 
 /* PROFILE NAV PHOTO */
@@ -1166,6 +1187,48 @@ body{
 
 
         <div class="form-group">
+            <label>Profile Photo</label>
+
+            <div style="
+                display:flex;
+                align-items:center;
+                gap:14px;
+                flex-wrap:wrap;
+            ">
+                <div id="editPhotoPreview" style="
+                    width:74px;
+                    height:74px;
+                    border-radius:50%;
+                    overflow:hidden;
+                    background:#e9eef7;
+                    border:3px solid #dbe4f5;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-size:30px;
+                    color:#1e3a8a;
+                    flex:0 0 74px;
+                ">👤</div>
+
+                <div style="flex:1;min-width:180px;">
+                    <input
+                        type="file"
+                        id="editPhoto"
+                        accept="image/*"
+                        style="margin-bottom:6px;">
+                    <small style="
+                        display:block;
+                        color:#777;
+                        font-size:11px;
+                    ">
+                        JPG, PNG or WebP. The selected photo will be saved with your profile.
+                    </small>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="form-group">
 
             <label>
                 Display Name
@@ -1280,15 +1343,15 @@ body{
 
 
     <a
-        href="events.html"
+        href="friends.html"
         class="nav-item">
 
         <div>
-            📅
+            👥
         </div>
 
         <span>
-            Events
+            Friends
         </span>
 
     </a>
@@ -1450,62 +1513,88 @@ onAuthStateChanged(
             );
 
 
-        if(user.photoURL){
+        /* LOAD SAVED PROFILE FIRST */
+        loadProfileData();
 
-            picture.src =
-                user.photoURL;
-
-            picture.style.display =
-                "block";
-
-            placeholder.style.display =
-                "none";
-
-        }else{
-
-            picture.style.display =
-                "none";
-
-            placeholder.style.display =
-                "flex";
-
-        }
-
-
-        /* BOTTOM NAV PHOTO */
-
-        const navPhoto =
-            document.getElementById(
-                "profileNavPhoto"
+        const saved =
+            localStorage.getItem(
+                "profileData_" + user.email
             );
 
+        let savedProfile = {};
 
-        if(user.photoURL){
-
-            navPhoto.innerHTML = `
-
-                <img
-                    src="${user.photoURL}"
-                    alt="Profile">
-
-            `;
-
-        }else{
-
-            navPhoto.innerHTML =
-                "👤";
-
+        if(saved){
+            try{
+                savedProfile = JSON.parse(saved) || {};
+            }catch(error){}
         }
 
-
-        /* LOAD SAVED PROFILE */
-
-        loadProfileData();
+        applyProfilePhoto(
+            savedProfile.photoURL ||
+            user.photoURL ||
+            ""
+        );
 
     }
 
 );
 
+
+/* =========================
+   PROFILE PHOTO HELPERS
+========================= */
+
+function profileStorageKey(){
+    const email = auth.currentUser?.email || "";
+    return email ? "profileData_" + email : "";
+}
+
+function applyProfilePhoto(photoUrl){
+    const picture = document.getElementById("profilePicture");
+    const placeholder = document.getElementById("profilePlaceholder");
+    const navPhoto = document.getElementById("profileNavPhoto");
+
+    if(photoUrl){
+        picture.src = photoUrl;
+        picture.style.display = "block";
+        placeholder.style.display = "none";
+
+        if(navPhoto){
+            navPhoto.innerHTML = `
+                <img src="${photoUrl}" alt="Profile">
+            `;
+        }
+    }else{
+        picture.style.display = "none";
+        placeholder.style.display = "flex";
+
+        if(navPhoto){
+            navPhoto.innerHTML = "👤";
+        }
+    }
+}
+
+function setEditPhotoPreview(photoUrl){
+    const preview = document.getElementById("editPhotoPreview");
+    if(!preview) return;
+
+    if(photoUrl){
+        preview.innerHTML = `
+            <img
+                src="${photoUrl}"
+                alt="Preview"
+                style="
+                    width:100%;
+                    height:100%;
+                    object-fit:cover;
+                    display:block;
+                "
+            >
+        `;
+    }else{
+        preview.innerHTML = "👤";
+    }
+}
 
 /* =========================
    LOAD PROFILE DATA
@@ -1518,21 +1607,17 @@ function loadProfileData(){
 
     if(!email) return;
 
-
     const saved =
         localStorage.getItem(
             "profileData_" + email
         );
 
-
     if(!saved) return;
-
 
     try{
 
         const data =
             JSON.parse(saved);
-
 
         if(data.name){
 
@@ -1543,7 +1628,6 @@ function loadProfileData(){
 
         }
 
-
         if(data.section){
 
             document.getElementById(
@@ -1553,7 +1637,6 @@ function loadProfileData(){
 
         }
 
-
         if(data.bio){
 
             document.getElementById(
@@ -1561,6 +1644,10 @@ function loadProfileData(){
             ).textContent =
                 data.bio;
 
+        }
+
+        if(data.photoURL){
+            applyProfilePhoto(data.photoURL);
         }
 
     }catch(error){
@@ -1586,65 +1673,114 @@ window.saveProfile = function(){
 
     if(!user) return;
 
-
     const name =
         document.getElementById(
             "editName"
         ).value.trim();
-
 
     const section =
         document.getElementById(
             "editSection"
         ).value.trim();
 
-
     const bio =
         document.getElementById(
             "editBio"
         ).value.trim();
 
+    const photoInput =
+        document.getElementById("editPhoto");
 
-    const data = {
+    const currentSaved =
+        localStorage.getItem(
+            "profileData_" + user.email
+        );
 
-        name:
-            name ||
-            user.displayName ||
-            "User",
+    let previous = {};
 
-        section:
-            section,
+    if(currentSaved){
+        try{
+            previous = JSON.parse(currentSaved) || {};
+        }catch(error){}
+    }
 
-        bio:
-            bio ||
-            "Welcome to my CATHS-MAIN Student Voice profile. 🎓"
+    const saveData = (photoURL = previous.photoURL || user.photoURL || "") => {
+
+        const data = {
+
+            name:
+                name ||
+                user.displayName ||
+                "User",
+
+            section:
+                section,
+
+            bio:
+                bio ||
+                "Welcome to my CATHS-MAIN Student Voice profile. 🎓",
+
+            photoURL:
+                photoURL
+
+        };
+
+        localStorage.setItem(
+            "profileData_" +
+            user.email,
+
+            JSON.stringify(data)
+        );
+
+        document.getElementById(
+            "profileName"
+        ).textContent =
+            data.name;
+
+        document.getElementById(
+            "profileBio"
+        ).textContent =
+            data.bio;
+
+        applyProfilePhoto(data.photoURL);
+
+        closeEditProfile();
+
+        alert("✅ Profile saved successfully.");
 
     };
 
+    // Save selected local profile picture together with the other edits.
+    if(photoInput && photoInput.files && photoInput.files[0]){
 
-    localStorage.setItem(
+        const file = photoInput.files[0];
 
-        "profileData_" +
-        user.email,
+        if(!file.type.startsWith("image/")){
+            alert("Please choose a valid image file.");
+            return;
+        }
 
-        JSON.stringify(data)
+        if(file.size > 5 * 1024 * 1024){
+            alert("Please choose an image smaller than 5 MB.");
+            return;
+        }
 
-    );
+        const reader = new FileReader();
 
+        reader.onload = function(event){
+            saveData(event.target.result);
+        };
 
-    document.getElementById(
-        "profileName"
-    ).textContent =
-        data.name;
+        reader.onerror = function(){
+            alert("Could not read the selected profile picture.");
+        };
 
+        reader.readAsDataURL(file);
 
-    document.getElementById(
-        "profileBio"
-    ).textContent =
-        data.bio;
+        return;
+    }
 
-
-    closeEditProfile();
+    saveData();
 
 };
 
@@ -1669,16 +1805,13 @@ window.openEditProfile = function(){
 
     }
 
-
     const saved =
         localStorage.getItem(
             "profileData_" +
             user.email
         );
 
-
     let data = {};
-
 
     if(saved){
 
@@ -1691,7 +1824,6 @@ window.openEditProfile = function(){
 
     }
 
-
     document.getElementById(
         "editName"
     ).value =
@@ -1699,13 +1831,11 @@ window.openEditProfile = function(){
         user.displayName ||
         "";
 
-
     document.getElementById(
         "editSection"
     ).value =
         data.section ||
         "";
-
 
     document.getElementById(
         "editBio"
@@ -1713,13 +1843,55 @@ window.openEditProfile = function(){
         data.bio ||
         "";
 
+    const photoInput = document.getElementById("editPhoto");
+
+    if(photoInput){
+        photoInput.value = "";
+    }
+
+    setEditPhotoPreview(
+        data.photoURL ||
+        user.photoURL ||
+        ""
+    );
+
+    if(photoInput){
+        photoInput.onchange = function(){
+            const file = photoInput.files?.[0];
+
+            if(!file){
+                setEditPhotoPreview(data.photoURL || user.photoURL || "");
+                return;
+            }
+
+            if(!file.type.startsWith("image/")){
+                alert("Please choose a valid image file.");
+                photoInput.value = "";
+                return;
+            }
+
+            if(file.size > 5 * 1024 * 1024){
+                alert("Please choose an image smaller than 5 MB.");
+                photoInput.value = "";
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function(event){
+                setEditPhotoPreview(event.target.result);
+            };
+
+            reader.readAsDataURL(file);
+        };
+    }
 
     document.getElementById(
         "editOverlay"
     ).style.display =
         "flex";
 
-};
+}
 
 
 window.closeEditProfile = function(){
