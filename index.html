@@ -66,6 +66,7 @@ padding-bottom:90px;
 
 .header-right{
     justify-content:flex-end;
+    position:relative;
 }
 
 .logo{
@@ -379,27 +380,34 @@ color:black;
 
 
 
-  .profile-menu{
+.profile-menu{
     display:none;
-    position:fixed;
-    bottom:85px;
-    right:15px;
+
+    position:absolute;
+    top:calc(100% + 10px);
+    right:0;
 
     width:280px;
-    max-width:calc(100vw - 30px);
+    max-width:calc(100vw - 20px);
 
-    background:rgba(255,255,255,.96);
+    background:rgba(255,255,255,.97);
     color:#00296B;
 
     border-radius:20px;
     padding:16px;
 
-    box-shadow:0 15px 40px rgba(0,0,0,.28);
-    z-index:99999;
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.25),
+        0 4px 12px rgba(0,0,0,.08);
 
+    z-index:99999;
     backdrop-filter:blur(20px);
 
-    animation:profilePop .22s ease;
+    opacity:0;
+    transform:translateY(-12px) scale(.96);
+    transform-origin:top right;
+
+    pointer-events:none;
 }
 
 .profile-info {
@@ -486,15 +494,32 @@ color:black;
     font-size:17px;
 }
 
-@keyframes profilePop{
-    from{
+@keyframes profileMenuIn{
+    0%{
         opacity:0;
-        transform:translateY(8px) scale(.97);
+        transform:translateY(-12px) scale(.96);
     }
 
-    to{
+    60%{
+        opacity:1;
+        transform:translateY(2px) scale(1.01);
+    }
+
+    100%{
         opacity:1;
         transform:translateY(0) scale(1);
+    }
+}
+
+@keyframes profileMenuOut{
+    0%{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+
+    100%{
+        opacity:0;
+        transform:translateY(-8px) scale(.97);
     }
 }
    
@@ -715,11 +740,13 @@ color:black;
         height: 25px !important;
     }
 
-   .profile-menu{
-    bottom:78px;
-    right:10px;
+.profile-menu{
+    top:calc(100% + 8px);
+    right:0;
+
     width:calc(100vw - 20px);
     max-width:300px;
+
     border-radius:18px;
     padding:14px;
 }
@@ -870,8 +897,126 @@ color:black;
         height: 62px;
     }
 
-    .profile-menu {
-        bottom: 68px;
+}
+
+   .profile-menu.open{
+    display:block;
+    pointer-events:auto;
+    animation:profileMenuIn .42s cubic-bezier(.16,1,.3,1) forwards;
+}
+
+.profile-menu.closing{
+    display:block;
+    pointer-events:none;
+    animation:profileMenuOut .28s cubic-bezier(.7,0,.84,0) forwards;
+}
+
+/* PROFILE HEADER */
+
+.profile-menu .profile-info{
+    opacity:0;
+    transform:translateY(-8px);
+}
+
+.profile-menu.open .profile-info{
+    animation:profileItemIn .38s cubic-bezier(.16,1,.3,1) .05s forwards;
+}
+
+/* DIVIDERS */
+
+.profile-menu .profile-divider{
+    opacity:0;
+}
+
+.profile-menu.open .profile-divider{
+    animation:profileFadeIn .3s ease .14s forwards;
+}
+
+/* NAV ITEMS */
+
+.profile-nav-item{
+    opacity:0;
+    transform:translateX(14px);
+}
+
+.profile-menu.open .profile-nav-item:nth-child(1){
+    animation:profileItemIn .38s cubic-bezier(.16,1,.3,1) .17s forwards;
+}
+
+.profile-menu.open .profile-nav-item:nth-child(2){
+    animation:profileItemIn .38s cubic-bezier(.16,1,.3,1) .24s forwards;
+}
+
+.profile-menu.open .profile-nav-item:nth-child(3){
+    animation:profileItemIn .38s cubic-bezier(.16,1,.3,1) .31s forwards;
+}
+
+/* LOGOUT */
+
+.profile-menu .logout-button{
+    opacity:0;
+    transform:translateY(8px);
+}
+
+.profile-menu.open .logout-button{
+    animation:profileItemIn .38s cubic-bezier(.16,1,.3,1) .38s forwards;
+}
+
+/* ENTER */
+
+@keyframes profileItemIn{
+    from{
+        opacity:0;
+        transform:translateY(8px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes profileFadeIn{
+    from{
+        opacity:0;
+    }
+
+    to{
+        opacity:1;
+    }
+}
+
+/* EXIT — REVERSE ORDER */
+
+.profile-menu.closing .logout-button{
+    animation:profileItemOut .18s ease 0s forwards;
+}
+
+.profile-menu.closing .profile-nav-item:nth-child(3){
+    animation:profileItemOut .18s ease .04s forwards;
+}
+
+.profile-menu.closing .profile-nav-item:nth-child(2){
+    animation:profileItemOut .18s ease .08s forwards;
+}
+
+.profile-menu.closing .profile-nav-item:nth-child(1){
+    animation:profileItemOut .18s ease .12s forwards;
+}
+
+.profile-menu.closing .profile-info{
+    animation:profileItemOut .18s ease .16s forwards;
+}
+
+@keyframes profileItemOut{
+    from{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+    to{
+        opacity:0;
+        transform:translateY(-6px);
     }
 }
 
@@ -894,11 +1039,62 @@ color:black;
         <p>Official SSLG Communication Platform</p>
     </div>
 
-    <div class="header-right">
-      <button id="headerLoginBtn" class="login-btn" onclick="openLogin()">
-    👤 <span>Login</span>
-</button>
+   <div class="header-right">
+
+    <button id="headerLoginBtn" class="login-btn" onclick="openLogin()">
+        👤 <span>Login</span>
+    </button>
+
+    <div id="logoutMenu" class="profile-menu">
+
+        <div class="profile-info">
+
+            <img id="profilePhoto"
+                 src=""
+                 alt="Profile Photo">
+
+            <div class="profile-details">
+                <strong id="profileName">User</strong>
+                <small id="profileEmail"></small>
+            </div>
+
+        </div>
+
+        <div class="profile-divider"></div>
+
+        <div class="profile-nav">
+
+            <a href="profile.html" class="profile-nav-item">
+                <span class="profile-nav-icon">👤</span>
+                <span>Profile</span>
+            </a>
+
+            <a href="friends.html" class="profile-nav-item">
+                <span class="profile-nav-icon">👥</span>
+                <span>Add Friends</span>
+            </a>
+
+            <a href="voice.html" class="profile-nav-item">
+                <span class="profile-nav-icon">🗣️</span>
+                <span>Your Concern</span>
+            </a>
+
+        </div>
+
+        <div class="profile-divider"></div>
+
+        <button
+            type="button"
+            class="logout-button"
+            onclick="logoutUser()">
+
+            🚪 Log Out
+
+        </button>
+
     </div>
+
+</div>
 
 </div>
 
@@ -1017,7 +1213,7 @@ and connect with the school community.
         <span>Polls</span>
     </a>
 
-  <a href="javascript:void(0)" class="nav-item" onclick="toggleProfileMenu()">
+ <a href="profile.html" class="nav-item">
     <div id="profileNavPhoto">👤</div>
     <span>Profile</span>
 </a>
@@ -1025,43 +1221,48 @@ and connect with the school community.
 </div>
 
 <script>
-function toggleLogoutMenu() {
-    const menu = document.getElementById("logoutMenu");
-
-    if (menu.style.display === "block") {
-        menu.style.display = "none";
-    } else {
-        menu.style.display = "block";
-    }
-}
-
-    function toggleLogoutMenu() {
-    const menu = document.getElementById("logoutMenu");
-
-    if (menu.style.display === "block") {
-        menu.style.display = "none";
-    } else {
-        menu.style.display = "block";
-    }
-}
 
    window.userLoggedIn = false;
 
-   function toggleProfileMenu() {
+   function toggleProfileMenu(){
 
     if (!window.userLoggedIn) {
         openLogin();
         return;
     }
 
-
     const menu = document.getElementById("logoutMenu");
 
-    if (menu.style.display === "block") {
-        menu.style.display = "none";
-    } else {
-        menu.style.display = "block";
+    if (!menu) return;
+
+    /* CLOSE */
+    if (menu.classList.contains("open")) {
+
+        menu.classList.remove("open");
+        menu.classList.add("closing");
+
+        menu.addEventListener("animationend", function handleClose(e){
+
+            if (e.animationName !== "profileMenuOut") return;
+
+            menu.style.display = "none";
+            menu.classList.remove("closing");
+
+            menu.removeEventListener(
+                "animationend",
+                handleClose
+            );
+
+        });
+
+        return;
     }
+
+    menu.style.display = "block";
+
+    requestAnimationFrame(() => {
+        menu.classList.add("open");
+    });
 }
    
 </script>
@@ -1096,12 +1297,12 @@ days + "d " + hours + "h " + minutes + "m";
         <p>Sign in to continue</p>
 
         <button id="googleLoginBtn" onclick="googleLogin()">
-Continue with Google
-</button>
+            Continue with Google
+        </button>
 
-     
     </div>
-            </div>
+
+</div>
 </div>
         
 
@@ -1393,52 +1594,6 @@ onAuthStateChanged(auth, (user) => {
 });
 
 </script>
-<div id="logoutMenu" class="profile-menu">
-
-    <div class="profile-info">
-
-        <img id="profilePhoto"
-             src=""
-             alt="Profile Photo">
-
-        <div class="profile-details">
-            <strong id="profileName">User</strong>
-            <small id="profileEmail"></small>
-        </div>
-
-    </div>
-
-    <div class="profile-divider"></div>
-
-    <div class="profile-nav">
-
-        <a href="profile.html" class="profile-nav-item">
-            <span class="profile-nav-icon">👤</span>
-            <span>Profile</span>
-        </a>
-
-        <a href="friends.html" class="profile-nav-item">
-            <span class="profile-nav-icon">👥</span>
-            <span>Add Friends</span>
-        </a>
-
-        <a href="voice.html" class="profile-nav-item">
-            <span class="profile-nav-icon">🗣️</span>
-            <span>Your Concern</span>
-        </a>
-
-    </div>
-
-    <div class="profile-divider"></div>
-
-    <button
-        type="button"
-        class="logout-button"
-        onclick="logoutUser()">
-
-        🚪 Log Out
-
-    </button>
 
 </div>
 </body>
