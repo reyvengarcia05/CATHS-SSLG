@@ -1459,78 +1459,156 @@ CELLPHONE DITO BE AHHAHAAHHAA
 }
 
     /* ==============================
-   SECTION SEARCH
+/* ==============================
+   SECTION SEARCH - AESTHETIC
 ================================= */
 
 .section-search-wrapper{
     position:relative;
     width:100%;
+    margin-bottom:32px;
 }
 
 .section-search-wrapper > label{
     display:block;
     margin-top:15px;
-    margin-bottom:8px;
+    margin-bottom:10px;
     font-weight:600;
 }
 
 #sectionSearch{
     width:100%;
-    padding:15px;
+    padding:15px 18px;
+
     border:none;
     outline:none;
+
     border-radius:15px;
+
     font-size:14px;
-    margin-bottom:0;
+
+    background:#fff;
+    color:#222;
+
+    margin:0;
+
+    box-shadow:
+        0 4px 14px rgba(0,0,0,.06);
+
+    transition:
+        box-shadow .25s ease,
+        transform .25s ease;
+}
+
+#sectionSearch:focus{
+    box-shadow:
+        0 8px 22px rgba(0,0,0,.14);
+
+    transform:translateY(-1px);
 }
 
 .section-suggestions{
     position:absolute;
-    top:100%;
+
+    top:calc(100% + 8px);
     left:0;
     right:0;
-        
-.section-search-wrapper{
-    position:relative;
-    width:100%;
-    margin-bottom:25px;
-}
 
-    background:white;
+    background:rgba(255,255,255,.98);
 
-    border-radius:0 0 15px 15px;
+    border-radius:16px;
 
-    max-height:220px;
+    max-height:230px;
     overflow-y:auto;
 
-    box-shadow:0 10px 30px rgba(0,0,0,.18);
+    padding:7px;
+
+    box-shadow:
+        0 14px 35px rgba(0,0,0,.16),
+        0 4px 12px rgba(0,0,0,.08);
 
     z-index:5000;
 
     display:none;
+
+    border:1px solid rgba(24,60,140,.08);
+
+    opacity:0;
+    transform:translateY(-8px) scale(.98);
+
+    transform-origin:top center;
+
+    transition:
+        opacity .22s ease,
+        transform .22s cubic-bezier(.16,1,.3,1);
+}
+
+/* Ipapakita kapag may results */
+.section-suggestions[style*="display: block"]{
+    display:block;
+
+    animation:
+        sectionSuggestionsIn
+        .28s
+        cubic-bezier(.16,1,.3,1)
+        forwards;
+}
+
+@keyframes sectionSuggestionsIn{
+
+    from{
+        opacity:0;
+        transform:translateY(-8px) scale(.98);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
 }
 
 .section-option{
-    padding:13px 15px;
+    padding:12px 14px;
 
     color:#183c8c;
-    background:white;
+    background:transparent;
 
     font-size:14px;
+    font-weight:500;
+
+    border-radius:11px;
+
     cursor:pointer;
 
-    transition:.2s ease;
+    transition:
+        background .2s ease,
+        transform .2s ease,
+        color .2s ease;
 }
 
 .section-option:hover{
     background:#eef4ff;
+
+    color:#0d2c7a;
+
+    transform:translateX(3px);
+}
+
+.section-option:active{
+    transform:scale(.98);
 }
 
 .section-option.no-result{
     color:#777;
     cursor:default;
+
+    text-align:center;
 }
 
+.section-option.no-result:hover{
+    background:transparent;
+    transform:none;
+}
 .section-option.no-result:hover{
     background:white;
 }
@@ -1638,12 +1716,11 @@ or suggestions to help improve our school community.
 
     <label for="sectionSearch">Section</label>
 
-    <input
+    <input>
         type="text"
         id="sectionSearch"
-        placeholder="🔍 Search your section..."
+       placeholder="🔍 Search and select your section..."
         autocomplete="off"
-    >
 
     <div id="sectionSuggestions" class="section-suggestions"></div>
 
