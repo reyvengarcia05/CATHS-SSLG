@@ -1239,7 +1239,7 @@ and connect with the school community.
         <span>Polls</span>
     </a>
 
- <a href="profile.html" class="nav-item">
+ <a href="#" class="nav-item" onclick="openProfile(event)">
     <div id="profileNavPhoto">👤</div>
     <span>Profile</span>
 </a>
@@ -1396,6 +1396,24 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 const googleProvider = new GoogleAuthProvider();
+
+// =========================
+// PROFILE NAVIGATION
+// =========================
+
+window.openProfile = function(event) {
+
+    event.preventDefault();
+
+    // Kapag may naka-login
+    if (auth.currentUser) {
+        window.location.href = "profile.html";
+        return;
+    }
+
+    // Kapag walang naka-login
+    openLogin(false);
+};
 
 // =========================
 // STUDENT VOICE
