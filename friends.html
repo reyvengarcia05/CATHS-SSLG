@@ -711,10 +711,14 @@ function renderSearchResults(users){
 
 async function getRequestBetween(otherUid){
   if(!firebaseUser) return null;
+
+  // Only a CURRENT pending request should affect the search button.
+  // Old accepted/rejected requests must not make the button say Respond.
   const sent = await getDocs(query(
     collection(db,'friendRequests'),
     where('from','==',firebaseUser.uid),
     where('to','==',otherUid),
+    where('status','==','pending'),
     limit(1)
   ));
   if(!sent.empty) return {id:sent.docs[0].id,...sent.docs[0].data()};
@@ -723,9 +727,11 @@ async function getRequestBetween(otherUid){
     collection(db,'friendRequests'),
     where('from','==',otherUid),
     where('to','==',firebaseUser.uid),
+    where('status','==','pending'),
     limit(1)
   ));
   if(!incoming.empty) return {id:incoming.docs[0].id,...incoming.docs[0].data()};
+
   return null;
 }
 
