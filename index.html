@@ -379,19 +379,27 @@ color:black;
 
 
 
-   .profile-menu {
-    display: none;
-    position: fixed;
-    bottom: 85px;
-    right: 15px;
-    width: 260px;
-    background: rgba(255,255,255,.95);
-    color: #00296B;
-    border-radius: 18px;
-    padding: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,.3);
-    z-index: 9999;
-    backdrop-filter: blur(15px);
+  .profile-menu{
+    display:none;
+    position:fixed;
+    bottom:85px;
+    right:15px;
+
+    width:280px;
+    max-width:calc(100vw - 30px);
+
+    background:rgba(255,255,255,.96);
+    color:#00296B;
+
+    border-radius:20px;
+    padding:16px;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.28);
+    z-index:99999;
+
+    backdrop-filter:blur(20px);
+
+    animation:profilePop .22s ease;
 }
 
 .profile-info {
@@ -434,6 +442,62 @@ color:black;
     margin: 12px 0;
 }
 
+   .profile-nav{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.profile-nav-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    width:100%;
+    padding:12px 13px;
+
+    border-radius:13px;
+
+    text-decoration:none;
+    color:#00296B;
+
+    font-size:13px;
+    font-weight:600;
+
+    transition:.2s ease;
+}
+
+.profile-nav-item:hover{
+    background:#eef4ff;
+    transform:translateX(3px);
+}
+
+.profile-nav-icon{
+    width:30px;
+    height:30px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:9px;
+    background:#f0f4ff;
+
+    font-size:17px;
+}
+
+@keyframes profilePop{
+    from{
+        opacity:0;
+        transform:translateY(8px) scale(.97);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+}
+   
 .logout-button {
     width: 100%;
     padding: 11px;
@@ -651,19 +715,19 @@ color:black;
         height: 25px !important;
     }
 
-    /* PROFILE MENU */
-    .profile-menu {
-        bottom: 78px;
-        right: 10px;
-        width: min(280px, calc(100vw - 20px));
-        border-radius: 18px;
-        padding: 14px;
-    }
+   .profile-menu{
+    bottom:78px;
+    right:10px;
+    width:calc(100vw - 20px);
+    max-width:300px;
+    border-radius:18px;
+    padding:14px;
+}
 
-    .profile-info img {
-        width: 46px;
-        height: 46px;
-    }
+.profile-nav-item{
+    padding:11px 12px;
+    font-size:12px;
+}
 
     .profile-details strong {
         font-size: 14px;
@@ -1329,8 +1393,7 @@ onAuthStateChanged(auth, (user) => {
 });
 
 </script>
-
-    <div id="logoutMenu" class="profile-menu">
+<div id="logoutMenu" class="profile-menu">
 
     <div class="profile-info">
 
@@ -1339,14 +1402,30 @@ onAuthStateChanged(auth, (user) => {
              alt="Profile Photo">
 
         <div class="profile-details">
-
-            <strong id="profileName">
-                User
-            </strong>
-
+            <strong id="profileName">User</strong>
             <small id="profileEmail"></small>
-
         </div>
+
+    </div>
+
+    <div class="profile-divider"></div>
+
+    <div class="profile-nav">
+
+        <a href="profile.html" class="profile-nav-item">
+            <span class="profile-nav-icon">👤</span>
+            <span>Profile</span>
+        </a>
+
+        <a href="friends.html" class="profile-nav-item">
+            <span class="profile-nav-icon">👥</span>
+            <span>Add Friends</span>
+        </a>
+
+        <a href="voice.html" class="profile-nav-item">
+            <span class="profile-nav-icon">🗣️</span>
+            <span>Your Concern</span>
+        </a>
 
     </div>
 
@@ -1355,7 +1434,6 @@ onAuthStateChanged(auth, (user) => {
     <button
         type="button"
         class="logout-button"
-        id="logoutButton"
         onclick="logoutUser()">
 
         🚪 Log Out
@@ -1363,6 +1441,5 @@ onAuthStateChanged(auth, (user) => {
     </button>
 
 </div>
-    
 </body>
 </html>
