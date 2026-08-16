@@ -1071,6 +1071,9 @@ modal.style.display="none";
 </script>
 
 <script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
 import {
     getAuth,
     GoogleAuthProvider,
@@ -1094,9 +1097,16 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+
+const googleProvider = new GoogleAuthProvider();
 const facebookProvider = new FacebookAuthProvider();
-   window.openStudentVoice = function(event) {
+
+
+// =========================
+// STUDENT VOICE
+// =========================
+
+window.openStudentVoice = function(event) {
 
     event.preventDefault();
 
@@ -1109,37 +1119,48 @@ const facebookProvider = new FacebookAuthProvider();
 };
 
 
-   //* GOOGLE DITO JUSKO PARA DI NAKAKALITO *//
+// =========================
+// GOOGLE LOGIN
+// =========================
 
 window.googleLogin = async function () {
 
     try {
 
-        await signInWithPopup(auth, provider);
+        await signInWithPopup(auth, googleProvider);
 
         closeLogin();
 
-        document.getElementById("loginModal").style.display = "none";
-
-        // Punta agad sa Student Voice pagkatapos mag-login
         window.location.href = "voice.html";
 
     } catch (error) {
 
-        console.error("Login error:", error);
-        alert("Login failed: " + error.message);
+        console.error("Google login error:", error);
+
+        alert("Google login failed: " + error.message);
 
     }
 
 };
 
+
+// =========================
+// FACEBOOK LOGIN
+// =========================
+
 window.facebookLogin = async function () {
 
     try {
 
-        const result = await signInWithPopup(auth, facebookProvider);
+        const result = await signInWithPopup(
+            auth,
+            facebookProvider
+        );
 
-        console.log("Facebook login successful:", result.user);
+        console.log(
+            "Facebook login successful:",
+            result.user
+        );
 
         closeLogin();
 
@@ -1147,29 +1168,49 @@ window.facebookLogin = async function () {
 
     } catch (error) {
 
-        console.error("Facebook login error:", error);
+        console.error(
+            "Facebook login error:",
+            error
+        );
 
         if (error.code === "auth/popup-closed-by-user") {
             return;
         }
 
         if (error.code === "auth/account-exists-with-different-credential") {
-            alert("This email is already registered using another login method.");
+
+            alert(
+                "This Facebook email is already registered using another login method."
+            );
+
             return;
         }
 
-        alert("Facebook login failed: " + error.message);
+        if (error.code === "auth/popup-blocked") {
+
+            alert(
+                "The Facebook login popup was blocked by your browser. Please allow popups for this site."
+            );
+
+            return;
+        }
+
+        alert(
+            "Facebook login failed: " + error.message
+        );
+
     }
 
 };
-   
-// LOG OUT FUNCTION DITO HAHAHA BWISET
+
+
+// =========================
+// LOGOUT
+// =========================
 
 window.logoutUser = async function () {
 
     try {
-
-        console.log("Logout button clicked");
 
         await signOut(auth);
 
@@ -1177,7 +1218,8 @@ window.logoutUser = async function () {
         localStorage.removeItem("userPhoto");
         localStorage.removeItem("userEmail");
 
-        const menu = document.getElementById("logoutMenu");
+        const menu =
+            document.getElementById("logoutMenu");
 
         if (menu) {
             menu.style.display = "none";
@@ -1187,9 +1229,14 @@ window.logoutUser = async function () {
 
     } catch (error) {
 
-        console.error("Logout error:", error);
+        console.error(
+            "Logout error:",
+            error
+        );
 
-        alert("Logout failed: " + error.message);
+        alert(
+            "Logout failed: " + error.message
+        );
 
     }
 
@@ -1197,58 +1244,161 @@ window.logoutUser = async function () {
 
 
 // =========================
-// AUTH STATE JUSKO HAHAHAHA NAHIHILO NAKO BYE
+// AUTH STATE
 // =========================
 
 onAuthStateChanged(auth, (user) => {
-   
- window.userLoggedIn = !!user;
-    const headerBtn = document.getElementById("headerLoginBtn");
-    const profileName = document.getElementById("profileName");
-    const profileEmail = document.getElementById("profileEmail");
-    const profilePhoto = document.getElementById("profilePhoto");
-    const profileNavPhoto = document.getElementById("profileNavPhoto");
+
+    window.userLoggedIn = !!user;
+
+    const headerBtn =
+        document.getElementById("headerLoginBtn");
+
+    const profileName =
+        document.getElementById("profileName");
+
+    const profileEmail =
+        document.getElementById("profileEmail");
+
+    const profilePhoto =
+        document.getElementById("profilePhoto");
+
+    const profileNavPhoto =
+        document.getElementById("profileNavPhoto");
+
 
     if (user) {
 
-        // Auto close login modal
         closeLogin();
 
-        // Save user
-        localStorage.setItem("userName", user.displayName || "User");
-        localStorage.setItem("userPhoto", user.photoURL || "");
-        localStorage.setItem("userEmail", user.email || "");
 
-        // Profile menu
-        profileName.textContent = user.displayName || "User";
-        profileEmail.textContent = user.email || "";
+        // SAVE USER
+        localStorage.setItem(
+            "userName",
+            user.displayName || "User"
+        );
 
-        if (user.photoURL) {
-            profilePhoto.src = user.photoURL;
+        localStorage.setItem(
+            "userPhoto",
+            user.photoURL || ""
+        );
 
-            profileNavPhoto.innerHTML = `
-                <img src="${user.photoURL}"
-                     style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
-            `;
+        localStorage.setItem(
+            "userEmail",
+            user.email || ""
+        );
+
+
+        // PROFILE MENU
+        if (profileName) {
+            profileName.textContent =
+                user.displayName || "User";
         }
 
-        // Header button
-        headerBtn.innerHTML = `
-            <img src="${user.photoURL || ''}"
-                 style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
-            <span>${user.displayName || "User"}</span> ▼
-        `;
+        if (profileEmail) {
+            profileEmail.textContent =
+                user.email || "";
+        }
 
-        headerBtn.onclick = () => toggleProfileMenu();
+
+        // PROFILE PHOTO
+        if (user.photoURL) {
+
+            if (profilePhoto) {
+                profilePhoto.src =
+                    user.photoURL;
+            }
+
+            if (profileNavPhoto) {
+
+                profileNavPhoto.innerHTML = `
+                    <img
+                        src="${user.photoURL}"
+                        style="
+                            width:32px;
+                            height:32px;
+                            border-radius:50%;
+                            object-fit:cover;
+                        "
+                    >
+                `;
+
+            }
+
+        } else {
+
+            if (profileNavPhoto) {
+                profileNavPhoto.innerHTML = "👤";
+            }
+
+        }
+
+
+        // HEADER LOGIN BUTTON
+        if (headerBtn) {
+
+            if (user.photoURL) {
+
+                headerBtn.innerHTML = `
+                    <img
+                        src="${user.photoURL}"
+                        style="
+                            width:32px;
+                            height:32px;
+                            border-radius:50%;
+                            object-fit:cover;
+                        "
+                    >
+
+                    <span>
+                        ${user.displayName || "User"}
+                    </span>
+
+                    ▼
+                `;
+
+            } else {
+
+                headerBtn.innerHTML = `
+                    👤
+                    <span>
+                        ${user.displayName || "User"}
+                    </span>
+                    ▼
+                `;
+
+            }
+
+            headerBtn.onclick = () => {
+                toggleProfileMenu();
+            };
+
+        }
+
 
     } else {
 
-        headerBtn.innerHTML = "👤 Login";
-        headerBtn.onclick = () => openLogin();
+        // NOT LOGGED IN
 
-        profileNavPhoto.innerHTML = "👤";
+        if (headerBtn) {
+
+            headerBtn.innerHTML =
+                "👤 Login";
+
+            headerBtn.onclick = () => {
+                openLogin();
+            };
+
+        }
+
+        if (profileNavPhoto) {
+            profileNavPhoto.innerHTML = "👤";
+        }
+
     }
+
 });
+
 </script>
 
     <div id="logoutMenu" class="profile-menu">
