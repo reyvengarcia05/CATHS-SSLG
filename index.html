@@ -1040,9 +1040,9 @@ days + "d " + hours + "h " + minutes + "m";
 Continue with Google
 </button>
 
-        <button class="facebook-login">
-            🔷 Continue with Facebook
-        </button>
+       <button class="facebook-login" onclick="facebookLogin()">
+    🔷 Continue with Facebook
+</button>
 
     </div>
             </div>
@@ -1071,11 +1071,10 @@ modal.style.display="none";
 </script>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
 import {
     getAuth,
     GoogleAuthProvider,
+    FacebookAuthProvider,
     signInWithPopup,
     signOut,
     onAuthStateChanged
@@ -1096,6 +1095,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
+const facebookProvider = new FacebookAuthProvider();
    window.openStudentVoice = function(event) {
 
     event.preventDefault();
@@ -1133,6 +1133,36 @@ window.googleLogin = async function () {
 
 };
 
+window.facebookLogin = async function () {
+
+    try {
+
+        const result = await signInWithPopup(auth, facebookProvider);
+
+        console.log("Facebook login successful:", result.user);
+
+        closeLogin();
+
+        window.location.href = "voice.html";
+
+    } catch (error) {
+
+        console.error("Facebook login error:", error);
+
+        if (error.code === "auth/popup-closed-by-user") {
+            return;
+        }
+
+        if (error.code === "auth/account-exists-with-different-credential") {
+            alert("This email is already registered using another login method.");
+            return;
+        }
+
+        alert("Facebook login failed: " + error.message);
+    }
+
+};
+   
 // LOG OUT FUNCTION DITO HAHAHA BWISET
 
 window.logoutUser = async function () {
