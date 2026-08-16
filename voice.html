@@ -1578,6 +1578,139 @@ CELLPHONE DITO BE AHHAHAAHHAA
     background:transparent;
     transform:none;
 }
+/* =========================================
+   SECTION REQUIRED POPUP
+========================================= */
+
+.section-error-popup{
+    max-width:420px;
+    width:90%;
+    padding:35px 30px;
+    border-radius:28px;
+
+    background:rgba(34,42,60,.97);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+
+    border:1px solid rgba(255,255,255,.15);
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.5),
+        inset 0 1px 0 rgba(255,255,255,.08);
+
+    animation:sectionPopupIn .35s cubic-bezier(.16,1,.3,1);
+}
+
+.section-error-icon{
+    width:75px;
+    height:75px;
+
+    margin:0 auto 18px;
+
+    border-radius:50%;
+
+    background:rgba(255,215,0,.15);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:40px;
+
+    box-shadow:
+        0 0 0 8px rgba(255,215,0,.05);
+}
+
+.section-error-popup h2{
+    color:white;
+    font-size:26px;
+    margin-bottom:10px;
+}
+
+.section-error-popup p{
+    color:rgba(255,255,255,.82);
+    font-size:14px;
+    line-height:1.6;
+    margin-bottom:24px;
+}
+
+.try-again-btn{
+    width:100%;
+    height:55px;
+
+    border:none;
+    border-radius:15px;
+
+    background:#FFD93D;
+    color:#0d2c7a;
+
+    font-size:16px;
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+}
+
+.try-again-btn:hover{
+    transform:translateY(-2px);
+
+    background:#FFE66D;
+
+    box-shadow:
+        0 8px 20px rgba(255,217,61,.25);
+}
+
+.try-again-btn:active{
+    transform:scale(.97);
+}
+
+@keyframes sectionPopupIn{
+
+    from{
+        opacity:0;
+        transform:translateY(20px) scale(.9);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+
+}
+
+@media(max-width:768px){
+
+    .section-error-popup{
+        width:92%;
+        padding:30px 22px;
+        border-radius:24px;
+    }
+
+    .section-error-icon{
+        width:65px;
+        height:65px;
+        font-size:34px;
+    }
+
+    .section-error-popup h2{
+        font-size:23px;
+    }
+
+    .section-error-popup p{
+        font-size:13px;
+    }
+
+    .try-again-btn{
+        height:52px;
+        font-size:15px;
+    }
+
+}
+    
 </style>
 </head>
 
@@ -1846,17 +1979,12 @@ window.verifySectionCode = function(){
 
     /* NO SECTION */
 
-    if(!section){
+   if(!section){
 
-        message.style.display = "block";
-        message.style.background = "#ffe5e5";
-        message.style.color = "#b00020";
+    openSectionRequiredPopup();
 
-        message.textContent =
-            "⚠️ Please select your section first.";
-
-        return;
-    }
+    return;
+}
 
 
     /* NO CODE */
@@ -3382,6 +3510,71 @@ document.addEventListener(
 );
 
 </script>
+
+
+    <!-- SECTION REQUIRED POPUP -->
+<div id="sectionRequiredPopup" class="popup">
+    <div class="popup-content section-error-popup">
+
+        <div class="section-error-icon">⚠️</div>
+
+        <h2>Section Required</h2>
+
+        <p>
+            Please select your section from the list.
+        </p>
+
+        <button
+            type="button"
+            class="try-again-btn"
+            onclick="closeSectionRequiredPopup()">
+            Try Again
+        </button>
+
+    </div>
+</div>
+
+    function openSectionRequiredPopup(){
+
+    const popup =
+        document.getElementById(
+            "sectionRequiredPopup"
+        );
+
+    if(popup){
+        popup.style.display = "flex";
+    }
+
+}
+
+
+function closeSectionRequiredPopup(){
+
+    const popup =
+        document.getElementById(
+            "sectionRequiredPopup"
+        );
+
+    if(popup){
+        popup.style.display = "none";
+    }
+
+    const sectionSearch =
+        document.getElementById(
+            "sectionSearch"
+        );
+
+    if(sectionSearch){
+
+        sectionSearch.focus();
+
+        showSectionSuggestions(
+            sectionSearch.value
+        );
+
+    }
+
+}
     
 </body>
 </html>
