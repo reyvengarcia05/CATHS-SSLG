@@ -362,15 +362,14 @@ font-size:28px;
 cursor:pointer;
 }
 
-.google-login,
-.facebook-login{
-width:100%;
-padding:14px;
-margin-top:15px;
-border:none;
-border-radius:15px;
-cursor:pointer;
-font-weight:700;
+.google-login{
+    width:100%;
+    padding:14px;
+    margin-top:15px;
+    border:none;
+    border-radius:15px;
+    cursor:pointer;
+    font-weight:700;
 }
 
 .google-login{
@@ -378,10 +377,7 @@ background:white;
 color:black;
 }
 
-.facebook-login{
-background:#1877F2;
-color:white;
-}
+
 
    .profile-menu {
     display: none;
@@ -704,7 +700,6 @@ color:white;
     }
 
     .google-login,
-    .facebook-login,
     #googleLoginBtn {
         padding: 13px;
         font-size: 13px;
@@ -1040,10 +1035,7 @@ days + "d " + hours + "h " + minutes + "m";
 Continue with Google
 </button>
 
-       <button class="facebook-login" onclick="facebookLogin()">
-    🔷 Continue with Facebook
-</button>
-
+     
     </div>
             </div>
 </div>
@@ -1077,7 +1069,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/fireba
 import {
     getAuth,
     GoogleAuthProvider,
-    FacebookAuthProvider,
     signInWithPopup,
     signOut,
     onAuthStateChanged
@@ -1099,8 +1090,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 const googleProvider = new GoogleAuthProvider();
-const facebookProvider = new FacebookAuthProvider();
-
 
 // =========================
 // STUDENT VOICE
@@ -1138,66 +1127,6 @@ window.googleLogin = async function () {
         console.error("Google login error:", error);
 
         alert("Google login failed: " + error.message);
-
-    }
-
-};
-
-
-// =========================
-// FACEBOOK LOGIN
-// =========================
-
-window.facebookLogin = async function () {
-
-    try {
-
-        const result = await signInWithPopup(
-            auth,
-            facebookProvider
-        );
-
-        console.log(
-            "Facebook login successful:",
-            result.user
-        );
-
-        closeLogin();
-
-        window.location.href = "voice.html";
-
-    } catch (error) {
-
-        console.error(
-            "Facebook login error:",
-            error
-        );
-
-        if (error.code === "auth/popup-closed-by-user") {
-            return;
-        }
-
-        if (error.code === "auth/account-exists-with-different-credential") {
-
-            alert(
-                "This Facebook email is already registered using another login method."
-            );
-
-            return;
-        }
-
-        if (error.code === "auth/popup-blocked") {
-
-            alert(
-                "The Facebook login popup was blocked by your browser. Please allow popups for this site."
-            );
-
-            return;
-        }
-
-        alert(
-            "Facebook login failed: " + error.message
-        );
 
     }
 
