@@ -1489,6 +1489,12 @@ CELLPHONE DITO BE AHHAHAAHHAA
     top:100%;
     left:0;
     right:0;
+        
+.section-search-wrapper{
+    position:relative;
+    width:100%;
+    margin-bottom:25px;
+}
 
     background:white;
 
@@ -1744,9 +1750,11 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
         return;
     }
 
-    const section = document.getElementById("section").value.trim();
-    const concern = document.getElementById("concern").value.trim();
-    const category = document.getElementById("category").value;
+  const section = document.getElementById("section").value.trim();
+const sectionSearch = document.getElementById("sectionSearch").value.trim();
+
+const concern = document.getElementById("concern").value.trim();
+const category = document.getElementById("category").value;
 
     let name = "";
     let email = "";
@@ -1763,10 +1771,16 @@ document.getElementById("voiceForm").addEventListener("submit", async function(e
         }
     }
 
-    if (!section || !concern || !category) {
-        alert("Please complete all fields.");
-        return;
-    }
+   if (!section) {
+    alert("Please select your section from the list.");
+    sectionSearch.focus();
+    return;
+}
+
+if (!concern || !category) {
+    alert("Please complete all fields.");
+    return;
+}
 
     const data = {
         name: name,
