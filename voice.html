@@ -1712,16 +1712,56 @@ or suggestions to help improve our school community.
 
     <label for="sectionSearch">Section</label>
 
+   <input
+    type="text"
+    id="sectionSearch"
+    placeholder="🔍 Search and select your section..."
+    autocomplete="off"
+>
+
+<div id="sectionSuggestions" class="section-suggestions"></div>
+
+<input type="hidden" id="section">
+
+<!-- SECTION VERIFICATION -->
+<div id="sectionVerification" style="display:none; margin-top:10px;">
+
+    <label for="verificationCode">
+        🔐 Section Verification Code
+    </label>
+
     <input
-        type="text"
-        id="sectionSearch"
-        placeholder="🔍 Search and select your section..."
+        type="password"
+        id="verificationCode"
+        placeholder="Enter your section code"
         autocomplete="off"
     >
 
-    <div id="sectionSuggestions" class="section-suggestions"></div>
+    <button
+        type="button"
+        id="verifySectionBtn"
+        class="submit-btn"
+        style="
+            height:58px;
+            margin:0 0 10px 0;
+            font-size:15px;
+        "
+        onclick="verifySectionCode()"
+    >
+        🔐 Verify Section
+    </button>
 
-    <input type="hidden" id="section">
+    <div
+        id="verificationMessage"
+        style="
+            display:none;
+            padding:12px;
+            border-radius:12px;
+            text-align:center;
+            font-weight:600;
+            margin-bottom:15px;
+        "
+    ></div>
 
 </div>
 
@@ -1814,93 +1854,533 @@ anonymous.addEventListener("change", () => {
 });
 
 
-document.getElementById("voiceForm").addEventListener("submit", async function(e){
+let sectionVerified = false;
+let verifiedSection = "";
 
-    e.preventDefault();
 
-    // REQUIRE LOGIN
-    if (!firebaseUser) {
-        openLogin();
+window.verifySectionCode = function(){
+
+    const section =
+        document.getElementById("section").value.trim();
+
+    const code =
+        document.getElementById("verificationCode").value.trim();
+
+    const message =
+        document.getElementById("verificationMessage");
+
+    const button =
+        document.getElementById("verifySectionBtn");
+
+
+    /* NO SECTION */
+
+    if(!section){
+
+        message.style.display = "block";
+        message.style.background = "#ffe5e5";
+        message.style.color = "#b00020";
+
+        message.textContent =
+            "⚠️ Please select your section first.";
+
         return;
     }
 
-  const section = document.getElementById("section").value.trim();
-const sectionSearch = document.getElementById("sectionSearch").value.trim();
 
-const concern = document.getElementById("concern").value.trim();
-const category = document.getElementById("category").value;
+    /* NO CODE */
 
-    let name = "";
-    let email = "";
+    if(!code){
 
-    if (anonymous.checked) {
-        name = "Anonymous";
-    } else {
-        name = nameInput.value.trim();
-        email = firebaseUser.email || "";
+        message.style.display = "block";
+        message.style.background = "#fff3cd";
+        message.style.color = "#856404";
 
-        if (!name) {
-            alert("Please enter your name.");
+        message.textContent =
+            "🔐 Please enter your section verification code.";
+
+        return;
+    }
+
+
+    /* GET CORRECT CODE */
+
+    const correctCode = SECTION_CODES[section];
+
+
+    /* SECTION DOES NOT EXIST */
+
+    if(!correctCode){
+
+        sectionVerified = false;
+        verifiedSection = "";
+
+        message.style.display = "block";
+        message.style.background = "#ffe5e5";
+        message.style.color = "#b00020";
+
+        message.textContent =
+            "❌ Section code is not configured.";
+
+        return;
+    }
+
+
+    /* CHECK CODE */
+
+    if(code === correctCode){
+
+        sectionVerified = true;
+        verifiedSection = section;
+
+
+        message.style.display = "block";
+        message.style.background = "#d4edda";
+        message.style.color = "#155724";
+
+        message.textContent =
+            "✅ Section verified successfully!";
+
+
+        button.textContent =
+            "✅ Section Verified";
+
+        button.style.background =
+            "#28a745";
+
+        button.style.color =
+            "white";
+
+        button.disabled = true;
+
+
+        document.getElementById(
+            "verificationCode"
+        ).readOnly = true;
+
+
+        return;
+
+    }
+
+
+    /* WRONG CODE */
+
+    sectionVerified = false;
+    verifiedSection = "";
+
+
+    message.style.display = "block";
+    message.style.background = "#ffe5e5";
+    message.style.color = "#b00020";
+
+    message.textContent =
+        "❌ Incorrect section verification code.";
+
+
+    button.disabled = false;
+
+    button.textContent =
+        "🔐 Verify Section";
+
+};
+
+
+/* =========================================
+   SUBMIT CONCERN
+========================================= */
+
+document
+.getElementById("voiceForm")
+.addEventListener(
+    "submit",
+    async function(e){
+
+        e.preventDefault();
+
+
+        /* =====================================
+           REQUIRE LOGIN
+        ===================================== */
+
+        if(!firebaseUser){
+
+            openLogin();
+
             return;
+
         }
+
+
+        const section =
+            document
+            .getElementById("section")
+            .value
+            .trim();
+
+
+        const sectionSearch =
+            document
+            .getElementById("sectionSearch")
+            .value
+            .trim();
+
+
+        const verificationCode =
+            document
+            .getElementById("verificationCode")
+            .value
+            .trim();
+
+
+        const concern =
+            document
+            .getElementById("concern")
+            .value
+            .trim();
+
+
+        const category =
+            document
+            .getElementById("category")
+            .value;
+
+
+        /* =====================================
+           CHECK SECTION
+        ===================================== */
+
+        if(!section){
+
+            alert(
+                "Please select your section from the list."
+            );
+
+            sectionSearch.focus();
+
+            return;
+
+        }
+
+
+        /* =====================================
+           CHECK VERIFICATION
+        ===================================== */
+
+        if(
+            !sectionVerified ||
+            verifiedSection !== section
+        ){
+
+            alert(
+                "Please verify your section first."
+            );
+
+            document
+            .getElementById(
+                "verificationCode"
+            )
+            .focus();
+
+            return;
+
+        }
+
+
+        /* =====================================
+           CHECK CODE
+        ===================================== */
+
+        if(!verificationCode){
+
+            alert(
+                "Please enter your section verification code."
+            );
+
+            return;
+
+        }
+
+
+        /* =====================================
+           CHECK FORM
+        ===================================== */
+
+        if(
+            !concern ||
+            !category
+        ){
+
+            alert(
+                "Please complete all fields."
+            );
+
+            return;
+
+        }
+
+
+        /* =====================================
+           NAME
+        ===================================== */
+
+        let name = "";
+        let email = "";
+
+
+        if(
+            anonymous.checked
+        ){
+
+            name = "Anonymous";
+
+        }else{
+
+            name =
+                nameInput.value.trim();
+
+            email =
+                firebaseUser.email || "";
+
+
+            if(!name){
+
+                alert(
+                    "Please enter your name."
+                );
+
+                return;
+
+            }
+
+        }
+
+
+        /* =====================================
+           DATA
+        ===================================== */
+
+        const data = {
+
+            action:
+                "submitConcern",
+
+            name:
+                name,
+
+            email:
+                email,
+
+            section:
+                section,
+
+            verificationCode:
+                verificationCode,
+
+            concern:
+                "[" +
+                category +
+                "] " +
+                concern
+
+        };
+
+
+        /* =====================================
+           SUBMIT
+        ===================================== */
+
+        try{
+
+            document
+            .getElementById(
+                "submittingPopup"
+            )
+            .style.display = "flex";
+
+
+            const response =
+                await fetch(
+                    SCRIPT_URL,
+                    {
+                        method: "POST",
+
+                        body:
+                            JSON.stringify(data)
+                    }
+                );
+
+
+            const result =
+                await response.json();
+
+
+            /* =================================
+               SERVER REJECTED
+            ================================= */
+
+            if(!result.success){
+
+                document
+                .getElementById(
+                    "submittingPopup"
+                )
+                .style.display = "none";
+
+
+                alert(
+                    result.message ||
+                    "Failed to submit concern."
+                );
+
+                return;
+
+            }
+
+
+            /* =================================
+               SUCCESS
+            ================================= */
+
+            document
+            .getElementById(
+                "submittingPopup"
+            )
+            .style.display = "none";
+
+
+            document
+            .getElementById(
+                "successPopup"
+            )
+            .style.display = "flex";
+
+
+            const sound =
+                document.getElementById(
+                    "successSound"
+                );
+
+
+            if(sound){
+
+                sound
+                .play()
+                .catch(() => {});
+
+            }
+
+
+            /* RESET FORM */
+
+            document
+            .getElementById(
+                "voiceForm"
+            )
+            .reset();
+
+
+            /* RESET SECTION */
+
+            document
+            .getElementById(
+                "section"
+            )
+            .value = "";
+
+
+            document
+            .getElementById(
+                "sectionSearch"
+            )
+            .value = "";
+
+
+            document
+            .getElementById(
+                "verificationCode"
+            )
+            .value = "";
+
+
+            document
+            .getElementById(
+                "sectionVerification"
+            )
+            .style.display = "none";
+
+
+            document
+            .getElementById(
+                "verificationMessage"
+            )
+            .style.display = "none";
+
+
+            /* RESET VERIFICATION */
+
+            sectionVerified = false;
+
+            verifiedSection = "";
+
+
+            const verifyButton =
+                document.getElementById(
+                    "verifySectionBtn"
+                );
+
+
+            verifyButton.disabled = false;
+
+            verifyButton.textContent =
+                "🔐 Verify Section";
+
+            verifyButton.style.background =
+                "#FFD93D";
+
+            verifyButton.style.color =
+                "#0d2c7a";
+
+
+            document
+            .getElementById(
+                "verificationCode"
+            )
+            .readOnly = false;
+
+
+            /* RESTORE USER NAME */
+
+            if(firebaseUser){
+
+                nameInput.value =
+                    firebaseUser.displayName || "";
+
+                nameInput.readOnly = true;
+
+            }
+
+
+        }catch(error){
+
+            document
+            .getElementById(
+                "submittingPopup"
+            )
+            .style.display = "none";
+
+
+            console.error(error);
+
+
+            alert(
+                "Failed to submit concern."
+            );
+
+        }
+
     }
-
-   if (!section) {
-    alert("Please select your section from the list.");
-    sectionSearch.focus();
-    return;
-}
-
-if (!concern || !category) {
-    alert("Please complete all fields.");
-    return;
-}
-
-    const data = {
-        name: name,
-        section: section,
-        concern: "[" + category + "] " + concern,
-        email: email
-    };
-
-try {
-
-    document.getElementById("submittingPopup").style.display = "flex";
-
-    await fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify(data)
-    });
-
-
-    document.getElementById("submittingPopup").style.display = "none";
-
- 
-    document.getElementById("successPopup").style.display = "flex";
-
-    const sound = document.getElementById("successSound");
-
-    if (sound) {
-        sound.play().catch(() => {});
-    }
-
-    document.getElementById("voiceForm").reset();
-
-    if (firebaseUser) {
-        nameInput.value = firebaseUser.displayName || "";
-        nameInput.readOnly = true;
-    }
-
-} catch (error) {
-
-    document.getElementById("submittingPopup").style.display = "none";
-
-    console.error(error);
-    alert("Failed to submit concern.");
-
-}
-
-});
+);
 
 function closeConcerns() {
     document.getElementById("concernsModal").style.display = "none";
@@ -2473,9 +2953,68 @@ if(navText){
 
 <script>
 
+<script>
+
+const SECTION_CODES = {
+
+  "7-Agoncillo": "483721#",
+  "7-Constantino": "C615904",
+  "7-Delos Santos": "827316D",
+  "7-Guillermo": "274856S",
+  "7-Nacpil": "N731492",
+  "7-Ocampo": "958214O",
+  "7-Tolentino": "T346781",
+  "7-Zaide": "Z820563E",
+
+  "8-Archimedes": "514827S",
+  "8-Bernoulli": "693152I",
+  "8-Pythagoras": "PY428715",
+  "8-Hypatia": "761304IA",
+  "8-Pascal": "235896",
+  "8-Euler": "E847231R",
+  "8-Euclid": "391625D",
+  "8-Ptolemy": "672418MY",
+  "8-Descartes": "CART159734",
+
+  "9-Aristotle": "RIS583216",
+  "9-Galilei": "724951LEI",
+  "9-Copernicus": "COP316847",
+  "9-Pasteur": "865203TEUR",
+  "9-Mendel": "ME492731L",
+  "9-Faraday": "137568DAY",
+  "9-Newton": "651824TON",
+  "9-Edison": "308475SON",
+  "9-Einstein": "976312TEIN",
+
+  "10-Aquino": "AQ428163",
+  "10-Bonifacio": "715294CIO",
+  "10-Del Pilar": "PILAR863517",
+  "10-Jacinto": "TO249681",
+  "10-Luna": "LUNA531728",
+  "10-Quezon": "QUE694315",
+  "10-Rizal": "182957AL",
+
+  "11-Twain": "736481IN",
+  "11-Farmer": "FARM295714",
+  "11-Lovelace": "814326LOVE",
+  "11-Guerrero": "GUER463859",
+  "11-Morgan": "927145MOR",
+  "11-Silverton": "TON351682",
+  "11-Westinghouse": "67823HOUSE4",
+
+  "12-Ansel": "542813SEL",
+  "12-Babbage": "BAB819365",
+  "12-Javier": "JAV274631",
+  "12-Pacioli": "635927CIOLI",
+  "12-Shakespeare": "391847PEARE",
+  "12-Mendeleev": "758216LEEV"
+
+};
+
+
 const sections = [
 
-    "7-Agoncillo",
+        "7-Agoncillo",
     "7-Constantino",
     "7-Delos Santos",
     "7-Guillermo",
@@ -2526,8 +3065,6 @@ const sections = [
     "12-Pacioli",
     "12-Shakespeare",
     "12-Mendeleev",
- 
-    
 ];
 
 
@@ -2605,23 +3142,111 @@ function showSectionSuggestions(searchText = ""){
             section;
 
 
-        option.addEventListener(
-            "click",
-            function(){
+       option.addEventListener(
+    "click",
+    function(){
 
-                sectionSearch.value =
-                    section;
+        sectionSearch.value =
+            section;
+
+        sectionHidden.value =
+            section;
+
+        sectionSuggestions.style.display =
+            "none";
 
 
-                sectionHidden.value =
-                    section;
+        /* RESET VERIFICATION */
+
+        sectionVerified = false;
+
+        verifiedSection = "";
 
 
-                sectionSuggestions.style.display =
-                    "none";
+        const verificationBox =
+            document.getElementById(
+                "sectionVerification"
+            );
 
-            }
-        );
+        const verificationCode =
+            document.getElementById(
+                "verificationCode"
+            );
+
+        const verificationMessage =
+            document.getElementById(
+                "verificationMessage"
+            );
+
+        const verifyButton =
+            document.getElementById(
+                "verifySectionBtn"
+            );
+
+
+        /* SHOW VERIFICATION */
+
+        if(verificationBox){
+
+            verificationBox.style.display =
+                "block";
+
+        }
+
+
+        /* RESET CODE */
+
+        if(verificationCode){
+
+            verificationCode.value = "";
+
+            verificationCode.readOnly = false;
+
+        }
+
+
+        /* RESET MESSAGE */
+
+        if(verificationMessage){
+
+            verificationMessage.style.display =
+                "none";
+
+        }
+
+
+        /* RESET BUTTON */
+
+        if(verifyButton){
+
+            verifyButton.disabled = false;
+
+            verifyButton.textContent =
+                "🔐 Verify Section";
+
+            verifyButton.style.background =
+                "#FFD93D";
+
+            verifyButton.style.color =
+                "#0d2c7a";
+
+        }
+
+
+        /* FOCUS CODE */
+
+        if(verificationCode){
+
+            setTimeout(() => {
+
+                verificationCode.focus();
+
+            }, 150);
+
+        }
+
+    }
+);
 
 
         sectionSuggestions.appendChild(
@@ -2666,8 +3291,80 @@ sectionSearch.addEventListener(
 */
 
 sectionSearch.addEventListener(
-    "focus",
+    "input",
     function(){
+
+        sectionHidden.value = "";
+
+
+        /* RESET VERIFICATION */
+
+        sectionVerified = false;
+
+        verifiedSection = "";
+
+
+        const verificationBox =
+            document.getElementById(
+                "sectionVerification"
+            );
+
+        const verificationCode =
+            document.getElementById(
+                "verificationCode"
+            );
+
+        const verificationMessage =
+            document.getElementById(
+                "verificationMessage"
+            );
+
+        const verifyButton =
+            document.getElementById(
+                "verifySectionBtn"
+            );
+
+
+        if(verificationBox){
+
+            verificationBox.style.display =
+                "none";
+
+        }
+
+
+        if(verificationCode){
+
+            verificationCode.value = "";
+
+            verificationCode.readOnly = false;
+
+        }
+
+
+        if(verificationMessage){
+
+            verificationMessage.style.display =
+                "none";
+
+        }
+
+
+        if(verifyButton){
+
+            verifyButton.disabled = false;
+
+            verifyButton.textContent =
+                "🔐 Verify Section";
+
+            verifyButton.style.background =
+                "#FFD93D";
+
+            verifyButton.style.color =
+                "#0d2c7a";
+
+        }
+
 
         showSectionSuggestions(
             this.value
@@ -2675,7 +3372,6 @@ sectionSearch.addEventListener(
 
     }
 );
-
 
 /*
    CLOSE KAPAG CLICK SA LABAS
