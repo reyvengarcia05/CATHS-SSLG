@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Profile | CATHS-MAIN</title>
+<link rel="icon" type="image/png" href="sslg-logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#003DA5;--dark:#00296B;--yellow:#FFD93D}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
+body{min-height:100vh;color:#fff;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700);padding-bottom:95px}
+.header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:rgba(0,0,0,.15);backdrop-filter:blur(16px)}
+.logo-group{display:flex;gap:7px;align-items:center}.logo{width:48px;height:48px;object-fit:contain}.caths-logo{width:48px;height:48px;object-fit:contain}
+.header-center{flex:1;text-align:center;padding:0 10px}.header-center h1{font-size:19px}.header-center p{font-size:10px;opacity:.85}
+.container{max-width:920px;margin:auto;padding:24px 16px}
+.profile-card{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(18px);border-radius:28px;overflow:hidden;box-shadow:0 18px 45px rgba(0,0,0,.2)}
+.cover{height:190px;background:linear-gradient(135deg,rgba(0,41,107,.95),rgba(0,61,165,.75),rgba(255,215,0,.55))}
+.profile-main{padding:0 30px 30px}.avatar-wrap{margin-top:-66px;width:132px;height:132px;border-radius:50%;border:6px solid rgba(255,255,255,.95);background:#dfe7f5;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.25)}.avatar-wrap img{width:100%;height:100%;object-fit:cover}.fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:60px;color:#183c8c}
+.name{font-size:30px;font-weight:800;margin-top:16px}.username{font-size:13px;opacity:.8;margin-top:2px}.email{font-size:12px;opacity:.7;margin-top:5px}.bio{margin-top:15px;line-height:1.7;font-size:14px;max-width:720px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.chip{padding:7px 11px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.12);font-size:11px}
+.actions{display:flex;gap:10px;margin-top:22px}.back-btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#FFD93D;color:#0d2c7a;padding:11px 18px;border-radius:13px;font-weight:800;font-size:13px}
+.status{margin-top:18px;padding:12px;border-radius:14px;background:rgba(255,255,255,.08);font-size:12px;text-align:center}
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;height:78px;background:linear-gradient(90deg,#1e3a8a,#b59f1a);display:flex;justify-content:space-around;align-items:center;z-index:50;backdrop-filter:blur(14px)}
+.nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#fff;font-size:9px;min-width:60px;transition:.22s}.nav-item div{font-size:22px;height:26px;display:flex;align-items:center;justify-content:center;margin-bottom:3px}.nav-item:hover{transform:translateY(-2px)}
+@media(max-width:768px){.header{padding:9px 10px}.logo,.caths-logo{width:39px;height:39px}.header-center h1{font-size:13px}.header-center p{font-size:7px}.container{padding:14px 12px}.cover{height:135px}.profile-main{padding:0 18px 22px}.avatar-wrap{width:104px;height:104px;margin-top:-52px}.name{font-size:23px}.bio{font-size:12px}.bottom-nav{height:70px}.nav-item{font-size:8px;min-width:52px}.nav-item div{font-size:20px}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="logo-group"><img src="sslg-logo.png" class="logo" alt="SSLG"><img src="caths-logo.png" class="caths-logo" alt="CATHS"></div>
+  <div class="header-center"><h1>CATHS-MAIN Student Profile</h1><p>School Community Profile</p></div>
+  <div style="width:82px"></div>
+</header>
+<main class="container">
+  <div class="profile-card">
+    <div class="cover"></div>
+    <section class="profile-main">
+      <div class="avatar-wrap"><img id="avatar" style="display:none" alt="Profile photo"><div id="fallback" class="fallback">👤</div></div>
+      <h2 id="name" class="name">Loading...</h2>
+      <div id="username" class="username"></div>
+      <div id="email" class="email"></div>
+      <div id="bio" class="bio">Loading profile...</div>
+      <div class="chips"><span id="sectionChip" class="chip" style="display:none"></span><span class="chip">🎓 CATHS-MAIN Student</span></div>
+      <div class="actions"><a class="back-btn" href="friends.html">← Back to Friends</a></div>
+      <div id="status" class="status">Loading profile...</div>
+    </section>
+  </div>
+</main>
+<nav class="bottom-nav">
+  <a href="index.html" class="nav-item"><div>🏠</div><span>Home</span></a>
+  <a href="news.html" class="nav-item"><div>📢</div><span>News</span></a>
+  <a href="voice.html" class="nav-item"><div>🗣️</div><span>Student Voice</span></a>
+  <a href="friends.html" class="nav-item active"><div>👥</div><span>Friends</span></a>
+  <a href="profile.html" class="nav-item"><div>👤</div><span>Profile</span></a>
+</nav>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+import {getFirestore,doc,getDoc} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+const firebaseConfig={apiKey:"AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",authDomain:"caths-page.firebaseapp.com",projectId:"caths-page",storageBucket:"caths-page.firebasestorage.app",messagingSenderId:"945498022620",appId:"1:945498022620:web:71aeb4cd2472e061aeca19",measurementId:"G-CBG1YSK13G"};
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+const $=id=>document.getElementById(id); const params=new URLSearchParams(location.search); const uid=params.get('uid');
+function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[c]));}
+async function load(){
+  if(!uid){$('status').textContent='No profile was selected.';return;}
+  try{
+    const snap=await getDoc(doc(db,'users',uid));
+    if(!snap.exists()){ $('name').textContent='Profile not found'; $('bio').textContent='This student profile is no longer available.'; $('status').textContent='Profile unavailable.'; return; }
+    const d=snap.data()||{};
+    $('name').textContent=d.name||d.nickname||d.displayName||'Student';
+    $('username').textContent=d.username?`@${d.username}`:'';
+    $('email').textContent='';
+    $('bio').textContent=d.bio||'No bio yet.';
+    if(d.section){$('sectionChip').style.display='inline-flex';$('sectionChip').textContent=`📚 ${d.section}`;}
+    if(d.photoURL){$('avatar').src=d.photoURL;$('avatar').style.display='block';$('fallback').style.display='none';}
+    $('status').textContent='Profile loaded successfully.';
+  }catch(e){console.error(e);$('name').textContent='Unable to load profile';$('bio').textContent='Please check your Firebase Firestore rules.';$('status').textContent='Could not load this profile.';}
+}
+onAuthStateChanged(auth,user=>{ if(!user){ location.href='profile.html'; return; } load(); });
+</script>
+</body>
+</html>
