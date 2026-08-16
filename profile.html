@@ -639,7 +639,23 @@ window.addFriendFromReaction=addFriendFromReaction;
 .reaction-picker.open{display:flex}
 .reaction-emoji{border:none;background:transparent;font-size:20px;padding:6px;cursor:pointer;border-radius:9px}
 .reaction-emoji:hover{background:#eef4ff}
-.post-counts{font-size:11px;opacity:.72;margin:8px 0 0}
+
+.post-counts{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:11px;opacity:.78;margin:8px 0 0}
+.reaction-summary{display:inline-flex;align-items:center;gap:3px;border:none;background:transparent;color:inherit;font:inherit;cursor:pointer;padding:0}
+.reaction-summary:hover{text-decoration:underline}
+.post-manage{margin-left:auto;position:relative}
+.post-manage-btn{border:none;background:rgba(255,255,255,.10);color:#fff;width:32px;height:32px;border-radius:10px;cursor:pointer;font-size:17px;transition:.2s}
+.post-manage-btn:hover{background:rgba(255,255,255,.18);transform:translateY(-1px)}
+.post-menu-backdrop{position:fixed;inset:0;display:none;z-index:100000}.post-menu-backdrop.open{display:block}
+.post-menu{position:absolute;right:0;top:40px;min-width:205px;background:#fff;color:#183c8c;border-radius:15px;padding:7px;box-shadow:0 18px 45px rgba(0,0,0,.28);z-index:100001}
+.post-menu button{width:100%;border:none;background:transparent;text-align:left;padding:11px 12px;border-radius:10px;color:#183c8c;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.post-menu button:hover{background:#eef4ff}.post-menu button.danger{color:#c0392b}.post-menu button.danger:hover{background:#fff0ee}
+.manage-modal,.privacy-modal{position:fixed;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:18px;z-index:100002}.manage-modal.open,.privacy-modal.open{display:flex}
+.manage-box,.privacy-box{width:100%;max-width:440px;background:#fff;color:#183c8c;border-radius:24px;padding:24px;box-shadow:0 24px 70px rgba(0,0,0,.35);animation:postPop .22s ease}
+.manage-box h3,.privacy-box h3{font-size:20px;margin-bottom:7px}.manage-box p,.privacy-box p{font-size:12px;color:#6f7b91;line-height:1.55}
+.manage-actions{display:flex;gap:10px;margin-top:18px}.manage-primary,.manage-danger,.manage-cancel{flex:1;height:46px;border:none;border-radius:12px;font-weight:800;cursor:pointer}
+.manage-primary{background:#1e3a8a;color:#fff}.manage-danger{background:#d9534f;color:#fff}.manage-cancel{background:#eef2f8;color:#334}
+.privacy-option-list{display:grid;gap:10px;margin-top:17px}.privacy-option{width:100%;border:1px solid #dfe7f3;background:#f8faff;color:#183c8c;border-radius:14px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;font-weight:700;cursor:pointer}.privacy-option:hover,.privacy-option.active{background:#eef4ff;border-color:#1e3a8a}
+
 .post-counts button{border:none;background:transparent;color:inherit;font:inherit;cursor:pointer;padding:0;margin:0}
 .post-counts button:hover{text-decoration:underline}
 .share-context{margin-top:14px;border:1px solid rgba(24,60,140,.12);background:#f7f9fd;border-radius:15px;padding:14px;color:#183c8c}
@@ -1614,6 +1630,24 @@ window.addFriendFromReaction=addFriendFromReaction;
 </div>
 
 
+<!-- POST PRIVACY / DELETE MODALS -->
+<div id="privacyModal" class="privacy-modal"><div class="privacy-box">
+  <div class="post-modal-head"><h3>👁️ Who can see this?</h3><button class="modal-x" type="button" onclick="closePrivacyModal()">✕</button></div>
+  <p>Choose who can see this post. The change is saved immediately.</p>
+  <div class="privacy-option-list">
+    <button class="privacy-option" data-visibility="public" type="button" onclick="savePostVisibility('public')"><span>🌍 Public</span><span>Everyone</span></button>
+    <button class="privacy-option" data-visibility="friends" type="button" onclick="savePostVisibility('friends')"><span>👥 Friends Only</span><span>Your friends</span></button>
+    <button class="privacy-option" data-visibility="onlyMe" type="button" onclick="savePostVisibility('onlyMe')"><span>🔒 Only Me</span><span>Private</span></button>
+  </div>
+</div></div>
+<div id="deletePostModal" class="manage-modal"><div class="manage-box">
+  <div class="post-modal-head"><h3>🗑️ Delete Post?</h3><button class="modal-x" type="button" onclick="closeDeletePostModal()">✕</button></div>
+  <p>This post will be permanently removed from your profile. This action cannot be undone.</p>
+  <div class="manage-actions"><button class="manage-cancel" type="button" onclick="closeDeletePostModal()">Cancel</button><button id="confirmDeletePostBtn" class="manage-danger" type="button" onclick="confirmDeletePost()">Delete Post</button></div>
+</div></div>
+<div id="privacySuccessOverlay" class="manage-modal"><div class="manage-box"><h3>✓ Privacy Updated</h3><p>Your post visibility has been changed successfully.</p><div class="manage-actions"><button class="manage-primary" type="button" onclick="closeSimpleOverlay('privacySuccessOverlay')">Okay</button></div></div></div>
+<div id="deleteSuccessOverlay" class="manage-modal"><div class="manage-box"><h3>✓ Post Deleted</h3><p>Your post has been permanently removed.</p><div class="manage-actions"><button class="manage-primary" type="button" onclick="closeSimpleOverlay('deleteSuccessOverlay')">Okay</button></div></div></div>
+
 <!-- =========================
      CREATE POST MODAL
 ========================= -->
@@ -1965,10 +1999,11 @@ function renderPost(post){
     const visibilityLabel = post.visibility === 'friends' ? '👥 Friends Only' : post.visibility === 'onlyMe' ? '🔒 Only Me' : '🌍 Public';
     const sharedContext = post.isShared && post.originalAuthorName ? `
       <div class="share-context">
-        <div class="share-context-label">↗ Shared from an original post</div>
-        <div class="share-context-author">${escapePostHtml(post.originalAuthorName || 'User')}</div>
+        <div class="share-context-label">↗ Shared post</div>
+        <div class="share-context-author">Original post by ${escapePostHtml(post.originalAuthorName || 'User')}</div>
         <div class="share-context-text">${escapePostHtml(post.originalText || post.text || '')}</div>
       </div>` : '';
+    const own = auth.currentUser?.uid === post.authorUid;
     return `
       <article class="post-card" data-post-id="${escapePostHtml(post.id)}">
         <div class="post-head">
@@ -1978,19 +2013,23 @@ function renderPost(post){
             <div class="post-meta">${escapePostHtml(postTimeLabel(post.createdAt))}</div>
           </div>
           <span class="post-visibility">${visibilityLabel}</span>
+          ${own ? `<div class="post-manage">
+            <button class="post-manage-btn" type="button" onclick="togglePostMenu('${escapePostHtml(post.id)}',event)">⋯</button>
+            <div class="post-menu-backdrop" id="menu-backdrop-${escapePostHtml(post.id)}" onclick="closePostMenu('${escapePostHtml(post.id)}',event)">
+              <div class="post-menu" onclick="event.stopPropagation()">
+                <button type="button" onclick="openPrivacyModal('${escapePostHtml(post.id)}','${escapePostHtml(post.visibility)}')">👁️ Change who can see this</button>
+                <button class="danger" type="button" onclick="openDeletePostModal('${escapePostHtml(post.id)}')">🗑️ Delete Post</button>
+              </div>
+            </div>
+          </div>` : ''}
         </div>
         ${post.isShared ? '' : `<div class="post-text">${escapePostHtml(post.text)}</div>`}
         ${sharedContext}
-        <div class="post-counts" id="counts-${escapePostHtml(post.id)}">
-          <button type="button" onclick="openReactions('${escapePostHtml(post.id)}')">👍 <span id="reactionCount-${escapePostHtml(post.id)}">0</span> reactions</button>
-          <span> · 💬 <span id="commentCount-${escapePostHtml(post.id)}">0</span> · ↗ <span id="shareCount-${escapePostHtml(post.id)}">0</span></span>
-        </div>
+        <div class="post-counts" id="counts-${escapePostHtml(post.id)}">Loading reactions...</div>
         <div class="post-actions">
           <div class="reaction-wrap">
-            <button class="post-action" type="button" onclick="toggleReactionPicker('${escapePostHtml(post.id)}', event)">👍 React</button>
-            <div class="reaction-picker" id="picker-${escapePostHtml(post.id)}">
-              ${['👍','❤️','😂','😮','😢'].map(e=>`<button class="reaction-emoji" type="button" onclick="reactToPost('${escapePostHtml(post.id)}','${e}',event)">${e}</button>`).join('')}
-            </div>
+            <button class="post-action" id="react-btn-${escapePostHtml(post.id)}" type="button" onclick="toggleReactionPicker('${escapePostHtml(post.id)}', event)">React</button>
+            <div class="reaction-picker" id="picker-${escapePostHtml(post.id)}">${['👍','❤️','😂','😮','😢'].map(e=>`<button class="reaction-emoji" type="button" onclick="reactToPost('${escapePostHtml(post.id)}','${e}',event)">${e}</button>`).join('')}</div>
           </div>
           <button class="post-action" type="button" onclick="openComments('${escapePostHtml(post.id)}')">💬 Comment</button>
           <button class="post-action" type="button" onclick="sharePost('${escapePostHtml(post.id)}')">↗ Share</button>
@@ -2011,39 +2050,89 @@ document.addEventListener('click',e=>{
 
 async function reactToPost(postId, emoji, event){
     event.stopPropagation();
-    const user = auth.currentUser;
-    if(!user) return;
+    const user=auth.currentUser;
+    if(!user)return;
     try{
-        const ref = doc(db,'posts',postId,'reactions',user.uid);
-        const existing = await getDoc(ref);
-        if(existing.exists() && existing.data()?.emoji === emoji){
-            await deleteDoc(ref);
-        }else{
-            await setDoc(ref,{uid:user.uid,emoji,updatedAt:serverTimestamp()});
+        const ref=doc(db,'posts',postId,'reactions',user.uid);
+        const existing=await getDoc(ref);
+        if(existing.exists()&&existing.data()?.emoji===emoji){await deleteDoc(ref);}
+        else{
+            const snap=await getDoc(doc(db,'users',user.uid));
+            const profile=snap.exists()?snap.data()||{}:{};
+            await setDoc(ref,{uid:user.uid,emoji,authorName:profile.name||profile.nickname||profile.displayName||user.displayName||'User',username:profile.username||'',photoURL:profile.photoURL||user.photoURL||'',updatedAt:serverTimestamp()});
         }
         document.getElementById('picker-'+postId)?.classList.remove('open');
         await refreshPostCounts(postId);
-    }catch(error){
-        console.error(error);
-        alert('Could not update reaction.');
-    }
+    }catch(error){console.error(error);alert('Could not update reaction.');}
 }
 window.reactToPost=reactToPost;
 
 async function refreshPostCounts(postId){
     try{
-        const reactionsSnap = await getDocs(collection(db,'posts',postId,'reactions'));
-        const commentsSnap = await getDocs(collection(db,'posts',postId,'comments'));
-        const shareSnap = await getDoc(doc(db,'posts',postId));
-        const shareCount = shareSnap.exists() ? Number(shareSnap.data().shareCount || 0) : 0;
-        const reactionEl = document.getElementById('reactionCount-'+postId);
-        const commentEl = document.getElementById('commentCount-'+postId);
-        const shareEl = document.getElementById('shareCount-'+postId);
-        if(reactionEl) reactionEl.textContent = String(reactionsSnap.size);
-        if(commentEl) commentEl.textContent = String(commentsSnap.size);
-        if(shareEl) shareEl.textContent = String(shareCount);
-    }catch(error){ console.error('refresh counts',error); }
+        const reactionsSnap=await getDocs(collection(db,'posts',postId,'reactions'));
+        const commentsSnap=await getDocs(collection(db,'posts',postId,'comments'));
+        const postSnap=await getDoc(doc(db,'posts',postId));
+        const tally={'👍':0,'❤️':0,'😂':0,'😮':0,'😢':0};
+        reactionsSnap.docs.forEach(d=>{const e=d.data()?.emoji||'👍';tally[e]=(tally[e]||0)+1;});
+        const parts=Object.entries(tally).filter(([_,n])=>n>0).map(([e,n])=>`<button type="button" class="reaction-summary" onclick="openReactions('${escapePostHtml(postId)}')">${e} ${n}</button>`);
+        const reactionSummary=parts.length?parts.join(' · '):`<button type="button" class="reaction-summary" onclick="openReactions('${escapePostHtml(postId)}')">No reactions yet</button>`;
+        const shareCount=postSnap.exists()?Number(postSnap.data()?.shareCount||0):0;
+        const countsEl=document.getElementById('counts-'+postId);
+        if(countsEl)countsEl.innerHTML=`${reactionSummary} <span>· 💬 ${commentsSnap.size}</span> <span>· ↗ ${shareCount}</span>`;
+        const btn=document.getElementById('react-btn-'+postId);
+        if(btn&&auth.currentUser){
+            const mine=reactionsSnap.docs.find(d=>d.id===auth.currentUser.uid)?.data()?.emoji;
+            btn.textContent=mine?`${mine} Reacted`:'React';
+            btn.classList.toggle('active',!!mine);
+        }
+    }catch(error){console.error('refresh counts',error);}
 }
+
+let activeManagePostId=null;
+function togglePostMenu(postId,event){event.stopPropagation();document.querySelectorAll('.post-menu-backdrop.open').forEach(el=>el.classList.remove('open'));document.getElementById('menu-backdrop-'+postId)?.classList.add('open');}
+window.togglePostMenu=togglePostMenu;
+function closePostMenu(postId,event){if(event)event.stopPropagation();document.getElementById('menu-backdrop-'+postId)?.classList.remove('open');}
+window.closePostMenu=closePostMenu;
+function openDeletePostModal(postId){activeManagePostId=postId;closePostMenu(postId);document.getElementById('deletePostModal')?.classList.add('open');}
+window.openDeletePostModal=openDeletePostModal;
+function closeDeletePostModal(){activeManagePostId=null;document.getElementById('deletePostModal')?.classList.remove('open');}
+window.closeDeletePostModal=closeDeletePostModal;
+async function confirmDeletePost(){
+    const user=auth.currentUser,postId=activeManagePostId;if(!user||!postId)return;
+    const btn=document.getElementById('confirmDeletePostBtn');if(btn){btn.disabled=true;btn.textContent='Deleting...';}
+    try{
+        const ref=doc(db,'posts',postId),snap=await getDoc(ref);
+        if(!snap.exists())throw new Error('This post no longer exists.');
+        if(snap.data()?.authorUid!==user.uid)throw new Error('You can only delete your own post.');
+        await deleteDoc(ref);
+        document.querySelector(`.post-card[data-post-id="${CSS.escape(postId)}"]`)?.remove();
+        const count=document.getElementById('postsCount');if(count)count.textContent=String(document.querySelectorAll('.post-card').length);
+        closeDeletePostModal();document.getElementById('deleteSuccessOverlay')?.classList.add('open');
+        if(!document.querySelector('.post-card'))document.getElementById('postsList').innerHTML='<div class="empty-posts"><div class="empty-icon">📝</div><h3>No Posts Yet</h3><p>Your future posts will appear here.</p></div>';
+    }catch(e){console.error(e);alert(e.message||'Could not delete post.');}
+    finally{if(btn){btn.disabled=false;btn.textContent='Delete Post';}}
+}
+window.confirmDeletePost=confirmDeletePost;
+function openPrivacyModal(postId,currentVisibility){activeManagePostId=postId;closePostMenu(postId);document.querySelectorAll('.privacy-option').forEach(b=>b.classList.toggle('active',b.dataset.visibility===currentVisibility));document.getElementById('privacyModal')?.classList.add('open');}
+window.openPrivacyModal=openPrivacyModal;
+function closePrivacyModal(){activeManagePostId=null;document.getElementById('privacyModal')?.classList.remove('open');}
+window.closePrivacyModal=closePrivacyModal;
+async function savePostVisibility(visibility){
+    const user=auth.currentUser,postId=activeManagePostId;if(!user||!postId)return;
+    document.querySelectorAll('.privacy-option').forEach(b=>b.disabled=true);
+    try{
+        const ref=doc(db,'posts',postId),snap=await getDoc(ref);
+        if(!snap.exists()||snap.data()?.authorUid!==user.uid)throw new Error('You can only change your own post privacy.');
+        await updateDoc(ref,{visibility});
+        const card=document.querySelector(`.post-card[data-post-id="${CSS.escape(postId)}"]`);
+        const badge=card?.querySelector('.post-visibility');if(badge)badge.textContent=visibility==='friends'?'👥 Friends Only':visibility==='onlyMe'?'🔒 Only Me':'🌍 Public';
+        closePrivacyModal();document.getElementById('privacySuccessOverlay')?.classList.add('open');
+    }catch(e){console.error(e);alert(e?.code==='permission-denied'?'Firestore is blocking the privacy change.':'Could not change who can see this post.');}
+    finally{document.querySelectorAll('.privacy-option').forEach(b=>b.disabled=false);}
+}
+window.savePostVisibility=savePostVisibility;
+function closeSimpleOverlay(id){document.getElementById(id)?.classList.remove('open');}
+window.closeSimpleOverlay=closeSimpleOverlay;
 
 async function openComments(postId){
     activeCommentPostId = postId;
