@@ -2694,15 +2694,15 @@ async function openAllConcerns(){
     }
 
 
-    if(!isAdminUser()){
+  if(!window.isAdminUser()){
 
-        alert(
-            "🛡️ Admin access only."
-        );
+    alert(
+        "🛡️ Admin access only."
+    );
 
-        return;
+    return;
 
-    }
+}
 
 
     const modal =
@@ -2985,7 +2985,7 @@ const googleProvider = new GoogleAuthProvider();
     "reyvenbermudo091@gmail.com",
 ];
 
-function isAdminUser(){
+window.isAdminUser = function(){
 
     if(!firebaseUser || !firebaseUser.email){
 
@@ -2994,17 +2994,20 @@ function isAdminUser(){
     }
 
     const userEmail =
-        firebaseUser.email
+        String(firebaseUser.email)
             .trim()
             .toLowerCase();
 
     return ADMIN_EMAILS
         .map(email =>
-            email.trim().toLowerCase()
+            String(email)
+                .trim()
+                .toLowerCase()
         )
         .includes(userEmail);
 
-}
+};
+       
 window.toggleProfileMenu = function(){
 
     if (!firebaseUser) {
