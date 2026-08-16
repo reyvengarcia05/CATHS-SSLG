@@ -1457,6 +1457,77 @@ CELLPHONE DITO BE AHHAHAAHHAA
         transform:translateY(-6px);
     }
 }
+
+    /* ==============================
+   SECTION SEARCH
+================================= */
+
+.section-search-wrapper{
+    position:relative;
+    width:100%;
+}
+
+.section-search-wrapper > label{
+    display:block;
+    margin-top:15px;
+    margin-bottom:8px;
+    font-weight:600;
+}
+
+#sectionSearch{
+    width:100%;
+    padding:15px;
+    border:none;
+    outline:none;
+    border-radius:15px;
+    font-size:14px;
+    margin-bottom:0;
+}
+
+.section-suggestions{
+    position:absolute;
+    top:100%;
+    left:0;
+    right:0;
+
+    background:white;
+
+    border-radius:0 0 15px 15px;
+
+    max-height:220px;
+    overflow-y:auto;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.18);
+
+    z-index:5000;
+
+    display:none;
+}
+
+.section-option{
+    padding:13px 15px;
+
+    color:#183c8c;
+    background:white;
+
+    font-size:14px;
+    cursor:pointer;
+
+    transition:.2s ease;
+}
+
+.section-option:hover{
+    background:#eef4ff;
+}
+
+.section-option.no-result{
+    color:#777;
+    cursor:default;
+}
+
+.section-option.no-result:hover{
+    background:white;
+}
     
 </style>
 </head>
@@ -1557,19 +1628,22 @@ or suggestions to help improve our school community.
     <label for="anonymous">Submit Anonymously</label>
 </div>
 
-<select id="section" required>
-    <option value="">Select Section</option>
+<div class="section-search-wrapper">
 
-    <option>SAMPLE TALAGA TO BE</option>
-    <option>SAMPLE TALAGA TO BE</option>
-    <option>SAMPLE TALAGA TO BE</option>
-    <option>SAMPLE TALAGA TO BE</option>
+    <label for="sectionSearch">Section</label>
 
-    <option>SAMPLE TALAGA TO BE</option>
-    <option>SAMPLE TALAGA TO BE</option>
-    <option>SAMPLE TALAGA TO BE</option>
-    <option>SAMPLE TALAGA TO BE</option>
-</select>
+    <input
+        type="text"
+        id="sectionSearch"
+        placeholder="🔍 Search your section..."
+        autocomplete="off"
+    >
+
+    <div id="sectionSuggestions" class="section-suggestions"></div>
+
+    <input type="hidden" id="section">
+
+</div>
 
 <select id="category" required>
     <option value="">Select Category</option>
@@ -2301,6 +2375,198 @@ if(navText){
                 };
 
             }
+
+        }
+
+    }
+);
+
+</script>
+
+<script>
+
+/* =========================================
+   SECTION SEARCH
+========================================= */
+
+const sections = [
+
+    "11-TWAIN",
+    "11-SHAKESPEARE",
+    "11-HUMSS",
+    "11-STEM",
+
+    "12-TWAIN",
+    "12-SHAKESPEARE",
+    "12-HUMSS",
+    "12-STEM"
+
+    // DAGDAG MO DITO ANG LAHAT NG TOTOONG SECTIONS
+];
+
+
+const sectionSearch =
+    document.getElementById("sectionSearch");
+
+const sectionSuggestions =
+    document.getElementById("sectionSuggestions");
+
+const sectionHidden =
+    document.getElementById("section");
+
+
+function showSectionSuggestions(searchText = ""){
+
+    const search =
+        searchText
+        .trim()
+        .toLowerCase();
+
+
+    /*
+       FILTER
+
+       Kahit partial lang ang tinype,
+       lalabas pa rin ang matching sections.
+    */
+
+    const filteredSections =
+        sections.filter(section => {
+
+            return section
+                .toLowerCase()
+                .includes(search);
+
+        });
+
+
+    sectionSuggestions.innerHTML = "";
+
+
+    /*
+       WALANG MATCH
+    */
+
+    if(filteredSections.length === 0){
+
+        sectionSuggestions.innerHTML = `
+            <div class="section-option no-result">
+                No matching section found
+            </div>
+        `;
+
+        sectionSuggestions.style.display = "block";
+
+        return;
+    }
+
+
+    /*
+       MAY MATCH
+    */
+
+    filteredSections.forEach(section => {
+
+        const option =
+            document.createElement("div");
+
+
+        option.className =
+            "section-option";
+
+
+        option.textContent =
+            section;
+
+
+        option.addEventListener(
+            "click",
+            function(){
+
+                sectionSearch.value =
+                    section;
+
+
+                sectionHidden.value =
+                    section;
+
+
+                sectionSuggestions.style.display =
+                    "none";
+
+            }
+        );
+
+
+        sectionSuggestions.appendChild(
+            option
+        );
+
+    });
+
+
+    sectionSuggestions.style.display =
+        "block";
+
+}
+
+
+/*
+   HABANG NAGTA-TYPE
+*/
+
+sectionSearch.addEventListener(
+    "input",
+    function(){
+
+        /*
+           Clear muna ang selected value
+           kapag binago ulit ang search.
+        */
+
+        sectionHidden.value = "";
+
+
+        showSectionSuggestions(
+            this.value
+        );
+
+    }
+);
+
+
+/*
+   KAPAG KINLICK ANG SEARCH BOX
+*/
+
+sectionSearch.addEventListener(
+    "focus",
+    function(){
+
+        showSectionSuggestions(
+            this.value
+        );
+
+    }
+);
+
+
+/*
+   CLOSE KAPAG CLICK SA LABAS
+*/
+
+document.addEventListener(
+    "click",
+    function(event){
+
+        if(
+            !event.target.closest(
+                ".section-search-wrapper"
+            )
+        ){
+
+            sectionSuggestions.style.display =
+                "none";
 
         }
 
