@@ -1957,10 +1957,6 @@ const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
 
-/* =========================================
-   PROFILE MENU
-========================================= */
-
 window.toggleProfileMenu = function(){
 
     if (!firebaseUser) {
@@ -1973,55 +1969,28 @@ window.toggleProfileMenu = function(){
     if (!menu) return;
 
     /* CLOSE */
-
     if (menu.classList.contains("open")) {
 
         menu.classList.remove("open");
         menu.classList.add("closing");
 
-        menu.addEventListener(
-            "animationend",
-            function handleClose(e){
+        menu.addEventListener("animationend", function handleClose(e){
 
-                if (e.animationName !== "profileMenuOut") {
-                    return;
-                }
+            if (e.animationName !== "profileMenuOut") return;
 
-                menu.style.display = "none";
-                menu.style.visibility = "hidden";
+            menu.style.display = "none";
+            menu.style.visibility = "hidden";
+            menu.classList.remove("closing");
 
-                menu.classList.remove("closing");
-
-                menu.removeEventListener(
-                    "animationend",
-                    handleClose
-                );
-
-            },
-            { once:true }
-        );
+        }, { once:true });
 
         return;
     }
 
     /* OPEN */
-
     menu.classList.remove("closing");
-
     menu.style.display = "block";
     menu.style.visibility = "visible";
-
-    requestAnimationFrame(() => {
-        menu.classList.add("open");
-    });
-    
-    }
-
-
-    /* OPEN */
-
-    menu.style.display = "block";
-    menu.classList.remove("closing");
 
     requestAnimationFrame(() => {
         menu.classList.add("open");
@@ -2082,18 +2051,15 @@ window.logoutUser = async function(){
         localStorage.removeItem("userPhoto");
         localStorage.removeItem("userEmail");
 
-        const menu =
-            document.getElementById("logoutMenu");
+        const menu = document.getElementById("logoutMenu");
 
-      if(menu){
+        if(menu){
 
-    menu.style.display = "none";
-    menu.style.visibility = "hidden";
+            menu.style.display = "none";
+            menu.style.visibility = "hidden";
 
-    menu.classList.remove("open");
-    menu.classList.remove("closing");
-
-}
+            menu.classList.remove("open");
+            menu.classList.remove("closing");
 
         }
 
@@ -2110,6 +2076,10 @@ window.logoutUser = async function(){
             "Logout failed: " +
             error.message
         );
+
+    }
+
+};
 
     }
 
