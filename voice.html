@@ -2292,7 +2292,9 @@ const data = {
 
     name: name,
 
-    email: email,
+    email: String(firebaseUser.email || "")
+        .trim()
+        .toLowerCase(),
 
     section: section,
 
@@ -2303,8 +2305,12 @@ const data = {
         category +
         "] " +
         concern
-
 };
+
+console.log("=== SUBMIT DEBUG ===");
+console.log("Firebase user:", firebaseUser);
+console.log("Firebase email:", firebaseUser.email);
+console.log("Data being sent:", data);
 
 
 /* TEST */
@@ -2327,21 +2333,21 @@ console.log(
             .style.display = "flex";
 
 
-            const response =
-                await fetch(
-                    SCRIPT_URL,
-                    {
-                        method: "POST",
+          const response =
+    await fetch(
+        SCRIPT_URL,
+        {
+            method: "POST",
 
-                        body:
-                            JSON.stringify(data)
-                    }
-                );
+            body: JSON.stringify(data)
+        }
+    );
 
+const result =
+    await response.json();
 
-            const result =
-                await response.json();
-
+console.log("=== SERVER RESPONSE ===");
+console.log(result);
 
             /* =================================
                SERVER REJECTED
@@ -2509,10 +2515,6 @@ console.log(
 
     }
 );
-
-function closeConcerns() {
-    document.getElementById("concernsModal").style.display = "none";
-}
 
 function closePopup() {
     document.getElementById("successPopup").style.display = "none";
