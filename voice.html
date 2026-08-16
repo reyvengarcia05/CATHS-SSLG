@@ -1887,8 +1887,20 @@ required></textarea>
 <button type="submit" class="submit-btn">
     Submit Concern
 </button>
-<button type="button" onclick="openConcerns()" class="view-btn">
-📥 View Concerns
+<button
+    type="button"
+    onclick="openMyConcerns()"
+    class="view-btn">
+    📄 See Your Concerns
+</button>
+
+<button
+    type="button"
+    id="seeAllConcernsBtn"
+    onclick="openAllConcerns()"
+    class="view-btn admin-only-btn"
+    style="display:none;">
+    🛡️ See All Concerns
 </button>
 
 </form>
@@ -2503,9 +2515,15 @@ function closePopup() {
 
     <div class="modal-content">
 
-        <button class="close-btn" onclick="closeConcerns()">✕</button>
+        <button
+            class="close-btn"
+            onclick="closeConcerns()">
+            ✕
+        </button>
 
-        <h2>📥 Student Concerns</h2>
+        <h2 id="concernsModalTitle">
+            📥 Student Concerns
+        </h2>
 
         <div id="concernsList"></div>
 
@@ -2513,86 +2531,302 @@ function closePopup() {
 
 </div>
 
+
 <script>
 
-function closePopup(){
-document.getElementById("successPopup").style.display = "none";
-}
+function closeConcerns(){
 
-async function openConcerns(){
-
-document.getElementById("concernsModal").style.display = "block";
-
-document.getElementById("concernsList").innerHTML = `
-<div class="loading-dots">
-    <span>.</span>
-    <span>.</span>
-    <span>.</span>
-    <span>.</span>
-</div>
-`;
-
-const response = await fetch(SCRIPT_URL);
+    document.getElementById(
+        "concernsModal"
+    ).style.display = "none";
 
 }
 
-</script>
 
-  <script>
+async function openMyConcerns(){
 
-function closePopup(){
-    document.getElementById("successPopup").style.display = "none";
-}
+    if(!firebaseUser){
 
-async function openConcerns(){
+        openLogin();
+        return;
 
-    document.getElementById("concernsModal").style.display = "block";
+    }
 
-    document.getElementById("concernsList").innerHTML = `
-    <div class="loading-dots">
-        <span>.</span>
-        <span>.</span>
-        <span>.</span>
-        <span>.</span>
-    </div>
+
+    const modal =
+        document.getElementById(
+            "concernsModal"
+        );
+
+    const list =
+        document.getElementById(
+            "concernsList"
+        );
+
+    const title =
+        document.getElementById(
+            "concernsModalTitle"
+        );
+
+
+    modal.style.display = "flex";
+
+    title.textContent =
+        "📄 Your Concerns";
+
+
+    list.innerHTML = `
+        <div class="loading-dots">
+            <span>.</span>
+            <span>.</span>
+            <span>.</span>
+            <span>.</span>
+        </div>
     `;
+
 
     try{
 
-        const response = await fetch(SCRIPT_URL);
-        const data = await response.json();
+        const response =
+            await fetch(
+                SCRIPT_URL +
+                "?action=getMyConcerns&email=" +
+                encodeURIComponent(
+                    firebaseUser.email
+                )
+            );
 
-        let html = "";
 
-        data.reverse().forEach(item => {
+        const data =
+            await response.json();
 
-            html += `
-            <div class="concern-card">
-                <h3>👤 ${item.name}</h3>
-                <p><strong>Section:</strong> ${item.section}</p>
-                <p><strong>Concern:</strong> ${item.concern}</p>
-                <small>📌 Status: ${item.status}</small>
-            </div>
+
+        if(
+            data &&
+            data.success === false
+        ){
+
+            list.innerHTML = `
+                <p style="
+                    text-align:center;
+                    color:#666;
+                    padding:20px;
+                ">
+                    ${data.message || "Unable to load concerns."}
+                </p>
             `;
 
-        });
+            return;
 
-        document.getElementById("concernsList").innerHTML =
-            html || "<p>No concerns submitted yet.</p>";
+        }
+
+
+        renderConcerns(data);
+
 
     }catch(error){
 
         console.error(error);
 
-        document.getElementById("concernsList").innerHTML =
-            "<p>Failed to load concerns.</p>";
+        list.innerHTML = `
+            <p style="
+                text-align:center;
+                color:#666;
+                padding:20px;
+            ">
+                Failed to load your concerns.
+            </p>
+        `;
 
     }
+
+}
+
+
+async function openAllConcerns(){
+
+    if(!firebaseUser){
+
+        openLogin();
+        return;
+
+    }
+
+
+    if(!isAdminUser()){
+
+        return;
+
+    }
+
+
+    const modal =
+        document.getElementById(
+            "concernsModal"
+        );
+
+    const list =
+        document.getElementById(
+            "concernsList"
+        );
+
+    const title =
+        document.getElementById(
+            "concernsModalTitle"
+        );
+
+
+    modal.style.display = "flex";
+
+    title.textContent =
+        "🛡️ All Student Concerns";
+
+
+    list.innerHTML = `
+        <div class="loading-dots">
+            <span>.</span>
+            <span>.</span>
+            <span>.</span>
+            <span>.</span>
+        </div>
+    `;
+
+
+    try{
+
+        const response =
+            await fetch(
+                SCRIPT_URL +
+                "?action=getAllConcerns&email=" +
+                encodeURIComponent(
+                    firebaseUser.email
+                )
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if(
+            data &&
+            data.success === false
+        ){
+
+            list.innerHTML = `
+                <p style="
+                    text-align:center;
+                    color:#666;
+                    padding:20px;
+                ">
+                    ${data.message || "Admin access denied."}
+                </p>
+            `;
+
+            return;
+
+        }
+
+
+        renderConcerns(data);
+
+
+    }catch(error){
+
+        console.error(error);
+
+        list.innerHTML = `
+            <p style="
+                text-align:center;
+                color:#666;
+                padding:20px;
+            ">
+                Failed to load all concerns.
+            </p>
+        `;
+
+    }
+
+}
+
+
+function renderConcerns(data){
+
+    const list =
+        document.getElementById(
+            "concernsList"
+        );
+
+
+    if(
+        !Array.isArray(data) ||
+        data.length === 0
+    ){
+
+        list.innerHTML = `
+            <div style="
+                text-align:center;
+                padding:35px 20px;
+                color:#777;
+            ">
+                <div style="font-size:45px;">
+                    📭
+                </div>
+
+                <p style="margin-top:10px;">
+                    No concerns found.
+                </p>
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    let html = "";
+
+
+    [...data]
+    .reverse()
+    .forEach(item => {
+
+        html += `
+
+        <div class="concern-card">
+
+            <h3>
+                👤 ${item.name || "Anonymous"}
+            </h3>
+
+            <p>
+                <strong>Section:</strong>
+                ${item.section || "N/A"}
+            </p>
+
+            <p>
+                <strong>Concern:</strong>
+                ${item.concern || ""}
+            </p>
+
+            <small>
+                📌 Status:
+                ${item.status || "Pending"}
+            </small>
+
+        </div>
+
+        `;
+
+    });
+
+
+    list.innerHTML = html;
+
 }
 
 </script>
-
-    <div id="loginModal" class="modal">
+    
   <div class="popup-content">
 
     <button class="close-btn" onclick="closeLogin()">✕</button>
@@ -2682,6 +2916,21 @@ const auth = getAuth(app);
 
 const googleProvider = new GoogleAuthProvider();
 
+       const ADMIN_EMAILS = [
+    "YOUR_ADMIN_EMAIL@gmail.com"
+];
+
+function isAdminUser(){
+
+    if(!firebaseUser || !firebaseUser.email){
+        return false;
+    }
+
+    return ADMIN_EMAILS.includes(
+        firebaseUser.email.toLowerCase()
+    );
+
+}
 
 window.toggleProfileMenu = function(){
 
@@ -2853,6 +3102,30 @@ onAuthStateChanged(
 
             firebaseUser = user;
 
+            const seeAllBtn =
+    document.getElementById(
+        "seeAllConcernsBtn"
+    );
+
+if(seeAllBtn){
+
+    if(
+        ADMIN_EMAILS.includes(
+            (user.email || "")
+            .toLowerCase()
+        )
+    ){
+
+        seeAllBtn.style.display = "block";
+
+    }else{
+
+        seeAllBtn.style.display = "none";
+
+    }
+
+}
+
             closeLogin();
 
 
@@ -2983,6 +3256,15 @@ if(navText){
         }else{
 
             firebaseUser = null;
+
+            const seeAllBtn =
+    document.getElementById(
+        "seeAllConcernsBtn"
+    );
+
+if(seeAllBtn){
+    seeAllBtn.style.display = "none";
+}
 
 
             if(nameInput){
@@ -3494,29 +3776,6 @@ document.addEventListener(
 );
 
 </script>
-
-
-    <!-- SECTION REQUIRED POPUP -->
-<div id="sectionRequiredPopup" class="popup">
-    <div class="popup-content section-error-popup">
-
-        <div class="section-error-icon">⚠️</div>
-
-        <h2>Section Required</h2>
-
-        <p>
-            Please select your section from the list.
-        </p>
-
-        <button
-            type="button"
-            class="try-again-btn"
-            onclick="closeSectionRequiredPopup()">
-            Try Again
-        </button>
-
-    </div>
-</div>
 
 <!-- SECTION REQUIRED POPUP -->
 <div id="sectionRequiredPopup" class="popup">
