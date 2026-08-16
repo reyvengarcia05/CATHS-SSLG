@@ -1492,8 +1492,7 @@ CELLPHONE DITO BE AHHAHAAHHAA
 
     margin:0;
 
-    box-shadow:
-        0 4px 14px rgba(0,0,0,.06);
+    box-shadow:0 4px 14px rgba(0,0,0,.06);
 
     transition:
         box-shadow .25s ease,
@@ -1501,9 +1500,7 @@ CELLPHONE DITO BE AHHAHAAHHAA
 }
 
 #sectionSearch:focus{
-    box-shadow:
-        0 8px 22px rgba(0,0,0,.14);
-
+    box-shadow:0 8px 22px rgba(0,0,0,.14);
     transform:translateY(-1px);
 }
 
@@ -1514,7 +1511,7 @@ CELLPHONE DITO BE AHHAHAAHHAA
     left:0;
     right:0;
 
-    background:rgba(255,255,255,.98);
+    background:#ffffff;
 
     border-radius:16px;
 
@@ -1527,44 +1524,15 @@ CELLPHONE DITO BE AHHAHAAHHAA
         0 14px 35px rgba(0,0,0,.16),
         0 4px 12px rgba(0,0,0,.08);
 
-    z-index:5000;
+    z-index:10000;
 
     display:none;
 
     border:1px solid rgba(24,60,140,.08);
-
-    opacity:0;
-    transform:translateY(-8px) scale(.98);
-
-    transform-origin:top center;
-
-    transition:
-        opacity .22s ease,
-        transform .22s cubic-bezier(.16,1,.3,1);
 }
 
-/* Ipapakita kapag may results */
-.section-suggestions[style*="display: block"]{
+.section-suggestions.show{
     display:block;
-
-    animation:
-        sectionSuggestionsIn
-        .28s
-        cubic-bezier(.16,1,.3,1)
-        forwards;
-}
-
-@keyframes sectionSuggestionsIn{
-
-    from{
-        opacity:0;
-        transform:translateY(-8px) scale(.98);
-    }
-
-    to{
-        opacity:1;
-        transform:translateY(0) scale(1);
-    }
 }
 
 .section-option{
@@ -1588,9 +1556,7 @@ CELLPHONE DITO BE AHHAHAAHHAA
 
 .section-option:hover{
     background:#eef4ff;
-
     color:#0d2c7a;
-
     transform:translateX(3px);
 }
 
@@ -1601,7 +1567,6 @@ CELLPHONE DITO BE AHHAHAAHHAA
 .section-option.no-result{
     color:#777;
     cursor:default;
-
     text-align:center;
 }
 
@@ -3010,9 +2975,11 @@ const SECTION_CODES = {
 };
 
 
+<script>
+
 const sections = [
 
-        "7-Agoncillo",
+    "7-Agoncillo",
     "7-Constantino",
     "7-Delos Santos",
     "7-Guillermo",
@@ -3062,9 +3029,9 @@ const sections = [
     "12-Javier",
     "12-Pacioli",
     "12-Shakespeare",
-    "12-Mendeleev",
-];
+    "12-Mendeleev"
 
+];
 
 const sectionSearch =
     document.getElementById("sectionSearch");
@@ -3076,88 +3043,209 @@ const sectionHidden =
     document.getElementById("section");
 
 
+/* =========================================
+   SHOW SECTION LIST
+========================================= */
+
 function showSectionSuggestions(searchText = ""){
 
     const search =
-        searchText
-        .trim()
-        .toLowerCase();
-
-
-    /*
-       FILTER
-
-       Kahit partial lang ang tinype,
-       lalabas pa rin ang matching sections.
-    */
+        searchText.trim().toLowerCase();
 
     const filteredSections =
-        sections.filter(section => {
-
-            return section
-                .toLowerCase()
-                .includes(search);
-
-        });
+        sections.filter(section =>
+            section.toLowerCase().includes(search)
+        );
 
 
     sectionSuggestions.innerHTML = "";
 
 
-    /*
-       WALANG MATCH
-    */
+    /* NO RESULTS */
 
     if(filteredSections.length === 0){
 
-        sectionSuggestions.innerHTML = `
-            <div class="section-option no-result">
-                No matching section found
-            </div>
-        `;
+        const noResult =
+            document.createElement("div");
 
-        sectionSuggestions.style.display = "block";
+        noResult.className =
+            "section-option no-result";
 
-        return;
+        noResult.textContent =
+            "No matching section found";
+
+        sectionSuggestions.appendChild(
+            noResult
+        );
+
+    }else{
+
+        /* RESULTS */
+
+        filteredSections.forEach(section => {
+
+            const option =
+                document.createElement("div");
+
+            option.className =
+                "section-option";
+
+            option.textContent =
+                section;
+
+
+            option.addEventListener(
+                "click",
+                function(e){
+
+                    e.preventDefault();
+                    e.stopPropagation();
+
+
+                    /* SELECT SECTION */
+
+                    sectionSearch.value =
+                        section;
+
+                    sectionHidden.value =
+                        section;
+
+
+                    /* CLOSE LIST */
+
+                    sectionSuggestions.classList.remove(
+                        "show"
+                    );
+
+
+                    /* RESET VERIFICATION */
+
+                    sectionVerified = false;
+                    verifiedSection = "";
+
+
+                    const verificationBox =
+                        document.getElementById(
+                            "sectionVerification"
+                        );
+
+                    const verificationCode =
+                        document.getElementById(
+                            "verificationCode"
+                        );
+
+                    const verificationMessage =
+                        document.getElementById(
+                            "verificationMessage"
+                        );
+
+                    const verifyButton =
+                        document.getElementById(
+                            "verifySectionBtn"
+                        );
+
+
+                    /* SHOW VERIFICATION */
+
+                    if(verificationBox){
+
+                        verificationBox.style.display =
+                            "block";
+
+                    }
+
+
+                    /* RESET CODE */
+
+                    if(verificationCode){
+
+                        verificationCode.value = "";
+
+                        verificationCode.readOnly =
+                            false;
+
+                    }
+
+
+                    /* RESET MESSAGE */
+
+                    if(verificationMessage){
+
+                        verificationMessage.style.display =
+                            "none";
+
+                    }
+
+
+                    /* RESET BUTTON */
+
+                    if(verifyButton){
+
+                        verifyButton.disabled =
+                            false;
+
+                        verifyButton.textContent =
+                            "🔐 Verify Section";
+
+                        verifyButton.style.background =
+                            "#FFD93D";
+
+                        verifyButton.style.color =
+                            "#0d2c7a";
+
+                    }
+
+
+                    /* FOCUS CODE */
+
+                    if(verificationCode){
+
+                        setTimeout(() => {
+
+                            verificationCode.focus();
+
+                        }, 100);
+
+                    }
+
+                }
+            );
+
+
+            sectionSuggestions.appendChild(
+                option
+            );
+
+        });
+
     }
 
 
-    /*
-       MAY MATCH
-    */
+    /* SHOW DROPDOWN */
 
-    filteredSections.forEach(section => {
+    sectionSuggestions.classList.add(
+        "show"
+    );
 
-        const option =
-            document.createElement("div");
-
-
-        option.className =
-            "section-option";
+}
 
 
-        option.textContent =
-            section;
+/* =========================================
+   INPUT
+========================================= */
 
-
-       option.addEventListener(
-    "click",
+sectionSearch.addEventListener(
+    "input",
     function(){
 
-        sectionSearch.value =
-            section;
+        /* Clear selected section */
 
-        sectionHidden.value =
-            section;
-
-        sectionSuggestions.style.display =
-            "none";
+        sectionHidden.value = "";
 
 
-        /* RESET VERIFICATION */
+        /* Reset verification */
 
         sectionVerified = false;
-
         verifiedSection = "";
 
 
@@ -3182,28 +3270,21 @@ function showSectionSuggestions(searchText = ""){
             );
 
 
-        /* SHOW VERIFICATION */
-
         if(verificationBox){
 
             verificationBox.style.display =
-                "block";
+                "none";
 
         }
-
-
-        /* RESET CODE */
 
         if(verificationCode){
 
             verificationCode.value = "";
 
-            verificationCode.readOnly = false;
+            verificationCode.readOnly =
+                false;
 
         }
-
-
-        /* RESET MESSAGE */
 
         if(verificationMessage){
 
@@ -3212,12 +3293,10 @@ function showSectionSuggestions(searchText = ""){
 
         }
 
-
-        /* RESET BUTTON */
-
         if(verifyButton){
 
-            verifyButton.disabled = false;
+            verifyButton.disabled =
+                false;
 
             verifyButton.textContent =
                 "🔐 Verify Section";
@@ -3231,78 +3310,47 @@ function showSectionSuggestions(searchText = ""){
         }
 
 
-        /* FOCUS CODE */
+        /* SHOW RESULTS */
 
-        if(verificationCode){
-
-            setTimeout(() => {
-
-                verificationCode.focus();
-
-            }, 150);
-
-        }
+        showSectionSuggestions(
+            this.value
+        );
 
     }
 );
 
 
-        sectionSuggestions.appendChild(
-            option
+/* =========================================
+   CLICK / FOCUS
+========================================= */
+
+sectionSearch.addEventListener(
+    "focus",
+    function(){
+
+        showSectionSuggestions(
+            this.value
         );
 
-    });
+    }
+);
 
 
-    sectionSuggestions.style.display =
-        "block";
+sectionSearch.addEventListener(
+    "click",
+    function(){
 
-}
-sectionSearch.addEventListener("input", function(){
+        showSectionSuggestions(
+            this.value
+        );
 
-    sectionHidden.value = "";
-
-    sectionVerified = false;
-    verifiedSection = "";
-
-    document.getElementById("sectionVerification").style.display = "none";
-
-    document.getElementById("verificationCode").value = "";
-
-    document.getElementById("verificationMessage").style.display = "none";
-
-    const button = document.getElementById("verifySectionBtn");
-
-    button.disabled = false;
-    button.textContent = "🔐 Verify Section";
-    button.style.background = "#FFD93D";
-    button.style.color = "#0d2c7a";
-
-    showSectionSuggestions(this.value);
-
-});
+    }
+);
 
 
 /* =========================================
-   SHOW ALL SECTIONS WHEN CLICKED / FOCUSED
+   CLOSE WHEN CLICK OUTSIDE
 ========================================= */
-
-sectionSearch.addEventListener("focus", function(){
-
-    showSectionSuggestions(this.value);
-
-});
-
-
-sectionSearch.addEventListener("click", function(){
-
-    showSectionSuggestions(this.value);
-
-});
-    
-/*
-   CLOSE KAPAG CLICK SA LABAS
-*/
 
 document.addEventListener(
     "click",
@@ -3314,8 +3362,9 @@ document.addEventListener(
             )
         ){
 
-            sectionSuggestions.style.display =
-                "none";
+            sectionSuggestions.classList.remove(
+                "show"
+            );
 
         }
 
