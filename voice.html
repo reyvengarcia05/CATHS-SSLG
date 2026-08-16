@@ -2158,28 +2158,16 @@ document
 }
 
 
-        /* =====================================
-           CHECK VERIFICATION
-        ===================================== */
+if(
+    !sectionVerified ||
+    verifiedSection !== section
+){
 
-        if(
-            !sectionVerified ||
-            verifiedSection !== section
-        ){
+    openSectionVerificationPopup();
 
-            alert(
-                "Please verify your section first."
-            );
+    return;
 
-            document
-            .getElementById(
-                "verificationCode"
-            )
-            .focus();
-
-            return;
-
-        }
+}
 
 
         /* =====================================
@@ -3607,5 +3595,79 @@ function closeSectionRequiredPopup(){
 }
 
 </script>
+
+    <!-- SECTION VERIFICATION REQUIRED POPUP -->
+<div id="sectionVerificationPopup" class="popup">
+
+    <div class="popup-content section-error-popup">
+
+        <div class="section-error-icon">
+            🔐
+        </div>
+
+        <h2>Verification Required</h2>
+
+        <p>
+            Please verify your section first.
+        </p>
+
+        <button
+            type="button"
+            class="try-again-btn"
+            onclick="closeSectionVerificationPopup()">
+            Try Again
+        </button>
+
+    </div>
+
+</div>
+
+    <script>
+
+function openSectionVerificationPopup(){
+
+    const popup =
+        document.getElementById(
+            "sectionVerificationPopup"
+        );
+
+    if(popup){
+
+        popup.style.display = "flex";
+
+    }
+
+}
+
+
+function closeSectionVerificationPopup(){
+
+    const popup =
+        document.getElementById(
+            "sectionVerificationPopup"
+        );
+
+    if(popup){
+
+        popup.style.display = "none";
+
+    }
+
+
+    const verificationCode =
+        document.getElementById(
+            "verificationCode"
+        );
+
+    if(verificationCode){
+
+        verificationCode.focus();
+
+    }
+
+}
+
+</script>
+    
 </body>
 </html>
