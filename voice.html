@@ -2218,8 +2218,48 @@ if(
 let name = "";
 let email = "";
 
-email = firebaseUser.email || "";
 
+/* =========================================
+   GET EMAIL DIRECTLY FROM FIREBASE USER
+========================================= */
+
+if(!firebaseUser){
+
+    alert("Your Google account session was not detected.");
+
+    return;
+
+}
+
+email =
+    String(firebaseUser.email || "")
+        .trim()
+        .toLowerCase();
+
+
+/* =========================================
+   MAKE SURE EMAIL EXISTS
+========================================= */
+
+if(!email){
+
+    alert(
+        "Your Google account email could not be detected."
+    );
+
+    console.error(
+        "Firebase user:",
+        firebaseUser
+    );
+
+    return;
+
+}
+
+
+/* =========================================
+   NAME
+========================================= */
 
 if(anonymous.checked){
 
@@ -2246,14 +2286,13 @@ if(anonymous.checked){
         /* =====================================
            DATA
         ===================================== */
-
-       const data = {
+const data = {
 
     action: "submitConcern",
 
     name: name,
 
-    email: firebaseUser.email || "",
+    email: email,
 
     section: section,
 
@@ -2267,6 +2306,13 @@ if(anonymous.checked){
 
 };
 
+
+/* TEST */
+
+console.log(
+    "Submitting concern with email:",
+    data.email
+);
 
         /* =====================================
            SUBMIT
