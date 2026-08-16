@@ -2247,30 +2247,25 @@ if(anonymous.checked){
            DATA
         ===================================== */
 
-        const data = {
+       const data = {
 
-            action:
-                "submitConcern",
+    action: "submitConcern",
 
-            name:
-                name,
+    name: name,
 
-            email:
-                email,
+    email: firebaseUser.email || "",
 
-            section:
-                section,
+    section: section,
 
-            verificationCode:
-                verificationCode,
+    verificationCode: verificationCode,
 
-            concern:
-                "[" +
-                category +
-                "] " +
-                concern
+    concern:
+        "[" +
+        category +
+        "] " +
+        concern
 
-        };
+};
 
 
         /* =====================================
