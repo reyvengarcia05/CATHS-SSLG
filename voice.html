@@ -808,11 +808,6 @@ color:#FFD700;
     transform:scale(.98);
 }
 
-    to{
-        opacity:1;
-        transform:translateY(0) scale(1);
-    }
-}
     #googleLoginBtn{
     width:100%;
     height:58px;
@@ -1471,10 +1466,24 @@ CELLPHONE DITO BE AHHAHAAHHAA
             id="headerLoginBtn"
             class="login-btn"
             onclick="openLogin(false)">
-
             👤 <span>Login</span>
-
         </button>
+
+        <div id="logoutMenu" class="profile-menu">
+
+            <div class="profile-info">
+
+                <img
+                    id="profilePhoto"
+                    src=""
+                    alt="Profile Photo">
+
+                <div class="profile-details">
+                    <strong id="profileName">User</strong>
+                    <small id="profileEmail"></small>
+                </div>
+
+            </div>
 
             <div class="profile-divider"></div>
 
@@ -1503,9 +1512,7 @@ CELLPHONE DITO BE AHHAHAAHHAA
                 type="button"
                 class="logout-button"
                 onclick="logoutUser()">
-
                 🚪 Log Out
-
             </button>
 
         </div>
@@ -1513,8 +1520,6 @@ CELLPHONE DITO BE AHHAHAAHHAA
     </div>
 
 </div>
-
-<div class="container">
 
 <div class="voice-card">
 
@@ -1599,10 +1604,15 @@ required></textarea>
 <span>Events</span>
 </a>
 
-<a href="profile.html" class="nav-item">
+<a
+    href="#"
+    class="nav-item"
+    onclick="event.preventDefault(); toggleProfileMenu()">
+
     <div id="profileNavPhoto">
         👤
     </div>
+
     <span>Profile</span>
 </a>
     
@@ -2297,32 +2307,6 @@ onAuthStateChanged(
 );
 
 </script>
-
-   <div id="logoutMenu" class="profile-menu">
-
-    <div class="profile-info">
-
-        <img id="profilePhoto"
-             src=""
-             alt="Profile Picture">
-
-        <div class="profile-details">
-
-            <strong id="profileName">User</strong>
-
-            <small id="profileEmail"></small>
-
-        </div>
-
-    </div>
-
-  <div class="profile-divider"></div>
-
-  <button class="logout-button" onclick="logoutUser()">
-    🚪 Log Out
-  </button>
-
-</div>
     
 </body>
 </html>
