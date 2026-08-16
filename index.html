@@ -517,6 +517,17 @@ color:black;
         transform:translateY(0) scale(1);
     }
 
+    65%{
+        opacity:1;
+        transform:translateY(-2px) scale(.995);
+    }
+
+    100%{
+        opacity:0;
+        transform:translateY(-10px) scale(.97);
+    }
+}
+
     100%{
         opacity:0;
         transform:translateY(-8px) scale(.97);
@@ -908,7 +919,7 @@ color:black;
 .profile-menu.closing{
     display:block;
     pointer-events:none;
-    animation:profileMenuOut .28s cubic-bezier(.7,0,.84,0) forwards;
+    animation:profileMenuOut .38s cubic-bezier(.4,0,.2,1) forwards;
 }
 
 /* PROFILE HEADER */
@@ -988,27 +999,43 @@ color:black;
 
 /* EXIT — REVERSE ORDER */
 
+/* =========================================
+   SMOOTH EXIT ANIMATION
+========================================= */
+
 .profile-menu.closing .logout-button{
-    animation:profileItemOut .18s ease 0s forwards;
+    animation:profileItemOut .16s cubic-bezier(.4,0,.2,1) 0s forwards;
 }
 
 .profile-menu.closing .profile-nav-item:nth-child(3){
-    animation:profileItemOut .18s ease .04s forwards;
+    animation:profileItemOut .16s cubic-bezier(.4,0,.2,1) .035s forwards;
 }
 
 .profile-menu.closing .profile-nav-item:nth-child(2){
-    animation:profileItemOut .18s ease .08s forwards;
+    animation:profileItemOut .16s cubic-bezier(.4,0,.2,1) .07s forwards;
 }
 
 .profile-menu.closing .profile-nav-item:nth-child(1){
-    animation:profileItemOut .18s ease .12s forwards;
+    animation:profileItemOut .16s cubic-bezier(.4,0,.2,1) .105s forwards;
 }
 
 .profile-menu.closing .profile-info{
-    animation:profileItemOut .18s ease .16s forwards;
+    animation:profileInfoOut .18s cubic-bezier(.4,0,.2,1) .14s forwards;
 }
 
 @keyframes profileItemOut{
+    from{
+        opacity:1;
+        transform:translateX(0) translateY(0) scale(1);
+    }
+
+    to{
+        opacity:0;
+        transform:translateX(8px) translateY(-4px) scale(.98);
+    }
+}
+
+@keyframes profileInfoOut{
     from{
         opacity:1;
         transform:translateY(0);
@@ -1224,7 +1251,7 @@ and connect with the school community.
 
    window.userLoggedIn = false;
 
-   function toggleProfileMenu(){
+function toggleProfileMenu(){
 
     if (!window.userLoggedIn) {
         openLogin();
@@ -1248,17 +1275,16 @@ and connect with the school community.
             menu.style.display = "none";
             menu.classList.remove("closing");
 
-            menu.removeEventListener(
-                "animationend",
-                handleClose
-            );
+            menu.removeEventListener("animationend", handleClose);
 
         });
 
         return;
     }
 
+    /* OPEN */
     menu.style.display = "block";
+    menu.classList.remove("closing");
 
     requestAnimationFrame(() => {
         menu.classList.add("open");
