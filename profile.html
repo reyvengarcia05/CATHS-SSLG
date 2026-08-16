@@ -475,6 +475,35 @@ window.addFriendFromReaction=addFriendFromReaction;
     opacity:.75;
 }
 
+
+/* =========================
+   PROFILE FRIENDS LIST
+========================= */
+.friends-panel{padding:22px 0 5px;text-align:left}
+.friends-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.friends-panel-title{font-size:18px;font-weight:800}
+.friends-panel-count{font-size:11px;padding:5px 10px;border-radius:999px;background:#FFD93D;color:#183c8c;font-weight:800}
+.friends-list{display:flex;flex-direction:column;gap:10px}
+.friend-profile-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:10px}
+.friend-profile-link{display:flex;align-items:center;gap:10px;flex:1;min-width:0;text-decoration:none;color:#fff}
+.friend-profile-link:hover .friend-profile-name{text-decoration:underline}
+.friend-profile-avatar{width:46px;height:46px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;flex:0 0 46px;background:#e9eef7;color:#183c8c;font-size:20px}
+.friend-profile-avatar img{width:100%;height:100%;object-fit:cover}
+.friend-profile-info{min-width:0}
+.friend-profile-name{display:block;font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.friend-profile-username{display:block;font-size:10px;opacity:.7;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.friend-profile-actions{display:flex;gap:7px;flex:0 0 auto}
+.friend-profile-actions button{border:none;border-radius:10px;padding:8px 10px;font-size:10px;font-weight:800;cursor:pointer;transition:.2s}
+.friend-message-btn{background:#FFD93D;color:#183c8c}
+.friend-unfriend-btn{background:rgba(255,255,255,.12);color:#fff}
+.friend-profile-actions button:hover{transform:translateY(-1px)}
+.friends-loading{padding:22px 8px;text-align:center;opacity:.85}
+.friends-spinner{width:30px;height:30px;margin:0 auto 9px;border:3px solid rgba(255,255,255,.25);border-top-color:#FFD93D;border-radius:50%;animation:friendsSpin .8s linear infinite}
+.friends-loading-text{font-size:12px}
+.friends-empty{padding:22px 8px;text-align:center;opacity:.78;font-size:12px}
+@keyframes friendsSpin{to{transform:rotate(360deg)}}
+@media(max-width:768px){.friend-profile-row{align-items:flex-start}.friend-profile-actions{flex-direction:column}.friend-profile-actions button{width:80px}.friend-profile-avatar{width:42px;height:42px;flex-basis:42px}}
+
 /* =========================
    BOTTOM NAV
 ========================= */
@@ -646,14 +675,9 @@ window.addFriendFromReaction=addFriendFromReaction;
 .post-manage{margin-left:auto;position:relative}
 .post-manage-btn{border:none;background:rgba(255,255,255,.10);color:#fff;width:32px;height:32px;border-radius:10px;cursor:pointer;font-size:17px;transition:.2s}
 .post-manage-btn:hover{background:rgba(255,255,255,.18);transform:translateY(-1px)}
-.post-menu-backdrop{position:fixed;inset:0;display:none;z-index:100000;background:transparent}.post-menu-backdrop.open{display:block}
-.post-menu{position:fixed;left:0;top:0;min-width:220px;background:rgba(255,255,255,.98);color:#183c8c;border:1px solid rgba(24,60,140,.08);border-radius:14px;padding:7px;box-shadow:0 16px 40px rgba(0,0,0,.24);z-index:100001}
-.post-menu button{width:100%;border:none;background:transparent;text-align:left;padding:11px 12px;border-radius:10px;color:#183c8c;font:inherit;font-size:12px;font-weight:700;cursor:pointer;display:block}
-.post-menu button:hover{background:#eef4ff}
-.post-menu button.pin{color:#183c8c}
-.post-menu button.pin:hover{background:#eef4ff}
-.post-menu button.danger{color:#c0392b}
-.post-menu button.danger:hover{background:#fff0ee}
+.post-menu-backdrop{position:fixed;inset:0;display:none;z-index:100000}.post-menu-backdrop.open{display:block}
+.post-menu{position:fixed;left:0;top:0;min-width:205px;background:#fff;color:#183c8c;border-radius:15px;padding:7px;box-shadow:0 18px 45px rgba(0,0,0,.28);z-index:100001}
+.post-menu button{width:100%;border:none;background:transparent;text-align:left;padding:11px 12px;border-radius:10px;color:#183c8c;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.post-menu button:hover{background:#eef4ff}.post-menu button.pin{color:#183c8c}.post-menu button.pin:hover{background:#eef4ff}.post-menu button.danger{color:#c0392b}.post-menu button.danger:hover{background:#fff0ee}
 .manage-modal,.privacy-modal{position:fixed;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:18px;z-index:100002}.manage-modal.open,.privacy-modal.open{display:flex}
 .manage-box,.privacy-box{width:100%;max-width:440px;background:#fff;color:#183c8c;border-radius:24px;padding:24px;box-shadow:0 24px 70px rgba(0,0,0,.35);animation:postPop .22s ease}
 .manage-box h3,.privacy-box h3{font-size:20px;margin-bottom:7px}.manage-box p,.privacy-box p{font-size:12px;color:#6f7b91;line-height:1.55}
@@ -1472,17 +1496,18 @@ window.addFriendFromReaction=addFriendFromReaction;
                     class="content-box"
                     style="display:none;">
 
-                    <div class="empty-icon">
-                        👥
+                    <div class="friends-panel">
+                        <div class="friends-panel-head">
+                            <div class="friends-panel-title">👥 My Friends</div>
+                            <div class="friends-panel-count" id="friendsTabCount">0 Friends</div>
+                        </div>
+                        <div id="profileFriendsList" class="friends-list">
+                            <div class="friends-loading">
+                                <div class="friends-spinner"></div>
+                                <div class="friends-loading-text">Loading friends...</div>
+                            </div>
+                        </div>
                     </div>
-
-                    <h3>
-                        No Friends Yet
-                    </h3>
-
-                    <p>
-                        Your friends will appear here.
-                    </p>
 
                 </div>
 
@@ -2023,9 +2048,9 @@ function renderPost(post){
             <button class="post-manage-btn" type="button" onclick="togglePostMenu('${escapePostHtml(post.id)}',event)">⋯</button>
             <div class="post-menu-backdrop" id="menu-backdrop-${escapePostHtml(post.id)}" onclick="closePostMenu('${escapePostHtml(post.id)}',event)">
               <div class="post-menu" onclick="event.stopPropagation()">
-                <button type="button" onclick="openPrivacyModal('${escapePostHtml(post.id)}','${escapePostHtml(post.visibility)}')">👁️ Who can see this</button>
-                <button class="pin" type="button" onclick="togglePinPost('${escapePostHtml(post.id)}',${post.pinned===true})">${post.pinned===true?'📌 Unpin the post':'📌 Pin the post'}</button>
-                <button class="danger" type="button" onclick="openDeletePostModal('${escapePostHtml(post.id)}')">🗑️ Delete the post</button>
+                <button type="button" onclick="openPrivacyModal('${escapePostHtml(post.id)}','${escapePostHtml(post.visibility)}')">👁️ Who can see this?</button>
+                <button class="pin" type="button" onclick="togglePinPost('${escapePostHtml(post.id)}',${post.pinned===true})">${post.pinned===true?'📌 Unpin from top':'📌 Pin to the top'}</button>
+                <button class="danger" type="button" onclick="openDeletePostModal('${escapePostHtml(post.id)}')">🗑️ Delete</button>
               </div>
             </div>
           </div>` : ''}
@@ -2371,6 +2396,7 @@ onAuthStateChanged(
         applyProfilePhoto(user.photoURL || "");
 
         await loadProfileData();
+        await loadProfileFriends();
 
         // Use the saved profile photo from Firestore when available.
         try{
@@ -2469,6 +2495,85 @@ async function loadProfileData(){
 
 }
 
+
+/* =========================
+   LOAD MY FRIENDS
+========================= */
+async function loadProfileFriends(){
+    const user=auth.currentUser;
+    const list=document.getElementById('profileFriendsList');
+    const count=document.getElementById('friendsCount');
+    const tabCount=document.getElementById('friendsTabCount');
+    if(!user || !list) return;
+
+    list.innerHTML=`<div class="friends-loading"><div class="friends-spinner"></div><div class="friends-loading-text">Loading friends...</div></div>`;
+
+    try{
+        const snap=await getDocs(query(collection(db,'friends',user.uid,'list'),limit(100)));
+        const total=snap.size;
+        if(count) count.textContent=String(total);
+        if(tabCount) tabCount.textContent=`${total} Friend${total===1?'':'s'}`;
+
+        if(snap.empty){
+            list.innerHTML=`<div class="friends-empty">You don't have any friends yet.</div>`;
+            return;
+        }
+
+        const friends=snap.docs.map(d=>({id:d.id,...(d.data()||{})}));
+        friends.sort((a,b)=>String(a.nickname||a.name||a.username||'').localeCompare(String(b.nickname||b.name||b.username||'')));
+
+        list.innerHTML=friends.map(friend=>{
+            const friendId=friend.uid || friend.id;
+            const friendName=friend.nickname || friend.name || friend.displayName || friend.username || 'Student';
+            const username=friend.username ? `@${friend.username}` : '';
+            const avatar=friend.photoURL
+              ? `<div class="friend-profile-avatar"><img src="${escapePostHtml(friend.photoURL)}" alt=""></div>`
+              : `<div class="friend-profile-avatar">${escapePostHtml(friendName.charAt(0).toUpperCase())}</div>`;
+
+            return `<div class="friend-profile-row" data-friend-id="${escapePostHtml(friendId)}">
+                <a class="friend-profile-link" href="user-profile.html?uid=${encodeURIComponent(friendId)}">
+                    ${avatar}
+                    <div class="friend-profile-info">
+                        <span class="friend-profile-name">${escapePostHtml(friendName)}</span>
+                        <span class="friend-profile-username">${escapePostHtml(username)}</span>
+                    </div>
+                </a>
+                <div class="friend-profile-actions">
+                    <button class="friend-message-btn" type="button" onclick="messageFriend('${escapePostHtml(friendId)}')">💬 Message</button>
+                    <button class="friend-unfriend-btn" type="button" onclick="unfriendProfileFriend('${escapePostHtml(friendId)}', this)">Unfriend</button>
+                </div>
+            </div>`;
+        }).join('');
+    }catch(error){
+        console.error('Load profile friends error:',error);
+        if(count) count.textContent='0';
+        if(tabCount) tabCount.textContent='0 Friends';
+        list.innerHTML=`<div class="friends-empty">Could not load your friends. Check your Firestore rules.</div>`;
+    }
+}
+window.loadProfileFriends=loadProfileFriends;
+
+window.messageFriend=function(friendId){
+    if(!friendId) return;
+    window.location.href=`messages.html?uid=${encodeURIComponent(friendId)}`;
+};
+
+window.unfriendProfileFriend=async function(friendId,button){
+    const user=auth.currentUser;
+    if(!user || !friendId) return;
+    if(!confirm('Are you sure you want to unfriend this person?')) return;
+    if(button){button.disabled=true;button.textContent='Removing...';}
+    try{
+        await deleteDoc(doc(db,'friends',user.uid,'list',friendId));
+        await deleteDoc(doc(db,'friends',friendId,'list',user.uid));
+        showPostToast('Friend removed.');
+        await loadProfileFriends();
+    }catch(error){
+        console.error('Unfriend error:',error);
+        if(button){button.disabled=false;button.textContent='Unfriend';}
+        alert(error?.code==='permission-denied'?'Firestore is blocking this unfriend action. Please check your Firestore Rules.':'Could not unfriend this person.');
+    }
+};
 
 /* =========================
    SAVE PROFILE
