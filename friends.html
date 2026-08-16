@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CATHS-MAIN • Friends</title>
+<link rel="icon" type="image/png" href="sslg-logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --blue:#003DA5;
+  --darkblue:#00296B;
+  --yellow:#FFD700;
+  --white:#fff;
+  --glass:rgba(255,255,255,.13);
+  --muted:#64748b;
+  --danger:#dc2626;
+  --success:#16a34a;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
+body{
+  min-height:100vh;
+  color:#fff;
+  background:linear-gradient(135deg,#001F54,#003DA5,#FFD700);
+  padding-bottom:95px;
+}
+.header{
+  padding:14px 20px;
+  display:grid;
+  grid-template-columns:220px 1fr 220px;
+  align-items:center;
+  gap:15px;
+  background:rgba(255,255,255,.08);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  position:sticky;
+  top:0;
+  z-index:50;
+}
+.logo-group{display:flex;align-items:center;gap:8px}
+.logo{width:58px;height:58px;object-fit:contain}
+.caths-logo{transform:scale(1.12)}
+.header-center{text-align:center}
+.header-center h1{font-size:19px;font-weight:700;line-height:1.2}
+.header-center p{font-size:11px;opacity:.9;margin-top:3px}
+.header-right{display:flex;justify-content:flex-end;position:relative}
+.login-btn{
+  border:none;border-radius:12px;padding:9px 14px;cursor:pointer;
+  background:rgba(255,255,255,.15);color:#fff;font-weight:600;
+  display:flex;align-items:center;gap:7px;white-space:nowrap
+}
+.login-btn img{width:27px;height:27px;border-radius:50%;object-fit:cover}
+
+.container{max-width:980px;margin:0 auto;padding:28px 18px}
+.page-title{margin-bottom:18px}
+.page-title h2{font-size:29px}
+.page-title p{font-size:13px;opacity:.9;margin-top:5px}
+
+.card{
+  background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.15);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  box-shadow:0 16px 45px rgba(0,0,0,.16);
+  border-radius:22px;
+  padding:20px;
+  margin-bottom:18px;
+}
+.card h3{font-size:18px;margin-bottom:5px}
+.card .sub{font-size:12px;opacity:.82;margin-bottom:15px}
+
+.profile-grid{display:grid;grid-template-columns:80px 1fr 170px;gap:15px;align-items:center}
+.avatar{width:80px;height:80px;border-radius:50%;object-fit:cover;background:#eef4ff}
+.fallback-avatar{display:flex;align-items:center;justify-content:center;color:var(--darkblue);font-size:34px;font-weight:700;background:#fff}
+
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{font-size:12px;font-weight:600;display:block;margin:0 0 7px}
+input{
+  width:100%;padding:13px 14px;border:none;outline:none;border-radius:13px;
+  font-size:13px;color:#0f172a;background:#fff;
+}
+.helper{font-size:10px;color:#e2e8f0;margin-top:6px}
+.btn{
+  border:none;border-radius:13px;padding:12px 15px;cursor:pointer;font-weight:700;
+  transition:.2s ease
+}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--yellow);color:var(--darkblue)}
+.btn-secondary{background:#fff;color:var(--darkblue)}
+.btn-danger{background:#fee2e2;color:#991b1b}
+.btn-success{background:#dcfce7;color:#166534}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+.search-box{position:relative}
+.search-box input{padding-left:42px}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#64748b}
+.results{display:flex;flex-direction:column;gap:10px;margin-top:15px}
+.user-row{
+  background:#fff;color:#0f172a;border-radius:16px;padding:12px;
+  display:flex;align-items:center;gap:12px;
+}
+.user-row img,.mini-avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#e2e8f0}
+.user-main{min-width:0;flex:1}
+.user-main strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-main small{color:#64748b;font-size:11px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.status{font-size:11px;font-weight:700;color:#64748b}
+
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.count-badge{background:var(--yellow);color:var(--darkblue);border-radius:999px;padding:4px 9px;font-size:10px;font-weight:800}
+.list{display:flex;flex-direction:column;gap:10px}
+.empty{
+  text-align:center;padding:24px 12px;background:rgba(255,255,255,.08);
+  border-radius:16px;color:rgba(255,255,255,.9);font-size:13px
+}
+.request-row,.friend-row{
+  background:#fff;color:#0f172a;border-radius:16px;padding:12px;
+  display:flex;align-items:center;gap:12px
+}
+.row-info{flex:1;min-width:0}
+.row-info strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-info small{display:block;color:#64748b;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.actions{display:flex;gap:7px}
+.actions .btn{padding:8px 11px;font-size:11px}
+
+.toast{
+  position:fixed;left:50%;bottom:95px;transform:translate(-50%,20px);
+  background:#0f172a;color:#fff;padding:11px 16px;border-radius:12px;font-size:12px;
+  opacity:0;pointer-events:none;transition:.25s ease;z-index:100
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+.profile-menu{
+  display:none;position:absolute;top:calc(100% + 8px);right:0;width:290px;
+  background:#fff;color:var(--darkblue);border-radius:18px;padding:14px;
+  box-shadow:0 20px 50px rgba(0,0,0,.28);z-index:60
+}
+.profile-menu.open{display:block}
+.profile-info{display:flex;align-items:center;gap:11px}
+.profile-info img{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#e2e8f0}
+.profile-details{min-width:0}
+.profile-details strong,.profile-details small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.profile-details strong{font-size:14px}
+.profile-details small{font-size:10px;color:#64748b;margin-top:2px}
+.profile-divider{height:1px;background:#e5e7eb;margin:12px 0}
+.profile-link{display:flex;gap:10px;align-items:center;padding:11px 12px;border-radius:12px;text-decoration:none;color:var(--darkblue);font-size:12px;font-weight:600}
+.profile-link:hover{background:#eef4ff}
+.logout-button{width:100%;border:none;border-radius:12px;padding:11px;background:var(--darkblue);color:#fff;font-weight:600;cursor:pointer}
+
+.bottom-nav{
+  position:fixed;left:0;right:0;bottom:0;height:76px;
+  background:rgba(0,0,0,.28);backdrop-filter:blur(18px);
+  display:flex;justify-content:space-around;align-items:center;z-index:55
+}
+.nav-item{text-decoration:none;color:#fff;font-size:10px;text-align:center;padding:4px 8px}
+.nav-item div{font-size:22px;line-height:1;margin-bottom:4px}
+.nav-item.active{color:var(--yellow)}
+#profileNavPhoto{display:flex;align-items:center;justify-content:center;width:24px;height:24px;margin:0 auto 4px}
+#profileNavPhoto img{width:24px;height:24px;border-radius:50%;object-fit:cover}
+
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);z-index:80;align-items:center;justify-content:center;padding:18px}
+.dialog{width:100%;max-width:460px;background:#fff;color:#0f172a;border-radius:22px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.dialog h3{font-size:20px;color:var(--darkblue);margin-bottom:6px}
+.dialog p{font-size:12px;color:#64748b;margin-bottom:15px}
+.dialog-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
+
+.loading{padding:20px;text-align:center;color:#64748b;font-size:12px}
+.hidden{display:none!important}
+
+@media(max-width:768px){
+  body{padding-bottom:82px}
+  .header{grid-template-columns:auto 1fr auto;padding:9px 11px;gap:8px}
+  .logo{width:42px;height:42px}.caths-logo{transform:scale(1.06)}
+  .header-center h1{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .header-center p{font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .login-btn{font-size:10px;padding:7px 8px;max-width:110px;overflow:hidden;text-overflow:ellipsis}
+  .container{padding:20px 12px}
+  .page-title h2{font-size:23px}.page-title p{font-size:11px}
+  .profile-grid{grid-template-columns:60px 1fr}.profile-grid > .btn{grid-column:1/-1}
+  .avatar{width:60px;height:60px}.fallback-avatar{font-size:25px}
+  .field-row{grid-template-columns:1fr}
+  .user-row,.request-row,.friend-row{padding:10px}.user-row img,.mini-avatar{width:44px;height:44px}
+  .actions{flex-direction:column}
+  .actions .btn{width:100%}
+  .profile-menu{width:calc(100vw - 20px);max-width:300px}
+  .bottom-nav{height:70px}.nav-item{font-size:9px;min-width:52px;padding:4px 2px}.nav-item div{font-size:21px}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo-group">
+    <img src="sslg-logo.png" class="logo" alt="SSLG">
+    <img src="caths-logo.png" class="logo caths-logo" alt="CATHS">
+  </div>
+
+  <div class="header-center">
+    <h1>CATHS-MAIN Friends</h1>
+    <p>Connect with your school community</p>
+  </div>
+
+  <div class="header-right">
+    <button id="headerLoginBtn" class="login-btn" type="button" onclick="toggleHeaderProfile()">👤 <span>Login</span></button>
+    <div id="profileMenu" class="profile-menu">
+      <div class="profile-info">
+        <img id="menuPhoto" src="" alt="Profile">
+        <div class="profile-details">
+          <strong id="menuName">User</strong>
+          <small id="menuUsername">@username</small>
+        </div>
+      </div>
+      <div class="profile-divider"></div>
+      <a href="index.html" class="profile-link">🏠 Home</a>
+      <a href="profile.html" class="profile-link">👤 Profile</a>
+      <a href="friends.html" class="profile-link">👥 Friends</a>
+      <a href="voice.html" class="profile-link">🗣️ Your Concern</a>
+      <div class="profile-divider"></div>
+      <button class="logout-button" type="button" onclick="logoutUser()">🚪 Log Out</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="page-title">
+    <h2>👥 Friends</h2>
+    <p>Find classmates using their username or nickname.</p>
+  </div>
+
+  <section class="card" id="profileSetupCard">
+    <h3>✨ Create your username</h3>
+    <div class="sub">Your username and nickname are what other students will use to find you.</div>
+
+    <div class="profile-grid">
+      <div id="setupAvatar" class="avatar fallback-avatar">👤</div>
+      <div>
+        <div class="field-row">
+          <div>
+            <label for="usernameInput">Username</label>
+            <input id="usernameInput" maxlength="20" placeholder="e.g. reyven123" autocomplete="off">
+            <div class="helper">3–20 characters. Letters, numbers, periods and underscores only.</div>
+          </div>
+          <div>
+            <label for="nicknameInput">Nickname</label>
+            <input id="nicknameInput" maxlength="30" placeholder="e.g. Reyven" autocomplete="off">
+            <div class="helper">This is the name shown to your friends.</div>
+          </div>
+        </div>
+      </div>
+      <button id="saveProfileBtn" class="btn btn-primary" type="button" onclick="saveProfile()">Save Profile</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>🔎 Find Friends</h3>
+    <div class="sub">Search by username or nickname.</div>
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input id="searchInput" placeholder="Search username or nickname..." autocomplete="off">
+    </div>
+    <div id="searchResults" class="results">
+      <div class="empty">Start typing to search students.</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="section-head">
+      <h3>🔔 Friend Requests</h3>
+      <span class="count-badge" id="requestCount">0</span>
+    </div>
+    <div id="requestsList" class="list">
+      <div class="loading">Loading requests...</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="section-head">
+      <h3>👥 My Friends</h3>
+      <span class="count-badge" id="friendCount">0</span>
+    </div>
+    <div id="friendsList" class="list">
+      <div class="loading">Loading friends...</div>
+    </div>
+  </section>
+</main>
+
+<nav class="bottom-nav">
+  <a href="index.html" class="nav-item"><div>🏠</div><span>Home</span></a>
+  <a href="news.html" class="nav-item"><div>📢</div><span>News</span></a>
+  <a href="polls.html" class="nav-item"><div>🗳️</div><span>Polls</span></a>
+  <a href="friends.html" class="nav-item active"><div>👥</div><span>Friends</span></a>
+  <a href="profile.html" class="nav-item"><div id="profileNavPhoto">👤</div><span>Profile</span></a>
+</nav>
+
+<div id="toast" class="toast"></div>
+
+<div id="loginOverlay" class="overlay">
+  <div class="dialog">
+    <h3>🔐 Login Required</h3>
+    <p>Please sign in with Google to use Friends.</p>
+    <div class="dialog-actions">
+      <button class="btn btn-secondary" onclick="closeLoginDialog()">Cancel</button>
+      <button class="btn btn-primary" onclick="googleLogin()">Continue with Google</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+import {
+  getFirestore,
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  deleteDoc,
+  addDoc,
+  query,
+  where,
+  orderBy,
+  limit,
+  getDocs,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",
+  authDomain: "caths-page.firebaseapp.com",
+  projectId: "caths-page",
+  storageBucket: "caths-page.firebasestorage.app",
+  messagingSenderId: "945498022620",
+  appId: "1:945498022620:web:71aeb4cd2472e061aeca19",
+  measurementId: "G-CBG1YSK13G"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
+
+let firebaseUser = null;
+let currentProfile = null;
+let searchTimer = null;
+
+const $ = (id) => document.getElementById(id);
+
+function escapeHtml(value=''){
+  return String(value)
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'",'&#039;');
+}
+
+function normalize(value=''){
+  return String(value).trim().toLowerCase();
+}
+
+function validUsername(value){
+  return /^[a-zA-Z0-9._]{3,20}$/.test(value);
+}
+
+function showToast(message){
+  const toast = $('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => toast.classList.remove('show'), 2600);
+}
+
+function avatarHtml(user, className='mini-avatar'){
+  if(user.photoURL){
+    return `<img class="${className}" src="${escapeHtml(user.photoURL)}" alt="Profile">`;
+  }
+  const letter = escapeHtml((user.nickname || user.username || user.displayName || 'U').charAt(0).toUpperCase());
+  return `<div class="${className} fallback-avatar">${letter}</div>`;
+}
+
+function setHeaderUser(user, profile){
+  const btn = $('headerLoginBtn');
+  const photo = $('menuPhoto');
+  const nav = $('profileNavPhoto');
+  if(user){
+    btn.innerHTML = user.photoURL
+      ? `<img src="${escapeHtml(user.photoURL)}" alt=""> <span>${escapeHtml(user.displayName || 'User')}</span> ▼`
+      : `👤 <span>${escapeHtml(user.displayName || 'User')}</span> ▼`;
+    $('menuName').textContent = profile?.nickname || user.displayName || 'User';
+    $('menuUsername').textContent = profile?.username ? '@' + profile.username : '@username';
+    if(user.photoURL){
+      photo.src = user.photoURL;
+      nav.innerHTML = `<img src="${escapeHtml(user.photoURL)}" alt="Profile">`;
+    }else{
+      photo.src = '';
+      nav.textContent = '👤';
+    }
+  }else{
+    btn.textContent = '👤 Login';
+    nav.textContent = '🔐';
+  }
+}
+
+window.toggleHeaderProfile = function(){
+  if(!firebaseUser){
+    $('loginOverlay').style.display = 'flex';
+    return;
+  }
+  $('profileMenu').classList.toggle('open');
+};
+
+window.closeLoginDialog = function(){
+  $('loginOverlay').style.display = 'none';
+};
+
+window.googleLogin = async function(){
+  try{
+    await signInWithPopup(auth, googleProvider);
+    closeLoginDialog();
+  }catch(error){
+    console.error(error);
+    showToast('Google login failed.');
+  }
+};
+
+window.logoutUser = async function(){
+  try{
+    await signOut(auth);
+    $('profileMenu').classList.remove('open');
+  }catch(error){
+    console.error(error);
+    showToast('Logout failed.');
+  }
+};
+
+async function ensureSignedIn(){
+  if(firebaseUser) return true;
+  $('loginOverlay').style.display = 'flex';
+  return false;
+}
+
+async function loadCurrentProfile(){
+  if(!firebaseUser) return;
+  const ref = doc(db, 'users', firebaseUser.uid);
+  const snap = await getDoc(ref);
+  currentProfile = snap.exists() ? {id:snap.id, ...snap.data()} : null;
+
+  $('usernameInput').value = currentProfile?.username || '';
+  $('nicknameInput').value = currentProfile?.nickname || firebaseUser.displayName || '';
+
+  const avatar = $('setupAvatar');
+  if(firebaseUser.photoURL){
+    avatar.className = 'avatar';
+    avatar.innerHTML = `<img class="avatar" src="${escapeHtml(firebaseUser.photoURL)}" alt="Profile">`;
+  }else{
+    avatar.className = 'avatar fallback-avatar';
+    avatar.textContent = (currentProfile?.nickname || firebaseUser.displayName || 'U').charAt(0).toUpperCase();
+  }
+
+  setHeaderUser(firebaseUser, currentProfile);
+}
+
+window.saveProfile = async function(){
+  if(!(await ensureSignedIn())) return;
+
+  const username = normalize($('usernameInput').value);
+  const nickname = $('nicknameInput').value.trim();
+
+  if(!validUsername(username)){
+    showToast('Username must be 3–20 characters using letters, numbers, . or _.');
+    return;
+  }
+  if(nickname.length < 2 || nickname.length > 30){
+    showToast('Nickname must be 2–30 characters.');
+    return;
+  }
+
+  const existing = await getDocs(query(
+    collection(db,'users'),
+    where('username','==',username),
+    limit(1)
+  ));
+  const conflict = existing.docs.find(d => d.id !== firebaseUser.uid);
+  if(conflict){
+    showToast('That username is already taken.');
+    return;
+  }
+
+  const data = {
+    username,
+    nickname,
+    displayName: firebaseUser.displayName || nickname,
+    email: firebaseUser.email || '',
+    photoURL: firebaseUser.photoURL || '',
+    updatedAt: serverTimestamp()
+  };
+
+  try{
+    await setDoc(doc(db,'users',firebaseUser.uid), {
+      ...data,
+      createdAt: currentProfile?.createdAt || serverTimestamp()
+    }, {merge:true});
+    currentProfile = {id:firebaseUser.uid, ...data, createdAt: currentProfile?.createdAt};
+    setHeaderUser(firebaseUser, currentProfile);
+    showToast('Profile saved! Your username is now searchable.');
+    await loadRequests();
+    await loadFriends();
+  }catch(error){
+    console.error(error);
+    showToast('Could not save profile. Check Firestore setup/rules.');
+  }
+};
+
+async function findUsers(term){
+  if(!term || term.length < 2){
+    $('searchResults').innerHTML = '<div class="empty">Type at least 2 characters to search.</div>';
+    return;
+  }
+
+  if(!firebaseUser){
+    $('searchResults').innerHTML = '<div class="empty">Please log in first to search for friends.</div>';
+    return;
+  }
+
+  $('searchResults').innerHTML = '<div class="loading">Searching...</div>';
+
+  try{
+    const qUsername = query(
+      collection(db,'users'),
+      where('username','>=',term),
+      where('username','<=',term + '\uf8ff'),
+      limit(20)
+    );
+    const qNickname = query(
+      collection(db,'users'),
+      where('nickname','>=',term),
+      where('nickname','<=',term + '\uf8ff'),
+      limit(20)
+    );
+
+    const [usernameSnap, nicknameSnap] = await Promise.all([
+      getDocs(qUsername),
+      getDocs(qNickname)
+    ]);
+
+    const map = new Map();
+    [...usernameSnap.docs, ...nicknameSnap.docs].forEach(snap => {
+      if(snap.id !== firebaseUser.uid) map.set(snap.id, {id:snap.id,...snap.data()});
+    });
+
+    const users = [...map.values()].sort((a,b)=>String(a.nickname||'').localeCompare(String(b.nickname||'')));
+    renderSearchResults(users);
+  }catch(error){
+    console.error(error);
+    $('searchResults').innerHTML = '<div class="empty">Search failed. Make sure Firestore is enabled and the rules are published.</div>';
+  }
+}
+
+function renderSearchResults(users){
+  if(!users.length){
+    $('searchResults').innerHTML = '<div class="empty">No students found.</div>';
+    return;
+  }
+
+  $('searchResults').innerHTML = '';
+  users.forEach(user => {
+    const row = document.createElement('div');
+    row.className = 'user-row';
+    row.innerHTML = `
+      ${avatarHtml(user)}
+      <div class="user-main">
+        <strong>${escapeHtml(user.nickname || user.displayName || 'Student')}</strong>
+        <small>@${escapeHtml(user.username || '')}</small>
+      </div>
+      <button class="btn btn-primary" data-user-id="${escapeHtml(user.id)}">Add Friend</button>
+    `;
+    row.querySelector('button').addEventListener('click', ()=>sendFriendRequest(user));
+    $('searchResults').appendChild(row);
+    refreshRelationshipButton(user.id, row.querySelector('button'));
+  });
+}
+
+async function getRequestBetween(otherUid){
+  if(!firebaseUser) return null;
+  const sent = await getDocs(query(
+    collection(db,'friendRequests'),
+    where('from','==',firebaseUser.uid),
+    where('to','==',otherUid),
+    limit(1)
+  ));
+  if(!sent.empty) return {id:sent.docs[0].id,...sent.docs[0].data()};
+
+  const incoming = await getDocs(query(
+    collection(db,'friendRequests'),
+    where('from','==',otherUid),
+    where('to','==',firebaseUser.uid),
+    limit(1)
+  ));
+  if(!incoming.empty) return {id:incoming.docs[0].id,...incoming.docs[0].data()};
+  return null;
+}
+
+async function areFriends(otherUid){
+  if(!firebaseUser) return false;
+  const ref = doc(db,'friends',firebaseUser.uid,'list',otherUid);
+  return (await getDoc(ref)).exists();
+}
+
+async function refreshRelationshipButton(otherUid, button){
+  try{
+    if(await areFriends(otherUid)){
+      button.textContent = '✓ Friends';
+      button.disabled = true;
+      button.className = 'btn btn-success';
+      return;
+    }
+    const req = await getRequestBetween(otherUid);
+    if(req){
+      if(req.from === firebaseUser.uid){
+        button.textContent = 'Request Sent';
+        button.disabled = true;
+        button.className = 'btn btn-secondary';
+      }else{
+        button.textContent = 'Respond';
+        button.disabled = false;
+        button.className = 'btn btn-primary';
+      }
+    }
+  }catch(error){ console.error(error); }
+}
+
+async function sendFriendRequest(user){
+  if(!(await ensureSignedIn())) return;
+  if(!currentProfile?.username){
+    showToast('Save your username first.');
+    $('usernameInput').focus();
+    return;
+  }
+  if(user.id === firebaseUser.uid) return;
+
+  try{
+    if(await areFriends(user.id)){
+      showToast('You are already friends.');
+      return;
+    }
+    const existing = await getRequestBetween(user.id);
+    if(existing){
+      showToast(existing.from === firebaseUser.uid ? 'Friend request already sent.' : 'You already have a request from this user.');
+      return;
+    }
+
+    await addDoc(collection(db,'friendRequests'), {
+      from: firebaseUser.uid,
+      fromUsername: currentProfile.username,
+      fromNickname: currentProfile.nickname,
+      fromPhotoURL: firebaseUser.photoURL || '',
+      to: user.id,
+      toUsername: user.username,
+      toNickname: user.nickname,
+      toPhotoURL: user.photoURL || '',
+      status: 'pending',
+      createdAt: serverTimestamp()
+    });
+    showToast(`Friend request sent to ${user.nickname || user.username}.`);
+    await findUsers(normalize($('searchInput').value));
+  }catch(error){
+    console.error(error);
+    showToast('Could not send friend request.');
+  }
+}
+
+async function loadRequests(){
+  if(!firebaseUser){
+    $('requestsList').innerHTML = '<div class="empty">Log in to see friend requests.</div>';
+    $('requestCount').textContent = '0';
+    return;
+  }
+  try{
+    const snap = await getDocs(query(
+      collection(db,'friendRequests'),
+      where('to','==',firebaseUser.uid),
+      where('status','==','pending'),
+      limit(50)
+    ));
+    $('requestCount').textContent = String(snap.size);
+
+    if(snap.empty){
+      $('requestsList').innerHTML = '<div class="empty">No new friend requests.</div>';
+      return;
+    }
+
+    $('requestsList').innerHTML = '';
+    snap.docs.forEach(d=>{
+      const req = {id:d.id,...d.data()};
+      const row = document.createElement('div');
+      row.className = 'request-row';
+      row.innerHTML = `
+        ${avatarHtml({photoURL:req.fromPhotoURL,nickname:req.fromNickname,username:req.fromUsername})}
+        <div class="row-info">
+          <strong>${escapeHtml(req.fromNickname || req.fromUsername || 'Student')}</strong>
+          <small>@${escapeHtml(req.fromUsername || '')} sent you a friend request.</small>
+        </div>
+        <div class="actions">
+          <button class="btn btn-success">Accept</button>
+          <button class="btn btn-danger">Reject</button>
+        </div>
+      `;
+      row.querySelector('.btn-success').addEventListener('click',()=>acceptRequest(req,row));
+      row.querySelector('.btn-danger').addEventListener('click',()=>rejectRequest(req,row));
+      $('requestsList').appendChild(row);
+    });
+  }catch(error){
+    console.error(error);
+    $('requestsList').innerHTML = '<div class="empty">Could not load requests. Check Firestore rules.</div>';
+  }
+}
+
+async function acceptRequest(req,row){
+  try{
+    await setDoc(doc(db,'friends',firebaseUser.uid,'list',req.from), {
+      uid:req.from,
+      username:req.fromUsername || '',
+      nickname:req.fromNickname || '',
+      photoURL:req.fromPhotoURL || '',
+      since:serverTimestamp()
+    });
+    await setDoc(doc(db,'friends',req.from,'list',firebaseUser.uid), {
+      uid:firebaseUser.uid,
+      username:currentProfile.username,
+      nickname:currentProfile.nickname,
+      photoURL:firebaseUser.photoURL || '',
+      since:serverTimestamp()
+    });
+    await updateDoc(doc(db,'friendRequests',req.id), {status:'accepted',respondedAt:serverTimestamp()});
+    row.remove();
+    showToast('Friend request accepted!');
+    const remaining = Math.max(0, Number($('requestCount').textContent)-1);
+    $('requestCount').textContent = String(remaining);
+    await loadFriends();
+  }catch(error){
+    console.error(error);
+    showToast('Could not accept request.');
+  }
+}
+
+async function rejectRequest(req,row){
+  try{
+    await updateDoc(doc(db,'friendRequests',req.id), {status:'rejected',respondedAt:serverTimestamp()});
+    row.remove();
+    showToast('Friend request rejected.');
+    const remaining = Math.max(0, Number($('requestCount').textContent)-1);
+    $('requestCount').textContent = String(remaining);
+  }catch(error){
+    console.error(error);
+    showToast('Could not reject request.');
+  }
+}
+
+async function loadFriends(){
+  if(!firebaseUser){
+    $('friendsList').innerHTML = '<div class="empty">Log in to see your friends.</div>';
+    $('friendCount').textContent = '0';
+    return;
+  }
+  try{
+    const snap = await getDocs(query(collection(db,'friends',firebaseUser.uid,'list'), limit(100)));
+    $('friendCount').textContent = String(snap.size);
+    if(snap.empty){
+      $('friendsList').innerHTML = '<div class="empty">You have no friends yet. Search for students above to add someone.</div>';
+      return;
+    }
+
+    const friends = snap.docs.map(d=>({id:d.id,...d.data()}));
+    friends.sort((a,b)=>String(a.nickname||a.username||'').localeCompare(String(b.nickname||b.username||'')));
+    $('friendsList').innerHTML = '';
+
+    friends.forEach(friend=>{
+      const row = document.createElement('div');
+      row.className = 'friend-row';
+      row.innerHTML = `
+        ${avatarHtml({photoURL:friend.photoURL,nickname:friend.nickname,username:friend.username})}
+        <div class="row-info">
+          <strong>${escapeHtml(friend.nickname || friend.username || 'Student')}</strong>
+          <small>@${escapeHtml(friend.username || '')}</small>
+        </div>
+        <div class="actions">
+          <button class="btn btn-danger">Remove</button>
+        </div>
+      `;
+      row.querySelector('.btn-danger').addEventListener('click',()=>removeFriend(friend,row));
+      $('friendsList').appendChild(row);
+    });
+  }catch(error){
+    console.error(error);
+    $('friendsList').innerHTML = '<div class="empty">Could not load friends. Check Firestore rules.</div>';
+  }
+}
+
+async function removeFriend(friend,row){
+  if(!confirm(`Remove ${friend.nickname || friend.username || 'this friend'} from your friends?`)) return;
+  try{
+    await deleteDoc(doc(db,'friends',firebaseUser.uid,'list',friend.uid));
+    await deleteDoc(doc(db,'friends',friend.uid,'list',firebaseUser.uid));
+    row.remove();
+    const count = Math.max(0, Number($('friendCount').textContent)-1);
+    $('friendCount').textContent = String(count);
+    if(count === 0) $('friendsList').innerHTML = '<div class="empty">You have no friends yet.</div>';
+    showToast('Friend removed.');
+  }catch(error){
+    console.error(error);
+    showToast('Could not remove friend.');
+  }
+}
+
+$('searchInput').addEventListener('input',()=>{
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(()=>findUsers(normalize($('searchInput').value)),350);
+});
+
+document.addEventListener('click',(event)=>{
+  const menu = $('profileMenu');
+  const headerRight = document.querySelector('.header-right');
+  if(menu.classList.contains('open') && !headerRight.contains(event.target)) menu.classList.remove('open');
+});
+
+$('loginOverlay').addEventListener('click',(event)=>{
+  if(event.target === $('loginOverlay')) closeLoginDialog();
+});
+
+onAuthStateChanged(auth, async (user)=>{
+  firebaseUser = user;
+  if(!user){
+    currentProfile = null;
+    setHeaderUser(null,null);
+    $('profileSetupCard').innerHTML = `
+      <h3>🔐 Login to use Friends</h3>
+      <div class="sub">Sign in with Google first, then create your username/nickname.</div>
+      <button class="btn btn-primary" onclick="googleLogin()">Continue with Google</button>
+    `;
+    $('searchResults').innerHTML = '<div class="empty">Please log in first to search students.</div>';
+    await loadRequests();
+    await loadFriends();
+    return;
+  }
+
+  $('profileSetupCard').innerHTML = `
+    <h3>✨ Your Friends Profile</h3>
+    <div class="sub">Choose the username and nickname that other students will search for.</div>
+    <div class="profile-grid">
+      <div id="setupAvatar" class="avatar fallback-avatar">👤</div>
+      <div>
+        <div class="field-row">
+          <div>
+            <label for="usernameInput">Username</label>
+            <input id="usernameInput" maxlength="20" placeholder="e.g. reyven123" autocomplete="off">
+            <div class="helper">3–20 characters. Letters, numbers, periods and underscores only.</div>
+          </div>
+          <div>
+            <label for="nicknameInput">Nickname</label>
+            <input id="nicknameInput" maxlength="30" placeholder="e.g. Reyven" autocomplete="off">
+            <div class="helper">This is the name shown to your friends.</div>
+          </div>
+        </div>
+      </div>
+      <button id="saveProfileBtn" class="btn btn-primary" type="button" onclick="saveProfile()">Save Profile</button>
+    </div>
+  `;
+
+  await loadCurrentProfile();
+  await loadRequests();
+  await loadFriends();
+});
+</script>
+
+</body>
+</html>
