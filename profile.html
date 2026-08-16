@@ -687,10 +687,48 @@ window.addFriendFromReaction=addFriendFromReaction;
 
 .post-counts button{border:none;background:transparent;color:inherit;font:inherit;cursor:pointer;padding:0;margin:0}
 .post-counts button:hover{text-decoration:underline}
-.share-context{margin-top:14px;border:1px solid rgba(24,60,140,.12);background:#f7f9fd;border-radius:15px;padding:14px;color:#183c8c}
-.share-context .share-context-label{font-size:11px;font-weight:800;opacity:.7;margin-bottom:5px}
-.share-context .share-context-author{font-size:13px;font-weight:800}
-.share-context .share-context-text{font-size:12px;color:#43506a;line-height:1.55;margin-top:6px;white-space:pre-wrap;word-break:break-word}
+.share-context{
+    margin-top:14px;
+    background:rgba(255,255,255,.97);
+    color:#24458e;
+    border:1px solid rgba(255,255,255,.55);
+    border-radius:20px;
+    padding:18px 18px 20px;
+    box-shadow:0 10px 28px rgba(0,0,0,.10);
+}
+.share-context .share-context-label{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    font-size:13px;
+    font-weight:800;
+    color:#6f84b8;
+    margin-bottom:11px;
+}
+.share-context .share-context-author{
+    font-size:17px;
+    line-height:1.3;
+    font-weight:800;
+    color:#24458e;
+}
+.share-context .share-context-text{
+    font-size:14px;
+    color:#334c7f;
+    line-height:1.65;
+    margin-top:10px;
+    white-space:pre-wrap;
+    word-break:break-word;
+}
+.share-context.deleted{
+    background:#f8fafc;
+    color:#64748b;
+    border-color:#e2e8f0;
+}
+.share-context.deleted .share-context-label,
+.share-context.deleted .share-context-author,
+.share-context.deleted .share-context-text{
+    color:#64748b;
+}
 .add-friend-mini{border:none;background:#1e3a8a;color:#fff;border-radius:10px;padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
 .add-friend-mini:disabled{opacity:.6;cursor:not-allowed}
 .reaction-user-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #edf1f7}
@@ -1250,6 +1288,56 @@ window.addFriendFromReaction=addFriendFromReaction;
 
 }
 
+
+/* PROFILE UNFRIEND CONFIRMATION */
+.profile-remove-modal{
+  position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+  padding:18px;background:rgba(0,13,38,.62);backdrop-filter:blur(9px);
+  -webkit-backdrop-filter:blur(9px);z-index:100000;
+}
+.profile-remove-modal.show{display:flex;animation:profileRemoveOverlayIn .22s ease forwards}
+.profile-remove-dialog{
+  width:min(420px,100%);background:rgba(255,255,255,.97);color:#0f172a;
+  border-radius:26px;padding:28px 24px 22px;text-align:center;
+  box-shadow:0 26px 70px rgba(0,0,0,.35);
+  border:1px solid rgba(255,255,255,.65);
+  transform:translateY(16px) scale(.96);opacity:0;
+  animation:profileRemoveDialogIn .3s cubic-bezier(.16,1,.3,1) .03s forwards;
+}
+.profile-remove-icon{
+  width:68px;height:68px;margin:0 auto 14px;border-radius:20px;
+  display:flex;align-items:center;justify-content:center;font-size:31px;
+  background:linear-gradient(135deg,#fff1f2,#ffe4e6);
+  box-shadow:inset 0 0 0 1px rgba(220,38,38,.08);
+}
+.profile-remove-dialog h3{font-size:21px;color:#00296B;margin-bottom:7px}
+.profile-remove-dialog p{font-size:13px;line-height:1.6;color:#64748b;margin:0 auto 17px;max-width:330px}
+.profile-remove-preview{
+  display:flex;align-items:center;gap:11px;text-align:left;padding:11px 12px;
+  border-radius:16px;background:#f8fafc;border:1px solid #e2e8f0;margin-bottom:19px;
+}
+.profile-remove-preview img,.profile-remove-preview .profile-remove-avatar{
+  width:48px;height:48px;border-radius:50%;object-fit:cover;flex:0 0 48px;
+}
+.profile-remove-avatar{display:flex;align-items:center;justify-content:center;background:#dfe7f5;color:#183c8c;font-weight:800;font-size:18px}
+.profile-remove-preview strong{display:block;font-size:13px;color:#0f172a}
+.profile-remove-preview span{display:block;font-size:11px;color:#64748b;margin-top:2px}
+.profile-remove-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.profile-remove-actions button{width:100%;border:none;border-radius:14px;padding:12px 14px;font-weight:700;cursor:pointer;transition:.2s ease}
+.profile-remove-cancel{background:#eef2f7;color:#334155}
+.profile-remove-confirm{background:#dc2626;color:#fff;box-shadow:0 7px 18px rgba(220,38,38,.22)}
+.profile-remove-actions button:hover{transform:translateY(-1px)}
+.profile-remove-actions button:active{transform:scale(.98)}
+.profile-remove-actions button:disabled{opacity:.65;cursor:not-allowed;transform:none}
+@keyframes profileRemoveOverlayIn{from{opacity:0}to{opacity:1}}
+@keyframes profileRemoveDialogIn{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:480px){
+  .profile-remove-dialog{border-radius:22px;padding:24px 17px 18px}
+  .profile-remove-dialog h3{font-size:19px}
+  .profile-remove-dialog p{font-size:12px}
+  .profile-remove-actions{grid-template-columns:1fr;gap:8px}
+  .profile-remove-actions button{padding:13px}
+}
 </style>
 </head>
 
@@ -1830,6 +1918,21 @@ window.addFriendFromReaction=addFriendFromReaction;
 </div>
 
 
+
+<!-- PROFILE UNFRIEND CONFIRMATION -->
+<div id="profileRemoveFriendModal" class="profile-remove-modal" aria-hidden="true">
+  <div class="profile-remove-dialog" role="dialog" aria-modal="true" aria-labelledby="profileRemoveFriendTitle">
+    <div class="profile-remove-icon">👥</div>
+    <h3 id="profileRemoveFriendTitle">Unfriend?</h3>
+    <p>This person will be removed from your friends list. You can send a new friend request later.</p>
+    <div id="profileRemoveFriendPreview" class="profile-remove-preview"></div>
+    <div class="profile-remove-actions">
+      <button type="button" class="profile-remove-cancel" onclick="closeProfileRemoveFriendModal()">Cancel</button>
+      <button type="button" class="profile-remove-confirm" id="confirmProfileRemoveFriendBtn" onclick="confirmProfileUnfriend()">Unfriend</button>
+    </div>
+  </div>
+</div>
+
 <!-- =========================
      FIREBASE
 ========================= -->
@@ -1994,6 +2097,24 @@ async function publishPost(){
 }
 window.publishPost = publishPost;
 
+async function removeStaleSharedPosts(posts){
+    const stale=[];
+    for(const post of posts){
+        if(!post.isShared || !post.originalPostId) continue;
+        try{
+            const originalSnap=await getDoc(doc(db,'posts',post.originalPostId));
+            if(!originalSnap.exists()) stale.push(post.id);
+        }catch(e){
+            console.warn('Could not verify original shared post',post.originalPostId,e);
+        }
+    }
+    if(!stale.length) return posts;
+    await Promise.all(stale.map(async id=>{
+        try{ await deleteDoc(doc(db,'posts',id)); }catch(e){ console.warn('Could not remove stale shared post',id,e); }
+    }));
+    return posts.filter(p=>!stale.includes(p.id));
+}
+
 async function loadPosts(){
     const user = auth.currentUser;
     const list = document.getElementById('postsList');
@@ -2008,6 +2129,9 @@ async function loadPosts(){
             const bd = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
             return bd-ad;
         });
+        const cleanedPosts = await removeStaleSharedPosts(posts);
+        posts.length = 0;
+        posts.push(...cleanedPosts);
         document.getElementById('postsCount').textContent = String(posts.length);
         if(!posts.length){
             list.innerHTML = `<div class="empty-posts"><div class="empty-icon">📝</div><h3>No Posts Yet</h3><p>Your future posts will appear here.</p></div>`;
@@ -2036,7 +2160,7 @@ function renderPost(post){
       </div>` : '';
     const own = auth.currentUser?.uid === post.authorUid;
     return `
-      <article class="post-card" data-post-id="${escapePostHtml(post.id)}">
+      <article class="post-card" data-post-id="${escapePostHtml(post.id)}" data-original-post-id="${escapePostHtml(post.originalPostId || '')}">
         <div class="post-head">
           ${postAvatarHtml(post.photoURL)}
           <div class="post-author">
@@ -2367,9 +2491,24 @@ window.googleLogin = async function(){
 };
 
 
+
+let sharedPostRefreshTimer=null;
+async function refreshSharedPosts(){
+    if(!auth.currentUser) return;
+    try{ await loadPosts(); }catch(e){ console.warn('Shared post refresh failed',e); }
+}
+function startSharedPostWatcher(){
+    clearInterval(sharedPostRefreshTimer);
+    sharedPostRefreshTimer=setInterval(refreshSharedPosts,12000);
+}
+
 /* =========================
    AUTH STATE
 ========================= */
+
+document.getElementById('profileRemoveFriendModal')?.addEventListener('click',e=>{
+    if(e.target===e.currentTarget) closeProfileRemoveFriendModal();
+});
 
 onAuthStateChanged(
     auth,
@@ -2410,6 +2549,7 @@ onAuthStateChanged(
         }
 
         await loadPosts();
+        startSharedPostWatcher();
     }
 );
 
@@ -2558,19 +2698,50 @@ window.messageFriend=function(friendId){
     window.location.href=`messages.html?uid=${encodeURIComponent(friendId)}`;
 };
 
-window.unfriendProfileFriend=async function(friendId,button){
+let pendingProfileUnfriend={friendId:null,button:null,friend:null};
+
+window.unfriendProfileFriend=function(friendId,button){
     const user=auth.currentUser;
     if(!user || !friendId) return;
-    if(!confirm('Are you sure you want to unfriend this person?')) return;
-    if(button){button.disabled=true;button.textContent='Removing...';}
+    const row=button?.closest('.friend-profile-row');
+    const friendName=row?.querySelector('.friend-profile-name')?.textContent || 'this person';
+    const username=row?.querySelector('.friend-profile-username')?.textContent || '';
+    const img=row?.querySelector('.friend-profile-avatar img');
+    const preview=document.getElementById('profileRemoveFriendPreview');
+    if(preview){
+        preview.innerHTML=img
+          ? `<img src="${escapePostHtml(img.src)}" alt="">`
+          : `<div class="profile-remove-avatar">${escapePostHtml(friendName.charAt(0).toUpperCase())}</div>`;
+        preview.innerHTML += `<div><strong>${escapePostHtml(friendName)}</strong><span>${escapePostHtml(username)}</span></div>`;
+    }
+    pendingProfileUnfriend={friendId,button,friend:{name:friendName,username}};
+    const modal=document.getElementById('profileRemoveFriendModal');
+    modal?.classList.add('show');
+    modal?.setAttribute('aria-hidden','false');
+};
+
+window.closeProfileRemoveFriendModal=function(){
+    const modal=document.getElementById('profileRemoveFriendModal');
+    modal?.classList.remove('show');
+    modal?.setAttribute('aria-hidden','true');
+    pendingProfileUnfriend={friendId:null,button:null,friend:null};
+};
+
+window.confirmProfileUnfriend=async function(){
+    const user=auth.currentUser;
+    const {friendId,button}=pendingProfileUnfriend;
+    if(!user || !friendId) return;
+    const confirmBtn=document.getElementById('confirmProfileRemoveFriendBtn');
+    if(confirmBtn){confirmBtn.disabled=true;confirmBtn.textContent='Removing...';}
     try{
         await deleteDoc(doc(db,'friends',user.uid,'list',friendId));
         await deleteDoc(doc(db,'friends',friendId,'list',user.uid));
+        closeProfileRemoveFriendModal();
         showPostToast('Friend removed.');
         await loadProfileFriends();
     }catch(error){
         console.error('Unfriend error:',error);
-        if(button){button.disabled=false;button.textContent='Unfriend';}
+        if(confirmBtn){confirmBtn.disabled=false;confirmBtn.textContent='Unfriend';}
         alert(error?.code==='permission-denied'?'Firestore is blocking this unfriend action. Please check your Firestore Rules.':'Could not unfriend this person.');
     }
 };
