@@ -1762,7 +1762,7 @@ window.saveProfile = async function(){
     const saveButton = document.querySelector(".save-btn");
     if(saveButton){
         saveButton.disabled = true;
-        saveButton.textContent = "⏳ Saving...";
+        saveButton.textContent = photoInput?.files?.[0] ? "⏳ Uploading..." : "⏳ Saving...";
     }
 
     try{
@@ -1780,6 +1780,7 @@ window.saveProfile = async function(){
             const imageRef = storageRef(storage, `profilePhotos/${user.uid}`);
             await uploadBytes(imageRef, file, { contentType: file.type });
             photoURL = await getDownloadURL(imageRef);
+            if(saveButton) saveButton.textContent = "⏳ Saving profile...";
         }
 
         const data = {
@@ -1808,20 +1809,10 @@ window.saveProfile = async function(){
         document.getElementById("profileBio").textContent = data.bio;
         applyProfilePhoto(data.photoURL);
 
-        // Update the cached friend records so existing friends see the new photo.
-        try{
-            const friendSnap = await getDocs(collection(db, "friends", user.uid, "list"));
-            await Promise.all(friendSnap.docs.map(async (friendDoc) => {
-                const friendUid = friendDoc.id;
-                await updateDoc(doc(db, "friends", friendUid, "list", user.uid), {
-                    photoURL: data.photoURL,
-                    nickname: data.nickname || existing.nickname || data.name,
-                    updatedAt: new Date().toISOString()
-                });
-            }));
-        }catch(friendError){
-            console.warn("Friend photo sync skipped:", friendError);
-        }
+        // Friends pages should read the latest profile from /users/{uid}.
+        // We intentionally do NOT update every friend's cached record here,
+        // because that can make Save Changes slow or appear stuck when there
+        // are many friends or restrictive Firestore rules.
 
         closeEditProfile();
         openSuccessPopup();
