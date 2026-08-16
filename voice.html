@@ -2688,12 +2688,17 @@ async function openAllConcerns(){
     if(!firebaseUser){
 
         openLogin();
+
         return;
 
     }
 
 
     if(!isAdminUser()){
+
+        alert(
+            "🛡️ Admin access only."
+        );
 
         return;
 
@@ -2759,7 +2764,8 @@ async function openAllConcerns(){
                     color:#666;
                     padding:20px;
                 ">
-                    ${data.message || "Admin access denied."}
+                    ${data.message ||
+                    "Admin access denied."}
                 </p>
             `;
 
@@ -2982,15 +2988,23 @@ const googleProvider = new GoogleAuthProvider();
 function isAdminUser(){
 
     if(!firebaseUser || !firebaseUser.email){
+
         return false;
+
     }
 
-    return ADMIN_EMAILS.includes(
-        firebaseUser.email.toLowerCase()
-    );
+    const userEmail =
+        firebaseUser.email
+            .trim()
+            .toLowerCase();
+
+    return ADMIN_EMAILS
+        .map(email =>
+            email.trim().toLowerCase()
+        )
+        .includes(userEmail);
 
 }
-
 window.toggleProfileMenu = function(){
 
     if (!firebaseUser) {
@@ -3161,19 +3175,26 @@ onAuthStateChanged(
 
             firebaseUser = user;
 
-            const seeAllBtn =
+const seeAllBtn =
     document.getElementById(
         "seeAllConcernsBtn"
     );
 
 if(seeAllBtn){
 
-    if(
-        ADMIN_EMAILS.includes(
-            (user.email || "")
-            .toLowerCase()
-        )
-    ){
+    const loggedEmail =
+        String(user.email || "")
+            .trim()
+            .toLowerCase();
+
+    const admin =
+        ADMIN_EMAILS
+            .map(email =>
+                email.trim().toLowerCase()
+            )
+            .includes(loggedEmail);
+
+    if(admin){
 
         seeAllBtn.style.display = "block";
 
