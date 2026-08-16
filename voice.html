@@ -2579,14 +2579,19 @@ async function openMyConcerns(){
 
     try{
 
-        const response =
-            await fetch(
-                SCRIPT_URL +
-                "?action=getMyConcerns&email=" +
-                encodeURIComponent(
-                    firebaseUser.email
-                )
-            );
+      console.log(
+    "Logged-in user:",
+    firebaseUser.email
+);
+
+const response =
+    await fetch(
+        SCRIPT_URL +
+        "?action=getMyConcerns&email=" +
+        encodeURIComponent(
+            firebaseUser.email
+        )
+    );
 
 
         const data =
