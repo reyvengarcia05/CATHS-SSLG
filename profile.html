@@ -646,9 +646,14 @@ window.addFriendFromReaction=addFriendFromReaction;
 .post-manage{margin-left:auto;position:relative}
 .post-manage-btn{border:none;background:rgba(255,255,255,.10);color:#fff;width:32px;height:32px;border-radius:10px;cursor:pointer;font-size:17px;transition:.2s}
 .post-manage-btn:hover{background:rgba(255,255,255,.18);transform:translateY(-1px)}
-.post-menu-backdrop{position:fixed;inset:0;display:none;z-index:100000}.post-menu-backdrop.open{display:block}
-.post-menu{position:fixed;left:0;top:0;min-width:205px;background:#fff;color:#183c8c;border-radius:15px;padding:7px;box-shadow:0 18px 45px rgba(0,0,0,.28);z-index:100001}
-.post-menu button{width:100%;border:none;background:transparent;text-align:left;padding:11px 12px;border-radius:10px;color:#183c8c;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.post-menu button:hover{background:#eef4ff}.post-menu button.pin{color:#183c8c}.post-menu button.pin:hover{background:#eef4ff}.post-menu button.danger{color:#c0392b}.post-menu button.danger:hover{background:#fff0ee}
+.post-menu-backdrop{position:fixed;inset:0;display:none;z-index:100000;background:transparent}.post-menu-backdrop.open{display:block}
+.post-menu{position:fixed;left:0;top:0;min-width:220px;background:rgba(255,255,255,.98);color:#183c8c;border:1px solid rgba(24,60,140,.08);border-radius:14px;padding:7px;box-shadow:0 16px 40px rgba(0,0,0,.24);z-index:100001}
+.post-menu button{width:100%;border:none;background:transparent;text-align:left;padding:11px 12px;border-radius:10px;color:#183c8c;font:inherit;font-size:12px;font-weight:700;cursor:pointer;display:block}
+.post-menu button:hover{background:#eef4ff}
+.post-menu button.pin{color:#183c8c}
+.post-menu button.pin:hover{background:#eef4ff}
+.post-menu button.danger{color:#c0392b}
+.post-menu button.danger:hover{background:#fff0ee}
 .manage-modal,.privacy-modal{position:fixed;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:18px;z-index:100002}.manage-modal.open,.privacy-modal.open{display:flex}
 .manage-box,.privacy-box{width:100%;max-width:440px;background:#fff;color:#183c8c;border-radius:24px;padding:24px;box-shadow:0 24px 70px rgba(0,0,0,.35);animation:postPop .22s ease}
 .manage-box h3,.privacy-box h3{font-size:20px;margin-bottom:7px}.manage-box p,.privacy-box p{font-size:12px;color:#6f7b91;line-height:1.55}
@@ -2018,9 +2023,9 @@ function renderPost(post){
             <button class="post-manage-btn" type="button" onclick="togglePostMenu('${escapePostHtml(post.id)}',event)">⋯</button>
             <div class="post-menu-backdrop" id="menu-backdrop-${escapePostHtml(post.id)}" onclick="closePostMenu('${escapePostHtml(post.id)}',event)">
               <div class="post-menu" onclick="event.stopPropagation()">
-                <button type="button" onclick="openPrivacyModal('${escapePostHtml(post.id)}','${escapePostHtml(post.visibility)}')">👁️ Who can see this?</button>
-                <button class="pin" type="button" onclick="togglePinPost('${escapePostHtml(post.id)}',${post.pinned===true})">${post.pinned===true?'📌 Unpin from top':'📌 Pin to the top'}</button>
-                <button class="danger" type="button" onclick="openDeletePostModal('${escapePostHtml(post.id)}')">🗑️ Delete</button>
+                <button type="button" onclick="openPrivacyModal('${escapePostHtml(post.id)}','${escapePostHtml(post.visibility)}')">👁️ Who can see this</button>
+                <button class="pin" type="button" onclick="togglePinPost('${escapePostHtml(post.id)}',${post.pinned===true})">${post.pinned===true?'📌 Unpin the post':'📌 Pin the post'}</button>
+                <button class="danger" type="button" onclick="openDeletePostModal('${escapePostHtml(post.id)}')">🗑️ Delete the post</button>
               </div>
             </div>
           </div>` : ''}
