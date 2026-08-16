@@ -3258,7 +3258,7 @@ function showSectionSuggestions(searchText = ""){
         "block";
 
 }
-   sectionSearch.addEventListener("input", function(){
+sectionSearch.addEventListener("input", function(){
 
     sectionHidden.value = "";
 
@@ -3277,6 +3277,24 @@ function showSectionSuggestions(searchText = ""){
     button.textContent = "🔐 Verify Section";
     button.style.background = "#FFD93D";
     button.style.color = "#0d2c7a";
+
+    showSectionSuggestions(this.value);
+
+});
+
+
+/* =========================================
+   SHOW ALL SECTIONS WHEN CLICKED / FOCUSED
+========================================= */
+
+sectionSearch.addEventListener("focus", function(){
+
+    showSectionSuggestions(this.value);
+
+});
+
+
+sectionSearch.addEventListener("click", function(){
 
     showSectionSuggestions(this.value);
 
