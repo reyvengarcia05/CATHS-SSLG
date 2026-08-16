@@ -302,6 +302,60 @@ margin-bottom:3px;
 color:var(--yellow);
 }
 
+/* ACTIVE BOTTOM NAV ITEM */
+.bottom-nav .nav-item{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    min-width:72px;
+    padding:5px 8px;
+    line-height:1.1;
+    transition:transform .22s ease, color .22s ease;
+}
+
+.bottom-nav .nav-item div{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:30px;
+    height:28px;
+    font-size:22px;
+    line-height:1;
+    margin-bottom:3px;
+}
+
+.bottom-nav .nav-item.active{
+    color:var(--yellow);
+    transform:translateY(-5px) scale(1.08);
+}
+
+.bottom-nav .nav-item.active div{
+    font-size:25px;
+}
+
+.bottom-nav .profile-nav-icon{
+    width:30px !important;
+    height:28px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    margin:0 0 3px 0 !important;
+}
+
+.bottom-nav .profile-nav-icon img,
+.bottom-nav #profileNavPhoto img{
+    width:28px !important;
+    height:28px !important;
+    min-width:28px !important;
+    min-height:28px !important;
+    max-width:28px !important;
+    max-height:28px !important;
+    border-radius:50% !important;
+    object-fit:cover !important;
+    display:block !important;
+}
+
    .login-btn{
     background:rgba(255,255,255,.15);
     backdrop-filter:blur(10px);
@@ -806,6 +860,40 @@ color:black;
         font-size: 25px;
     }
 
+    .bottom-nav .nav-item{
+        min-width:54px;
+        padding:4px 3px;
+    }
+
+    .bottom-nav .nav-item.active{
+        transform:translateY(-4px) scale(1.06);
+    }
+
+    .bottom-nav .nav-item div{
+        width:27px;
+        height:24px;
+        font-size:21px;
+    }
+
+    .bottom-nav .nav-item.active div{
+        font-size:24px;
+    }
+
+    .bottom-nav .profile-nav-icon{
+        width:27px !important;
+        height:24px !important;
+    }
+
+    .bottom-nav .profile-nav-icon img,
+    .bottom-nav #profileNavPhoto img{
+        width:25px !important;
+        height:25px !important;
+        min-width:25px !important;
+        min-height:25px !important;
+        max-width:25px !important;
+        max-height:25px !important;
+    }
+
     /* TOUCH FRIENDLY */
     button,
     .card,
@@ -1219,7 +1307,7 @@ and connect with the school community.
 
 <div class="bottom-nav">
 
-    <a href="index.html" class="nav-item">
+    <a href="index.html" class="nav-item active">
         <div>🏠</div>
         <span>Home</span>
     </a>
@@ -1229,22 +1317,20 @@ and connect with the school community.
         <span>News</span>
     </a>
 
+    <a href="#" class="nav-item" onclick="openStudentVoice(event)">
+        <div>🗣️</div>
+        <span>Student Voice</span>
+    </a>
+
     <a href="friends.html" class="nav-item">
         <div>👥</div>
         <span>Add Friends</span>
     </a>
 
-   <a href="#" class="nav-item" onclick="openStudentVoice(event)">
-    <div>🗣️</div>
-    <span>Student Voice</span>
-</a>
-
-    
-
- <a href="#" class="nav-item" onclick="openProfile(event)">
-    <div id="profileNavPhoto">👤</div>
-    <span>Profile</span>
-</a>
+    <a href="#" class="nav-item" onclick="openProfile(event)">
+        <div class="profile-nav-icon" id="profileNavPhoto">👤</div>
+        <span>Profile</span>
+    </a>
 
 </div>
 
