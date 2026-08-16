@@ -1313,13 +1313,12 @@ body{
 
         <div class="form-group">
             <label>Profile Picture</label>
-            <div class="photo-picker">
-                <div id="editPhotoPreview" class="photo-picker-preview">👤</div>
+            <div class="photo-picker coming-soon-card">
+                <div class="photo-picker-preview">🖼️</div>
                 <div class="photo-picker-content">
                     <div class="photo-picker-title">Change Profile Picture</div>
-                    <div class="photo-picker-subtitle">Choose a clear photo. JPG, PNG or WebP, up to 5 MB.</div>
-                    <label for="editPhoto" class="change-photo-btn">📷 Choose New Picture</label>
-                    <input type="file" id="editPhoto" accept="image/*">
+                    <div class="photo-picker-subtitle">Custom profile picture uploads are currently unavailable.</div>
+                    <div class="coming-soon-badge">✨ Coming Soon</div>
                 </div>
             </div>
         </div>
@@ -1395,7 +1394,7 @@ body{
     <div class="success-box">
         <div class="success-icon">✓</div>
         <h3>Successfully Changed!</h3>
-        <p>Your profile has been updated successfully. Your new profile picture is now saved.</p>
+        <p>Your profile changes have been saved successfully.</p>
         <button class="success-ok" onclick="closeSuccessPopup()">Okay</button>
     </div>
 </div>
@@ -1510,13 +1509,6 @@ import {
     updateDoc
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-import {
-    getStorage,
-    ref as storageRef,
-    uploadBytes,
-    getDownloadURL
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-storage.js";
-
 
 const firebaseConfig = {
 
@@ -1554,7 +1546,6 @@ const googleProvider =
     new GoogleAuthProvider();
 
 const db = getFirestore(app);
-const storage = getStorage(app);
 
 
 /* =========================
@@ -1662,27 +1653,6 @@ function applyProfilePhoto(photoUrl){
     }
 }
 
-function setEditPhotoPreview(photoUrl){
-    const preview = document.getElementById("editPhotoPreview");
-    if(!preview) return;
-
-    if(photoUrl){
-        preview.innerHTML = `
-            <img
-                src="${photoUrl}"
-                alt="Preview"
-                style="
-                    width:100%;
-                    height:100%;
-                    object-fit:cover;
-                    display:block;
-                "
-            >
-        `;
-    }else{
-        preview.innerHTML = "👤";
-    }
-}
 
 /* =========================
    LOAD PROFILE DATA
@@ -1743,45 +1713,17 @@ window.saveProfile = async function(){
     const name = document.getElementById("editName").value.trim();
     const section = document.getElementById("editSection").value.trim();
     const bio = document.getElementById("editBio").value.trim();
-    const photoInput = document.getElementById("editPhoto");
-
-    if(photoInput?.files?.[0]){
-        const file = photoInput.files[0];
-
-        if(!file.type.startsWith("image/")){
-            alert("Please choose a valid image file.");
-            return;
-        }
-
-        if(file.size > 5 * 1024 * 1024){
-            alert("Please choose an image smaller than 5 MB.");
-            return;
-        }
-    }
 
     const saveButton = document.querySelector(".save-btn");
     if(saveButton){
         saveButton.disabled = true;
-        saveButton.textContent = photoInput?.files?.[0] ? "⏳ Uploading..." : "⏳ Saving...";
+        saveButton.textContent = "⏳ Saving...";
     }
 
     try{
-        // Read existing user profile first so username/nickname are preserved.
         const userRef = doc(db, "users", user.uid);
         const existingSnap = await getDoc(userRef);
         const existing = existingSnap.exists() ? (existingSnap.data() || {}) : {};
-
-        let photoURL = existing.photoURL || user.photoURL || "";
-
-        // Upload the selected image to Firebase Storage using one stable path per user.
-        // This replaces the old profile photo instead of creating a new file every time.
-        if(photoInput?.files?.[0]){
-            const file = photoInput.files[0];
-            const imageRef = storageRef(storage, `profilePhotos/${user.uid}`);
-            await uploadBytes(imageRef, file, { contentType: file.type });
-            photoURL = await getDownloadURL(imageRef);
-            if(saveButton) saveButton.textContent = "⏳ Saving profile...";
-        }
 
         const data = {
             ...existing,
@@ -1791,14 +1733,13 @@ window.saveProfile = async function(){
             name: name || user.displayName || existing.name || "User",
             section: section,
             bio: bio || "Welcome to my CATHS-MAIN Student Voice profile. 🎓",
-            photoURL: photoURL,
+            // Keep the current saved/Google photo. Custom uploads are Coming Soon.
+            photoURL: existing.photoURL || user.photoURL || "",
             updatedAt: new Date().toISOString()
         };
 
-        // Permanent shared profile record.
         await setDoc(userRef, data, { merge: true });
 
-        // Keep local cache only as a convenience/fallback.
         localStorage.setItem(
             profileStorageKey(),
             JSON.stringify(data)
@@ -1809,24 +1750,15 @@ window.saveProfile = async function(){
         document.getElementById("profileBio").textContent = data.bio;
         applyProfilePhoto(data.photoURL);
 
-        // Friends pages should read the latest profile from /users/{uid}.
-        // We intentionally do NOT update every friend's cached record here,
-        // because that can make Save Changes slow or appear stuck when there
-        // are many friends or restrictive Firestore rules.
-
         closeEditProfile();
         openSuccessPopup();
 
     }catch(error){
         console.error("Save profile error:", error);
-
         let message = "Could not save your profile.";
-        if(error?.code === "storage/unauthorized") {
-            message = "Firebase Storage permission is blocking the upload. Check your Storage Rules.";
-        }else if(error?.code === "permission-denied") {
+        if(error?.code === "permission-denied") {
             message = "Firestore permission is blocking the profile save. Check your Firestore Rules.";
         }
-
         alert("❌ " + message);
     }finally{
         if(saveButton){
@@ -1836,7 +1768,6 @@ window.saveProfile = async function(){
     }
 
 };
-
 
 window.openSuccessPopup = function(){
     const overlay = document.getElementById("successOverlay");
@@ -1885,9 +1816,6 @@ window.openEditProfile = async function(){
 
     document.getElementById("editBio").value =
         data.bio || "";
-
-    document.getElementById("editPhoto").value = "";
-    setEditPhotoPreview(data.photoURL || user.photoURL || "");
 
     document.getElementById("editOverlay").style.display = "flex";
 
@@ -1954,22 +1882,6 @@ window.showTab = function(tab){
 
 };
 
-
-const editPhotoInput = document.getElementById("editPhoto");
-if(editPhotoInput){
-    editPhotoInput.addEventListener("change", function(){
-        const file = this.files?.[0];
-        if(!file) return;
-        if(!file.type.startsWith("image/")){
-            this.value = "";
-            alert("Please choose a valid image file.");
-            return;
-        }
-        const reader = new FileReader();
-        reader.onload = event => setEditPhotoPreview(event.target.result);
-        reader.readAsDataURL(file);
-    });
-}
 
 
 /* =========================
