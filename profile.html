@@ -2097,24 +2097,6 @@ async function publishPost(){
 }
 window.publishPost = publishPost;
 
-async function removeStaleSharedPosts(posts){
-    const stale=[];
-    for(const post of posts){
-        if(!post.isShared || !post.originalPostId) continue;
-        try{
-            const originalSnap=await getDoc(doc(db,'posts',post.originalPostId));
-            if(!originalSnap.exists()) stale.push(post.id);
-        }catch(e){
-            console.warn('Could not verify original shared post',post.originalPostId,e);
-        }
-    }
-    if(!stale.length) return posts;
-    await Promise.all(stale.map(async id=>{
-        try{ await deleteDoc(doc(db,'posts',id)); }catch(e){ console.warn('Could not remove stale shared post',id,e); }
-    }));
-    return posts.filter(p=>!stale.includes(p.id));
-}
-
 async function loadPosts(){
     const user = auth.currentUser;
     const list = document.getElementById('postsList');
@@ -2129,9 +2111,6 @@ async function loadPosts(){
             const bd = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
             return bd-ad;
         });
-        const cleanedPosts = await removeStaleSharedPosts(posts);
-        posts.length = 0;
-        posts.push(...cleanedPosts);
         document.getElementById('postsCount').textContent = String(posts.length);
         if(!posts.length){
             list.innerHTML = `<div class="empty-posts"><div class="empty-icon">📝</div><h3>No Posts Yet</h3><p>Your future posts will appear here.</p></div>`;
