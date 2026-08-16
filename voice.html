@@ -3258,115 +3258,29 @@ function showSectionSuggestions(searchText = ""){
         "block";
 
 }
+    sectionSearch.addEventListener("input", function(){
 
+    sectionHidden.value = "";
 
-/*
-   HABANG NAGTA-TYPE
-*/
+    sectionVerified = false;
+    verifiedSection = "";
 
-sectionSearch.addEventListener(
-    "input",
-    function(){
+    document.getElementById("sectionVerification").style.display = "none";
 
-        /*
-           Clear muna ang selected value
-           kapag binago ulit ang search.
-        */
+    document.getElementById("verificationCode").value = "";
 
-        sectionHidden.value = "";
+    document.getElementById("verificationMessage").style.display = "none";
 
+    const button = document.getElementById("verifySectionBtn");
 
-        showSectionSuggestions(
-            this.value
-        );
+    button.disabled = false;
+    button.textContent = "🔐 Verify Section";
+    button.style.background = "#FFD93D";
+    button.style.color = "#0d2c7a";
 
-    }
-);
+    showSectionSuggestions(this.value);
 
-
-/*
-   KAPAG KINLICK ANG SEARCH BOX
-*/
-
-sectionSearch.addEventListener(
-    "input",
-    function(){
-
-        sectionHidden.value = "";
-
-
-        /* RESET VERIFICATION */
-
-        sectionVerified = false;
-
-        verifiedSection = "";
-
-
-        const verificationBox =
-            document.getElementById(
-                "sectionVerification"
-            );
-
-        const verificationCode =
-            document.getElementById(
-                "verificationCode"
-            );
-
-        const verificationMessage =
-            document.getElementById(
-                "verificationMessage"
-            );
-
-        const verifyButton =
-            document.getElementById(
-                "verifySectionBtn"
-            );
-
-
-        if(verificationBox){
-
-            verificationBox.style.display =
-                "none";
-
-        }
-
-
-        if(verificationCode){
-
-            verificationCode.value = "";
-
-            verificationCode.readOnly = false;
-
-        }
-
-
-        if(verificationMessage){
-
-            verificationMessage.style.display =
-                "none";
-
-        }
-
-
-        if(verifyButton){
-
-            verifyButton.disabled = false;
-
-            verifyButton.textContent =
-                "🔐 Verify Section";
-
-            verifyButton.style.background =
-                "#FFD93D";
-
-            verifyButton.style.color =
-                "#0d2c7a";
-
-        }
-
-
-        showSectionSuggestions(
-            this.value
-        );
+});
 
     }
 );
