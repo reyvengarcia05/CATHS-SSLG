@@ -174,7 +174,20 @@ input{
 }
 .nav-item{text-decoration:none;color:#fff;font-size:10px;text-align:center;padding:4px 8px}
 .nav-item div{font-size:22px;line-height:1;margin-bottom:4px}
-.nav-item.active{color:var(--yellow)}
+.nav-item.active{
+  color:var(--yellow);
+  transform:translateY(-6px) scale(1.12);
+  font-weight:700;
+}
+.nav-item.active div{
+  font-size:28px;
+  margin-bottom:5px;
+}
+@media (max-width:768px){
+  .nav-item.active{transform:translateY(-5px) scale(1.08)}
+  .nav-item.active div{font-size:25px}
+}
+
 #profileNavPhoto{display:flex;align-items:center;justify-content:center;width:24px;height:24px;margin:0 auto 4px}
 #profileNavPhoto img{width:24px;height:24px;border-radius:50%;object-fit:cover}
 
@@ -690,7 +703,7 @@ function renderSearchResults(users){
       </div>
       <button class="btn btn-primary" data-user-id="${escapeHtml(user.id)}">Add Friend</button>
     `;
-    row.querySelector('button').addEventListener('click', ()=>sendFriendRequest(user));
+    row.querySelector('button').addEventListener('click', ()=>handleRelationshipAction(user, row.querySelector('button')));
     $('searchResults').appendChild(row);
     refreshRelationshipButton(user.id, row.querySelector('button'));
   });
@@ -732,9 +745,9 @@ async function refreshRelationshipButton(otherUid, button){
     }
     const req = await getRequestBetween(otherUid);
     if(req){
-      if(req.from === firebaseUser.uid){
-        button.textContent = 'Request Sent';
-        button.disabled = true;
+      if(req.from === firebaseUser.uid && req.status === 'pending'){
+        button.textContent = 'Cancel Request';
+        button.disabled = false;
         button.className = 'btn btn-secondary';
       }else{
         button.textContent = 'Respond';
@@ -743,6 +756,46 @@ async function refreshRelationshipButton(otherUid, button){
       }
     }
   }catch(error){ console.error(error); }
+}
+
+async function handleRelationshipAction(user, button){
+  if(!(await ensureSignedIn())) return;
+  try{
+    if(await areFriends(user.id)){
+      button.textContent = '✓ Friends';
+      button.disabled = true;
+      button.className = 'btn btn-success';
+      return;
+    }
+
+    const req = await getRequestBetween(user.id);
+    if(req && req.from === firebaseUser.uid && req.status === 'pending'){
+      await cancelFriendRequest(req, user);
+      return;
+    }
+
+    if(req && req.from !== firebaseUser.uid){
+      showToast('You have a friend request from this user. Check Friend Requests below.');
+      return;
+    }
+
+    await sendFriendRequest(user);
+  }catch(error){
+    console.error(error);
+    showToast('Could not update friend request.');
+  }
+}
+
+async function cancelFriendRequest(req, user){
+  if(!req?.id || !firebaseUser) return;
+  try{
+    await deleteDoc(doc(db,'friendRequests',req.id));
+    showToast(`Friend request to ${user.nickname || user.username} cancelled.`);
+    await findUsers(normalize($('searchInput').value));
+  }catch(error){
+    console.error(error);
+    showToast('Could not cancel friend request.');
+  }
 }
 
 async function sendFriendRequest(user){
