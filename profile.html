@@ -648,7 +648,7 @@ window.addFriendFromReaction=addFriendFromReaction;
 .post-manage-btn:hover{background:rgba(255,255,255,.18);transform:translateY(-1px)}
 .post-menu-backdrop{position:fixed;inset:0;display:none;z-index:100000}.post-menu-backdrop.open{display:block}
 .post-menu{position:absolute;right:0;top:40px;min-width:205px;background:#fff;color:#183c8c;border-radius:15px;padding:7px;box-shadow:0 18px 45px rgba(0,0,0,.28);z-index:100001}
-.post-menu button{width:100%;border:none;background:transparent;text-align:left;padding:11px 12px;border-radius:10px;color:#183c8c;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.post-menu button:hover{background:#eef4ff}.post-menu button.danger{color:#c0392b}.post-menu button.danger:hover{background:#fff0ee}
+.post-menu button{width:100%;border:none;background:transparent;text-align:left;padding:11px 12px;border-radius:10px;color:#183c8c;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.post-menu button:hover{background:#eef4ff}.post-menu button.pin{color:#183c8c}.post-menu button.pin:hover{background:#eef4ff}.post-menu button.danger{color:#c0392b}.post-menu button.danger:hover{background:#fff0ee}
 .manage-modal,.privacy-modal{position:fixed;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:18px;z-index:100002}.manage-modal.open,.privacy-modal.open{display:flex}
 .manage-box,.privacy-box{width:100%;max-width:440px;background:#fff;color:#183c8c;border-radius:24px;padding:24px;box-shadow:0 24px 70px rgba(0,0,0,.35);animation:postPop .22s ease}
 .manage-box h3,.privacy-box h3{font-size:20px;margin-bottom:7px}.manage-box p,.privacy-box p{font-size:12px;color:#6f7b91;line-height:1.55}
@@ -1645,6 +1645,7 @@ window.addFriendFromReaction=addFriendFromReaction;
   <p>This post will be permanently removed from your profile. This action cannot be undone.</p>
   <div class="manage-actions"><button class="manage-cancel" type="button" onclick="closeDeletePostModal()">Cancel</button><button id="confirmDeletePostBtn" class="manage-danger" type="button" onclick="confirmDeletePost()">Delete Post</button></div>
 </div></div>
+<div id="pinSuccessOverlay" class="pin-success-overlay"><div class="pin-success-box"><div class="pin-success-icon">📌</div><h3 id="pinSuccessTitle">Post Pinned</h3><p id="pinSuccessText">Your post is now pinned to the top of your profile.</p><button class="pin-success-ok" type="button" onclick="closeSimpleOverlay('pinSuccessOverlay')">Okay</button></div></div>
 <div id="privacySuccessOverlay" class="manage-modal"><div class="manage-box"><h3>✓ Privacy Updated</h3><p>Your post visibility has been changed successfully.</p><div class="manage-actions"><button class="manage-primary" type="button" onclick="closeSimpleOverlay('privacySuccessOverlay')">Okay</button></div></div></div>
 <div id="deleteSuccessOverlay" class="manage-modal"><div class="manage-box"><h3>✓ Post Deleted</h3><p>Your post has been permanently removed.</p><div class="manage-actions"><button class="manage-primary" type="button" onclick="closeSimpleOverlay('deleteSuccessOverlay')">Okay</button></div></div></div>
 
@@ -1973,6 +1974,7 @@ async function loadPosts(){
         const snap = await getDocs(query(collection(db,'posts'), where('authorUid','==',user.uid), limit(50)));
         const posts = snap.docs.map(d=>({id:d.id,...d.data()}));
         posts.sort((a,b)=>{
+            if(Boolean(a.pinned)!==Boolean(b.pinned)) return a.pinned ? -1 : 1;
             const ad = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
             const bd = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
             return bd-ad;
@@ -2012,13 +2014,14 @@ function renderPost(post){
             <strong>${escapePostHtml(post.authorName || 'User')}</strong>
             <div class="post-meta">${escapePostHtml(postTimeLabel(post.createdAt))}</div>
           </div>
-          <span class="post-visibility">${visibilityLabel}</span>
+          <span class="post-visibility">${visibilityLabel}</span>${post.pinned===true?`<span class="post-visibility" title="Pinned post">📌 Pinned</span>`:""}
           ${own ? `<div class="post-manage">
             <button class="post-manage-btn" type="button" onclick="togglePostMenu('${escapePostHtml(post.id)}',event)">⋯</button>
             <div class="post-menu-backdrop" id="menu-backdrop-${escapePostHtml(post.id)}" onclick="closePostMenu('${escapePostHtml(post.id)}',event)">
               <div class="post-menu" onclick="event.stopPropagation()">
-                <button type="button" onclick="openPrivacyModal('${escapePostHtml(post.id)}','${escapePostHtml(post.visibility)}')">👁️ Change who can see this</button>
-                <button class="danger" type="button" onclick="openDeletePostModal('${escapePostHtml(post.id)}')">🗑️ Delete Post</button>
+                <button type="button" onclick="openPrivacyModal('${escapePostHtml(post.id)}','${escapePostHtml(post.visibility)}')">👁️ Who can see this?</button>
+                <button class="pin" type="button" onclick="togglePinPost('${escapePostHtml(post.id)}',${post.pinned===true})">${post.pinned===true?'📌 Unpin from top':'📌 Pin to the top'}</button>
+                <button class="danger" type="button" onclick="openDeletePostModal('${escapePostHtml(post.id)}')">🗑️ Delete</button>
               </div>
             </div>
           </div>` : ''}
@@ -2113,6 +2116,23 @@ async function confirmDeletePost(){
     finally{if(btn){btn.disabled=false;btn.textContent='Delete Post';}}
 }
 window.confirmDeletePost=confirmDeletePost;
+async function togglePinPost(postId,isPinned){
+    const user=auth.currentUser;if(!user||!postId)return;
+    closePostMenu(postId);
+    try{
+        const ref=doc(db,'posts',postId),snap=await getDoc(ref);
+        if(!snap.exists()||snap.data()?.authorUid!==user.uid)throw new Error('You can only pin your own post.');
+        await updateDoc(ref,{pinned:!isPinned});
+        await loadPosts();
+        const title=document.getElementById('pinSuccessTitle');
+        const text=document.getElementById('pinSuccessText');
+        if(title)title.textContent=isPinned?'Post Unpinned':'Post Pinned';
+        if(text)text.textContent=isPinned?'Your post was removed from the top of your profile.':'Your post is now pinned to the top of your profile.';
+        document.getElementById('pinSuccessOverlay')?.classList.add('open');
+    }catch(e){console.error(e);alert(e?.code==='permission-denied'?'Firestore is blocking this pin change.':'Could not change the post pin.');}
+}
+window.togglePinPost=togglePinPost;
+
 function openPrivacyModal(postId,currentVisibility){activeManagePostId=postId;closePostMenu(postId);document.querySelectorAll('.privacy-option').forEach(b=>b.classList.toggle('active',b.dataset.visibility===currentVisibility));document.getElementById('privacyModal')?.classList.add('open');}
 window.openPrivacyModal=openPrivacyModal;
 function closePrivacyModal(){activeManagePostId=null;document.getElementById('privacyModal')?.classList.remove('open');}
