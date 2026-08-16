@@ -113,17 +113,26 @@ opacity:.9;
 }
 
 .container{
-max-width:800px;
-margin:auto;
-padding:20px;
+    width:100%;
+    max-width:1000px;
+    margin:0 auto;
+    padding:30px 24px 120px;
 }
 
 .voice-card{
-background:rgba(255,255,255,.12);
-backdrop-filter:blur(15px);
-padding:25px;
-border-radius:25px;
-box-shadow:0 10px 30px rgba(0,0,0,.2);
+    width:100%;
+    background:rgba(255,255,255,.13);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+
+    padding:32px;
+    border-radius:28px;
+
+    border:1px solid rgba(255,255,255,.12);
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.16),
+        inset 0 1px 0 rgba(255,255,255,.08);
 }
 
 .voice-card h2{
@@ -931,15 +940,17 @@ CELLPHONE DITO BE AHHAHAAHHAA
     }
 
     /* MAIN CONTAINER */
-    .container{
-        width:100%;
-        padding:14px 12px;
-    }
+   .container{
+    width:100%;
+    max-width:none;
+    padding:14px 12px 100px;
+}
 
-    .voice-card{
-        width:100%;
-        padding:18px 15px;
-        border-radius:20px;
+.voice-card{
+    width:100%;
+    padding:20px 16px;
+    border-radius:22px;
+}
     }
 
     .voice-card h2{
