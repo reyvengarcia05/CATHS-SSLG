@@ -1507,7 +1507,7 @@ CELLPHONE DITO BE AHHAHAAHHAA
 .section-suggestions{
     position:absolute;
 
-    top:calc(100% + 8px);
+    top:100%;
     left:0;
     right:0;
 
@@ -1524,11 +1524,15 @@ CELLPHONE DITO BE AHHAHAAHHAA
         0 14px 35px rgba(0,0,0,.16),
         0 4px 12px rgba(0,0,0,.08);
 
-    z-index:10000;
+    z-index:999999;
 
     display:none;
 
     border:1px solid rgba(24,60,140,.08);
+}
+
+.section-suggestions.show{
+    display:block !important;
 }
 
 .section-suggestions.show{
@@ -2973,7 +2977,7 @@ const SECTION_CODES = {
   "12-Mendeleev": "758216LEEV"
 
 };
-
+</script>
 
 <script>
 
@@ -3032,6 +3036,10 @@ const sections = [
     "12-Mendeleev"
 
 ];
+
+</script>
+
+    <script>
 
 const sectionSearch =
     document.getElementById("sectionSearch");
