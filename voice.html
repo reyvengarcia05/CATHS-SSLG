@@ -2149,17 +2149,13 @@ document
            CHECK SECTION
         ===================================== */
 
-        if(!section){
+       if(!section){
 
-            alert(
-                "Please select your section from the list."
-            );
+    openSectionRequiredPopup();
 
-            sectionSearch.focus();
+    return;
 
-            return;
-
-        }
+}
 
 
         /* =====================================
