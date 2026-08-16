@@ -2826,25 +2826,43 @@ function renderConcerns(data){
 }
 
 </script>
-    
-  <div class="popup-content">
 
-    <button class="close-btn" onclick="closeLogin()">✕</button>
+<div id="loginModal" class="modal">
 
-  <h2 style="font-size:42px;font-weight:700;margin-bottom:8px;color:white;">
-  Welcome Back
-</h2>
+    <div class="popup-content">
 
-<p style="color:rgba(255,255,255,.85);font-size:17px;margin-bottom:22px;">
-  Sign in to continue
-</p>
-    <button id="googleLoginBtn"
+        <button
+            class="close-btn"
+            onclick="closeLogin()">
+            ✕
+        </button>
+
+        <h2 style="
+            font-size:42px;
+            font-weight:700;
+            margin-bottom:8px;
+            color:white;
+        ">
+            Welcome Back
+        </h2>
+
+        <p style="
+            color:rgba(255,255,255,.85);
+            font-size:17px;
+            margin-bottom:22px;
+        ">
+            Sign in to continue
+        </p>
+
+        <button
+            id="googleLoginBtn"
             class="submit-btn"
             onclick="googleLogin()">
-      Continue with Google
-    </button>
+            Continue with Google
+        </button>
 
-  </div>
+    </div>
+
 </div>
 
     <script>
@@ -2916,8 +2934,10 @@ const auth = getAuth(app);
 
 const googleProvider = new GoogleAuthProvider();
 
-       const ADMIN_EMAILS = [
-    "YOUR_ADMIN_EMAIL@gmail.com"
+     const ADMIN_EMAILS = [
+    "reyvengarcia15@gmail.com",
+    "reyvenbermudo091@gmail.com",
+    "reyvengarcia05@gmail.com",
 ];
 
 function isAdminUser(){
