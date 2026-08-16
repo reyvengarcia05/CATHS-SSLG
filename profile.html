@@ -276,269 +276,8 @@ body{
 
 
 /* =========================
-   POSTS
+   POSTS FUNCTIONALITY MOVED TO SCRIPT
 ========================= */
-let activeCommentPostId = null;
-
-function escapePostHtml(value){
-    return String(value ?? '')
-      .replaceAll('&','&amp;')
-      .replaceAll('<','&lt;')
-      .replaceAll('>','&gt;')
-      .replaceAll('"','&quot;')
-      .replaceAll("'",'&#039;');
-}
-
-function postTimeLabel(ts){
-    try{
-        const date = ts?.toDate ? ts.toDate() : new Date(ts);
-        if(Number.isNaN(date.getTime())) return 'Just now';
-        return date.toLocaleString([], {month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit'});
-    }catch(e){ return 'Just now'; }
-}
-
-function postAvatarHtml(url){
-    return url
-      ? `<div class="post-avatar"><img src="${escapePostHtml(url)}" alt=""></div>`
-      : `<div class="post-avatar">👤</div>`;
-}
-
-function openPostComposer(){
-    if(!auth.currentUser){
-        document.getElementById('loginOverlay').style.display='flex';
-        return;
-    }
-    document.getElementById('postText').value='';
-    document.getElementById('postVisibility').value='public';
-    document.getElementById('postCharCount').textContent='0';
-    document.getElementById('postModal').classList.add('open');
-    setTimeout(()=>document.getElementById('postText').focus(),50);
-}
-window.openPostComposer = openPostComposer;
-
-function closePostComposer(){
-    document.getElementById('postModal').classList.remove('open');
-}
-window.closePostComposer = closePostComposer;
-
-document.getElementById('postText')?.addEventListener('input', e=>{
-    document.getElementById('postCharCount').textContent = String(e.target.value.length);
-});
-
-async function publishPost(){
-    const user = auth.currentUser;
-    const text = document.getElementById('postText').value.trim();
-    const visibility = document.getElementById('postVisibility').value;
-    const btn = document.getElementById('publishPostBtn');
-    if(!user){ document.getElementById('loginOverlay').style.display='flex'; return; }
-    if(!text){ alert('Please write something first.'); return; }
-    if(text.length > 500){ alert('Your post is too long.'); return; }
-
-    btn.disabled = true;
-    btn.textContent = '⏳ Posting...';
-    try{
-        const profileSnap = await getDoc(doc(db,'users',user.uid));
-        const profile = profileSnap.exists() ? (profileSnap.data() || {}) : {};
-
-        await addDoc(collection(db,'posts'),{
-            authorUid: user.uid,
-            authorName: profile.name || profile.displayName || user.displayName || 'User',
-            username: profile.username || '',
-            photoURL: profile.photoURL || user.photoURL || '',
-            text,
-            visibility,
-            createdAt: serverTimestamp(),
-            likeCount: 0,
-            commentCount: 0,
-            shareCount: 0
-        });
-
-        closePostComposer();
-        await loadPosts();
-        document.getElementById('postsCount').textContent = document.querySelectorAll('.post-card').length;
-    }catch(error){
-        console.error('Publish post error:', error);
-        alert(error?.code === 'permission-denied' ? 'Firestore rules are blocking posts. Please update your Firestore Rules.' : 'Could not publish your post.');
-    }finally{
-        btn.disabled=false;
-        btn.textContent='Post';
-    }
-}
-window.publishPost = publishPost;
-
-async function loadPosts(){
-    const user = auth.currentUser;
-    const list = document.getElementById('postsList');
-    if(!list || !user) return;
-    list.innerHTML = '<div class="empty-posts">Loading posts...</div>';
-    try{
-        const snap = await getDocs(query(collection(db,'posts'), where('authorUid','==',user.uid), limit(50)));
-        const posts = snap.docs.map(d=>({id:d.id,...d.data()}));
-        posts.sort((a,b)=>{
-            const ad = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
-            const bd = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
-            return bd-ad;
-        });
-        document.getElementById('postsCount').textContent = String(posts.length);
-        if(!posts.length){
-            list.innerHTML = `<div class="empty-posts"><div class="empty-icon">📝</div><h3>No Posts Yet</h3><p>Your future posts will appear here.</p></div>`;
-            return;
-        }
-        list.innerHTML='';
-        for(const post of posts){
-            list.insertAdjacentHTML('beforeend', renderPost(post));
-        }
-        // populate live reaction/comment counts
-        for(const post of posts){ await refreshPostCounts(post.id); }
-    }catch(error){
-        console.error('Load posts error:',error);
-        list.innerHTML = '<div class="empty-posts">Could not load posts. Check your Firestore Rules.</div>';
-    }
-}
-window.loadPosts = loadPosts;
-
-function renderPost(post){
-    const visibilityLabel = post.visibility === 'friends' ? '👥 Friends Only' : post.visibility === 'private' ? '🔒 Only Me' : '🌍 Public';
-    return `
-      <article class="post-card" data-post-id="${escapePostHtml(post.id)}">
-        <div class="post-head">
-          ${postAvatarHtml(post.photoURL)}
-          <div class="post-author">
-            <strong>${escapePostHtml(post.authorName || 'User')}</strong>
-            <div class="post-meta">${escapePostHtml(postTimeLabel(post.createdAt))}</div>
-          </div>
-          <span class="post-visibility">${visibilityLabel}</span>
-        </div>
-        <div class="post-text">${escapePostHtml(post.text)}</div>
-        <div class="post-counts" id="counts-${escapePostHtml(post.id)}">👍 0 · 💬 0 · ↗ 0</div>
-        <div class="post-actions">
-          <div class="reaction-wrap">
-            <button class="post-action" type="button" onclick="toggleReactionPicker('${escapePostHtml(post.id)}', event)">👍 React</button>
-            <div class="reaction-picker" id="picker-${escapePostHtml(post.id)}">
-              ${['👍','❤️','😂','😮','😢'].map(e=>`<button class="reaction-emoji" type="button" onclick="reactToPost('${escapePostHtml(post.id)}','${e}',event)">${e}</button>`).join('')}
-            </div>
-          </div>
-          <button class="post-action" type="button" onclick="openComments('${escapePostHtml(post.id)}')">💬 Comment</button>
-          <button class="post-action" type="button" onclick="sharePost('${escapePostHtml(post.id)}')">↗ Share</button>
-        </div>
-      </article>`;
-}
-
-function toggleReactionPicker(postId, event){
-    event.stopPropagation();
-    document.querySelectorAll('.reaction-picker.open').forEach(el=>{ if(el.id !== 'picker-'+postId) el.classList.remove('open'); });
-    document.getElementById('picker-'+postId)?.classList.toggle('open');
-}
-window.toggleReactionPicker = toggleReactionPicker;
-
-document.addEventListener('click',e=>{
-    if(!e.target.closest('.reaction-wrap')) document.querySelectorAll('.reaction-picker.open').forEach(el=>el.classList.remove('open'));
-});
-
-async function reactToPost(postId, emoji, event){
-    event.stopPropagation();
-    const user = auth.currentUser;
-    if(!user) return;
-    try{
-        const ref = doc(db,'posts',postId,'reactions',user.uid);
-        const existing = await getDoc(ref);
-        if(existing.exists() && existing.data()?.emoji === emoji){
-            await deleteDoc(ref);
-        }else{
-            await setDoc(ref,{uid:user.uid,emoji,updatedAt:serverTimestamp()});
-        }
-        document.getElementById('picker-'+postId)?.classList.remove('open');
-        await refreshPostCounts(postId);
-    }catch(error){
-        console.error(error);
-        alert('Could not update reaction.');
-    }
-}
-window.reactToPost=reactToPost;
-
-async function refreshPostCounts(postId){
-    try{
-        const reactionsSnap = await getDocs(collection(db,'posts',postId,'reactions'));
-        const commentsSnap = await getDocs(collection(db,'posts',postId,'comments'));
-        const shareSnap = await getDoc(doc(db,'posts',postId));
-        const shareCount = shareSnap.exists() ? Number(shareSnap.data().shareCount || 0) : 0;
-        const countsEl = document.getElementById('counts-'+postId);
-        if(countsEl) countsEl.textContent = `👍 ${reactionsSnap.size} · 💬 ${commentsSnap.size} · ↗ ${shareCount}`;
-    }catch(error){ console.error('refresh counts',error); }
-}
-
-async function openComments(postId){
-    activeCommentPostId = postId;
-    document.getElementById('commentsModal').classList.add('open');
-    document.getElementById('commentsList').innerHTML = '<div style="padding:8px;color:#777">Loading comments...</div>';
-    await loadComments(postId);
-}
-window.openComments=openComments;
-
-function closeComments(){
-    activeCommentPostId=null;
-    document.getElementById('commentsModal').classList.remove('open');
-}
-window.closeComments=closeComments;
-
-async function loadComments(postId){
-    try{
-        const snap = await getDocs(query(collection(db,'posts',postId,'comments'), limit(100)));
-        const comments = snap.docs.map(d=>({id:d.id,...d.data()}));
-        comments.sort((a,b)=>{
-            const ad=a.createdAt?.toMillis?a.createdAt.toMillis():0;
-            const bd=b.createdAt?.toMillis?b.createdAt.toMillis():0;
-            return ad-bd;
-        });
-        const list=document.getElementById('commentsList');
-        if(!comments.length){ list.innerHTML='<div style="padding:15px;text-align:center;color:#777">No comments yet.</div>'; return; }
-        list.innerHTML=comments.map(c=>`<div class="comment-item"><strong>${escapePostHtml(c.authorName||'User')}</strong><p>${escapePostHtml(c.text)}</p></div>`).join('');
-    }catch(error){
-        console.error(error);
-        document.getElementById('commentsList').innerHTML='<div style="padding:15px;color:#777">Could not load comments.</div>';
-    }
-}
-
-async function submitComment(){
-    const user=auth.currentUser;
-    const input=document.getElementById('commentInput');
-    const text=input.value.trim();
-    if(!user || !activeCommentPostId || !text) return;
-    try{
-        const profileSnap=await getDoc(doc(db,'users',user.uid));
-        const profile=profileSnap.exists()?profileSnap.data()||{}:{};
-        await addDoc(collection(db,'posts',activeCommentPostId,'comments'),{
-            uid:user.uid,
-            authorName:profile.name || profile.displayName || user.displayName || 'User',
-            text,
-            createdAt:serverTimestamp()
-        });
-        input.value='';
-        await loadComments(activeCommentPostId);
-        await refreshPostCounts(activeCommentPostId);
-    }catch(error){
-        console.error(error);
-        alert('Could not add comment.');
-    }
-}
-window.submitComment=submitComment;
-
-async function sharePost(postId){
-    const url=`${location.origin}${location.pathname}?post=${encodeURIComponent(postId)}`;
-    try{
-        if(navigator.share){ await navigator.share({title:'CATHS-MAIN Student Voice',url}); }
-        else if(navigator.clipboard){ await navigator.clipboard.writeText(url); alert('Post link copied!'); }
-        else { prompt('Copy this post link:',url); }
-        const postRef=doc(db,'posts',postId);
-        const snap=await getDoc(postRef);
-        const current=Number(snap.data()?.shareCount||0);
-        await updateDoc(postRef,{shareCount:current+1});
-        await refreshPostCounts(postId);
-    }catch(error){
-        if(error?.name !== 'AbortError') console.error('Share error:',error);
-    }
-}
-window.sharePost=sharePost;
 
 /* =========================
    TABS
@@ -1762,7 +1501,7 @@ window.sharePost=sharePost;
         <select id="postVisibility" class="post-select">
           <option value="public">🌍 Public</option>
           <option value="friends">👥 Friends Only</option>
-          <option value="private">🔒 Only Me</option>
+          <option value="onlyMe">🔒 Only Me</option>
         </select>
       </div>
     </div>
@@ -1941,6 +1680,272 @@ const googleProvider =
     new GoogleAuthProvider();
 
 const db = getFirestore(app);
+
+
+/* =========================
+   POSTS
+========================= */
+let activeCommentPostId = null;
+
+function escapePostHtml(value){
+    return String(value ?? '')
+      .replaceAll('&','&amp;')
+      .replaceAll('<','&lt;')
+      .replaceAll('>','&gt;')
+      .replaceAll('"','&quot;')
+      .replaceAll("'",'&#039;');
+}
+
+function postTimeLabel(ts){
+    try{
+        const date = ts?.toDate ? ts.toDate() : new Date(ts);
+        if(Number.isNaN(date.getTime())) return 'Just now';
+        return date.toLocaleString([], {month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit'});
+    }catch(e){ return 'Just now'; }
+}
+
+function postAvatarHtml(url){
+    return url
+      ? `<div class="post-avatar"><img src="${escapePostHtml(url)}" alt=""></div>`
+      : `<div class="post-avatar">👤</div>`;
+}
+
+function openPostComposer(){
+    if(!auth.currentUser){
+        document.getElementById('loginOverlay').style.display='flex';
+        return;
+    }
+    document.getElementById('postText').value='';
+    document.getElementById('postVisibility').value='public';
+    document.getElementById('postCharCount').textContent='0';
+    document.getElementById('postModal').classList.add('open');
+    setTimeout(()=>document.getElementById('postText').focus(),50);
+}
+window.openPostComposer = openPostComposer;
+
+function closePostComposer(){
+    document.getElementById('postModal').classList.remove('open');
+}
+window.closePostComposer = closePostComposer;
+
+document.getElementById('postText')?.addEventListener('input', e=>{
+    document.getElementById('postCharCount').textContent = String(e.target.value.length);
+});
+
+async function publishPost(){
+    const user = auth.currentUser;
+    const text = document.getElementById('postText').value.trim();
+    const visibility = document.getElementById('postVisibility').value;
+    const btn = document.getElementById('publishPostBtn');
+    if(!user){ document.getElementById('loginOverlay').style.display='flex'; return; }
+    if(!text){ alert('Please write something first.'); return; }
+    if(text.length > 500){ alert('Your post is too long.'); return; }
+
+    btn.disabled = true;
+    btn.textContent = '⏳ Posting...';
+    try{
+        const profileSnap = await getDoc(doc(db,'users',user.uid));
+        const profile = profileSnap.exists() ? (profileSnap.data() || {}) : {};
+
+        await addDoc(collection(db,'posts'),{
+            authorUid: user.uid,
+            authorName: profile.name || profile.displayName || user.displayName || 'User',
+            username: profile.username || '',
+            photoURL: profile.photoURL || user.photoURL || '',
+            text,
+            visibility,
+            createdAt: serverTimestamp(),
+            likeCount: 0,
+            commentCount: 0,
+            shareCount: 0
+        });
+
+        closePostComposer();
+        await loadPosts();
+        document.getElementById('postsCount').textContent = document.querySelectorAll('.post-card').length;
+    }catch(error){
+        console.error('Publish post error:', error);
+        alert(error?.code === 'permission-denied' ? 'Firestore rules are blocking posts. Please update your Firestore Rules.' : 'Could not publish your post.');
+    }finally{
+        btn.disabled=false;
+        btn.textContent='Post';
+    }
+}
+window.publishPost = publishPost;
+
+async function loadPosts(){
+    const user = auth.currentUser;
+    const list = document.getElementById('postsList');
+    if(!list || !user) return;
+    list.innerHTML = '<div class="empty-posts">Loading posts...</div>';
+    try{
+        const snap = await getDocs(query(collection(db,'posts'), where('authorUid','==',user.uid), limit(50)));
+        const posts = snap.docs.map(d=>({id:d.id,...d.data()}));
+        posts.sort((a,b)=>{
+            const ad = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+            const bd = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+            return bd-ad;
+        });
+        document.getElementById('postsCount').textContent = String(posts.length);
+        if(!posts.length){
+            list.innerHTML = `<div class="empty-posts"><div class="empty-icon">📝</div><h3>No Posts Yet</h3><p>Your future posts will appear here.</p></div>`;
+            return;
+        }
+        list.innerHTML='';
+        for(const post of posts){
+            list.insertAdjacentHTML('beforeend', renderPost(post));
+        }
+        // populate live reaction/comment counts
+        for(const post of posts){ await refreshPostCounts(post.id); }
+    }catch(error){
+        console.error('Load posts error:',error);
+        list.innerHTML = '<div class="empty-posts">Could not load posts. Check your Firestore Rules.</div>';
+    }
+}
+window.loadPosts = loadPosts;
+
+function renderPost(post){
+    const visibilityLabel = post.visibility === 'friends' ? '👥 Friends Only' : post.visibility === 'private' ? '🔒 Only Me' : '🌍 Public';
+    return `
+      <article class="post-card" data-post-id="${escapePostHtml(post.id)}">
+        <div class="post-head">
+          ${postAvatarHtml(post.photoURL)}
+          <div class="post-author">
+            <strong>${escapePostHtml(post.authorName || 'User')}</strong>
+            <div class="post-meta">${escapePostHtml(postTimeLabel(post.createdAt))}</div>
+          </div>
+          <span class="post-visibility">${visibilityLabel}</span>
+        </div>
+        <div class="post-text">${escapePostHtml(post.text)}</div>
+        <div class="post-counts" id="counts-${escapePostHtml(post.id)}">👍 0 · 💬 0 · ↗ 0</div>
+        <div class="post-actions">
+          <div class="reaction-wrap">
+            <button class="post-action" type="button" onclick="toggleReactionPicker('${escapePostHtml(post.id)}', event)">👍 React</button>
+            <div class="reaction-picker" id="picker-${escapePostHtml(post.id)}">
+              ${['👍','❤️','😂','😮','😢'].map(e=>`<button class="reaction-emoji" type="button" onclick="reactToPost('${escapePostHtml(post.id)}','${e}',event)">${e}</button>`).join('')}
+            </div>
+          </div>
+          <button class="post-action" type="button" onclick="openComments('${escapePostHtml(post.id)}')">💬 Comment</button>
+          <button class="post-action" type="button" onclick="sharePost('${escapePostHtml(post.id)}')">↗ Share</button>
+        </div>
+      </article>`;
+}
+
+function toggleReactionPicker(postId, event){
+    event.stopPropagation();
+    document.querySelectorAll('.reaction-picker.open').forEach(el=>{ if(el.id !== 'picker-'+postId) el.classList.remove('open'); });
+    document.getElementById('picker-'+postId)?.classList.toggle('open');
+}
+window.toggleReactionPicker = toggleReactionPicker;
+
+document.addEventListener('click',e=>{
+    if(!e.target.closest('.reaction-wrap')) document.querySelectorAll('.reaction-picker.open').forEach(el=>el.classList.remove('open'));
+});
+
+async function reactToPost(postId, emoji, event){
+    event.stopPropagation();
+    const user = auth.currentUser;
+    if(!user) return;
+    try{
+        const ref = doc(db,'posts',postId,'reactions',user.uid);
+        const existing = await getDoc(ref);
+        if(existing.exists() && existing.data()?.emoji === emoji){
+            await deleteDoc(ref);
+        }else{
+            await setDoc(ref,{uid:user.uid,emoji,updatedAt:serverTimestamp()});
+        }
+        document.getElementById('picker-'+postId)?.classList.remove('open');
+        await refreshPostCounts(postId);
+    }catch(error){
+        console.error(error);
+        alert('Could not update reaction.');
+    }
+}
+window.reactToPost=reactToPost;
+
+async function refreshPostCounts(postId){
+    try{
+        const reactionsSnap = await getDocs(collection(db,'posts',postId,'reactions'));
+        const commentsSnap = await getDocs(collection(db,'posts',postId,'comments'));
+        const shareSnap = await getDoc(doc(db,'posts',postId));
+        const shareCount = shareSnap.exists() ? Number(shareSnap.data().shareCount || 0) : 0;
+        const countsEl = document.getElementById('counts-'+postId);
+        if(countsEl) countsEl.textContent = `👍 ${reactionsSnap.size} · 💬 ${commentsSnap.size} · ↗ ${shareCount}`;
+    }catch(error){ console.error('refresh counts',error); }
+}
+
+async function openComments(postId){
+    activeCommentPostId = postId;
+    document.getElementById('commentsModal').classList.add('open');
+    document.getElementById('commentsList').innerHTML = '<div style="padding:8px;color:#777">Loading comments...</div>';
+    await loadComments(postId);
+}
+window.openComments=openComments;
+
+function closeComments(){
+    activeCommentPostId=null;
+    document.getElementById('commentsModal').classList.remove('open');
+}
+window.closeComments=closeComments;
+
+async function loadComments(postId){
+    try{
+        const snap = await getDocs(query(collection(db,'posts',postId,'comments'), limit(100)));
+        const comments = snap.docs.map(d=>({id:d.id,...d.data()}));
+        comments.sort((a,b)=>{
+            const ad=a.createdAt?.toMillis?a.createdAt.toMillis():0;
+            const bd=b.createdAt?.toMillis?b.createdAt.toMillis():0;
+            return ad-bd;
+        });
+        const list=document.getElementById('commentsList');
+        if(!comments.length){ list.innerHTML='<div style="padding:15px;text-align:center;color:#777">No comments yet.</div>'; return; }
+        list.innerHTML=comments.map(c=>`<div class="comment-item"><strong>${escapePostHtml(c.authorName||'User')}</strong><p>${escapePostHtml(c.text)}</p></div>`).join('');
+    }catch(error){
+        console.error(error);
+        document.getElementById('commentsList').innerHTML='<div style="padding:15px;color:#777">Could not load comments.</div>';
+    }
+}
+
+async function submitComment(){
+    const user=auth.currentUser;
+    const input=document.getElementById('commentInput');
+    const text=input.value.trim();
+    if(!user || !activeCommentPostId || !text) return;
+    try{
+        const profileSnap=await getDoc(doc(db,'users',user.uid));
+        const profile=profileSnap.exists()?profileSnap.data()||{}:{};
+        await addDoc(collection(db,'posts',activeCommentPostId,'comments'),{
+            uid:user.uid,
+            authorName:profile.name || profile.displayName || user.displayName || 'User',
+            text,
+            createdAt:serverTimestamp()
+        });
+        input.value='';
+        await loadComments(activeCommentPostId);
+        await refreshPostCounts(activeCommentPostId);
+    }catch(error){
+        console.error(error);
+        alert('Could not add comment.');
+    }
+}
+window.submitComment=submitComment;
+
+async function sharePost(postId){
+    const url=`${location.origin}${location.pathname}?post=${encodeURIComponent(postId)}`;
+    try{
+        if(navigator.share){ await navigator.share({title:'CATHS-MAIN Student Voice',url}); }
+        else if(navigator.clipboard){ await navigator.clipboard.writeText(url); alert('Post link copied!'); }
+        else { prompt('Copy this post link:',url); }
+        const postRef=doc(db,'posts',postId);
+        const snap=await getDoc(postRef);
+        const current=Number(snap.data()?.shareCount||0);
+        await updateDoc(postRef,{shareCount:current+1});
+        await refreshPostCounts(postId);
+    }catch(error){
+        if(error?.name !== 'AbortError') console.error('Share error:',error);
+    }
+}
+window.sharePost=sharePost;
 
 
 /* =========================
