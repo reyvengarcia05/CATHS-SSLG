@@ -1391,6 +1391,23 @@ import {
     onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
+import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    collection,
+    getDocs,
+    updateDoc
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+import {
+    getStorage,
+    ref as storageRef,
+    uploadBytes,
+    getDownloadURL
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-storage.js";
+
 
 const firebaseConfig = {
 
@@ -1427,6 +1444,9 @@ const auth =
 const googleProvider =
     new GoogleAuthProvider();
 
+const db = getFirestore(app);
+const storage = getStorage(app);
+
 
 /* =========================
    GOOGLE LOGIN
@@ -1461,82 +1481,41 @@ window.googleLogin = async function(){
 
 onAuthStateChanged(
     auth,
-    (user) => {
+    async (user) => {
 
         const loginOverlay =
             document.getElementById(
                 "loginOverlay"
             );
 
-
         if(!user){
-
-            loginOverlay.style.display =
-                "flex";
-
+            loginOverlay.style.display = "flex";
             return;
-
         }
 
+        loginOverlay.style.display = "none";
 
-        loginOverlay.style.display =
-            "none";
+        document.getElementById("profileName").textContent =
+            user.displayName || "User";
 
-
-        /* NAME */
-
-        document.getElementById(
-            "profileName"
-        ).textContent =
-            user.displayName ||
-            "User";
-
-
-        /* EMAIL */
-
-        document.getElementById(
-            "profileEmail"
-        ).textContent =
+        document.getElementById("profileEmail").textContent =
             user.email || "";
 
+        applyProfilePhoto(user.photoURL || "");
 
-        /* PHOTO */
+        await loadProfileData();
 
-        const picture =
-            document.getElementById(
-                "profilePicture"
-            );
-
-        const placeholder =
-            document.getElementById(
-                "profilePlaceholder"
-            );
-
-
-        /* LOAD SAVED PROFILE FIRST */
-        loadProfileData();
-
-        const saved =
-            localStorage.getItem(
-                "profileData_" + user.email
-            );
-
-        let savedProfile = {};
-
-        if(saved){
-            try{
-                savedProfile = JSON.parse(saved) || {};
-            }catch(error){}
+        // Use the saved profile photo from Firestore when available.
+        try{
+            const snap = await getDoc(doc(db, "users", user.uid));
+            if(snap.exists()){
+                const data = snap.data() || {};
+                if(data.photoURL) applyProfilePhoto(data.photoURL);
+            }
+        }catch(error){
+            console.error("Could not load remote profile:", error);
         }
-
-        applyProfilePhoto(
-            savedProfile.photoURL ||
-            user.photoURL ||
-            ""
-        );
-
     }
-
 );
 
 
@@ -1600,63 +1579,44 @@ function setEditPhotoPreview(photoUrl){
    LOAD PROFILE DATA
 ========================= */
 
-function loadProfileData(){
+async function loadProfileData(){
 
-    const email =
-        auth.currentUser?.email;
+    const user = auth.currentUser;
+    if(!user) return;
 
-    if(!email) return;
-
-    const saved =
-        localStorage.getItem(
-            "profileData_" + email
-        );
-
-    if(!saved) return;
+    let data = {};
 
     try{
-
-        const data =
-            JSON.parse(saved);
-
-        if(data.name){
-
-            document.getElementById(
-                "profileName"
-            ).textContent =
-                data.name;
-
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if(snap.exists()){
+            data = snap.data() || {};
         }
-
-        if(data.section){
-
-            document.getElementById(
-                "editSection"
-            ).value =
-                data.section;
-
-        }
-
-        if(data.bio){
-
-            document.getElementById(
-                "profileBio"
-            ).textContent =
-                data.bio;
-
-        }
-
-        if(data.photoURL){
-            applyProfilePhoto(data.photoURL);
-        }
-
     }catch(error){
+        console.error("Firestore profile load error:", error);
+    }
 
-        console.error(
-            "Profile data error:",
-            error
-        );
+    // LocalStorage remains only as a fallback for older profiles.
+    if(!data.name && !data.bio && !data.photoURL){
+        const saved = localStorage.getItem(profileStorageKey());
+        if(saved){
+            try{ data = JSON.parse(saved) || {}; }catch(error){}
+        }
+    }
 
+    if(data.name){
+        document.getElementById("profileName").textContent = data.name;
+    }
+
+    if(data.section){
+        document.getElementById("editSection").value = data.section;
+    }
+
+    if(data.bio){
+        document.getElementById("profileBio").textContent = data.bio;
+    }
+
+    if(data.photoURL){
+        applyProfilePhoto(data.photoURL);
     }
 
 }
@@ -1666,93 +1626,17 @@ function loadProfileData(){
    SAVE PROFILE
 ========================= */
 
-window.saveProfile = function(){
+window.saveProfile = async function(){
 
-    const user =
-        auth.currentUser;
-
+    const user = auth.currentUser;
     if(!user) return;
 
-    const name =
-        document.getElementById(
-            "editName"
-        ).value.trim();
+    const name = document.getElementById("editName").value.trim();
+    const section = document.getElementById("editSection").value.trim();
+    const bio = document.getElementById("editBio").value.trim();
+    const photoInput = document.getElementById("editPhoto");
 
-    const section =
-        document.getElementById(
-            "editSection"
-        ).value.trim();
-
-    const bio =
-        document.getElementById(
-            "editBio"
-        ).value.trim();
-
-    const photoInput =
-        document.getElementById("editPhoto");
-
-    const currentSaved =
-        localStorage.getItem(
-            "profileData_" + user.email
-        );
-
-    let previous = {};
-
-    if(currentSaved){
-        try{
-            previous = JSON.parse(currentSaved) || {};
-        }catch(error){}
-    }
-
-    const saveData = (photoURL = previous.photoURL || user.photoURL || "") => {
-
-        const data = {
-
-            name:
-                name ||
-                user.displayName ||
-                "User",
-
-            section:
-                section,
-
-            bio:
-                bio ||
-                "Welcome to my CATHS-MAIN Student Voice profile. 🎓",
-
-            photoURL:
-                photoURL
-
-        };
-
-        localStorage.setItem(
-            "profileData_" +
-            user.email,
-
-            JSON.stringify(data)
-        );
-
-        document.getElementById(
-            "profileName"
-        ).textContent =
-            data.name;
-
-        document.getElementById(
-            "profileBio"
-        ).textContent =
-            data.bio;
-
-        applyProfilePhoto(data.photoURL);
-
-        closeEditProfile();
-
-        alert("✅ Profile saved successfully.");
-
-    };
-
-    // Save selected local profile picture together with the other edits.
-    if(photoInput && photoInput.files && photoInput.files[0]){
-
+    if(photoInput?.files?.[0]){
         const file = photoInput.files[0];
 
         if(!file.type.startsWith("image/")){
@@ -1764,23 +1648,92 @@ window.saveProfile = function(){
             alert("Please choose an image smaller than 5 MB.");
             return;
         }
-
-        const reader = new FileReader();
-
-        reader.onload = function(event){
-            saveData(event.target.result);
-        };
-
-        reader.onerror = function(){
-            alert("Could not read the selected profile picture.");
-        };
-
-        reader.readAsDataURL(file);
-
-        return;
     }
 
-    saveData();
+    const saveButton = document.querySelector(".save-btn");
+    if(saveButton){
+        saveButton.disabled = true;
+        saveButton.textContent = "⏳ Saving...";
+    }
+
+    try{
+        // Read existing user profile first so username/nickname are preserved.
+        const userRef = doc(db, "users", user.uid);
+        const existingSnap = await getDoc(userRef);
+        const existing = existingSnap.exists() ? (existingSnap.data() || {}) : {};
+
+        let photoURL = existing.photoURL || user.photoURL || "";
+
+        // Upload the selected image to Firebase Storage using one stable path per user.
+        // This replaces the old profile photo instead of creating a new file every time.
+        if(photoInput?.files?.[0]){
+            const file = photoInput.files[0];
+            const imageRef = storageRef(storage, `profilePhotos/${user.uid}`);
+            await uploadBytes(imageRef, file, { contentType: file.type });
+            photoURL = await getDownloadURL(imageRef);
+        }
+
+        const data = {
+            ...existing,
+            uid: user.uid,
+            email: user.email || existing.email || "",
+            displayName: name || user.displayName || existing.displayName || "User",
+            name: name || user.displayName || existing.name || "User",
+            section: section,
+            bio: bio || "Welcome to my CATHS-MAIN Student Voice profile. 🎓",
+            photoURL: photoURL,
+            updatedAt: new Date().toISOString()
+        };
+
+        // Permanent shared profile record.
+        await setDoc(userRef, data, { merge: true });
+
+        // Keep local cache only as a convenience/fallback.
+        localStorage.setItem(
+            profileStorageKey(),
+            JSON.stringify(data)
+        );
+
+        document.getElementById("profileName").textContent = data.name;
+        document.getElementById("profileEmail").textContent = data.email;
+        document.getElementById("profileBio").textContent = data.bio;
+        applyProfilePhoto(data.photoURL);
+
+        // Update the cached friend records so existing friends see the new photo.
+        try{
+            const friendSnap = await getDocs(collection(db, "friends", user.uid, "list"));
+            await Promise.all(friendSnap.docs.map(async (friendDoc) => {
+                const friendUid = friendDoc.id;
+                await updateDoc(doc(db, "friends", friendUid, "list", user.uid), {
+                    photoURL: data.photoURL,
+                    nickname: data.nickname || existing.nickname || data.name,
+                    updatedAt: new Date().toISOString()
+                });
+            }));
+        }catch(friendError){
+            console.warn("Friend photo sync skipped:", friendError);
+        }
+
+        closeEditProfile();
+        alert("✅ Profile saved permanently.");
+
+    }catch(error){
+        console.error("Save profile error:", error);
+
+        let message = "Could not save your profile.";
+        if(error?.code === "storage/unauthorized") {
+            message = "Firebase Storage permission is blocking the upload. Check your Storage Rules.";
+        }else if(error?.code === "permission-denied") {
+            message = "Firestore permission is blocking the profile save. Check your Firestore Rules.";
+        }
+
+        alert("❌ " + message);
+    }finally{
+        if(saveButton){
+            saveButton.disabled = false;
+            saveButton.textContent = "💾 Save Changes";
+        }
+    }
 
 };
 
@@ -1789,109 +1742,46 @@ window.saveProfile = function(){
    EDIT PROFILE
 ========================= */
 
-window.openEditProfile = function(){
+window.openEditProfile = async function(){
 
-    const user =
-        auth.currentUser;
+    const user = auth.currentUser;
 
     if(!user){
-
-        document.getElementById(
-            "loginOverlay"
-        ).style.display =
-            "flex";
-
+        document.getElementById("loginOverlay").style.display = "flex";
         return;
-
     }
-
-    const saved =
-        localStorage.getItem(
-            "profileData_" +
-            user.email
-        );
 
     let data = {};
 
-    if(saved){
-
-        try{
-
-            data =
-                JSON.parse(saved);
-
-        }catch(error){}
-
+    try{
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if(snap.exists()) data = snap.data() || {};
+    }catch(error){
+        console.error("Could not load editable profile:", error);
     }
 
-    document.getElementById(
-        "editName"
-    ).value =
-        data.name ||
-        user.displayName ||
-        "";
-
-    document.getElementById(
-        "editSection"
-    ).value =
-        data.section ||
-        "";
-
-    document.getElementById(
-        "editBio"
-    ).value =
-        data.bio ||
-        "";
-
-    const photoInput = document.getElementById("editPhoto");
-
-    if(photoInput){
-        photoInput.value = "";
+    if(!data.name){
+        const saved = localStorage.getItem(profileStorageKey());
+        if(saved){
+            try{ data = { ...data, ...(JSON.parse(saved) || {}) }; }catch(error){}
+        }
     }
 
-    setEditPhotoPreview(
-        data.photoURL ||
-        user.photoURL ||
-        ""
-    );
+    document.getElementById("editName").value =
+        data.name || data.displayName || user.displayName || "";
 
-    if(photoInput){
-        photoInput.onchange = function(){
-            const file = photoInput.files?.[0];
+    document.getElementById("editSection").value =
+        data.section || "";
 
-            if(!file){
-                setEditPhotoPreview(data.photoURL || user.photoURL || "");
-                return;
-            }
+    document.getElementById("editBio").value =
+        data.bio || "";
 
-            if(!file.type.startsWith("image/")){
-                alert("Please choose a valid image file.");
-                photoInput.value = "";
-                return;
-            }
+    document.getElementById("editPhoto").value = "";
+    setEditPhotoPreview(data.photoURL || user.photoURL || "");
 
-            if(file.size > 5 * 1024 * 1024){
-                alert("Please choose an image smaller than 5 MB.");
-                photoInput.value = "";
-                return;
-            }
+    document.getElementById("editOverlay").style.display = "flex";
 
-            const reader = new FileReader();
-
-            reader.onload = function(event){
-                setEditPhotoPreview(event.target.result);
-            };
-
-            reader.readAsDataURL(file);
-        };
-    }
-
-    document.getElementById(
-        "editOverlay"
-    ).style.display =
-        "flex";
-
-}
+};
 
 
 window.closeEditProfile = function(){
@@ -1953,6 +1843,23 @@ window.showTab = function(tab){
         });
 
 };
+
+
+const editPhotoInput = document.getElementById("editPhoto");
+if(editPhotoInput){
+    editPhotoInput.addEventListener("change", function(){
+        const file = this.files?.[0];
+        if(!file) return;
+        if(!file.type.startsWith("image/")){
+            this.value = "";
+            alert("Please choose a valid image file.");
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = event => setEditPhotoPreview(event.target.result);
+        reader.readAsDataURL(file);
+    });
+}
 
 
 /* =========================
