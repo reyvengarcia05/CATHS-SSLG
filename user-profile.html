@@ -16,6 +16,101 @@ body{min-height:100vh;color:#fff;background:linear-gradient(135deg,#00296B,#003D
 .cover{height:190px;background:linear-gradient(135deg,rgba(0,41,107,.95),rgba(0,61,165,.75),rgba(255,215,0,.55));position:relative}.cover::after{content:'PUBLIC PROFILE';position:absolute;right:20px;bottom:18px;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);font-size:10px;letter-spacing:.5px;font-weight:700}
 .profile-main{padding:0 30px 30px}.avatar-wrap{margin-top:-66px;width:132px;height:132px;border-radius:50%;border:6px solid rgba(255,255,255,.95);background:#dfe7f5;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.25)}.avatar-wrap img{width:100%;height:100%;object-fit:cover}.fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:60px;color:#183c8c}
 .name{font-size:30px;font-weight:800;margin-top:16px}.username{font-size:13px;opacity:.8;margin-top:2px}.bio{margin-top:15px;line-height:1.7;font-size:14px;max-width:720px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.chip{padding:7px 11px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.12);font-size:11px}.actions{display:flex;gap:10px;margin-top:22px}.back-btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#FFD93D;color:#0d2c7a;padding:11px 18px;border-radius:13px;font-weight:800;font-size:13px}.status{margin-top:18px;padding:12px;border-radius:14px;background:rgba(255,255,255,.08);font-size:12px;text-align:center}
+/* PROFILE FRIENDS */
+.friends-section{
+  margin-top:24px;
+  margin-bottom:24px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:24px;
+  padding:18px;
+}
+.friends-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:14px;
+}
+.friends-head h3{font-size:18px}
+.friends-count{
+  min-width:34px;
+  text-align:center;
+  padding:5px 10px;
+  border-radius:999px;
+  background:#FFD93D;
+  color:#0d2c7a;
+  font-size:11px;
+  font-weight:800;
+}
+.friends-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+.profile-friend-card{
+  background:#fff;
+  color:#0f172a;
+  border-radius:16px;
+  padding:11px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+.profile-friend-link{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+  flex:1;
+  text-decoration:none;
+  color:inherit;
+  border-radius:12px;
+  padding:3px;
+}
+.profile-friend-link:hover{background:#eef4ff}
+.profile-friend-avatar{
+  width:44px;height:44px;border-radius:50%;
+  object-fit:cover;flex:0 0 44px;background:#e2e8f0;
+  display:flex;align-items:center;justify-content:center;
+  color:#183c8c;font-size:18px;font-weight:700;overflow:hidden;
+}
+.profile-friend-avatar img{width:100%;height:100%;object-fit:cover}
+.profile-friend-info{min-width:0}
+.profile-friend-info strong{
+  display:block;font-size:12px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;
+}
+.profile-friend-info small{
+  display:block;font-size:10px;color:#64748b;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;
+}
+.profile-friend-action{
+  flex:0 0 auto;
+  border:none;border-radius:10px;
+  padding:8px 10px;font-size:10px;font-weight:800;
+  cursor:pointer;background:#1e3a8a;color:#fff;
+}
+.profile-friend-action:hover{filter:brightness(1.08)}
+.profile-friend-action:disabled{opacity:.65;cursor:not-allowed}
+.profile-friend-action.friends{background:#dcfce7;color:#166534}
+.profile-friend-action.pending{background:#eef2ff;color:#334155}
+.friends-empty{
+  padding:24px 12px;text-align:center;
+  background:rgba(255,255,255,.08);
+  border-radius:16px;font-size:12px;opacity:.82;
+}
+.friends-loading{
+  padding:20px;text-align:center;font-size:12px;opacity:.72;
+}
+@media(max-width:768px){
+  .friends-section{padding:14px}
+  .friends-list{grid-template-columns:1fr}
+  .profile-friend-card{padding:10px}
+}
+
 .posts-section{margin-top:24px;margin-bottom:32px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:18px}.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.section-head h3{font-size:18px}.section-head span{font-size:11px;opacity:.75}.posts-list{display:flex;flex-direction:column;gap:14px}.post-card{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.11);border-radius:20px;padding:18px;text-align:left}.post-head{display:flex;align-items:center;gap:10px}.post-avatar{width:42px;height:42px;border-radius:50%;background:#e9eef7;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#183c8c;font-size:20px;flex:0 0 42px}.post-avatar img{width:100%;height:100%;object-fit:cover}.post-author{min-width:0;flex:1}.post-author strong{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.post-meta{font-size:10px;opacity:.68;margin-top:2px}.post-visibility{font-size:10px;background:rgba(255,255,255,.12);padding:5px 8px;border-radius:999px;white-space:nowrap}.post-text{margin:14px 0;font-size:14px;line-height:1.65;white-space:pre-wrap;word-break:break-word}.post-counts{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:11px;opacity:.78;margin:8px 0 0}.reaction-summary{border:none;background:transparent;color:inherit;font:inherit;cursor:pointer;padding:0;display:inline-flex;align-items:center;gap:3px}.reaction-summary:hover{text-decoration:underline}.share-context{margin-top:14px;border:1px solid rgba(24,60,140,.12);background:#f7f9fd;border-radius:15px;padding:14px;color:#183c8c}.share-context-label{font-size:11px;font-weight:800;opacity:.7;margin-bottom:5px}.share-context-author{font-size:13px;font-weight:800}.share-context-text{font-size:12px;color:#43506a;line-height:1.55;margin-top:6px;white-space:pre-wrap;word-break:break-word}.post-actions{display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.10);padding-top:12px}.post-action{border:none;background:rgba(255,255,255,.09);color:#fff;border-radius:11px;padding:8px 11px;font-size:12px;cursor:pointer;transition:.2s}.post-action:hover{background:rgba(255,255,255,.16);transform:translateY(-1px)}.reaction-wrap{position:relative}.reaction-picker{display:none;position:absolute;bottom:calc(100% + 8px);left:0;background:#fff;border-radius:14px;padding:7px;box-shadow:0 12px 30px rgba(0,0,0,.22);gap:4px;z-index:10}.reaction-picker.open{display:flex}.reaction-emoji{border:none;background:transparent;font-size:20px;padding:6px;cursor:pointer;border-radius:9px}.reaction-emoji:hover{background:#eef4ff}.empty-posts{padding:28px 12px;text-align:center;opacity:.82}.empty-posts .icon{font-size:44px;margin-bottom:8px}.privacy-note{font-size:11px;opacity:.72;line-height:1.5;margin-top:8px}
 .bottom-nav{position:fixed;left:0;right:0;bottom:0;height:78px;background:linear-gradient(90deg,#1e3a8a,#b59f1a);display:flex;justify-content:space-around;align-items:center;z-index:50;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}.nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#fff;font-size:9px;min-width:60px;transition:.22s}.nav-item div{font-size:22px;height:26px;display:flex;align-items:center;justify-content:center;margin-bottom:3px}.nav-item:hover{transform:translateY(-2px)}.nav-item.active{color:#FFD700;transform:translateY(-6px) scale(1.07);font-weight:700}.nav-item.active div{font-size:25px}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:18px;z-index:99999}.modal.open{display:flex}.modal-box{width:100%;max-width:560px;background:#fff;color:#183c8c;border-radius:24px;padding:22px;box-shadow:0 24px 70px rgba(0,0,0,.35);animation:pop .22s ease}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.modal-head h3{font-size:20px}.modal-x{border:none;background:#eef4ff;color:#183c8c;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:18px}.comments-list,.reactions-list{max-height:48vh;overflow:auto;display:flex;flex-direction:column;gap:10px}.comment-item,.reaction-item{background:#f6f8fc;border-radius:14px;padding:11px 12px}.comment-item strong,.reaction-item strong{display:block;color:#183c8c;font-size:12px}.comment-item p{font-size:12px;color:#333;margin-top:4px;white-space:pre-wrap;word-break:break-word}.comment-form{display:flex;gap:8px;margin-top:14px}.comment-input{flex:1;border:1px solid #dbe3f1;border-radius:12px;padding:11px;outline:none}.comment-send{border:none;border-radius:12px;padding:0 16px;background:#1e3a8a;color:#fff;font-weight:700;cursor:pointer}.reaction-item{display:flex;align-items:center;gap:10px}.reaction-avatar{width:40px;height:40px;border-radius:50%;overflow:hidden;background:#dfe7f5;display:flex;align-items:center;justify-content:center;color:#183c8c;flex:0 0 40px}.reaction-avatar img{width:100%;height:100%;object-fit:cover}.reaction-info{flex:1;min-width:0}.reaction-info small{display:block;color:#75829a;font-size:10px;margin-top:2px}.reaction-emoji{font-size:24px}.add-friend-mini{border:none;border-radius:10px;background:#1e3a8a;color:#fff;padding:8px 10px;font-size:10px;font-weight:700;cursor:pointer}.add-friend-mini:disabled{opacity:.65;cursor:not-allowed}.success-pop{max-width:380px;text-align:center}.success-icon{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#20c997,#2fbf71);display:flex;align-items:center;justify-content:center;color:#fff;font-size:36px;margin:0 auto 14px;box-shadow:0 12px 24px rgba(32,201,151,.25)}.success-pop h3{font-size:22px;margin-bottom:7px}.success-pop p{font-size:13px;color:#6b7891;line-height:1.5;margin-bottom:18px}.success-ok{width:100%;height:46px;border:none;border-radius:12px;background:#1e3a8a;color:#fff;font-weight:700;cursor:pointer}@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
@@ -42,6 +137,16 @@ body{min-height:100vh;color:#fff;background:linear-gradient(135deg,#00296B,#003D
       <div id="status" class="status">Loading profile...</div>
     </section>
   </div>
+
+  <section class="friends-section">
+    <div class="friends-head">
+      <h3>👥 Friends</h3>
+      <span id="profileFriendsCount" class="friends-count">0</span>
+    </div>
+    <div id="profileFriendsList" class="friends-list">
+      <div class="friends-loading">Loading friends...</div>
+    </div>
+  </section>
 
   <section class="posts-section">
     <div class="section-head"><h3>📝 Posts</h3><span id="postVisibilityHint">Public posts from this student</span></div>
@@ -106,6 +211,188 @@ async function isFriend(otherUid){
   return snap.exists();
 }
 
+
+async function getPendingFriendRequest(otherUid){
+  const me=auth.currentUser;
+  if(!me || !otherUid || me.uid===otherUid) return null;
+
+  try{
+    const sent=await getDocs(query(
+      collection(db,'friendRequests'),
+      where('from','==',me.uid),
+      where('to','==',otherUid),
+      where('status','==','pending'),
+      limit(1)
+    ));
+    if(!sent.empty) return {direction:'sent',id:sent.docs[0].id,...sent.docs[0].data()};
+
+    const incoming=await getDocs(query(
+      collection(db,'friendRequests'),
+      where('from','==',otherUid),
+      where('to','==',me.uid),
+      where('status','==','pending'),
+      limit(1)
+    ));
+    if(!incoming.empty) return {direction:'incoming',id:incoming.docs[0].id,...incoming.docs[0].data()};
+  }catch(e){
+    console.error('friend request lookup',e);
+  }
+  return null;
+}
+
+function profileFriendAvatar(friend){
+  if(friend.photoURL){
+    return `<div class="profile-friend-avatar"><img src="${esc(friend.photoURL)}" alt=""></div>`;
+  }
+  const letter=esc((friend.nickname||friend.username||'U').charAt(0).toUpperCase());
+  return `<div class="profile-friend-avatar">${letter}</div>`;
+}
+
+async function sendFriendRequestFromProfile(otherUid,button){
+  const me=auth.currentUser;
+  if(!me || !otherUid || me.uid===otherUid) return;
+
+  button.disabled=true;
+  button.textContent='Checking...';
+
+  try{
+    if(await isFriend(otherUid)){
+      button.textContent='✓ Friends';
+      button.className='profile-friend-action friends';
+      return;
+    }
+
+    const existing=await getPendingFriendRequest(otherUid);
+    if(existing){
+      if(existing.direction==='sent'){
+        button.textContent='Request Sent';
+        button.className='profile-friend-action pending';
+      }else{
+        button.textContent='Respond';
+        button.className='profile-friend-action pending';
+        button.disabled=false;
+        button.onclick=()=>location.href='friends.html';
+      }
+      return;
+    }
+
+    const [meSnap,targetSnap]=await Promise.all([
+      getDoc(doc(db,'users',me.uid)),
+      getDoc(doc(db,'users',otherUid))
+    ]);
+    const meData=meSnap.exists()?meSnap.data()||{}:{};
+    const targetData=targetSnap.exists()?targetSnap.data()||{}:{};
+
+    await addDoc(collection(db,'friendRequests'),{
+      from:me.uid,
+      fromUsername:meData.username||'',
+      fromNickname:meData.nickname||meData.name||meData.displayName||me.displayName||'User',
+      fromPhotoURL:meData.photoURL||me.photoURL||'',
+      to:otherUid,
+      toUsername:targetData.username||'',
+      toNickname:targetData.nickname||targetData.name||targetData.displayName||'Student',
+      toPhotoURL:targetData.photoURL||'',
+      status:'pending',
+      createdAt:serverTimestamp()
+    });
+
+    button.textContent='Request Sent';
+    button.className='profile-friend-action pending';
+  }catch(e){
+    console.error('profile friend request',e);
+    button.disabled=false;
+    button.textContent='Add Friend';
+    button.className='profile-friend-action';
+    alert('Could not send friend request.');
+  }
+}
+
+async function loadProfileFriends(){
+  const list=$('profileFriendsList');
+  const count=$('profileFriendsCount');
+  if(!uid){
+    count.textContent='0';
+    list.innerHTML='<div class="friends-empty">No profile selected.</div>';
+    return;
+  }
+
+  list.innerHTML='<div class="friends-loading">Loading friends...</div>';
+
+  try{
+    const snap=await getDocs(query(
+      collection(db,'friends',uid,'list'),
+      limit(100)
+    ));
+
+    const friends=snap.docs.map(d=>({id:d.id,...d.data(),uid:d.data()?.uid||d.id}));
+    friends.sort((a,b)=>String(a.nickname||a.username||'').localeCompare(String(b.nickname||b.username||'')));
+    count.textContent=String(friends.length);
+
+    if(!friends.length){
+      list.innerHTML='<div class="friends-empty">This student has no friends yet.</div>';
+      return;
+    }
+
+    const me=auth.currentUser;
+
+    const rows=await Promise.all(friends.map(async friend=>{
+      let relationship='add';
+
+      if(me?.uid===friend.uid){
+        relationship='self';
+      }else if(me){
+        try{
+          if(await isFriend(friend.uid)){
+            relationship='friends';
+          }else{
+            const req=await getPendingFriendRequest(friend.uid);
+            relationship=req?.direction==='sent'?'sent':req?.direction==='incoming'?'incoming':'add';
+          }
+        }catch(e){
+          console.error('friend relationship',e);
+        }
+      }else{
+        relationship='login';
+      }
+
+      return {friend,relationship};
+    }));
+
+    list.innerHTML=rows.map(({friend,relationship})=>{
+      let action='';
+
+      if(relationship==='friends'){
+        action=`<button class="profile-friend-action friends" type="button" disabled>✓ Friends</button>`;
+      }else if(relationship==='sent'){
+        action=`<button class="profile-friend-action pending" type="button" disabled>Request Sent</button>`;
+      }else if(relationship==='incoming'){
+        action=`<button class="profile-friend-action pending" type="button" onclick="location.href='friends.html'">Respond</button>`;
+      }else if(relationship==='login'){
+        action=`<button class="profile-friend-action" type="button" onclick="location.href='profile.html'">Add Friend</button>`;
+      }else if(relationship==='self'){
+        action=`<button class="profile-friend-action pending" type="button" disabled>You</button>`;
+      }else{
+        action=`<button class="profile-friend-action" type="button" onclick="sendFriendRequestFromProfile('${esc(friend.uid)}',this)">Add Friend</button>`;
+      }
+
+      return `<div class="profile-friend-card">
+        <a class="profile-friend-link" href="user-profile.html?uid=${encodeURIComponent(friend.uid)}">
+          ${profileFriendAvatar(friend)}
+          <div class="profile-friend-info">
+            <strong>${esc(friend.nickname||friend.name||friend.displayName||'Student')}</strong>
+            <small>@${esc(friend.username||'')}</small>
+          </div>
+        </a>
+        ${action}
+      </div>`;
+    }).join('');
+  }catch(e){
+    console.error('loadProfileFriends',e);
+    count.textContent='0';
+    list.innerHTML='<div class="friends-empty">Could not load this student\'s friends. Check your Firestore rules.</div>';
+  }
+}
+
 async function loadProfile(){
   if(!uid){$('status').textContent='No profile was selected.';return;}
   currentTarget=uid;
@@ -122,6 +409,7 @@ async function loadProfile(){
     const friend=me && me.uid!==uid ? await isFriend(uid) : false;
     $('status').textContent=me?.uid===uid ? 'This is your profile.' : friend ? 'You are friends with this student.' : 'Viewing public posts.';
     $('postVisibilityHint').textContent=me?.uid===uid?'Your posts':friend?'Public and friends-only posts':'Public posts from this student';
+    await loadProfileFriends();
     await loadPosts(friend, me?.uid===uid);
   }catch(e){console.error(e);$('name').textContent='Unable to load profile';$('bio').textContent='Please check your Firebase Firestore rules.';$('status').textContent='Could not load this profile.';}
 }
