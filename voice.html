@@ -268,6 +268,14 @@ margin-bottom:4px;
 
 .active{
 color:#FFD700;
+transform:translateY(-5px) scale(1.12);
+font-weight:700;
+position:relative;
+z-index:2;
+}
+
+.active div{
+font-size:27px;
 }
 
 #profileNavPhoto{
@@ -1032,6 +1040,14 @@ CELLPHONE DITO BE AHHAHAAHHAA
         display:flex;
         align-items:center;
         justify-content:center;
+    }
+
+    .nav-item.active{
+        transform:translateY(-4px) scale(1.08);
+    }
+
+    .nav-item.active div{
+        font-size:24px;
     }
 
     /* POPUPS */
@@ -1915,9 +1931,9 @@ required></textarea>
 <span>Home</span>
 </a>
 
-<a href="friends.html" class="nav-item">
-<div>👥</div>
-<span>Add Friends</span>
+<a href="news.html" class="nav-item">
+<div>📢</div>
+<span>News</span>
 </a>
 
 <a href="voice.html" class="nav-item active">
@@ -1925,12 +1941,12 @@ required></textarea>
 <span>Student Voice</span>
 </a>
 
-<a href="events.html" class="nav-item">
-<div>📅</div>
-<span>Events</span>
+<a href="friends.html" class="nav-item">
+<div>👥</div>
+<span>Add Friends</span>
 </a>
 
-<a href="profile.html" class="nav-item">
+<a href="profile.html" class="nav-item" onclick="openBottomProfile(event)">
     <div id="profileNavPhoto">
         👤
     </div>
@@ -1939,6 +1955,20 @@ required></textarea>
 </a>
     
 </div>
+
+
+<script>
+function openBottomProfile(event){
+    event.preventDefault();
+
+    if(typeof firebaseUser !== "undefined" && firebaseUser){
+        window.location.href = "profile.html";
+        return;
+    }
+
+    openLogin(false);
+}
+</script>
 
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec";
