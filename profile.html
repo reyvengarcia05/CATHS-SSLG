@@ -279,6 +279,112 @@ body{
    POSTS FUNCTIONALITY MOVED TO SCRIPT
 ========================= */
 
+async function openReactions(postId){
+    const modal=document.getElementById('reactionsModal');
+    const list=document.getElementById('reactionsList');
+    if(!modal || !list) return;
+    modal.classList.add('open');
+    list.innerHTML='<div style="padding:20px;text-align:center;color:#777">Loading reactions...</div>';
+
+    try{
+        const snap=await getDocs(collection(db,'posts',postId,'reactions'));
+        if(snap.empty){
+            list.innerHTML='<div style="padding:25px;text-align:center;color:#777">No reactions yet.</div>';
+            return;
+        }
+
+        const currentUser=auth.currentUser;
+        const rows=await Promise.all(snap.docs.map(async d=>{
+            const reaction=d.data()||{};
+            const uid=d.id || reaction.uid;
+            let profile={};
+            try{
+                const ps=await getDoc(doc(db,'users',uid));
+                if(ps.exists()) profile=ps.data()||{};
+            }catch(e){ console.error('reaction profile load',e); }
+            const name=profile.name || profile.displayName || reaction.authorName || 'Student';
+            const username=profile.username || '';
+            const photo=profile.photoURL || reaction.photoURL || '';
+            return {uid,name,username,photo,emoji:reaction.emoji || '👍'};
+        }));
+
+        list.innerHTML=rows.map(r=>`
+          <div class="reaction-user-row">
+            <div class="reaction-user-avatar">${r.photo ? `<img src="${escapePostHtml(r.photo)}" alt="">` : '👤'}</div>
+            <div class="reaction-user-info">
+              <strong>${escapePostHtml(r.name)}</strong>
+              <small>${r.username ? '@'+escapePostHtml(r.username) : 'Student'}</small>
+            </div>
+            <div class="reaction-emoji-big">${escapePostHtml(r.emoji)}</div>
+            ${currentUser && currentUser.uid !== r.uid ? `<button class="add-friend-mini" onclick="addFriendFromReaction('${escapePostHtml(r.uid)}', this)">Add Friend</button>` : ''}
+          </div>
+        `).join('');
+    }catch(error){
+        console.error('Load reactions error:',error);
+        list.innerHTML='<div style="padding:20px;text-align:center;color:#777">Could not load reactions.</div>';
+    }
+}
+window.openReactions=openReactions;
+
+function closeReactions(){
+    document.getElementById('reactionsModal')?.classList.remove('open');
+}
+window.closeReactions=closeReactions;
+
+async function addFriendFromReaction(targetUid, button){
+    const user=auth.currentUser;
+    if(!user || !targetUid) return;
+    if(button){ button.disabled=true; button.textContent='Checking...'; }
+    try{
+        if(targetUid===user.uid) return;
+        const friendRef=doc(db,'friends',user.uid,'list',targetUid);
+        if((await getDoc(friendRef)).exists()){
+            if(button){ button.textContent='✓ Friends'; button.className='add-friend-mini'; }
+            return;
+        }
+
+        const outgoing=await getDocs(query(collection(db,'friendRequests'), where('from','==',user.uid), where('to','==',targetUid), where('status','==','pending'), limit(1)));
+        if(!outgoing.empty){
+            if(button){ button.textContent='Request Sent'; }
+            return;
+        }
+
+        const incoming=await getDocs(query(collection(db,'friendRequests'), where('from','==',targetUid), where('to','==',user.uid), where('status','==','pending'), limit(1)));
+        if(!incoming.empty){
+            if(button){ button.textContent='Respond'; }
+            return;
+        }
+
+        const targetSnap=await getDoc(doc(db,'users',targetUid));
+        const target=targetSnap.exists()?targetSnap.data()||{}:{};
+        const mySnap=await getDoc(doc(db,'users',user.uid));
+        const me=mySnap.exists()?mySnap.data()||{}:{};
+
+        await addDoc(collection(db,'friendRequests'),{
+            from:user.uid,
+            fromUsername:me.username || '',
+            fromNickname:me.nickname || me.name || me.displayName || user.displayName || 'User',
+            fromPhotoURL:me.photoURL || user.photoURL || '',
+            to:targetUid,
+            toUsername:target.username || '',
+            toNickname:target.nickname || target.name || target.displayName || 'Student',
+            toPhotoURL:target.photoURL || '',
+            status:'pending',
+            createdAt:serverTimestamp()
+        });
+
+        if(button){ button.textContent='Request Sent'; }
+        showPostToast('Friend request sent!');
+    }catch(error){
+        console.error('Reaction add-friend error:',error);
+        if(button){ button.disabled=false; button.textContent='Add Friend'; }
+        alert('Could not send friend request.');
+    }
+}
+window.addFriendFromReaction=addFriendFromReaction;
+
+
+
 /* =========================
    TABS
 ========================= */
@@ -534,6 +640,22 @@ body{
 .reaction-emoji{border:none;background:transparent;font-size:20px;padding:6px;cursor:pointer;border-radius:9px}
 .reaction-emoji:hover{background:#eef4ff}
 .post-counts{font-size:11px;opacity:.72;margin:8px 0 0}
+.post-counts button{border:none;background:transparent;color:inherit;font:inherit;cursor:pointer;padding:0;margin:0}
+.post-counts button:hover{text-decoration:underline}
+.share-context{margin-top:14px;border:1px solid rgba(24,60,140,.12);background:#f7f9fd;border-radius:15px;padding:14px;color:#183c8c}
+.share-context .share-context-label{font-size:11px;font-weight:800;opacity:.7;margin-bottom:5px}
+.share-context .share-context-author{font-size:13px;font-weight:800}
+.share-context .share-context-text{font-size:12px;color:#43506a;line-height:1.55;margin-top:6px;white-space:pre-wrap;word-break:break-word}
+.add-friend-mini{border:none;background:#1e3a8a;color:#fff;border-radius:10px;padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
+.add-friend-mini:disabled{opacity:.6;cursor:not-allowed}
+.reaction-user-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #edf1f7}
+.reaction-user-row:last-child{border-bottom:none}
+.reaction-user-avatar{width:38px;height:38px;border-radius:50%;overflow:hidden;background:#e9eef7;display:flex;align-items:center;justify-content:center;color:#183c8c;font-size:18px;flex:0 0 38px}
+.reaction-user-avatar img{width:100%;height:100%;object-fit:cover}
+.reaction-user-info{flex:1;min-width:0;color:#183c8c}
+.reaction-user-info strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.reaction-user-info small{font-size:10px;color:#77849b}
+.reaction-emoji-big{font-size:21px;min-width:28px;text-align:center}
 .empty-posts{padding:22px 10px;text-align:center;opacity:.82}
 .post-modal,.comments-modal{
     position:fixed;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(8px);
@@ -555,6 +677,7 @@ body{
 .publish-btn{width:100%;margin-top:14px;height:50px;border:none;border-radius:13px;background:#1e3a8a;color:#fff;font-weight:700;cursor:pointer}
 .publish-btn:disabled{opacity:.6;cursor:not-allowed}
 .comments-list{max-height:45vh;overflow:auto;display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.reactions-list{max-height:52vh;overflow:auto;margin-bottom:4px}
 .comment-item{background:#f6f8fc;border-radius:13px;padding:10px 12px}
 .comment-item strong{font-size:12px;color:#183c8c}
 .comment-item p{font-size:12px;color:#333;margin-top:4px;white-space:pre-wrap;word-break:break-word}
@@ -562,7 +685,7 @@ body{
 .comment-input{flex:1;border:1px solid #dbe3f1;border-radius:12px;padding:11px;outline:none}
 .comment-send{border:none;border-radius:12px;padding:0 16px;background:#1e3a8a;color:#fff;font-weight:700;cursor:pointer}
 @media(max-width:768px){
- .post-card{padding:15px}.post-text{font-size:13px}.post-options{grid-template-columns:1fr}.post-modal-box,.comments-modal-box{padding:18px;border-radius:20px}.post-textarea{min-height:130px}
+ .post-card{padding:15px}.post-text{font-size:13px}.post-options{grid-template-columns:1fr}.post-modal-box,.comments-modal-box{padding:18px;border-radius:20px}.post-textarea{min-height:130px}.reaction-user-row{gap:8px}.add-friend-mini{padding:7px 8px;font-size:10px}
 }
 
 /* =========================
@@ -866,6 +989,13 @@ body{
 }
 .success-box h3{font-size:24px;margin-bottom:7px;}
 .success-box p{font-size:13px;color:#6b7891;line-height:1.5;margin-bottom:20px;}
+.post-toast{
+    position:fixed;left:50%;bottom:105px;transform:translate(-50%,20px);
+    background:rgba(24,60,140,.96);color:#fff;padding:12px 18px;border-radius:999px;
+    font-size:12px;font-weight:700;box-shadow:0 12px 30px rgba(0,0,0,.25);
+    opacity:0;pointer-events:none;transition:.25s;z-index:100001;white-space:nowrap;
+}
+.post-toast.show{opacity:1;transform:translate(-50%,0)}
 .success-ok{
     width:100%;
     height:48px;
@@ -1527,6 +1657,33 @@ body{
 </div>
 
 <!-- =========================
+     REACTIONS MODAL
+========================= -->
+<div id="reactionsModal" class="comments-modal">
+  <div class="comments-modal-box">
+    <div class="comments-head">
+      <h3>👍 People who reacted</h3>
+      <button class="modal-x" type="button" onclick="closeReactions()">✕</button>
+    </div>
+    <div id="reactionsList" class="reactions-list"></div>
+  </div>
+</div>
+
+<!-- =========================
+     COMMENT SUCCESS POPUP
+========================= -->
+<div id="commentSuccessOverlay" class="success-overlay">
+  <div class="success-box">
+    <div class="success-icon">✓</div>
+    <h3>Comment Successfully Added!</h3>
+    <p>Your comment has been posted successfully.</p>
+    <button class="success-ok" onclick="closeCommentSuccessPopup()">Okay</button>
+  </div>
+</div>
+
+<div id="postToast" class="post-toast"></div>
+
+<!-- =========================
      BOTTOM NAV
 ========================= -->
 
@@ -1805,7 +1962,13 @@ async function loadPosts(){
 window.loadPosts = loadPosts;
 
 function renderPost(post){
-    const visibilityLabel = post.visibility === 'friends' ? '👥 Friends Only' : post.visibility === 'private' ? '🔒 Only Me' : '🌍 Public';
+    const visibilityLabel = post.visibility === 'friends' ? '👥 Friends Only' : post.visibility === 'onlyMe' ? '🔒 Only Me' : '🌍 Public';
+    const sharedContext = post.isShared && post.originalAuthorName ? `
+      <div class="share-context">
+        <div class="share-context-label">↗ Shared from an original post</div>
+        <div class="share-context-author">${escapePostHtml(post.originalAuthorName || 'User')}</div>
+        <div class="share-context-text">${escapePostHtml(post.originalText || post.text || '')}</div>
+      </div>` : '';
     return `
       <article class="post-card" data-post-id="${escapePostHtml(post.id)}">
         <div class="post-head">
@@ -1816,8 +1979,12 @@ function renderPost(post){
           </div>
           <span class="post-visibility">${visibilityLabel}</span>
         </div>
-        <div class="post-text">${escapePostHtml(post.text)}</div>
-        <div class="post-counts" id="counts-${escapePostHtml(post.id)}">👍 0 · 💬 0 · ↗ 0</div>
+        ${post.isShared ? '' : `<div class="post-text">${escapePostHtml(post.text)}</div>`}
+        ${sharedContext}
+        <div class="post-counts" id="counts-${escapePostHtml(post.id)}">
+          <button type="button" onclick="openReactions('${escapePostHtml(post.id)}')">👍 <span id="reactionCount-${escapePostHtml(post.id)}">0</span> reactions</button>
+          <span> · 💬 <span id="commentCount-${escapePostHtml(post.id)}">0</span> · ↗ <span id="shareCount-${escapePostHtml(post.id)}">0</span></span>
+        </div>
         <div class="post-actions">
           <div class="reaction-wrap">
             <button class="post-action" type="button" onclick="toggleReactionPicker('${escapePostHtml(post.id)}', event)">👍 React</button>
@@ -1869,8 +2036,12 @@ async function refreshPostCounts(postId){
         const commentsSnap = await getDocs(collection(db,'posts',postId,'comments'));
         const shareSnap = await getDoc(doc(db,'posts',postId));
         const shareCount = shareSnap.exists() ? Number(shareSnap.data().shareCount || 0) : 0;
-        const countsEl = document.getElementById('counts-'+postId);
-        if(countsEl) countsEl.textContent = `👍 ${reactionsSnap.size} · 💬 ${commentsSnap.size} · ↗ ${shareCount}`;
+        const reactionEl = document.getElementById('reactionCount-'+postId);
+        const commentEl = document.getElementById('commentCount-'+postId);
+        const shareEl = document.getElementById('shareCount-'+postId);
+        if(reactionEl) reactionEl.textContent = String(reactionsSnap.size);
+        if(commentEl) commentEl.textContent = String(commentsSnap.size);
+        if(shareEl) shareEl.textContent = String(shareCount);
     }catch(error){ console.error('refresh counts',error); }
 }
 
@@ -1911,10 +2082,13 @@ async function submitComment(){
     const input=document.getElementById('commentInput');
     const text=input.value.trim();
     if(!user || !activeCommentPostId || !text) return;
+    const sendBtn=document.querySelector('.comment-send');
+    if(sendBtn){ sendBtn.disabled=true; sendBtn.textContent='Sending...'; }
     try{
         const profileSnap=await getDoc(doc(db,'users',user.uid));
         const profile=profileSnap.exists()?profileSnap.data()||{}:{};
         await addDoc(collection(db,'posts',activeCommentPostId,'comments'),{
+            authorId:user.uid,
             uid:user.uid,
             authorName:profile.name || profile.displayName || user.displayName || 'User',
             text,
@@ -1923,29 +2097,89 @@ async function submitComment(){
         input.value='';
         await loadComments(activeCommentPostId);
         await refreshPostCounts(activeCommentPostId);
+        openCommentSuccessPopup();
     }catch(error){
         console.error(error);
-        alert('Could not add comment.');
+        const message = error?.code === 'permission-denied'
+          ? 'Firestore is blocking this comment. Please check your Firestore Rules.'
+          : 'Could not add comment.';
+        alert(message);
+    }finally{
+        if(sendBtn){ sendBtn.disabled=false; sendBtn.textContent='Send'; }
     }
 }
 window.submitComment=submitComment;
 
+function openCommentSuccessPopup(){
+    const el=document.getElementById('commentSuccessOverlay');
+    if(el) el.style.display='flex';
+}
+window.openCommentSuccessPopup=openCommentSuccessPopup;
+function closeCommentSuccessPopup(){
+    const el=document.getElementById('commentSuccessOverlay');
+    if(el) el.style.display='none';
+}
+window.closeCommentSuccessPopup=closeCommentSuccessPopup;
+window.submitComment=submitComment;
+
 async function sharePost(postId){
-    const url=`${location.origin}${location.pathname}?post=${encodeURIComponent(postId)}`;
+    const user=auth.currentUser;
+    if(!user){ document.getElementById('loginOverlay').style.display='flex'; return; }
     try{
-        if(navigator.share){ await navigator.share({title:'CATHS-MAIN Student Voice',url}); }
-        else if(navigator.clipboard){ await navigator.clipboard.writeText(url); alert('Post link copied!'); }
-        else { prompt('Copy this post link:',url); }
+        const originalSnap=await getDoc(doc(db,'posts',postId));
+        if(!originalSnap.exists()){ alert('This post no longer exists.'); return; }
+        const original=originalSnap.data() || {};
+
+        // Create a new post owned by the current user while preserving
+        // the original poster's name/text inside the shared-post card.
+        const profileSnap=await getDoc(doc(db,'users',user.uid));
+        const profile=profileSnap.exists()?profileSnap.data()||{}:{};
+
+        await addDoc(collection(db,'posts'),{
+            authorUid:user.uid,
+            authorName:profile.name || profile.displayName || user.displayName || 'User',
+            username:profile.username || '',
+            photoURL:profile.photoURL || user.photoURL || '',
+            text:original.text || '',
+            visibility:'public',
+            isShared:true,
+            originalPostId:postId,
+            originalAuthorUid:original.authorUid || '',
+            originalAuthorName:original.authorName || 'User',
+            originalText:original.text || '',
+            createdAt:serverTimestamp(),
+            shareCount:0,
+            likeCount:0,
+            commentCount:0
+        });
+
         const postRef=doc(db,'posts',postId);
-        const snap=await getDoc(postRef);
-        const current=Number(snap.data()?.shareCount||0);
+        const current=Number(original.shareCount||0);
         await updateDoc(postRef,{shareCount:current+1});
-        await refreshPostCounts(postId);
+
+        await loadPosts();
+        const countText=document.getElementById('postsCount');
+        if(countText) countText.textContent = String(document.querySelectorAll('.post-card').length);
+        showPostToast('Post shared successfully!');
     }catch(error){
-        if(error?.name !== 'AbortError') console.error('Share error:',error);
+        console.error('Share error:',error);
+        const message = error?.code === 'permission-denied'
+          ? 'Firestore is blocking the share. Please check your Firestore Rules.'
+          : 'Could not share the post.';
+        alert(message);
     }
 }
 window.sharePost=sharePost;
+
+function showPostToast(message){
+    const toast=document.getElementById('postToast');
+    if(!toast) return;
+    toast.textContent=message;
+    toast.classList.add('show');
+    clearTimeout(window.__postToastTimer);
+    window.__postToastTimer=setTimeout(()=>toast.classList.remove('show'),2200);
+}
+
 
 
 /* =========================
