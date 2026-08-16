@@ -2215,40 +2215,32 @@ if(
         }
 
 
-        /* =====================================
-           NAME
-        ===================================== */
+let name = "";
+let email = "";
 
-        let name = "";
-        let email = "";
+email = firebaseUser.email || "";
 
 
-        if(
-            anonymous.checked
-        ){
+if(anonymous.checked){
 
-            name = "Anonymous";
+    name = "Anonymous";
 
-        }else{
+}else{
 
-            name =
-                nameInput.value.trim();
+    name =
+        nameInput.value.trim();
 
-            email =
-                firebaseUser.email || "";
+    if(!name){
 
+        alert(
+            "Please enter your name."
+        );
 
-            if(!name){
+        return;
 
-                alert(
-                    "Please enter your name."
-                );
+    }
 
-                return;
-
-            }
-
-        }
+}
 
 
         /* =====================================
@@ -2937,7 +2929,6 @@ const googleProvider = new GoogleAuthProvider();
      const ADMIN_EMAILS = [
     "reyvengarcia15@gmail.com",
     "reyvenbermudo091@gmail.com",
-    "reyvengarcia05@gmail.com",
 ];
 
 function isAdminUser(){
