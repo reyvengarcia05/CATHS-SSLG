@@ -1068,9 +1068,13 @@ color:black;
 
    <div class="header-right">
 
-    <button id="headerLoginBtn" class="login-btn" onclick="openLogin()">
-        👤 <span>Login</span>
-    </button>
+   <button 
+    id="headerLoginBtn" 
+    class="login-btn" 
+    onclick="openLogin(false)">
+
+    👤 <span>Login</span>
+</button>
 
     <div id="logoutMenu" class="profile-menu">
 
@@ -1313,7 +1317,7 @@ days + "d " + hours + "h " + minutes + "m";
 
 </script>
 
-    <div id="loginModal" class="modal">
+  <div id="loginModal" class="modal">
 
     <div class="modal-content">
 
@@ -1329,14 +1333,19 @@ days + "d " + hours + "h " + minutes + "m";
     </div>
 
 </div>
-</div>
         
 
 
     <script>
 
-function openLogin(){
-document.getElementById("loginModal").style.display="block";
+function openLogin(fromStudentVoice = false){
+
+    window.loginForStudentVoice = fromStudentVoice;
+
+    document.getElementById("loginModal").style.display = "block";
+}
+
+    document.getElementById("loginModal").style.display="block";
 }
 
 function closeLogin(){
@@ -1392,10 +1401,16 @@ window.openStudentVoice = function(event) {
 
     if (auth.currentUser) {
         window.location.href = "voice.html";
-    } else {
-        openLogin();
+        return;
     }
 
+    openLogin(true);
+};
+
+    // Markahan na Student Voice ang pinanggalingan
+    window.loginForStudentVoice = true;
+
+    openLogin();
 };
 
 
@@ -1411,7 +1426,20 @@ window.googleLogin = async function () {
 
         closeLogin();
 
-        window.location.href = "voice.html";
+        // Punta sa Student Voice ONLY
+        // kapag doon nanggaling ang login request
+        if (window.loginForStudentVoice === true) {
+
+            window.loginForStudentVoice = false;
+
+            window.location.href = "voice.html";
+
+            return;
+        }
+
+        // Normal Login button:
+        // stay on index/home
+        window.loginForStudentVoice = false;
 
     } catch (error) {
 
