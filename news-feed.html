@@ -769,7 +769,7 @@ a{-webkit-tap-highlight-color:transparent}
   </div>
 
   <div class="header-right">
-    <button id="headerProfileBtn" class="header-profile-btn" type="button" onclick="window.openLogin && window.openLogin()">
+    <button id="headerProfileBtn" class="header-profile-btn" type="button" onclick="handleHeaderLoginClick(event)">
       👤 <span>Login</span>
     </button>
 
@@ -797,13 +797,13 @@ a{-webkit-tap-highlight-color:transparent}
       <h2>📰 News Feed</h2>
       <p>See public posts and posts shared by your friends.</p>
     </div>
-    <button class="post-top-btn" type="button" onclick="window.openPostComposer ? window.openPostComposer() : window.__showNewsLogin?.()">＋ Post</button>
+    <button class="post-top-btn" type="button" onclick="handlePostClick(event)">＋ Post</button>
   </div>
 
-  <div class="composer-shortcut" onclick="window.openPostComposer ? window.openPostComposer() : window.__showNewsLogin?.()">
+  <div class="composer-shortcut" onclick="handlePostClick(event)">
     <div id="composerAvatar" class="composer-avatar">👤</div>
     <div class="composer-input">What's on your mind? Share an update…</div>
-    <button class="composer-action" type="button" onclick="event.stopPropagation();handlePostClick(event)">＋</button>
+    <button class="composer-action" type="button" onclick="handlePostClick(event)">＋</button>
   </div>
 
   <section id="feedList" class="feed-list">
@@ -937,13 +937,11 @@ a{-webkit-tap-highlight-color:transparent}
   window.handleHeaderLoginClick=function(event){
     event?.preventDefault();
     event?.stopPropagation();
-    const menu=get('profileMenu');
-    const btn=get('headerProfileBtn');
-    const isGuest = !btn || /\bLogin\b/i.test(btn.textContent || '');
-    if(isGuest){
+    if(!window.__newsAuthUser){
       window.openLogin();
       return;
     }
+    const menu=get('profileMenu');
     menu?.classList.toggle('open');
   };
 
@@ -956,13 +954,11 @@ a{-webkit-tap-highlight-color:transparent}
   window.handlePostClick=function(event){
     event?.preventDefault();
     event?.stopPropagation();
-    const btn=get('headerProfileBtn');
-    const isGuest = !btn || /\bLogin\b/i.test(btn.textContent || '');
-    if(isGuest){
-      window.openLogin();
+    if(window.__newsAuthUser){
+      if(typeof window.openPostComposer === 'function') window.openPostComposer();
       return;
     }
-    if(typeof window.openPostComposer === 'function') window.openPostComposer();
+    window.openLogin();
   };
 
   window.handleGoogleLogin=function(){
@@ -991,7 +987,8 @@ a{-webkit-tap-highlight-color:transparent}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import {
-  initializeAuth, browserLocalPersistence, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+  getAuth, setPersistence, browserLocalPersistence, GoogleAuthProvider,
+  signInWithPopup, signOut, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 import {
   getFirestore, collection, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc,
@@ -1009,9 +1006,13 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = initializeAuth(app, { persistence: browserLocalPersistence });
+const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
+
+await setPersistence(auth, browserLocalPersistence).catch(err => {
+  console.warn('Auth persistence setup:', err);
+});
 
 let firebaseUser = null;
 let currentProfile = null;
@@ -1095,7 +1096,6 @@ function setHeaderUser(user, profile){
 }
 
 window.openLogin = function(){
-  if(window.__showNewsLogin) window.__showNewsLogin();
   const modal = document.getElementById('newsLoginModal');
   if(!modal){
     console.error('newsLoginModal not found');
@@ -1111,7 +1111,6 @@ window.openLogin = function(){
 };
 
 window.closeLogin = function(){
-  if(window.__hideNewsLogin) window.__hideNewsLogin();
   const modal = document.getElementById('newsLoginModal');
   if(!modal) return;
   modal.classList.remove('show');
@@ -1803,6 +1802,7 @@ document.addEventListener('keydown',e=>{
 onAuthStateChanged(auth, async user => {
   firebaseUser = user;
   window.__newsAuthUser = user || null;
+  window.__newsAuthUid = user?.uid || null;
   window.__newsAuth = auth;
 
   if (user) {
