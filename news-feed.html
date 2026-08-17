@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#003DA5">
+<title>CATHS-MAIN • News Feed</title>
+<link rel="icon" type="image/png" href="sslg-logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --blue:#003DA5;
+  --darkblue:#00296B;
+  --yellow:#FFD700;
+  --white:#fff;
+  --glass:rgba(255,255,255,.13);
+  --line:rgba(255,255,255,.12);
+  --muted:#64748b;
+  --shadow:0 18px 45px rgba(0,0,0,.18);
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
+html{scroll-behavior:smooth}
+body{
+  min-height:100vh;
+  color:#fff;
+  background:linear-gradient(135deg,#001F54,#003DA5,#FFD700);
+  padding-bottom:95px;
+  overflow-x:hidden;
+}
+button,input,textarea,select{font:inherit}
+button{-webkit-tap-highlight-color:transparent}
+a{-webkit-tap-highlight-color:transparent}
+
+.header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  padding:12px 18px;
+  display:grid;
+  grid-template-columns:220px 1fr 220px;
+  align-items:center;
+  gap:15px;
+  background:rgba(0,0,0,.14);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.logo-group{display:flex;align-items:center;gap:8px}
+.logo,.caths-logo{
+  width:52px;
+  height:52px;
+  object-fit:contain;
+  flex:0 0 52px;
+}
+.header-center{text-align:center;min-width:0}
+.header-center h1{font-size:21px;font-weight:800;line-height:1.2}
+.header-center p{font-size:11px;opacity:.82;margin-top:3px}
+.header-right{display:flex;justify-content:flex-end;position:relative}
+.header-profile-btn{
+  border:none;
+  border-radius:13px;
+  padding:8px 12px;
+  background:rgba(255,255,255,.13);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  cursor:pointer;
+  white-space:nowrap;
+  font-weight:700;
+}
+.header-profile-btn img{
+  width:29px;height:29px;border-radius:50%;object-fit:cover;
+}
+.header-profile-btn:hover{background:rgba(255,255,255,.2)}
+
+.container{
+  width:100%;
+  max-width:920px;
+  margin:0 auto;
+  padding:20px 18px 120px;
+}
+.feed-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:16px;
+}
+.feed-title h2{font-size:29px;line-height:1.15}
+.feed-title p{font-size:12px;opacity:.84;margin-top:5px;line-height:1.5}
+.post-top-btn{
+  flex:0 0 auto;
+  border:none;
+  border-radius:15px;
+  padding:12px 16px;
+  background:var(--yellow);
+  color:var(--darkblue);
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 9px 24px rgba(0,0,0,.12);
+  transition:.2s ease;
+}
+.post-top-btn:hover{transform:translateY(-2px)}
+.post-top-btn:active{transform:scale(.98)}
+
+.composer-shortcut{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:rgba(255,255,255,.11);
+  border:1px solid rgba(255,255,255,.11);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  box-shadow:var(--shadow);
+  border-radius:22px;
+  padding:13px;
+  margin-bottom:18px;
+  cursor:pointer;
+}
+.composer-avatar{
+  width:46px;height:46px;flex:0 0 46px;
+  border-radius:50%;
+  overflow:hidden;
+  background:#eaf0fb;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--darkblue);
+  font-size:18px;font-weight:800;
+}
+.composer-avatar img{width:100%;height:100%;object-fit:cover}
+.composer-input{
+  flex:1;
+  min-width:0;
+  background:#fff;
+  color:#64748b;
+  border-radius:14px;
+  padding:12px 14px;
+  font-size:12px;
+}
+.composer-action{
+  border:none;
+  background:rgba(255,255,255,.12);
+  color:#fff;
+  width:44px;height:44px;
+  border-radius:13px;
+  font-size:20px;
+  cursor:pointer;
+}
+
+.feed-list{display:flex;flex-direction:column;gap:14px}
+.state-card{
+  background:rgba(255,255,255,.11);
+  border:1px solid rgba(255,255,255,.11);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border-radius:22px;
+  padding:30px 20px;
+  text-align:center;
+  box-shadow:var(--shadow);
+}
+.state-icon{font-size:46px;margin-bottom:10px}
+.state-card h3{font-size:18px}
+.state-card p{font-size:12px;opacity:.75;line-height:1.6;margin-top:6px}
+
+.post-card{
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border-radius:22px;
+  padding:17px;
+  box-shadow:var(--shadow);
+}
+.post-head{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.post-avatar{
+  width:44px;height:44px;flex:0 0 44px;
+  border-radius:50%;
+  overflow:hidden;
+  background:#e8eef7;
+  color:var(--darkblue);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+}
+.post-avatar img{width:100%;height:100%;object-fit:cover}
+.post-author{flex:1;min-width:0}
+.post-author strong{
+  display:block;font-size:13px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.post-meta{font-size:10px;opacity:.7;margin-top:2px}
+.post-visibility{
+  flex:0 0 auto;
+  font-size:9px;
+  background:rgba(255,255,255,.11);
+  padding:5px 8px;
+  border-radius:999px;
+  white-space:nowrap;
+}
+.post-menu-btn{
+  border:none;
+  width:34px;height:34px;
+  border-radius:10px;
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  font-size:20px;
+  line-height:1;
+  cursor:pointer;
+}
+.post-text{
+  margin:14px 0;
+  font-size:13px;
+  line-height:1.7;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+.share-context{
+  margin:13px 0;
+  background:rgba(255,255,255,.96);
+  color:#24458e;
+  border:1px solid rgba(255,255,255,.65);
+  border-radius:18px;
+  padding:14px;
+}
+.share-context-label{font-size:11px;font-weight:800;color:#6f84b8;margin-bottom:7px}
+.share-context-author{font-size:13px;font-weight:800}
+.share-context-text{font-size:12px;color:#334c7f;line-height:1.6;margin-top:6px;white-space:pre-wrap}
+
+.post-counts{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  align-items:center;
+  font-size:10px;
+  opacity:.78;
+  margin-bottom:9px;
+}
+.reaction-summary{
+  border:none;
+  background:transparent;
+  color:inherit;
+  padding:0;
+  cursor:pointer;
+}
+.post-actions{
+  border-top:1px solid rgba(255,255,255,.1);
+  padding-top:11px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+}
+.post-action{
+  border:none;
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  border-radius:11px;
+  padding:10px 8px;
+  font-size:11px;
+  cursor:pointer;
+}
+.post-action:hover{background:rgba(255,255,255,.15)}
+.post-action.active{background:var(--yellow);color:var(--darkblue);font-weight:800}
+.reaction-wrap{position:relative}
+.reaction-picker{
+  display:none;
+  position:absolute;
+  left:0;
+  bottom:calc(100% + 7px);
+  padding:6px;
+  background:#fff;
+  border-radius:14px;
+  box-shadow:0 12px 30px rgba(0,0,0,.22);
+  gap:3px;
+  z-index:20;
+}
+.reaction-picker.open{display:flex}
+.reaction-emoji{
+  border:none;background:transparent;
+  padding:6px;font-size:20px;
+  border-radius:9px;cursor:pointer;
+}
+.reaction-emoji:hover{background:#eef4ff}
+
+.profile-menu{
+  display:none;
+  position:absolute;
+  right:0;
+  top:calc(100% + 8px);
+  width:280px;
+  background:#fff;
+  color:var(--darkblue);
+  border-radius:18px;
+  padding:14px;
+  box-shadow:0 20px 50px rgba(0,0,0,.28);
+  z-index:1200;
+}
+.profile-menu.open{display:block;animation:menuIn .24s ease}
+.menu-profile{display:flex;align-items:center;gap:11px}
+.menu-profile img{width:46px;height:46px;border-radius:50%;object-fit:cover;background:#eef4ff}
+.menu-profile strong{display:block;font-size:14px}
+.menu-profile small{display:block;font-size:10px;color:#64748b;margin-top:2px}
+.menu-divider{height:1px;background:#e5e7eb;margin:11px 0}
+.menu-link{
+  display:flex;align-items:center;gap:9px;
+  text-decoration:none;color:var(--darkblue);
+  padding:10px 11px;border-radius:11px;
+  font-size:12px;font-weight:700;
+}
+.menu-link:hover{background:#eef4ff}
+.logout-btn{
+  width:100%;border:none;border-radius:11px;
+  background:var(--darkblue);color:#fff;
+  padding:11px;font-weight:700;cursor:pointer;
+}
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.65);
+  backdrop-filter:blur(9px);
+  -webkit-backdrop-filter:blur(9px);
+  z-index:3000;
+  align-items:center;
+  justify-content:center;
+  padding:15px;
+}
+.modal.open{display:flex}
+.modal-box{
+  width:100%;
+  max-width:560px;
+  max-height:86vh;
+  overflow:auto;
+  background:#fff;
+  color:var(--darkblue);
+  border-radius:24px;
+  padding:22px;
+  box-shadow:0 26px 70px rgba(0,0,0,.45);
+  animation:pop .23s ease;
+}
+.modal-head{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;margin-bottom:14px;
+}
+.modal-head h3{font-size:20px}
+.close-btn{
+  border:none;width:36px;height:36px;border-radius:50%;
+  background:#eef4ff;color:var(--darkblue);font-size:18px;cursor:pointer;
+}
+.post-textarea{
+  width:100%;height:170px;
+  border:1px solid #dce4f2;
+  border-radius:16px;
+  outline:none;
+  resize:none;
+  padding:14px;
+  color:#0f172a;
+  font-size:13px;
+}
+.post-textarea:focus{border-color:#6e8fd8;box-shadow:0 0 0 3px rgba(0,61,165,.08)}
+.post-meta-row{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;margin-top:8px;
+}
+.char-count{font-size:10px;color:#64748b}
+.post-select{
+  width:100%;
+  margin-top:7px;
+  padding:11px 12px;
+  border:1px solid #dce4f2;
+  border-radius:12px;
+  outline:none;
+  color:#183c8c;
+}
+.publish-btn{
+  width:100%;
+  border:none;
+  margin-top:15px;
+  padding:13px;
+  border-radius:13px;
+  background:var(--darkblue);
+  color:#fff;
+  font-weight:800;
+  cursor:pointer;
+}
+.publish-btn:disabled{opacity:.55;cursor:not-allowed}
+
+.comments-list,.reactions-list{
+  max-height:50vh;
+  overflow:auto;
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+}
+.comment-item,.reaction-item{
+  background:#f6f8fc;
+  border-radius:14px;
+  padding:11px 12px;
+}
+.comment-item strong,.reaction-item strong{display:block;font-size:12px;color:var(--darkblue)}
+.comment-item p{font-size:12px;color:#333;line-height:1.55;margin-top:3px;white-space:pre-wrap;word-break:break-word}
+.comment-form{display:flex;gap:8px;margin-top:13px}
+.comment-input{
+  flex:1;min-width:0;
+  border:1px solid #dce4f2;
+  outline:none;border-radius:12px;padding:11px;
+}
+.comment-send{
+  border:none;border-radius:12px;
+  padding:0 15px;background:var(--darkblue);
+  color:#fff;font-weight:700;cursor:pointer;
+}
+.reaction-item{display:flex;align-items:center;gap:10px}
+.reaction-item img,.reaction-avatar{
+  width:40px;height:40px;flex:0 0 40px;
+  border-radius:50%;object-fit:cover;
+  background:#e6edf8;display:flex;align-items:center;justify-content:center;color:var(--darkblue);font-weight:800;
+}
+.reaction-info{flex:1;min-width:0}
+.reaction-info small{display:block;color:#75829a;font-size:10px;margin-top:2px}
+.reaction-big{font-size:23px}
+
+.manage-menu-backdrop{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.52);
+  z-index:3500;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+}
+.manage-menu-backdrop.open{display:flex}
+.manage-menu{
+  width:100%;
+  max-width:330px;
+  background:#fff;
+  border-radius:20px;
+  padding:10px;
+  box-shadow:0 25px 70px rgba(0,0,0,.4);
+}
+.manage-menu button{
+  width:100%;
+  border:none;
+  background:transparent;
+  text-align:left;
+  padding:12px;
+  border-radius:12px;
+  color:var(--darkblue);
+  font-size:12px;font-weight:700;
+  cursor:pointer;
+}
+.manage-menu button:hover{background:#eef4ff}
+.manage-menu .danger{color:#b91c1c}
+
+.bottom-nav{
+  position:fixed;
+  left:0;right:0;bottom:0;
+  height:77px;
+  padding:4px 4px env(safe-area-inset-bottom);
+  background:rgba(0,0,0,.28);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  z-index:2500;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+.nav-item{
+  flex:1;
+  max-width:120px;
+  min-width:56px;
+  text-decoration:none;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  font-size:9px;
+  padding:4px 3px;
+}
+.nav-item div{
+  font-size:21px;
+  height:26px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.nav-item.active{
+  color:var(--yellow);
+  transform:translateY(-5px) scale(1.06);
+  font-weight:800;
+}
+.nav-item.active div{font-size:24px}
+#profileNavPhoto img{
+  width:25px!important;height:25px!important;
+  border-radius:50%;object-fit:cover;
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:96px;
+  transform:translate(-50%,20px);
+  opacity:0;
+  pointer-events:none;
+  background:#101827;
+  color:#fff;
+  padding:11px 15px;
+  border-radius:999px;
+  font-size:11px;
+  z-index:5000;
+  transition:.25s ease;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+.spinner{
+  width:30px;height:30px;
+  border:3px solid rgba(255,255,255,.25);
+  border-top-color:var(--yellow);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+.loading-box{display:flex;flex-direction:column;align-items:center;gap:10px}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes menuIn{from{opacity:0;transform:translateY(-7px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+@media(max-width:768px){
+  body{padding-bottom:82px}
+  .header{
+    padding:9px 10px;
+    grid-template-columns:auto 1fr auto;
+    gap:8px;
+    min-height:66px;
+  }
+  .logo,.caths-logo{width:39px;height:39px;flex-basis:39px}
+  .header-center{padding:0 2px}
+  .header-center h1{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .header-center p{font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .header-profile-btn{font-size:10px;padding:7px 8px;max-width:108px;overflow:hidden}
+  .header-profile-btn img{width:25px;height:25px}
+  .container{padding:15px 12px 105px}
+  .feed-top{align-items:center}
+  .feed-title h2{font-size:23px}
+  .feed-title p{font-size:10px}
+  .post-top-btn{padding:10px 12px;font-size:11px;border-radius:12px}
+  .composer-shortcut{padding:10px;border-radius:18px}
+  .composer-avatar{width:42px;height:42px;flex-basis:42px}
+  .composer-input{font-size:11px;padding:11px 12px}
+  .composer-action{width:40px;height:40px}
+  .post-card{padding:14px;border-radius:19px}
+  .post-visibility{display:none}
+  .post-text{font-size:13px}
+  .post-actions{gap:6px}
+  .post-action{font-size:10px;padding:9px 5px}
+  .profile-menu{width:calc(100vw - 20px);max-width:300px}
+  .bottom-nav{height:70px}
+  .nav-item{font-size:8px;min-width:52px}
+  .nav-item div{font-size:20px}
+  .nav-item.active div{font-size:23px}
+}
+
+@media(max-width:380px){
+  .logo,.caths-logo{width:35px;height:35px;flex-basis:35px}
+  .header-center h1{font-size:12px}
+  .header-center p{font-size:7px}
+  .header-profile-btn{font-size:9px;padding:6px 7px}
+  .feed-title h2{font-size:21px}
+  .post-top-btn{padding:9px 10px;font-size:10px}
+  .post-actions{grid-template-columns:1fr}
+  .reaction-picker{left:auto;right:0}
+}
+</style>
+</head>
+
+<body>
+<header class="header">
+  <div class="logo-group">
+    <img src="sslg-logo.png" class="logo" alt="SSLG">
+    <img src="caths-logo.png" class="caths-logo" alt="CATHS">
+  </div>
+
+  <div class="header-center">
+    <h1>CATHS-MAIN News Feed</h1>
+    <p>Updates and posts from your school community</p>
+  </div>
+
+  <div class="header-right">
+    <button id="headerProfileBtn" class="header-profile-btn" type="button" onclick="toggleHeaderMenu()">
+      👤 <span>Login</span>
+    </button>
+
+    <div id="profileMenu" class="profile-menu">
+      <div class="menu-profile">
+        <img id="menuPhoto" src="" alt="">
+        <div>
+          <strong id="menuName">User</strong>
+          <small id="menuUsername">@username</small>
+        </div>
+      </div>
+      <div class="menu-divider"></div>
+      <a class="menu-link" href="profile.html">👤 Profile</a>
+      <a class="menu-link" href="friends.html">👥 Friends</a>
+      <a class="menu-link" href="messages.html">💬 Messages</a>
+      <div class="menu-divider"></div>
+      <button class="logout-btn" type="button" onclick="logoutUser()">🚪 Log Out</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="feed-top">
+    <div class="feed-title">
+      <h2>📰 News Feed</h2>
+      <p>See public posts and posts shared by your friends.</p>
+    </div>
+    <button class="post-top-btn" type="button" onclick="openPostComposer()">＋ Post</button>
+  </div>
+
+  <div class="composer-shortcut" onclick="openPostComposer()">
+    <div id="composerAvatar" class="composer-avatar">👤</div>
+    <div class="composer-input">What's on your mind? Share an update…</div>
+    <button class="composer-action" type="button" onclick="event.stopPropagation();openPostComposer()">＋</button>
+  </div>
+
+  <section id="feedList" class="feed-list">
+    <div class="state-card">
+      <div class="loading-box">
+        <div class="spinner"></div>
+        <p>Loading your feed...</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<nav class="bottom-nav">
+  <a href="index.html" class="nav-item"><div>🏠</div><span>Home</span></a>
+  <a href="news.html" class="nav-item active"><div>📰</div><span>News Feed</span></a>
+  <a href="voice.html" class="nav-item"><div>🗣️</div><span>Student Voice</span></a>
+  <a href="friends.html" class="nav-item"><div>👥</div><span>Friends</span></a>
+  <a href="profile.html" class="nav-item"><div id="profileNavPhoto">👤</div><span>Profile</span></a>
+</nav>
+
+<div id="toast" class="toast"></div>
+
+<!-- CREATE POST -->
+<div id="postModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>📝 Create Post</h3>
+      <button class="close-btn" type="button" onclick="closePostComposer()">✕</button>
+    </div>
+
+    <textarea id="postText" class="post-textarea" maxlength="500" placeholder="What's on your mind? 😊"></textarea>
+
+    <div class="post-meta-row">
+      <span class="char-count"><span id="postCharCount">0</span>/500</span>
+      <span style="font-size:10px;color:#64748b">Choose who can see this.</span>
+    </div>
+
+    <select id="postVisibility" class="post-select">
+      <option value="public">🌍 Public — Everyone</option>
+      <option value="friends">👥 Friends Only — Your friends</option>
+      <option value="onlyMe">🔒 Only Me — Private</option>
+    </select>
+
+    <button id="publishPostBtn" class="publish-btn" type="button" onclick="publishPost()">Post</button>
+  </div>
+</div>
+
+<!-- COMMENTS -->
+<div id="commentsModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>💬 Comments</h3>
+      <button class="close-btn" type="button" onclick="closeComments()">✕</button>
+    </div>
+    <div id="commentsList" class="comments-list"></div>
+    <div class="comment-form">
+      <input id="commentInput" class="comment-input" maxlength="300" placeholder="Write a comment...">
+      <button id="commentSendBtn" class="comment-send" type="button" onclick="sendComment()">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- REACTIONS -->
+<div id="reactionsModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>❤️ Reactions</h3>
+      <button class="close-btn" type="button" onclick="closeReactions()">✕</button>
+    </div>
+    <div id="reactionsList" class="reactions-list"></div>
+  </div>
+</div>
+
+<!-- OWN POST MENU -->
+<div id="manageMenuBackdrop" class="manage-menu-backdrop" onclick="closeManageMenu(event)">
+  <div class="manage-menu" onclick="event.stopPropagation()">
+    <button type="button" onclick="openPrivacyForPost()">👁️ Change Privacy</button>
+    <button type="button" onclick="togglePinFromMenu()">📌 Pin / Unpin Post</button>
+    <button class="danger" type="button" onclick="deletePostFromMenu()">🗑️ Delete Post</button>
+  </div>
+</div>
+
+<!-- PRIVACY -->
+<div id="privacyModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>👁️ Who can see this?</h3>
+      <button class="close-btn" type="button" onclick="closePrivacyModal()">✕</button>
+    </div>
+    <p style="font-size:12px;color:#64748b;line-height:1.6">Change the visibility of this post. The update is saved immediately.</p>
+
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:15px">
+      <button class="privacy-choice" style="padding:13px;border:1px solid #dce4f2;border-radius:13px;background:#fff;text-align:left;cursor:pointer;color:#183c8c;font-weight:700" onclick="savePostVisibility('public')">🌍 Public — Everyone</button>
+      <button class="privacy-choice" style="padding:13px;border:1px solid #dce4f2;border-radius:13px;background:#fff;text-align:left;cursor:pointer;color:#183c8c;font-weight:700" onclick="savePostVisibility('friends')">👥 Friends Only — Your friends</button>
+      <button class="privacy-choice" style="padding:13px;border:1px solid #dce4f2;border-radius:13px;background:#fff;text-align:left;cursor:pointer;color:#183c8c;font-weight:700" onclick="savePostVisibility('onlyMe')">🔒 Only Me — Private</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import {
+  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+import {
+  getFirestore, collection, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc,
+  query, where, limit, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",
+  authDomain: "caths-page.firebaseapp.com",
+  projectId: "caths-page",
+  storageBucket: "caths-page.firebasestorage.app",
+  messagingSenderId: "945498022620",
+  appId: "1:945498022620:web:71aeb4cd2472e061aeca19",
+  measurementId: "G-CBG1YSK13G"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
+
+let firebaseUser = null;
+let currentProfile = null;
+let friendIds = new Set();
+let allFeedPosts = [];
+let activeCommentPostId = null;
+let activeManagePostId = null;
+let activePrivacyPostId = null;
+
+const $ = id => document.getElementById(id);
+
+function esc(value=''){
+  return String(value)
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'",'&#039;');
+}
+
+function showToast(message){
+  const toast = $('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(()=>toast.classList.remove('show'),2600);
+}
+
+function formatTime(ts){
+  try{
+    if(!ts) return 'Just now';
+    const date = ts.toDate ? ts.toDate() : new Date(ts);
+    const diff = Date.now() - date.getTime();
+    if(diff < 60000) return 'Just now';
+    if(diff < 3600000) return Math.floor(diff/60000)+'m';
+    if(diff < 86400000) return Math.floor(diff/3600000)+'h';
+    if(diff < 604800000) return Math.floor(diff/86400000)+'d';
+    return date.toLocaleDateString([], {month:'short',day:'numeric',year:'numeric'});
+  }catch(e){
+    return 'Just now';
+  }
+}
+
+function avatarHtml(post){
+  if(post.photoURL){
+    return `<div class="post-avatar"><img src="${esc(post.photoURL)}" alt=""></div>`;
+  }
+  const letter = esc((post.authorName || 'U').charAt(0).toUpperCase());
+  return `<div class="post-avatar">${letter}</div>`;
+}
+
+function setHeaderUser(user, profile){
+  const btn = $('headerProfileBtn');
+  const menuPhoto = $('menuPhoto');
+  const navPhoto = $('profileNavPhoto');
+  const composerAvatar = $('composerAvatar');
+
+  if(user){
+    btn.innerHTML = user.photoURL
+      ? `<img src="${esc(user.photoURL)}" alt=""> <span>${esc(profile?.nickname || user.displayName || 'User')}</span> ▼`
+      : `👤 <span>${esc(profile?.nickname || user.displayName || 'User')}</span> ▼`;
+
+    $('menuName').textContent = profile?.nickname || user.displayName || 'User';
+    $('menuUsername').textContent = profile?.username ? '@'+profile.username : '@username';
+
+    if(user.photoURL){
+      menuPhoto.src = user.photoURL;
+      navPhoto.innerHTML = `<img src="${esc(user.photoURL)}" alt="">`;
+      composerAvatar.innerHTML = `<img src="${esc(user.photoURL)}" alt="">`;
+    }else{
+      menuPhoto.src = '';
+      navPhoto.textContent = '👤';
+      composerAvatar.textContent = (profile?.nickname || user.displayName || 'U').charAt(0).toUpperCase();
+    }
+  }else{
+    btn.innerHTML = '👤 <span>Login</span>';
+    menuPhoto.src = '';
+    navPhoto.textContent = '🔐';
+    composerAvatar.textContent = '👤';
+  }
+}
+
+window.toggleHeaderMenu = function(){
+  const menu = $('profileMenu');
+  if(!firebaseUser){
+    window.location.href = 'profile.html';
+    return;
+  }
+  menu.classList.toggle('open');
+};
+
+document.addEventListener('click', event=>{
+  const menu = $('profileMenu');
+  const right = document.querySelector('.header-right');
+  if(menu.classList.contains('open') && !right.contains(event.target)) menu.classList.remove('open');
+});
+
+window.logoutUser = async function(){
+  try{
+    await signOut(auth);
+    showToast('Logged out successfully.');
+  }catch(e){
+    console.error(e);
+    showToast('Logout failed.');
+  }
+};
+
+window.openPostComposer = function(){
+  if(!auth.currentUser){
+    window.location.href='profile.html';
+    return;
+  }
+  $('postText').value='';
+  $('postVisibility').value='public';
+  $('postCharCount').textContent='0';
+  $('postModal').classList.add('open');
+  setTimeout(()=>$('postText').focus(),50);
+};
+
+window.closePostComposer = function(){
+  $('postModal').classList.remove('open');
+};
+
+$('postText').addEventListener('input',e=>{
+  $('postCharCount').textContent=String(e.target.value.length);
+});
+
+window.publishPost = async function(){
+  const user = auth.currentUser;
+  if(!user){
+    window.location.href='profile.html';
+    return;
+  }
+
+  const text = $('postText').value.trim();
+  const visibility = $('postVisibility').value;
+  if(!text){ showToast('Please write something first.'); return; }
+  if(text.length>500){ showToast('Your post is too long.'); return; }
+
+  const btn = $('publishPostBtn');
+  btn.disabled=true;
+  btn.textContent='⏳ Posting...';
+
+  try{
+    const snap = await getDoc(doc(db,'users',user.uid));
+    const profile = snap.exists() ? (snap.data()||{}) : {};
+
+    await addDoc(collection(db,'posts'),{
+      authorUid:user.uid,
+      authorName:profile.name || profile.nickname || profile.displayName || user.displayName || 'User',
+      username:profile.username || '',
+      photoURL:profile.photoURL || user.photoURL || '',
+      text,
+      visibility,
+      createdAt:serverTimestamp(),
+      likeCount:0,
+      commentCount:0,
+      shareCount:0
+    });
+
+    closePostComposer();
+    showToast('Post published!');
+    await loadFeed();
+  }catch(e){
+    console.error(e);
+    showToast(e?.code==='permission-denied'
+      ? 'Firestore rules are blocking posts.'
+      : 'Could not publish the post.');
+  }finally{
+    btn.disabled=false;
+    btn.textContent='Post';
+  }
+};
+
+async function loadCurrentProfile(){
+  if(!firebaseUser) return;
+  try{
+    const snap=await getDoc(doc(db,'users',firebaseUser.uid));
+    currentProfile=snap.exists()?snap.data():null;
+  }catch(e){
+    console.error('Profile load',e);
+  }
+}
+
+async function loadFriendIds(){
+  friendIds = new Set();
+  if(!firebaseUser) return;
+  try{
+    const snap = await getDocs(query(collection(db,'friends',firebaseUser.uid,'list'),limit(100)));
+    snap.docs.forEach(d=>{
+      const data=d.data()||{};
+      friendIds.add(data.uid || d.id);
+    });
+  }catch(e){
+    console.error('Friend list load',e);
+  }
+}
+
+function canSeePost(post){
+  if(!firebaseUser) return post.visibility === 'public';
+  if(post.authorUid===firebaseUser.uid) return true;
+  if(post.visibility==='public') return true;
+  if(post.visibility==='friends') return friendIds.has(post.authorUid);
+  return false;
+}
+
+async function loadFeed(){
+  const list=$('feedList');
+  list.innerHTML=`<div class="state-card"><div class="loading-box"><div class="spinner"></div><p>Loading your feed...</p></div></div>`;
+
+  try{
+    await loadFriendIds();
+
+    const snap = await getDocs(query(
+      collection(db,'posts'),
+      where('visibility','in',['public','friends','onlyMe']),
+      limit(100)
+    ));
+
+    const posts = snap.docs.map(d=>({id:d.id,...d.data()}))
+      .filter(canSeePost)
+      .sort((a,b)=>{
+        if(Boolean(a.pinned)!==Boolean(b.pinned)) return a.pinned ? -1 : 1;
+        const at=a.createdAt?.toMillis?a.createdAt.toMillis():0;
+        const bt=b.createdAt?.toMillis?b.createdAt.toMillis():0;
+        return bt-at;
+      });
+
+    allFeedPosts = posts;
+
+    if(!posts.length){
+      list.innerHTML=`
+        <div class="state-card">
+          <div class="state-icon">📰</div>
+          <h3>Your feed is empty</h3>
+          <p>Public posts from students and posts shared by your friends will appear here.</p>
+        </div>`;
+      return;
+    }
+
+    list.innerHTML=posts.map(renderPost).join('');
+    for(const post of posts) await refreshPostCounts(post.id);
+  }catch(e){
+    console.error('Feed load error',e);
+    list.innerHTML=`
+      <div class="state-card">
+        <div class="state-icon">⚠️</div>
+        <h3>Could not load the feed</h3>
+        <p>Check your Firestore rules and make sure the posts collection can be read.</p>
+      </div>`;
+  }
+}
+
+function renderPost(post){
+  const own = firebaseUser?.uid === post.authorUid;
+  const visibilityLabel =
+    post.visibility==='friends' ? '👥 Friends Only' :
+    post.visibility==='onlyMe' ? '🔒 Only Me' : '🌍 Public';
+
+  const sharedContext = post.isShared && post.originalAuthorName ? `
+    <div class="share-context">
+      <div class="share-context-label">↗ Shared post</div>
+      <div class="share-context-author">Original post by ${esc(post.originalAuthorName || 'User')}</div>
+      <div class="share-context-text">${esc(post.originalText || post.text || '')}</div>
+    </div>` : '';
+
+  return `
+    <article class="post-card" id="post-${esc(post.id)}">
+      <div class="post-head">
+        ${avatarHtml(post)}
+        <div class="post-author">
+          <strong>${esc(post.authorName || 'User')}</strong>
+          <div class="post-meta">${post.username ? '@'+esc(post.username)+' · ' : ''}${esc(formatTime(post.createdAt))}</div>
+        </div>
+        <span class="post-visibility">${visibilityLabel}</span>
+        ${own ? `<button class="post-menu-btn" type="button" onclick="openManageMenu('${esc(post.id)}',${post.pinned===true})">⋯</button>` : ''}
+      </div>
+
+      ${post.isShared ? '' : `<div class="post-text">${esc(post.text || '')}</div>`}
+      ${sharedContext}
+
+      <div class="post-counts" id="counts-${esc(post.id)}">Loading reactions...</div>
+
+      <div class="post-actions">
+        <div class="reaction-wrap">
+          <button id="react-btn-${esc(post.id)}" class="post-action" type="button" onclick="toggleReactionPicker('${esc(post.id)}',event)">React</button>
+          <div id="picker-${esc(post.id)}" class="reaction-picker">
+            ${['👍','❤️','😂','😮','😢'].map(e=>`<button class="reaction-emoji" type="button" onclick="reactToPost('${esc(post.id)}','${e}',event)">${e}</button>`).join('')}
+          </div>
+        </div>
+        <button class="post-action" type="button" onclick="openComments('${esc(post.id)}')">💬 Comment</button>
+        <button class="post-action" type="button" onclick="sharePost('${esc(post.id)}')">↗ Share</button>
+      </div>
+    </article>`;
+}
+
+window.toggleReactionPicker=function(postId,event){
+  event.stopPropagation();
+  document.querySelectorAll('.reaction-picker.open').forEach(el=>{
+    if(el.id!=='picker-'+postId) el.classList.remove('open');
+  });
+  $('picker-'+postId)?.classList.toggle('open');
+};
+
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.reaction-wrap')){
+    document.querySelectorAll('.reaction-picker.open').forEach(el=>el.classList.remove('open'));
+  }
+});
+
+window.reactToPost=async function(postId,emoji,event){
+  event.stopPropagation();
+  const user=auth.currentUser;
+  if(!user){window.location.href='profile.html';return;}
+
+  try{
+    const ref=doc(db,'posts',postId,'reactions',user.uid);
+    const existing=await getDoc(ref);
+    if(existing.exists() && existing.data()?.emoji===emoji){
+      await deleteDoc(ref);
+    }else{
+      const snap=await getDoc(doc(db,'users',user.uid));
+      const profile=snap.exists()?snap.data()||{}:{};
+      await setDoc(ref,{
+        uid:user.uid,
+        emoji,
+        authorName:profile.name || profile.nickname || profile.displayName || user.displayName || 'User',
+        username:profile.username || '',
+        photoURL:profile.photoURL || user.photoURL || '',
+        updatedAt:serverTimestamp()
+      });
+    }
+    $('picker-'+postId)?.classList.remove('open');
+    await refreshPostCounts(postId);
+  }catch(e){
+    console.error(e);
+    showToast('Could not update reaction.');
+  }
+};
+
+async function refreshPostCounts(postId){
+  try{
+    const [reactionsSnap,commentsSnap,postSnap]=await Promise.all([
+      getDocs(collection(db,'posts',postId,'reactions')),
+      getDocs(collection(db,'posts',postId,'comments')),
+      getDoc(doc(db,'posts',postId))
+    ]);
+
+    const tally={'👍':0,'❤️':0,'😂':0,'😮':0,'😢':0};
+    reactionsSnap.docs.forEach(d=>{
+      const e=d.data()?.emoji||'👍';
+      tally[e]=(tally[e]||0)+1;
+    });
+
+    const parts=Object.entries(tally)
+      .filter(([_,n])=>n>0)
+      .map(([e,n])=>`<button class="reaction-summary" type="button" onclick="openReactions('${esc(postId)}')">${e} ${n}</button>`);
+
+    const reactionSummary=parts.length
+      ? parts.join(' · ')
+      : `<button class="reaction-summary" type="button" onclick="openReactions('${esc(postId)}')">No reactions yet</button>`;
+
+    const shareCount = postSnap.exists() ? Number(postSnap.data()?.shareCount||0) : 0;
+    const counts=$('counts-'+postId);
+    if(counts) counts.innerHTML=`${reactionSummary}<span>· 💬 ${commentsSnap.size}</span><span>· ↗ ${shareCount}</span>`;
+
+    const btn=$('react-btn-'+postId);
+    if(btn && auth.currentUser){
+      const mine=reactionsSnap.docs.find(d=>d.id===auth.currentUser.uid)?.data()?.emoji;
+      btn.textContent=mine?`${mine} Reacted`:'React';
+      btn.classList.toggle('active',!!mine);
+    }
+  }catch(e){
+    console.error('Counts error',e);
+  }
+}
+
+window.openComments=async function(postId){
+  activeCommentPostId=postId;
+  $('commentsModal').classList.add('open');
+  $('commentsList').innerHTML='<div style="padding:15px;text-align:center;color:#64748b">Loading comments...</div>';
+  await loadComments(postId);
+  setTimeout(()=>$('commentInput').focus(),50);
+};
+
+window.closeComments=function(){
+  activeCommentPostId=null;
+  $('commentsModal').classList.remove('open');
+};
+
+async function loadComments(postId){
+  try{
+    const snap=await getDocs(query(collection(db,'posts',postId,'comments'),limit(100)));
+    const comments=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{
+      const at=a.createdAt?.toMillis?a.createdAt.toMillis():0;
+      const bt=b.createdAt?.toMillis?b.createdAt.toMillis():0;
+      return at-bt;
+    });
+
+    if(!comments.length){
+      $('commentsList').innerHTML='<div style="padding:20px;text-align:center;color:#64748b">No comments yet.</div>';
+      return;
+    }
+
+    $('commentsList').innerHTML=comments.map(c=>`
+      <div class="comment-item">
+        <strong>${esc(c.authorName || 'Student')}</strong>
+        <p>${esc(c.text || '')}</p>
+      </div>`).join('');
+  }catch(e){
+    console.error(e);
+    $('commentsList').innerHTML='<div style="padding:20px;text-align:center;color:#64748b">Could not load comments.</div>';
+  }
+}
+
+window.sendComment=async function(){
+  const user=auth.currentUser;
+  if(!user || !activeCommentPostId) return;
+  const text=$('commentInput').value.trim();
+  if(!text){return;}
+
+  const btn=$('commentSendBtn');
+  btn.disabled=true;
+  btn.textContent='Sending...';
+
+  try{
+    const snap=await getDoc(doc(db,'users',user.uid));
+    const profile=snap.exists()?snap.data()||{}:{};
+    await addDoc(collection(db,'posts',activeCommentPostId,'comments'),{
+      authorId:user.uid,
+      uid:user.uid,
+      authorName:profile.name || profile.nickname || profile.displayName || user.displayName || 'User',
+      text,
+      createdAt:serverTimestamp()
+    });
+    $('commentInput').value='';
+    await loadComments(activeCommentPostId);
+    await refreshPostCounts(activeCommentPostId);
+  }catch(e){
+    console.error(e);
+    showToast('Could not send comment.');
+  }finally{
+    btn.disabled=false;
+    btn.textContent='Send';
+  }
+};
+
+window.openReactions=async function(postId){
+  $('reactionsModal').classList.add('open');
+  $('reactionsList').innerHTML='<div style="padding:15px;text-align:center;color:#64748b">Loading reactions...</div>';
+  try{
+    const snap=await getDocs(collection(db,'posts',postId,'reactions'));
+    if(snap.empty){
+      $('reactionsList').innerHTML='<div style="padding:20px;text-align:center;color:#64748b">No reactions yet.</div>';
+      return;
+    }
+
+    const rows=await Promise.all(snap.docs.map(async d=>{
+      const reaction=d.data()||{};
+      const uid=d.id || reaction.uid;
+      let profile={};
+      try{
+        const ps=await getDoc(doc(db,'users',uid));
+        if(ps.exists()) profile=ps.data()||{};
+      }catch(_){}
+      return {
+        uid,
+        name:profile.name || profile.nickname || profile.displayName || reaction.authorName || 'Student',
+        username:profile.username || reaction.username || '',
+        photo:profile.photoURL || reaction.photoURL || '',
+        emoji:reaction.emoji || '👍'
+      };
+    }));
+
+    $('reactionsList').innerHTML=rows.map(r=>`
+      <div class="reaction-item">
+        ${r.photo?`<img src="${esc(r.photo)}" alt="">`:`<div class="reaction-avatar">${esc((r.name||'U').charAt(0).toUpperCase())}</div>`}
+        <div class="reaction-info">
+          <strong>${esc(r.name)}</strong>
+          <small>${r.username?'@'+esc(r.username):'Student'}</small>
+        </div>
+        <div class="reaction-big">${esc(r.emoji)}</div>
+      </div>`).join('');
+  }catch(e){
+    console.error(e);
+    $('reactionsList').innerHTML='<div style="padding:20px;text-align:center;color:#64748b">Could not load reactions.</div>';
+  }
+};
+
+window.closeReactions=function(){$('reactionsModal').classList.remove('open')};
+
+window.sharePost=async function(postId){
+  const user=auth.currentUser;
+  if(!user){window.location.href='profile.html';return;}
+
+  const original=allFeedPosts.find(p=>p.id===postId);
+  if(!original){showToast('Post not found.');return;}
+
+  try{
+    const snap=await getDoc(doc(db,'users',user.uid));
+    const profile=snap.exists()?snap.data()||{}:{};
+
+    await addDoc(collection(db,'posts'),{
+      authorUid:user.uid,
+      authorName:profile.name || profile.nickname || profile.displayName || user.displayName || 'User',
+      username:profile.username || '',
+      photoURL:profile.photoURL || user.photoURL || '',
+      text:original.text || '',
+      visibility:'public',
+      isShared:true,
+      originalPostId:original.id,
+      originalAuthorName:original.authorName || 'User',
+      originalText:original.text || '',
+      createdAt:serverTimestamp(),
+      likeCount:0,
+      commentCount:0,
+      shareCount:0
+    });
+
+    await updateDoc(doc(db,'posts',postId),{
+      shareCount:Number(original.shareCount||0)+1
+    }).catch(()=>{});
+
+    showToast('Post shared to your profile.');
+    await loadFeed();
+  }catch(e){
+    console.error(e);
+    showToast('Could not share this post.');
+  }
+};
+
+window.openManageMenu=function(postId,pinned){
+  activeManagePostId=postId;
+  activeManagePostIdPinned=Boolean(pinned);
+  $('manageMenuBackdrop').classList.add('open');
+};
+
+let activeManagePostIdPinned=false;
+
+window.closeManageMenu=function(event){
+  if(event && event.target!==$('manageMenuBackdrop')) return;
+  $('manageMenuBackdrop').classList.remove('open');
+};
+
+window.openPrivacyForPost=function(){
+  $('manageMenuBackdrop').classList.remove('open');
+  activePrivacyPostId=activeManagePostId;
+  $('privacyModal').classList.add('open');
+};
+
+window.closePrivacyModal=function(){
+  activePrivacyPostId=null;
+  $('privacyModal').classList.remove('open');
+};
+
+window.savePostVisibility=async function(visibility){
+  const user=auth.currentUser;
+  const postId=activePrivacyPostId;
+  if(!user || !postId) return;
+
+  try{
+    const snap=await getDoc(doc(db,'posts',postId));
+    if(!snap.exists()) throw new Error('Post not found.');
+    if(snap.data()?.authorUid!==user.uid) throw new Error('Not your post.');
+
+    await updateDoc(doc(db,'posts',postId),{visibility});
+    $('privacyModal').classList.remove('open');
+    activePrivacyPostId=null;
+    showToast('Privacy updated.');
+    await loadFeed();
+  }catch(e){
+    console.error(e);
+    showToast('Could not change post privacy.');
+  }
+};
+
+window.togglePinFromMenu=async function(){
+  const user=auth.currentUser;
+  const postId=activeManagePostId;
+  if(!user || !postId) return;
+
+  try{
+    const ref=doc(db,'posts',postId);
+    const snap=await getDoc(ref);
+    if(!snap.exists()) throw new Error('Post not found.');
+    if(snap.data()?.authorUid!==user.uid) throw new Error('Not your post.');
+
+    await updateDoc(ref,{pinned:!Boolean(snap.data()?.pinned)});
+    $('manageMenuBackdrop').classList.remove('open');
+    showToast(Boolean(snap.data()?.pinned)?'Post unpinned.':'Post pinned to the top.');
+    await loadFeed();
+  }catch(e){
+    console.error(e);
+    showToast('Could not update pinned state.');
+  }
+};
+
+window.deletePostFromMenu=async function(){
+  const user=auth.currentUser;
+  const postId=activeManagePostId;
+  if(!user || !postId) return;
+
+  const ok=window.confirm('Delete this post permanently?');
+  if(!ok) return;
+
+  try{
+    const ref=doc(db,'posts',postId);
+    const snap=await getDoc(ref);
+    if(!snap.exists()) throw new Error('Post not found.');
+    if(snap.data()?.authorUid!==user.uid) throw new Error('Not your post.');
+
+    await deleteDoc(ref);
+    $('manageMenuBackdrop').classList.remove('open');
+    showToast('Post deleted.');
+    await loadFeed();
+  }catch(e){
+    console.error(e);
+    showToast('Could not delete the post.');
+  }
+};
+
+document.querySelectorAll('.modal').forEach(modal=>{
+  modal.addEventListener('click',e=>{
+    if(e.target===modal) modal.classList.remove('open');
+  });
+});
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open'));
+    $('manageMenuBackdrop')?.classList.remove('open');
+  }
+});
+
+onAuthStateChanged(auth,async user=>{
+  firebaseUser=user;
+  if(user){
+    await loadCurrentProfile();
+    setHeaderUser(user,currentProfile);
+    await loadFeed();
+  }else{
+    currentProfile=null;
+    setHeaderUser(null,null);
+    await loadFeed();
+  }
+});
+</script>
+</body>
+</html>
