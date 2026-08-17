@@ -582,6 +582,106 @@ a{-webkit-tap-highlight-color:transparent}
   .post-actions{grid-template-columns:1fr}
   .reaction-picker{left:auto;right:0}
 }
+
+/* =========================================================
+   NEWS FEED ENHANCEMENTS
+   ========================================================= */
+.post-author-link{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex:1;
+  min-width:0;
+  color:inherit;
+  text-decoration:none;
+  cursor:pointer;
+  border-radius:14px;
+  padding:3px 5px 3px 0;
+  transition:transform .18s ease,background .18s ease;
+}
+.post-author-link:hover{
+  background:rgba(255,255,255,.07);
+  transform:translateX(2px);
+}
+.post-author-link:active{
+  transform:scale(.985);
+}
+.post-date-full{
+  font-size:9px;
+  opacity:.72;
+  margin-top:3px;
+  line-height:1.25;
+}
+.reaction-picker{
+  display:flex !important;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transform:translateY(7px) scale(.94);
+  transform-origin:left bottom;
+  transition:
+    opacity .18s ease,
+    transform .18s cubic-bezier(.2,.8,.2,1),
+    visibility .18s ease;
+}
+.reaction-picker.open{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transform:translateY(0) scale(1);
+}
+.reaction-emoji{
+  position:relative;
+  transition:transform .16s cubic-bezier(.2,.8,.2,1),background .16s ease;
+}
+.reaction-emoji:hover{
+  transform:translateY(-5px) scale(1.16);
+}
+.reaction-emoji:active{
+  transform:scale(.88);
+}
+.reaction-emoji.reacted-pop{
+  animation:reactionPop .42s cubic-bezier(.2,1.4,.35,1);
+}
+.post-action.react-clicked{
+  animation:reactButtonPop .36s cubic-bezier(.2,1.45,.35,1);
+}
+@keyframes reactionPop{
+  0%{transform:scale(.65) translateY(6px);opacity:.5}
+  60%{transform:scale(1.28) translateY(-4px);opacity:1}
+  100%{transform:scale(1) translateY(0)}
+}
+@keyframes reactButtonPop{
+  0%{transform:scale(1)}
+  55%{transform:scale(1.08)}
+  100%{transform:scale(1)}
+}
+.post-avatar,.post-author-link strong{
+  transition:transform .18s ease;
+}
+.post-author-link:focus-visible{outline:2px solid rgba(255,215,0,.9);outline-offset:2px}
+.post-author-link:hover .post-avatar{
+  transform:scale(1.04);
+}
+@media(max-width:768px){
+  .post-author-link{
+    padding-right:3px;
+  }
+  .post-date-full{
+    font-size:8px;
+  }
+  .reaction-picker{
+    left:0;
+    bottom:calc(100% + 8px);
+  }
+}
+@media(max-width:380px){
+  .reaction-picker{
+    left:auto;
+    right:0;
+  }
+}
+
 </style>
 </head>
 
@@ -969,13 +1069,48 @@ async function loadFeed(){
   try{
     await loadFriendIds();
 
-    const snap = await getDocs(query(
+    const postsById = new Map();
+
+    // Firestore Rules are not filters, so query each visibility scope
+    // with constraints that match the security rules.
+    const publicSnap = await getDocs(query(
       collection(db,'posts'),
-      where('visibility','in',['public','friends','onlyMe']),
+      where('visibility','==','public'),
       limit(100)
     ));
+    publicSnap.docs.forEach(d=>{
+      postsById.set(d.id,{id:d.id,...d.data()});
+    });
 
-    const posts = snap.docs.map(d=>({id:d.id,...d.data()}))
+    const friendIdArray = Array.from(friendIds);
+    for(let i=0;i<friendIdArray.length;i+=30){
+      const chunk = friendIdArray.slice(i,i+30);
+      if(!chunk.length) continue;
+
+      const friendSnap = await getDocs(query(
+        collection(db,'posts'),
+        where('visibility','==','friends'),
+        where('authorUid','in',chunk),
+        limit(100)
+      ));
+      friendSnap.docs.forEach(d=>{
+        postsById.set(d.id,{id:d.id,...d.data()});
+      });
+    }
+
+    if(auth.currentUser){
+      const ownSnap = await getDocs(query(
+        collection(db,'posts'),
+        where('visibility','==','onlyMe'),
+        where('authorUid','==',auth.currentUser.uid),
+        limit(100)
+      ));
+      ownSnap.docs.forEach(d=>{
+        postsById.set(d.id,{id:d.id,...d.data()});
+      });
+    }
+
+    const posts = Array.from(postsById.values())
       .filter(canSeePost)
       .sort((a,b)=>{
         if(Boolean(a.pinned)!==Boolean(b.pinned)) return a.pinned ? -1 : 1;
@@ -1025,16 +1160,19 @@ function renderPost(post){
   return `
     <article class="post-card" id="post-${esc(post.id)}">
       <div class="post-head">
+      <a class="post-author-link" href="user-profile.html?uid=${esc(post.authorUid)}" title="View ${esc(post.authorName || 'Student')}'s profile">
         ${avatarHtml(post)}
         <div class="post-author">
-          <strong>${esc(post.authorName || 'User')}</strong>
-          <div class="post-meta">${post.username ? '@'+esc(post.username)+' · ' : ''}${esc(formatTime(post.createdAt))}</div>
+          <strong>${esc(post.authorName || 'Student')}</strong>
+          <div class="post-meta">
+            ${post.username ? '@'+esc(post.username)+' • ' : ''}${formatTime(post.createdAt)}
+          </div>
+          <div class="post-date-full">${post.createdAt?.toDate ? post.createdAt.toDate().toLocaleString([], {month:'long', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit'}) : 'Date unavailable'}</div>
         </div>
-        <span class="post-visibility">${visibilityLabel}</span>
-        ${own ? `<button class="post-menu-btn" type="button" onclick="openManageMenu('${esc(post.id)}',${post.pinned===true})">⋯</button>` : ''}
-      </div>
-
-      ${post.isShared ? '' : `<div class="post-text">${esc(post.text || '')}</div>`}
+      </a>
+      <span class="post-visibility">${visibilityLabel}</span>
+      ${own ? `<button class="post-menu-btn" type="button" aria-label="Post settings" onclick="openManageMenu('${esc(post.id)}',event)">⋯</button>` : ''}
+    </div>${post.isShared ? '' : `<div class="post-text">${esc(post.text || '')}</div>`}
       ${sharedContext}
 
       <div class="post-counts" id="counts-${esc(post.id)}">Loading reactions...</div>
@@ -1105,31 +1243,29 @@ window.reactToPost=async function(postId,emoji,event){
         }
       }
     }
-    $('picker-'+postId)?.classList.remove('open');
+    const picker=$('picker-'+postId);
+    const selectedEmoji=[...picker?.querySelectorAll('.reaction-emoji') || []]
+      .find(btn=>btn.textContent.trim()===emoji);
+    if(selectedEmoji){
+      selectedEmoji.classList.remove('reacted-pop');
+      void selectedEmoji.offsetWidth;
+      selectedEmoji.classList.add('reacted-pop');
+    }
+
+    const reactBtn=$('react-btn-'+postId);
+    if(reactBtn){
+      reactBtn.classList.remove('react-clicked');
+      void reactBtn.offsetWidth;
+      reactBtn.classList.add('react-clicked');
+    }
+
+    picker?.classList.remove('open');
     await refreshPostCounts(postId);
   }catch(e){
     console.error(e);
     showToast('Could not update reaction.');
   }
-};
-
-async function refreshPostCounts(postId){
-  try{
-    const [reactionsSnap,commentsSnap,postSnap]=await Promise.all([
-      getDocs(collection(db,'posts',postId,'reactions')),
-      getDocs(collection(db,'posts',postId,'comments')),
-      getDoc(doc(db,'posts',postId))
-    ]);
-
-    const tally={'👍':0,'❤️':0,'😂':0,'😮':0,'😢':0};
-    reactionsSnap.docs.forEach(d=>{
-      const e=d.data()?.emoji||'👍';
-      tally[e]=(tally[e]||0)+1;
-    });
-
-    const parts=Object.entries(tally)
-      .filter(([_,n])=>n>0)
-      .map(([e,n])=>`<button class="reaction-summary" type="button" onclick="openReactions('${esc(postId)}')">${e} ${n}</button>`);
+};,n])=>`<button class="reaction-summary" type="button" onclick="openReactions('${esc(postId)}')">${e} ${n}</button>`);
 
     const reactionSummary=parts.length
       ? parts.join(' · ')
