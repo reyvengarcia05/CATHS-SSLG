@@ -186,6 +186,21 @@ body{overflow:hidden;}
   .message-sender .sender-avatar{width:26px;height:26px;flex-basis:26px}
   .message-sender-name{font-size:9px}
 }
+
+/* Final chat alignment + reaction UX */
+.message-row.mine{justify-content:flex-end;margin-left:auto;width:100%;}
+.message-row.mine .message-content{margin-left:auto;align-items:flex-end;}
+.message-row.mine .message-main-line{justify-content:flex-end;}
+.message-row:not(.mine){justify-content:flex-start;margin-right:auto;width:100%;}
+.message-reaction-trigger{opacity:0;}
+.message-row:hover .message-reaction-trigger,.message-row:focus-within .message-reaction-trigger{opacity:1;}
+@media (hover:none) and (pointer:coarse){.message-reaction-trigger{opacity:1;}}
+.react-picker.quick-only{max-width:none;flex-wrap:nowrap;overflow:visible;padding:7px 8px;border-radius:14px;background:#2b2b2e;color:#fff;gap:6px;}
+.react-picker.quick-only button{width:34px;height:34px;font-size:21px;border-radius:10px;color:#fff;}
+.react-picker.quick-only .react-picker-plus{background:#444!important;color:#fff!important;border-radius:50%!important;font-size:18px!important;}
+.react-picker.full-picker{width:330px;max-width:min(88vw,330px);max-height:260px;overflow:auto;padding:10px;border-radius:18px;background:#202124;color:#fff;box-shadow:0 18px 45px rgba(0,0,0,.35);}
+.react-picker.full-picker button{width:32px;height:32px;color:#fff;border-radius:9px;}
+@media(max-width:520px){.react-picker.quick-only{left:0;right:auto;}.react-picker.full-picker{left:0;right:auto;max-width:86vw;}}
 </style>
 </head>
 <body>
@@ -458,7 +473,7 @@ function renderMessageDoc(d,currentUid){
 
   const reactionBar=chips?`<div class="message-reactions">${chips}</div>`:'';
   const quickForward=`<button class="message-quick-action" type="button" aria-label="Forward" title="Forward" onclick="prepareForward('${esc(id)}')">↗</button>`;
-  const trigger=`<button type="button" class="message-reaction-trigger" aria-label="React" title="React" onclick="toggleReactionPicker('${esc(id)}',event)">😊</button>`;
+  const trigger=`<button type="button" class="message-reaction-trigger" aria-label="React" title="React" onclick="toggleQuickReactionPicker('${esc(id)}',event)">😊</button>`;
   const actionMenu=`<div class="message-actions" id="actions-${esc(id)}">
     <button type="button" onclick="prepareForward('${esc(id)}')">↗️ Forward</button>
     ${mine&&!unsent?`<button type="button" onclick="unsendForMe('${esc(id)}')">👤 Unsend for me</button><button class="danger" type="button" onclick="unsendForEveryone('${esc(id)}')">🗑️ Unsend for everyone</button>`:`<button type="button" onclick="unsendForMe('${esc(id)}')">👤 Unsend for me</button>`}
@@ -551,6 +566,29 @@ async function messageRef(messageId){
   return null;
 }
 function closeReactionPickers(){document.querySelectorAll('.react-picker.open').forEach(x=>x.classList.remove('open'))}
+function renderQuickReactionPicker(picker,messageId){
+  const primary=['👍','❤️','😂','😢','😡'];
+  picker.classList.remove('full-picker');
+  picker.classList.add('quick-only');
+  picker.innerHTML=primary.map(emoji=>`<button type="button" aria-label="React ${esc(emoji)}" onclick="reactMessage('${esc(messageId)}','${emoji}')">${emoji}</button>`).join('')
+    + `<button type="button" class="react-picker-plus" aria-label="More emojis" title="More emojis" onclick="openMoreReactionPicker('${esc(messageId)}',event)">+</button>`;
+}
+function renderFullReactionPicker(picker,messageId){
+  picker.classList.remove('quick-only');
+  picker.classList.add('full-picker');
+  picker.innerHTML=REACTION_EMOJIS.map(emoji=>`<button type="button" aria-label="React ${esc(emoji)}" onclick="reactMessage('${esc(messageId)}','${emoji}')">${emoji}</button>`).join('');
+}
+function toggleQuickReactionPicker(messageId,event){
+  event?.stopPropagation();
+  closeMessageActions();
+  const picker=$('react-picker-'+messageId);
+  if(!picker)return;
+  const was=picker.classList.contains('open');
+  closeReactionPickers();
+  if(was)return;
+  renderQuickReactionPicker(picker,messageId);
+  picker.classList.add('open');
+}
 function toggleReactionPicker(messageId,event){
   event?.stopPropagation();
   closeMessageActions();
@@ -559,7 +597,7 @@ function toggleReactionPicker(messageId,event){
   const was=picker.classList.contains('open');
   closeReactionPickers();
   if(was)return;
-  picker.innerHTML=REACTION_EMOJIS.map(emoji=>`<button type="button" aria-label="React ${esc(emoji)}" onclick="reactMessage('${esc(messageId)}','${emoji}')">${emoji}</button>`).join('');
+  renderFullReactionPicker(picker,messageId);
   picker.classList.add('open');
 }
 window.toggleReactionPicker=toggleReactionPicker;
@@ -702,7 +740,7 @@ document.addEventListener('touchstart',e=>{
   clearLongPress(); longPressTarget=row;
   longPressTimer=setTimeout(()=>{
     const id=row.dataset.messageId;
-    if(id){toggleReactionPicker(id,e); if(navigator.vibrate)navigator.vibrate(20)}
+    if(id){toggleQuickReactionPicker(id,e); if(navigator.vibrate)navigator.vibrate(20)}
     clearLongPress();
   },3000);
 },{passive:true});
