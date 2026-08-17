@@ -55,7 +55,6 @@ html,body{height:100%;}
 body{overflow:hidden;}
 .container{height:calc(100dvh - 78px);min-height:0;overflow:hidden;display:flex;}
 .messenger{height:100%;min-height:0;flex:1;}
-.messages{height:0;}
 .sidebar{min-height:0;overflow:hidden;}
 .friend-list{min-height:0;}
 .chat{min-height:0;overflow:hidden;}
@@ -124,6 +123,10 @@ body{overflow:hidden;}
 .message-reactions{border-radius:9px;min-height:25px;padding:2px 5px;gap:2px;margin-top:5px;width:max-content}
 .react-picker{max-height:210px;overflow:auto;justify-content:flex-start;align-content:flex-start}
 .react-picker button{font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.reply-preview{display:flex;flex-direction:column;gap:2px;margin-bottom:7px;padding:5px 8px;border-left:3px solid #7d93d8;background:rgba(24,60,140,.06);border-radius:7px;font-size:9px;color:#56698f;max-width:100%;}
+.reply-preview strong{font-size:8px;color:#183c8c;text-transform:uppercase;letter-spacing:.04em}
+.message-row.mine .reply-preview{border-left-color:rgba(24,60,140,.35);background:rgba(255,255,255,.25)}
+.reply-preview span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
 .conversation-settings-modal .modal-card{max-width:390px}
 .settings-option{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:12px 13px;border:1px solid #e2e8f2;background:#f8fafc;border-radius:12px;color:#183c8c;font-size:11px;font-weight:800;cursor:pointer;margin-top:8px;text-align:left}
 .settings-option:hover{background:#eef4ff}
@@ -140,67 +143,43 @@ body{overflow:hidden;}
 }
 
 
-/* Chat layout matched to the provided Messenger reference */
-.message-row{align-items:flex-end;gap:8px;position:relative}
-.message-row:not(.mine){padding-left:0}
+/* Final message action order:
+   Other user:  MESSAGE  EMOJI  REPLY  DOTS
+   Me:          DOTS  REPLY  EMOJI  MESSAGE
+*/
+.message-row{display:flex;align-items:flex-end;width:100%;gap:0}
+.message-row.mine{justify-content:flex-end;flex-direction:row}
+.message-row:not(.mine){justify-content:flex-start;flex-direction:row}
 .message-content{display:flex;flex-direction:column;min-width:0;max-width:min(82%,560px)}
-.message-row:not(.mine) .message-content{align-items:flex-start}
 .message-row.mine .message-content{align-items:flex-end}
-.message-sender{display:flex;align-items:center;gap:6px;margin:0 0 4px 2px;min-height:23px}
-.message-row.mine .message-sender{justify-content:flex-end;margin-right:2px}
-.message-sender .sender-avatar{width:28px;height:28px;flex:0 0 28px;border-radius:50%;overflow:hidden;background:#e8eef7;color:#183c8c;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800}
-.message-sender .sender-avatar img{width:100%;height:100%;object-fit:cover}
-.message-sender-name{font-size:10px;font-weight:800;color:rgba(255,255,255,.96)}
-.message-sender-time{font-size:8px;color:rgba(255,255,255,.58)}
-.message-main-line{display:flex;align-items:flex-end;gap:5px;position:relative}
-.message-row.mine .message-main-line{flex-direction:row-reverse}
-.message-main-line .bubble{max-width:100%;margin:0}
-.message-row:not(.mine) .bubble{background:#303030;color:#f4f4f4;border-bottom-left-radius:5px}
-.message-row.mine .bubble{background:linear-gradient(135deg,#6f4bf6,#4f68ff);color:#fff;border-bottom-right-radius:5px}
-.bubble{border-radius:20px;padding:9px 14px;box-shadow:none;font-size:14px;line-height:1.45}
-.bubble small{font-size:8px;margin-top:5px;opacity:.48}
-.message-reaction-trigger{display:inline-flex;flex:0 0 30px;width:30px;height:30px;border-radius:50%;background:#343434;color:#e9e9e9;border:1px solid rgba(255,255,255,.06);align-items:center;justify-content:center;font-size:16px;box-shadow:none;cursor:pointer;opacity:0;transition:opacity .15s ease,transform .12s ease}
-.message-row:hover .message-reaction-trigger,.message-row:focus-within .message-reaction-trigger{opacity:1}
-.message-row.mine .message-reaction-trigger{background:#3d4dbe;color:#fff}
-.message-reaction-trigger:hover{transform:scale(1.06)}
-.message-tools-btn{display:inline-flex;flex:0 0 28px;width:28px;height:28px;border-radius:50%;background:transparent;color:#d2d2d2;border:0;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity .15s ease}
-.message-row:hover .message-tools-btn,.message-row:focus-within .message-tools-btn{opacity:1}
-.message-row.mine .message-tools-btn{color:#fff}
-.message-quick-action{display:inline-flex;flex:0 0 28px;width:28px;height:28px;border-radius:50%;background:transparent;color:#d2d2d2;border:0;align-items:center;justify-content:center;cursor:pointer;opacity:0;font-size:16px;transition:opacity .15s ease}
-.message-row:hover .message-quick-action,.message-row:focus-within .message-quick-action{opacity:1}
-.message-row.mine .message-quick-action{color:#fff}
-.message-reactions{display:flex;align-items:center;gap:2px;flex-wrap:wrap;margin-top:5px;width:max-content;max-width:100%;min-height:0;padding:2px 5px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.92);border-radius:11px;box-shadow:0 2px 8px rgba(0,0,0,.12)}
-.message-row.mine .message-reactions{background:#fff3a8}
-.message-reaction-chip{border:0;background:transparent;color:#183c8c;border-radius:7px;padding:3px 5px;font-size:11px;cursor:pointer;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
-.message-reaction-chip:hover{background:rgba(24,60,140,.08)}
-.message-actions{position:absolute;z-index:150;min-width:180px;background:#fff;color:#183c8c;border-radius:14px;padding:6px;box-shadow:0 15px 40px rgba(0,0,0,.25);display:none}
-.message-actions.open{display:block}
-.message-row:not(.mine) .message-actions{left:calc(100% - 70px);top:34px}
-.message-row.mine .message-actions{right:calc(100% - 70px);top:34px}
-@media (hover:none) and (pointer:coarse){
-  .message-reaction-trigger,.message-tools-btn,.message-quick-action{opacity:1}
+.message-row:not(.mine) .message-content{align-items:flex-start}
+.message-main-line{display:flex;align-items:flex-end;gap:5px;position:relative;width:max-content;max-width:100%}
+.message-row.mine .message-main-line{flex-direction:row-reverse;justify-content:flex-start}
+.message-row:not(.mine) .message-main-line{flex-direction:row;justify-content:flex-start}
+.message-main-line .bubble{max-width:min(100%,560px);margin:0}
+.message-reaction-trigger,.message-tools-btn,.message-reply-btn{
+  flex:0 0 28px;width:28px;height:28px;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid rgba(0,0,0,.08);cursor:pointer;opacity:.82;
+  transition:transform .12s ease,opacity .12s ease,background .12s ease;
 }
-@media(max-width:800px){
+.message-reaction-trigger{background:#fff;color:#183c8c;font-size:15px;box-shadow:0 3px 10px rgba(0,0,0,.08);font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.message-reply-btn{background:rgba(255,255,255,.16);color:#fff;font-size:14px;font-weight:800}
+.message-tools-btn{background:rgba(255,255,255,.16);color:#fff;font-size:17px;font-weight:900}
+.message-row.mine .message-reply-btn,.message-row.mine .message-tools-btn{background:rgba(0,0,0,.08);color:#183c8c}
+.message-reaction-trigger:hover,.message-reply-btn:hover,.message-tools-btn:hover{opacity:1;transform:scale(1.05)}
+.message-reactions{margin-top:5px;align-self:flex-start}
+.message-row.mine .message-reactions{align-self:flex-end}
+@media (hover:hover) and (pointer:fine){
+  .message-reply-btn,.message-tools-btn,.message-reaction-trigger{opacity:.72}
+  .message-row:hover .message-reply-btn,.message-row:hover .message-tools-btn,.message-row:hover .message-reaction-trigger,
+  .message-row:focus-within .message-reply-btn,.message-row:focus-within .message-tools-btn,.message-row:focus-within .message-reaction-trigger{opacity:1}
+}
+@media (max-width:800px){
+  .message-row .message-reply-btn,.message-row .message-tools-btn,.message-row .message-reaction-trigger{opacity:1}
   .message-content{max-width:88%}
-  .bubble{font-size:14px}
-  .message-sender .sender-avatar{width:26px;height:26px;flex-basis:26px}
-  .message-sender-name{font-size:9px}
 }
 
-/* Final chat alignment + reaction UX */
-.message-row.mine{justify-content:flex-end;margin-left:auto;width:100%;}
-.message-row.mine .message-content{margin-left:auto;align-items:flex-end;}
-.message-row.mine .message-main-line{justify-content:flex-end;}
-.message-row:not(.mine){justify-content:flex-start;margin-right:auto;width:100%;}
-.message-reaction-trigger{opacity:0;}
-.message-row:hover .message-reaction-trigger,.message-row:focus-within .message-reaction-trigger{opacity:1;}
-@media (hover:none) and (pointer:coarse){.message-reaction-trigger{opacity:1;}}
-.react-picker.quick-only{max-width:none;flex-wrap:nowrap;overflow:visible;padding:7px 8px;border-radius:14px;background:#2b2b2e;color:#fff;gap:6px;}
-.react-picker.quick-only button{width:34px;height:34px;font-size:21px;border-radius:10px;color:#fff;}
-.react-picker.quick-only .react-picker-plus{background:#444!important;color:#fff!important;border-radius:50%!important;font-size:18px!important;}
-.react-picker.full-picker{width:330px;max-width:min(88vw,330px);max-height:260px;overflow:auto;padding:10px;border-radius:18px;background:#202124;color:#fff;box-shadow:0 18px 45px rgba(0,0,0,.35);}
-.react-picker.full-picker button{width:32px;height:32px;color:#fff;border-radius:9px;}
-@media(max-width:520px){.react-picker.quick-only{left:0;right:auto;}.react-picker.full-picker{left:0;right:auto;max-width:86vw;}}
 </style>
 </head>
 <body>
@@ -458,41 +437,33 @@ function renderMessageDoc(d,currentUid){
   const reactions=msg.reactions&&typeof msg.reactions==='object'?msg.reactions:{};
   const chips=Object.entries(reactions).filter(([_,count])=>Number(count)>0)
     .map(([emoji,count])=>`<button class="message-reaction-chip" type="button" onclick="reactMessage('${esc(id)}','${esc(emoji)}')">${esc(emoji)} ${Number(count)||1}</button>`).join('');
-
-  const body=unsent
-    ? `<span class="unsent-text">This message was unsent.</span>`
-    : `${forwarded?`<div class="forwarded-box">↗ Forwarded message</div>`:''}${esc(msg.text||'')}`;
-
-  const senderName=msg.senderName||'Student';
-  const senderTime=formatTime(msg.createdAt);
-  const senderLine = mine ? '' : `<div class="message-sender">
-    ${avatarHtml(msg,'sender-avatar')}
-    <span class="message-sender-name">${esc(senderName)}</span>
-    <span class="message-sender-time">${esc(senderTime)}</span>
-  </div>`;
-
-  const reactionBar=chips?`<div class="message-reactions">${chips}</div>`:'';
-  const quickForward=`<button class="message-quick-action" type="button" aria-label="Forward" title="Forward" onclick="prepareForward('${esc(id)}')">↗</button>`;
-  const trigger=`<button type="button" class="message-reaction-trigger" aria-label="React" title="React" onclick="toggleQuickReactionPicker('${esc(id)}',event)">😊</button>`;
+  const trigger=`<button type="button" class="message-reaction-trigger" aria-label="React" title="React" onclick="toggleReactionPicker('${esc(id)}',event)">😊</button>`;
+  const picker=`<div class="react-picker" id="react-picker-${esc(id)}"></div>`;
   const actionMenu=`<div class="message-actions" id="actions-${esc(id)}">
     <button type="button" onclick="prepareForward('${esc(id)}')">↗️ Forward</button>
     ${mine&&!unsent?`<button type="button" onclick="unsendForMe('${esc(id)}')">👤 Unsend for me</button><button class="danger" type="button" onclick="unsendForEveryone('${esc(id)}')">🗑️ Unsend for everyone</button>`:`<button type="button" onclick="unsendForMe('${esc(id)}')">👤 Unsend for me</button>`}
   </div>`;
-
+  const replyPreview=msg.replyTo?.text?`<div class="reply-preview"><strong>Reply</strong><span>${esc(msg.replyTo.text).slice(0,180)}</span></div>`:'';
+  const body=unsent?`<span class="unsent-text">This message was unsent.</span>`:`${replyPreview}${forwarded?`<div class="forwarded-box">↗ Forwarded message</div>`:''}${esc(msg.text||'')}`;
   const rowClass=mine?'message-row mine':'message-row';
+  const senderLine = `<div class="message-sender">${avatarHtml(msg,'sender-avatar')}<span class="message-sender-name">${esc(msg.senderName||'Student')}</span><span class="message-sender-time">${esc(formatTime(msg.createdAt))}</span></div>`;
+  const reactionBar=chips?`<div class="message-reactions">${chips}</div>`:'';
+  const replyButton=`<button class="message-reply-btn" type="button" title="Reply" aria-label="Reply" onclick="replyToMessage('${esc(id)}',event)">↩</button>`;
   return `<div class="${rowClass}" data-message-id="${esc(id)}">
     <div class="message-content">
       ${senderLine}
       <div class="message-main-line">
-        <div class="bubble">${body}<small>${esc(senderTime)}</small>${reactionBar}</div>
+        <div class="bubble">${body}<small>${formatTime(msg.createdAt)}</small>${reactionBar}</div>
         ${trigger}
-        ${quickForward}
-        <button class="message-tools-btn" type="button" aria-label="Message options" onclick="toggleMessageActions('${esc(id)}',event)">⋮</button>
+        ${picker}
+        ${replyButton}
+        <button class="message-tools-btn" type="button" title="More" aria-label="More" onclick="toggleMessageActions('${esc(id)}',event)">⋯</button>
         ${actionMenu}
       </div>
     </div>
   </div>`;
 }
+
 
 async function renderMessages(docs,currentUid,forceBottom=false){
   const box=$('messages');if(!box)return;
@@ -503,17 +474,7 @@ async function renderMessages(docs,currentUid,forceBottom=false){
     await Promise.all(merged.map(async d=>{const m=d.data()||{};if(m.senderUid){const p=await cachedUserProfile(m.senderUid);m.senderName=p.nickname||p.name||p.displayName||'Student';m.photoURL=p.photoURL||'';d.__renderData=m;}}));
   }else{
     const friendName=activeFriend?.nickname||activeFriend?.name||activeFriend?.displayName||'Student';
-    const friendPhoto=activeFriend?.photoURL||'';
-    const myName=auth.currentUser?.displayName||'You';
-    const myPhoto=auth.currentUser?.photoURL||'';
-    merged.forEach(d=>{
-      const raw=d.data()||{};
-      const isMine=raw.senderUid===currentUid;
-      d.__renderData={...raw,
-        senderName:isMine?myName:friendName,
-        photoURL:isMine?myPhoto:friendPhoto
-      };
-    });
+    merged.forEach(d=>{d.__renderData={...(d.data()||{}),senderName:d.data()?.senderUid===currentUid?(auth.currentUser?.displayName||'You'):friendName};});
   }
   const html=merged.map(d=>renderMessageDoc({...d,data:()=>d.__renderData||d.data()},currentUid)).join('');
   box.innerHTML=html||'<div class="chat-empty" style="min-height:100%"><div class="empty-inner"><div class="empty-icon">👋</div><h3>Start the conversation</h3><p>Send your first message.</p></div></div>';
@@ -544,21 +505,47 @@ async function sendMessage(e){
   const input=$('messageInput'),btn=$('sendBtn'),text=input.value.trim();if(!text)return;
   btn.disabled=true;btn.textContent='Sending...';
   try{
+    const replyToId=input.dataset.replyTo||'';
+    let replyTo=null;
+    if(replyToId){
+      const replyData=await getMessageData(replyToId);
+      if(replyData){
+        replyTo={messageId:replyToId,text:String(replyData.data.text||'').slice(0,500),senderName:replyData.data.senderName||''};
+      }
+    }
     if(activeConversation.kind==='friend'){
       if(!(await ensureFriend(activeFriend.uid))){showToast('You are no longer friends with this student.');return}
       const id=chatId(me.uid,activeFriend.uid);
-      await addDoc(collection(db,'conversations',id,'messages'),{senderUid:me.uid,receiverUid:activeFriend.uid,text,createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{}});
-      await addDoc(collection(db,'notifications'),{recipientUid:activeFriend.uid,actorUid:me.uid,actorName:me.displayName||'Student',type:'message',text:'sent you a message.',chatId:id,read:false,createdAt:serverTimestamp()});
+      await addDoc(collection(db,'conversations',id,'messages'),{senderUid:me.uid,receiverUid:activeFriend.uid,text,replyTo,createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{}});
+      await addDoc(collection(db,'notifications'),{recipientUid:activeFriend.uid,actorUid:me.uid,actorName:me.displayName||'Student',type:'message',text:replyTo?'replied to your message.':'sent you a message.',chatId:id,read:false,createdAt:serverTimestamp()});
     }else{
       const group=activeGroup;if(!(group.memberUids||[]).includes(me.uid))throw new Error('Not a group member');
-      await addDoc(collection(db,'groups',group.id,'messages'),{senderUid:me.uid,text,createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{}});
+      await addDoc(collection(db,'groups',group.id,'messages'),{senderUid:me.uid,text,replyTo,createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{}});
     }
-    input.value='';input.focus();
+    input.value='';delete input.dataset.replyTo;input.placeholder=activeConversation.kind==='group'?'Message the group...':'Write a message...';input.focus();
   }catch(err){console.error(err);showToast(err?.code==='permission-denied'?'Messaging or notification was blocked by Firestore Rules.':'Could not send message.')}
   finally{btn.disabled=false;btn.textContent='Send'}
 }
 
 window.toggleMessageActions=(id,e)=>{e.stopPropagation();closeMessageActions();$('actions-'+id)?.classList.add('open')};
+
+window.replyToMessage=async function(id,e){
+  e?.stopPropagation();
+  closeMessageActions();
+  const input=$('messageInput');
+  if(!input)return;
+  try{
+    const item=await getMessageData(id);
+    const text=String(item?.data?.text||'').trim();
+    input.dataset.replyTo=id;
+    input.placeholder=text?`Replying to: ${text.slice(0,50)}${text.length>50?'…':''}`:'Reply to message…';
+    input.focus();
+    showToast('Replying to message.');
+  }catch(err){
+    console.error('Reply setup error:',err);
+    showToast('Could not prepare reply.');
+  }
+};
 
 async function messageRef(messageId){
   if(activeConversation?.kind==='friend')return doc(db,'conversations',chatId(auth.currentUser.uid,activeFriend.uid),'messages',messageId);
@@ -566,42 +553,43 @@ async function messageRef(messageId){
   return null;
 }
 function closeReactionPickers(){document.querySelectorAll('.react-picker.open').forEach(x=>x.classList.remove('open'))}
-function renderQuickReactionPicker(picker,messageId){
-  const primary=['👍','❤️','😂','😢','😡'];
-  picker.classList.remove('full-picker');
-  picker.classList.add('quick-only');
-  picker.innerHTML=primary.map(emoji=>`<button type="button" aria-label="React ${esc(emoji)}" onclick="reactMessage('${esc(messageId)}','${emoji}')">${emoji}</button>`).join('')
-    + `<button type="button" class="react-picker-plus" aria-label="More emojis" title="More emojis" onclick="openMoreReactionPicker('${esc(messageId)}',event)">+</button>`;
+const PRIMARY_REACTIONS=['👍','❤️','😂','😢','😡'];
+function ensureReactionPicker(messageId){
+  let picker=$(`react-picker-${messageId}`);
+  if(!picker){
+    const row=document.querySelector(`[data-message-id="${CSS.escape(messageId)}"]`);
+    if(!row)return null;
+    picker=document.createElement('div');
+    picker.className='react-picker';
+    picker.id=`react-picker-${messageId}`;
+    row.querySelector('.message-main-line')?.appendChild(picker);
+  }
+  return picker;
 }
-function renderFullReactionPicker(picker,messageId){
-  picker.classList.remove('quick-only');
-  picker.classList.add('full-picker');
-  picker.innerHTML=REACTION_EMOJIS.map(emoji=>`<button type="button" aria-label="React ${esc(emoji)}" onclick="reactMessage('${esc(messageId)}','${emoji}')">${emoji}</button>`).join('');
-}
-function toggleQuickReactionPicker(messageId,event){
-  event?.stopPropagation();
-  closeMessageActions();
-  const picker=$('react-picker-'+messageId);
-  if(!picker)return;
-  const was=picker.classList.contains('open');
-  closeReactionPickers();
-  if(was)return;
-  renderQuickReactionPicker(picker,messageId);
-  picker.classList.add('open');
+function renderPrimaryPicker(messageId){
+  const picker=ensureReactionPicker(messageId);if(!picker)return;
+  picker.dataset.mode='primary';
+  picker.innerHTML=PRIMARY_REACTIONS.map(emoji=>`<button type="button" aria-label="React ${esc(emoji)}" onclick="reactMessage('${esc(messageId)}','${emoji}')">${emoji}</button>`).join('')+
+    `<button type="button" class="react-picker-plus" aria-label="More emojis" onclick="openMoreReactionPicker('${esc(messageId)}',event)">+</button>`;
 }
 function toggleReactionPicker(messageId,event){
   event?.stopPropagation();
   closeMessageActions();
-  const picker=$('react-picker-'+messageId);
-  if(!picker)return;
+  const picker=ensureReactionPicker(messageId);if(!picker)return;
   const was=picker.classList.contains('open');
   closeReactionPickers();
   if(was)return;
-  renderFullReactionPicker(picker,messageId);
+  renderPrimaryPicker(messageId);
   picker.classList.add('open');
 }
 window.toggleReactionPicker=toggleReactionPicker;
-function openMoreReactionPicker(messageId,event){event?.stopPropagation();toggleReactionPicker(messageId,event)}
+function openMoreReactionPicker(messageId,event){
+  event?.stopPropagation();
+  const picker=ensureReactionPicker(messageId);if(!picker)return;
+  picker.dataset.mode='full';
+  picker.innerHTML=REACTION_EMOJIS.map(emoji=>`<button type="button" aria-label="React ${esc(emoji)}" onclick="reactMessage('${esc(messageId)}','${emoji}')">${emoji}</button>`).join('');
+  picker.classList.add('open');
+}
 window.openMoreReactionPicker=openMoreReactionPicker;
 async function reactMessage(messageId,emoji){
   closeMessageActions();closeReactionPickers();
@@ -728,7 +716,12 @@ async function saveGroupManage(){
 }
 
 document.querySelectorAll('.modal-backdrop').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}));
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.modal-backdrop.open').forEach(m=>m.classList.remove('open'));closeMessageActions();closeReactionPickers()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){
+  document.querySelectorAll('.modal-backdrop.open').forEach(m=>m.classList.remove('open'));
+  closeMessageActions();closeReactionPickers();
+  const input=$('messageInput');
+  if(input?.dataset.replyTo){delete input.dataset.replyTo;input.placeholder=activeConversation?.kind==='group'?'Message the group...':'Write a message...';}
+}});
 
 // Mobile: open reactions after a real 3-second press on a message.
 let longPressTimer=null;
@@ -740,7 +733,7 @@ document.addEventListener('touchstart',e=>{
   clearLongPress(); longPressTarget=row;
   longPressTimer=setTimeout(()=>{
     const id=row.dataset.messageId;
-    if(id){toggleQuickReactionPicker(id,e); if(navigator.vibrate)navigator.vibrate(20)}
+    if(id){toggleReactionPicker(id,e); if(navigator.vibrate)navigator.vibrate(20)}
     clearLongPress();
   },3000);
 },{passive:true});
