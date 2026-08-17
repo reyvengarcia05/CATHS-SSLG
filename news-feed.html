@@ -583,21 +583,29 @@ a{-webkit-tap-highlight-color:transparent}
   .reaction-picker{left:auto;right:0}
 }
 
-/* Added only: 10k posts, friend mentions, share chooser */
-.mention-wrap,.comment-input-wrap{position:relative;flex:1;min-width:0}
-.mention-box{display:none;position:absolute;left:0;right:0;top:100%;margin-top:5px;background:#fff;color:#183c8c;border:1px solid #dce4f2;border-radius:12px;box-shadow:0 14px 32px rgba(0,0,0,.18);overflow:hidden;z-index:50}
+/* Minimal additions: mentions + share chooser. */
+.mention-wrap{position:relative;flex:1;min-width:0}
+.mention-box{
+  display:none;position:absolute;left:0;right:0;top:calc(100% + 6px);
+  background:#fff;color:#183c8c;border:1px solid #dce4f2;border-radius:12px;
+  box-shadow:0 14px 34px rgba(0,0,0,.18);z-index:7000;overflow:hidden;
+  max-height:240px;overflow-y:auto;
+}
 .mention-box.open{display:block}
-.mention-item{width:100%;display:flex;align-items:center;gap:9px;padding:9px 11px;border:0;background:#fff;color:#183c8c;text-align:left;cursor:pointer}
+.mention-item{
+  width:100%;border:0;background:#fff;color:#183c8c;padding:9px 11px;
+  display:flex;align-items:center;gap:9px;text-align:left;cursor:pointer;
+}
 .mention-item:hover{background:#eef4ff}
-.mention-item img,.mention-avatar{width:30px;height:30px;flex:0 0 30px;border-radius:50%;object-fit:cover;background:#e8eef7;display:flex;align-items:center;justify-content:center;font-weight:800}
-.mention-item strong{display:block;font-size:11px}.mention-item small{display:block;color:#64748b;font-size:9px}
-.mention{color:#2459c8;font-weight:800}
-.share-choice-box{max-width:420px}.share-choice-btn{width:100%;border:0;border-radius:12px;padding:12px;margin-top:8px;background:var(--darkblue);color:#fff;font-weight:800;cursor:pointer;font-size:12px}.share-choice-btn.secondary{background:#eef4ff;color:#183c8c}
-.share-message-list{display:flex;flex-direction:column;gap:7px;max-height:52vh;overflow:auto;margin-top:10px}
-.share-message-item{width:100%;display:flex;align-items:center;gap:9px;padding:9px 10px;background:#fff;border:1px solid #e3eaf7;border-radius:12px;color:#183c8c;text-align:left;cursor:pointer}
-.share-message-item:hover{background:#eef4ff}
-.share-message-item img,.share-avatar{width:38px;height:38px;flex:0 0 38px;border-radius:50%;object-fit:cover;background:#e8eef7;display:flex;align-items:center;justify-content:center;font-weight:800}
-.share-message-item strong{display:block;font-size:11px}.share-message-item small{display:block;color:#64748b;font-size:9px}
+.mention-avatar{
+  width:32px;height:32px;flex:0 0 32px;border-radius:50%;object-fit:cover;
+  background:#e8eef7;color:#183c8c;display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:12px;
+}
+.mention-item strong{display:block;font-size:11px}
+.mention-item small{display:block;font-size:9px;color:#64748b;margin-top:1px}
+.comment-mention-wrap{display:flex}
+
 </style>
 </head>
 
@@ -679,7 +687,7 @@ a{-webkit-tap-highlight-color:transparent}
       <button class="close-btn" type="button" onclick="closePostComposer()">✕</button>
     </div>
 
-    <div class="mention-wrap"><textarea id="postText" class="post-textarea" maxlength="10000" placeholder="What's on your mind? 😊"></textarea><div id="postMentionBox" class="mention-box"></div></div>
+    <div class="mention-wrap post-mention-wrap"><textarea id="postText" class="post-textarea" maxlength="10000" placeholder="What's on your mind? 😊"></textarea><div id="postMentionBox" class="mention-box"></div></div>
 
     <div class="post-meta-row">
       <span class="char-count"><span id="postCharCount">0</span>/10,000</span>
@@ -705,7 +713,7 @@ a{-webkit-tap-highlight-color:transparent}
     </div>
     <div id="commentsList" class="comments-list"></div>
     <div class="comment-form">
-      <div class="comment-input-wrap"><input id="commentInput" class="comment-input" maxlength="300" placeholder="Write a comment..."><div id="commentMentionBox" class="mention-box"></div></div>
+      <div class="mention-wrap comment-mention-wrap"><input id="commentInput" class="comment-input" maxlength="300" placeholder="Write a comment..."><div id="commentMentionBox" class="mention-box"></div></div>
       <button id="commentSendBtn" class="comment-send" type="button" onclick="sendComment()">Send</button>
     </div>
   </div>
@@ -723,22 +731,30 @@ a{-webkit-tap-highlight-color:transparent}
 </div>
 
 
-<!-- SHARE CHOICE -->
+<!-- SHARE CHOOSER -->
 <div id="shareChoiceModal" class="modal">
-  <div class="modal-box share-choice-box">
-    <div class="modal-head"><h3>↗ Share Post</h3><button class="close-btn" type="button" onclick="closeShareChoice()">✕</button></div>
-    <p style="font-size:12px;color:#64748b;line-height:1.6;margin-bottom:10px">Choose how you want to share this post.</p>
-    <button class="share-choice-btn" type="button" onclick="shareAsPost()">📝 Share as a post</button>
-    <button class="share-choice-btn secondary" type="button" onclick="openShareAsMessage()">💬 Share as a message</button>
+  <div class="modal-box" style="max-width:430px">
+    <div class="modal-head">
+      <h3>↗ Share Post</h3>
+      <button class="close-btn" type="button" onclick="closeShareChoice()">✕</button>
+    </div>
+    <p style="font-size:12px;color:#64748b;line-height:1.5">Choose how you want to share this post.</p>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+      <button class="publish-btn" type="button" onclick="shareAsPost()">📝 Share as a post</button>
+      <button class="publish-btn" type="button" style="background:#eef4ff;color:#183c8c" onclick="openShareAsMessage()">💬 Share as a message</button>
+    </div>
   </div>
 </div>
 
 <!-- SHARE AS MESSAGE -->
 <div id="shareMessageModal" class="modal">
-  <div class="modal-box share-choice-box">
-    <div class="modal-head"><h3>💬 Share as Message</h3><button class="close-btn" type="button" onclick="closeShareMessage()">✕</button></div>
-    <input id="shareMessageSearch" class="comment-input" placeholder="Search friends..." autocomplete="off">
-    <div id="shareMessageList" class="share-message-list"></div>
+  <div class="modal-box" style="max-width:430px">
+    <div class="modal-head">
+      <h3>💬 Share as Message</h3>
+      <button class="close-btn" type="button" onclick="closeShareMessage()">✕</button>
+    </div>
+    <input id="shareMessageSearch" class="comment-input" style="width:100%" placeholder="Search friends..." autocomplete="off">
+    <div id="shareMessageList" class="comments-list" style="margin-top:10px"></div>
   </div>
 </div>
 
@@ -800,7 +816,7 @@ let allFeedPosts = [];
 let activeCommentPostId = null;
 let activeManagePostId = null;
 let activePrivacyPostId = null;
-let mentionFriends = [];
+let mentionableFriends = [];
 let activeSharePostId = null;
 
 const $ = id => document.getElementById(id);
@@ -820,64 +836,6 @@ function showToast(message){
   toast.classList.add('show');
   clearTimeout(showToast.timer);
   showToast.timer = setTimeout(()=>toast.classList.remove('show'),2600);
-}
-
-async function loadMentionFriends(){
-  const user=auth.currentUser;
-  if(!user){mentionFriends=[];return;}
-  try{
-    const snap=await getDocs(query(collection(db,'friends',user.uid,'list'),limit(100)));
-    mentionFriends=await Promise.all(snap.docs.map(async d=>{
-      try{const p=await getDoc(doc(db,'users',d.id));return p.exists()?{uid:d.id,...p.data()}:{uid:d.id};}
-      catch(_){return {uid:d.id};}
-    }));
-  }catch(e){console.error('Mention friends',e);mentionFriends=[];}
-}
-function mentionMatches(term=''){
-  const q=term.toLowerCase();
-  return mentionFriends.filter(f=>String(f.nickname||f.name||f.displayName||'').toLowerCase().includes(q)||String(f.username||'').toLowerCase().includes(q)).slice(0,8);
-}
-function renderMentionBox(inputId,boxId){
-  const input=$(inputId),box=$(boxId); if(!input||!box)return;
-  const caret=input.selectionStart??input.value.length;
-  const before=input.value.slice(0,caret);
-  const m=before.match(/@([A-Za-z0-9._-]*)$/);
-  if(!m){box.classList.remove('open');box.innerHTML='';return;}
-  const items=mentionMatches(m[1]);
-  if(!items.length){box.classList.remove('open');box.innerHTML='';return;}
-  box.innerHTML=items.map(f=>{const name=f.nickname||f.name||f.displayName||'Student';return `<button type="button" class="mention-item" data-uid="${esc(f.uid)}">${f.photoURL?`<img src="${esc(f.photoURL)}" alt="">`:`<div class="mention-avatar">${esc(name.charAt(0).toUpperCase())}</div>`}<span><strong>${esc(name)}</strong><small>${f.username?'@'+esc(f.username):'Friend'}</small></span></button>`}).join('');
-  box.classList.add('open');
-  box.querySelectorAll('.mention-item').forEach(btn=>btn.addEventListener('click',()=>applyMention(inputId,boxId,btn.dataset.uid)));
-}
-function applyMention(inputId,boxId,uid){
-  const input=$(inputId),box=$(boxId),f=mentionFriends.find(x=>x.uid===uid); if(!input||!f)return;
-  const caret=input.selectionStart??input.value.length;
-  const before=input.value.slice(0,caret);
-  const m=before.match(/@([A-Za-z0-9._-]*)$/); if(!m)return;
-  const start=caret-m[0].length;
-  const token='@'+(f.username||f.nickname||f.name||'friend')+' ';
-  input.value=input.value.slice(0,start)+token+input.value.slice(caret);
-  const pos=start+token.length;input.setSelectionRange(pos,pos);input.focus();box.classList.remove('open');
-  if(inputId==='postText')$('postCharCount').textContent=String(input.value.length);
-}
-function extractMentionFriends(text=''){
-  const found=[];const seen=new Set();
-  for(const m of text.matchAll(/@([A-Za-z0-9._-]{2,30})/g)){
-    const token=m[1].toLowerCase();
-    const f=mentionFriends.find(x=>String(x.username||'').toLowerCase()===token||String(x.nickname||x.name||x.displayName||'').toLowerCase().replace(/\s+/g,'')===token);
-    if(f&&!seen.has(f.uid)){seen.add(f.uid);found.push(f);}
-  }
-  return found;
-}
-function renderMentions(text=''){
-  return esc(text).replace(/@([A-Za-z0-9._-]{2,30})/g,'<span class="mention">@$1</span>');
-}
-async function notifyMentions(text,postId){
-  const user=auth.currentUser;if(!user)return;
-  const actor=currentProfile?.nickname||currentProfile?.name||currentProfile?.displayName||user.displayName||'Student';
-  await Promise.all(extractMentionFriends(text).filter(f=>f.uid!==user.uid).map(f=>
-    addDoc(collection(db,'notifications'),{recipientUid:f.uid,actorUid:user.uid,actorName:actor,type:'comment',text:'mentioned you.',postId,read:false,createdAt:serverTimestamp()}).catch(e=>console.warn('mention notification',e))
-  ));
 }
 
 function formatTime(ts){
@@ -959,7 +917,7 @@ window.logoutUser = async function(){
   }
 };
 
-window.openPostComposer = async function(){
+window.openPostComposer = function(){
   if(!auth.currentUser){
     window.location.href='profile.html';
     return;
@@ -967,7 +925,6 @@ window.openPostComposer = async function(){
   $('postText').value='';
   $('postVisibility').value='public';
   $('postCharCount').textContent='0';
-  mentionFriends=[]; await loadMentionFriends();
   $('postMentionBox').classList.remove('open');
   $('postModal').classList.add('open');
   setTimeout(()=>$('postText').focus(),50);
@@ -977,13 +934,21 @@ window.closePostComposer = function(){
   $('postModal').classList.remove('open');
 };
 
-$('postText').addEventListener('input',e=>{
-  $('postCharCount').textContent=String(e.target.value.length);
+
+$('postText').addEventListener('input',()=>{
+  $('postCharCount').textContent=String($('postText').value.length);
+  renderMentionBox('postText','postMentionBox');
 });
-$('postText').addEventListener('input',()=>renderMentionBox('postText','postMentionBox'));
 $('postText').addEventListener('keyup',()=>renderMentionBox('postText','postMentionBox'));
 $('commentInput').addEventListener('input',()=>renderMentionBox('commentInput','commentMentionBox'));
 $('commentInput').addEventListener('keyup',()=>renderMentionBox('commentInput','commentMentionBox'));
+
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.mention-wrap')){
+    document.querySelectorAll('.mention-box.open').forEach(el=>el.classList.remove('open'));
+  }
+});
+
 
 window.publishPost = async function(){
   const user = auth.currentUser;
@@ -1005,21 +970,21 @@ window.publishPost = async function(){
     const snap = await getDoc(doc(db,'users',user.uid));
     const profile = snap.exists() ? (snap.data()||{}) : {};
 
-    const newPostRef = await addDoc(collection(db,'posts'),{
+    await addDoc(collection(db,'posts'),{
       authorUid:user.uid,
       authorName:profile.name || profile.nickname || profile.displayName || user.displayName || 'User',
       username:profile.username || '',
       photoURL:profile.photoURL || user.photoURL || '',
       text,
-      mentions:extractMentionFriends(text).map(f=>f.uid),
       visibility,
+      audienceUids: visibility==='friends' ? Array.from(friendIds) : [],
+      mentions: extractMentionUids(text),
       createdAt:serverTimestamp(),
       likeCount:0,
       commentCount:0,
       shareCount:0
     });
 
-    await notifyMentions(text, newPostRef.id);
     closePostComposer();
     showToast('Post published!');
     await loadFeed();
@@ -1058,6 +1023,110 @@ async function loadFriendIds(){
   }
 }
 
+async function loadMentionableFriends(){
+  mentionableFriends = [];
+  if(!firebaseUser) return;
+  try{
+    const snap = await getDocs(query(collection(db,'friends',firebaseUser.uid,'list'),limit(100)));
+    mentionableFriends = await Promise.all(snap.docs.map(async d=>{
+      const uid = d.id;
+      try{
+        const ps = await getDoc(doc(db,'users',uid));
+        const p = ps.exists() ? (ps.data()||{}) : {};
+        return {uid,...p};
+      }catch(_){
+        return {uid,...(d.data()||{})};
+      }
+    }));
+  }catch(e){
+    console.error('Mention friend load',e);
+  }
+}
+
+function getMentionMatches(term=''){
+  const q = String(term).trim().toLowerCase();
+  return mentionableFriends.filter(f=>{
+    const name = String(f.nickname||f.name||f.displayName||'').toLowerCase();
+    const username = String(f.username||'').toLowerCase();
+    return !q || name.includes(q) || username.includes(q);
+  }).slice(0,8);
+}
+
+function renderMentionBox(inputId, boxId){
+  const input = $(inputId), box = $(boxId);
+  if(!input || !box) return;
+  const value = input.value;
+  const caret = input.selectionStart ?? value.length;
+  const before = value.slice(0,caret);
+  const match = before.match(/@([A-Za-z0-9._-]*)$/);
+  if(!match){
+    box.classList.remove('open');
+    box.innerHTML='';
+    return;
+  }
+  const matches = getMentionMatches(match[1]);
+  if(!matches.length){
+    box.classList.remove('open');
+    box.innerHTML='';
+    return;
+  }
+  box.innerHTML = matches.map(f=>{
+    const name = f.nickname || f.name || f.displayName || 'Student';
+    const username = f.username ? '@'+f.username : '';
+    const avatar = f.photoURL
+      ? `<img class="mention-avatar" src="${esc(f.photoURL)}" alt="">`
+      : `<div class="mention-avatar">${esc(name.charAt(0).toUpperCase())}</div>`;
+    return `<button class="mention-item" type="button" data-uid="${esc(f.uid)}">${avatar}<span><strong>${esc(name)}</strong><small>${esc(username)}</small></span></button>`;
+  }).join('');
+  box.classList.add('open');
+  box.querySelectorAll('.mention-item').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const f = mentionableFriends.find(x=>x.uid===btn.dataset.uid);
+      if(!f) return;
+      const name = f.username || f.nickname || f.name || 'friend';
+      const caret = input.selectionStart ?? input.value.length;
+      const before = input.value.slice(0,caret);
+      const m = before.match(/@([A-Za-z0-9._-]*)$/);
+      if(!m) return;
+      const start = caret - m[0].length;
+      const token = '@'+name+' ';
+      input.value = input.value.slice(0,start) + token + input.value.slice(caret);
+      const pos = start + token.length;
+      input.setSelectionRange(pos,pos);
+      input.focus();
+      box.classList.remove('open');
+      if(inputId==='postText') $('postCharCount').textContent=String(input.value.length);
+    });
+  });
+}
+
+function extractMentionUids(text=''){
+  const uids = [];
+  const seen = new Set();
+  for(const m of String(text).matchAll(/@([A-Za-z0-9._-]+)/g)){
+    const token = m[1].toLowerCase();
+    const f = mentionableFriends.find(x=>
+      String(x.username||'').toLowerCase()===token ||
+      String(x.nickname||x.name||x.displayName||'').toLowerCase().replace(/\s+/g,'')===token
+    );
+    if(f && !seen.has(f.uid)){
+      seen.add(f.uid);
+      uids.push(f.uid);
+    }
+  }
+  return uids;
+}
+
+function renderMentionText(text=''){
+  return esc(text).replace(/@([A-Za-z0-9._-]+)/g, (full, token)=>{
+    const found = mentionableFriends.some(f=>
+      String(f.username||'').toLowerCase()===token.toLowerCase() ||
+      String(f.nickname||f.name||f.displayName||'').toLowerCase().replace(/\s+/g,'')===token.toLowerCase()
+    );
+    return found ? `<span style="color:#1d5fc4;font-weight:800">${full}</span>` : full;
+  });
+}
+
 function canSeePost(post){
   if(!firebaseUser) return post.visibility === 'public';
   if(post.authorUid===firebaseUser.uid) return true;
@@ -1071,15 +1140,46 @@ async function loadFeed(){
   list.innerHTML=`<div class="state-card"><div class="loading-box"><div class="spinner"></div><p>Loading your feed...</p></div></div>`;
 
   try{
+    // Keep the existing Firebase login/session exactly as-is.
     await loadFriendIds();
+    await loadMentionableFriends();
 
-    const snap = await getDocs(query(
+    const postsById = new Map();
+
+    // PUBLIC: every returned document is explicitly public, so it matches
+    // the existing Firestore allow-read rule.
+    const publicSnap = await getDocs(query(
       collection(db,'posts'),
-      where('visibility','in',['public','friends','onlyMe']),
+      where('visibility','==','public'),
       limit(100)
     ));
+    publicSnap.docs.forEach(d=>postsById.set(d.id,{id:d.id,...d.data()}));
 
-    const posts = snap.docs.map(d=>({id:d.id,...d.data()}))
+    // FRIENDS-ONLY: query one friend at a time. This is intentionally kept
+    // compatible with your ORIGINAL Firestore rule that checks:
+    // friends/{currentUser}/list/{post.authorUid}
+    if(firebaseUser){
+      for(const friendId of Array.from(friendIds).slice(0,100)){
+        const friendSnap = await getDocs(query(
+          collection(db,'posts'),
+          where('visibility','==','friends'),
+          where('authorUid','==',friendId),
+          limit(100)
+        ));
+        friendSnap.docs.forEach(d=>postsById.set(d.id,{id:d.id,...d.data()}));
+      }
+
+      // ONLY-ME: only the current user's own posts are queried.
+      const ownSnap = await getDocs(query(
+        collection(db,'posts'),
+        where('visibility','==','onlyMe'),
+        where('authorUid','==',firebaseUser.uid),
+        limit(100)
+      ));
+      ownSnap.docs.forEach(d=>postsById.set(d.id,{id:d.id,...d.data()}));
+    }
+
+    const posts = Array.from(postsById.values())
       .filter(canSeePost)
       .sort((a,b)=>{
         if(Boolean(a.pinned)!==Boolean(b.pinned)) return a.pinned ? -1 : 1;
@@ -1088,14 +1188,14 @@ async function loadFeed(){
         return bt-at;
       });
 
-    allFeedPosts = posts;
+    allFeedPosts=posts;
 
     if(!posts.length){
       list.innerHTML=`
         <div class="state-card">
           <div class="state-icon">📰</div>
           <h3>Your feed is empty</h3>
-          <p>Public posts from students and posts shared by your friends will appear here.</p>
+          <p>Public posts and posts shared by your friends will appear here.</p>
         </div>`;
       return;
     }
@@ -1108,7 +1208,9 @@ async function loadFeed(){
       <div class="state-card">
         <div class="state-icon">⚠️</div>
         <h3>Could not load the feed</h3>
-        <p>Check your Firestore rules and make sure the posts collection can be read.</p>
+        <p>${e?.code==='permission-denied'
+          ? 'Firestore denied a News Feed query. Check that your current rules are published.'
+          : 'Check your Firestore rules and make sure the posts collection can be read.'}</p>
       </div>`;
   }
 }
@@ -1123,7 +1225,7 @@ function renderPost(post){
     <div class="share-context">
       <div class="share-context-label">↗ Shared post</div>
       <div class="share-context-author">Original post by ${esc(post.originalAuthorName || 'User')}</div>
-      <div class="share-context-text">${renderMentions(post.originalText || post.text || '')}</div>
+      <div class="share-context-text">${renderMentionText(post.originalText || post.text || '')}</div>
     </div>` : '';
 
   return `
@@ -1138,7 +1240,7 @@ function renderPost(post){
         ${own ? `<button class="post-menu-btn" type="button" onclick="openManageMenu('${esc(post.id)}',${post.pinned===true})">⋯</button>` : ''}
       </div>
 
-      ${post.isShared ? '' : `<div class="post-text">${renderMentions(post.text || '')}</div>`}
+      ${post.isShared ? '' : `<div class="post-text">${esc(post.text || '')}</div>`}
       ${sharedContext}
 
       <div class="post-counts" id="counts-${esc(post.id)}">Loading reactions...</div>
@@ -1257,8 +1359,6 @@ async function refreshPostCounts(postId){
 window.openComments=async function(postId){
   activeCommentPostId=postId;
   $('commentsModal').classList.add('open');
-  await loadMentionFriends();
-  $('commentMentionBox').classList.remove('open');
   $('commentsList').innerHTML='<div style="padding:15px;text-align:center;color:#64748b">Loading comments...</div>';
   await loadComments(postId);
   setTimeout(()=>$('commentInput').focus(),50);
@@ -1286,7 +1386,7 @@ async function loadComments(postId){
     $('commentsList').innerHTML=comments.map(c=>`
       <div class="comment-item">
         <strong>${esc(c.authorName || 'Student')}</strong>
-        <p>${renderMentions(c.text || '')}</p>
+        <p>${renderMentionText(c.text || '')}</p>
       </div>`).join('');
   }catch(e){
     console.error(e);
@@ -1312,10 +1412,9 @@ window.sendComment=async function(){
       uid:user.uid,
       authorName:profile.name || profile.nickname || profile.displayName || user.displayName || 'User',
       text,
-      mentions:extractMentionFriends(text).map(f=>f.uid),
+      mentions: extractMentionUids(text),
       createdAt:serverTimestamp()
     });
-    await notifyMentions(text, activeCommentPostId);
     $('commentInput').value='';
     await loadComments(activeCommentPostId);
     await refreshPostCounts(activeCommentPostId);
@@ -1375,57 +1474,129 @@ window.closeReactions=function(){$('reactionsModal').classList.remove('open')};
 window.sharePost=async function(postId){
   const user=auth.currentUser;
   if(!user){window.location.href='profile.html';return;}
-  if(!allFeedPosts.find(p=>p.id===postId)){showToast('Post not found.');return;}
+  const original=allFeedPosts.find(p=>p.id===postId);
+  if(!original){showToast('Post not found.');return;}
   activeSharePostId=postId;
   $('shareChoiceModal').classList.add('open');
 };
-window.closeShareChoice=()=>{$('shareChoiceModal').classList.remove('open');activeSharePostId=null;};
+
+window.closeShareChoice=function(){
+  activeSharePostId=null;
+  $('shareChoiceModal').classList.remove('open');
+};
+
 window.shareAsPost=async function(){
-  const user=auth.currentUser,post=allFeedPosts.find(p=>p.id===activeSharePostId);
-  if(!user||!post)return;
+  const user=auth.currentUser;
+  const postId=activeSharePostId;
+  const original=allFeedPosts.find(p=>p.id===postId);
+  if(!user||!original)return;
   try{
-    const snap=await getDoc(doc(db,'users',user.uid));const profile=snap.exists()?snap.data()||{}:{};
+    const snap=await getDoc(doc(db,'users',user.uid));
+    const profile=snap.exists()?snap.data()||{}:{};
+
     await addDoc(collection(db,'posts'),{
       authorUid:user.uid,
-      authorName:profile.name||profile.nickname||profile.displayName||user.displayName||'User',
-      username:profile.username||'',photoURL:profile.photoURL||user.photoURL||'',
-      text:post.text||'',mentions:post.mentions||[],visibility:'public',isShared:true,
-      originalPostId:post.id,originalAuthorName:post.authorName||'User',originalText:post.text||'',
-      createdAt:serverTimestamp(),likeCount:0,commentCount:0,shareCount:0
+      authorName:profile.name || profile.nickname || profile.displayName || user.displayName || 'User',
+      username:profile.username || '',
+      photoURL:profile.photoURL || user.photoURL || '',
+      text:original.text || '',
+      visibility:'public',
+      audienceUids:[],
+      mentions:original.mentions || [],
+      isShared:true,
+      originalPostId:original.id,
+      originalAuthorName:original.authorName || 'User',
+      originalText:original.text || '',
+      createdAt:serverTimestamp(),
+      likeCount:0,
+      commentCount:0,
+      shareCount:0
     });
-    await updateDoc(doc(db,'posts',post.id),{shareCount:Number(post.shareCount||0)+1}).catch(()=>{});
-    closeShareChoice();showToast('Post shared as a post.');await loadFeed();
-  }catch(e){console.error(e);showToast('Could not share as a post.');}
+
+    await updateDoc(doc(db,'posts',postId),{
+      shareCount:Number(original.shareCount||0)+1
+    }).catch(()=>{});
+
+    closeShareChoice();
+    showToast('Post shared as a post.');
+    await loadFeed();
+  }catch(e){
+    console.error(e);
+    showToast('Could not share as a post.');
+  }
 };
+
 window.openShareAsMessage=async function(){
-  await loadMentionFriends();
+  await loadMentionableFriends();
+  const box=$('shareMessageList');
+  box.innerHTML = mentionableFriends.length
+    ? mentionableFriends.map(f=>{
+        const name=f.nickname||f.name||f.displayName||'Student';
+        return `<button type="button" class="reaction-item" style="border:none;cursor:pointer;text-align:left" data-uid="${esc(f.uid)}">
+          ${f.photoURL?`<img src="${esc(f.photoURL)}" alt="">`:`<div class="reaction-avatar">${esc(name.charAt(0).toUpperCase())}</div>`}
+          <div class="reaction-info"><strong>${esc(name)}</strong><small>${f.username?'@'+esc(f.username):'Friend'}</small></div>
+        </button>`;
+      }).join('')
+    : '<div style="padding:20px;text-align:center;color:#64748b">No friends available.</div>';
+  box.querySelectorAll('[data-uid]').forEach(btn=>{
+    btn.addEventListener('click',()=>shareAsMessage(btn.dataset.uid));
+  });
   $('shareChoiceModal').classList.remove('open');
-  $('shareMessageSearch').value='';
-  renderShareMessageList('');
   $('shareMessageModal').classList.add('open');
-  setTimeout(()=>$('shareMessageSearch').focus(),50);
 };
-window.closeShareMessage=()=>{$('shareMessageModal').classList.remove('open');activeSharePostId=null;};
-function renderShareMessageList(filter=''){
-  const box=$('shareMessageList');const q=filter.trim().toLowerCase();
-  const list=mentionFriends.filter(f=>String(f.nickname||f.name||f.displayName||'').toLowerCase().includes(q)||String(f.username||'').toLowerCase().includes(q));
-  box.innerHTML=list.length?list.map(f=>{const name=f.nickname||f.name||f.displayName||'Student';return `<button type="button" class="share-message-item" data-uid="${esc(f.uid)}">${f.photoURL?`<img src="${esc(f.photoURL)}" alt="">`:`<div class="share-avatar">${esc(name.charAt(0).toUpperCase())}</div>`}<span><strong>${esc(name)}</strong><small>${f.username?'@'+esc(f.username):'Friend'}</small></span></button>`}).join(''):'<div style="padding:15px;text-align:center;color:#64748b;font-size:11px">No friends found.</div>';
-  box.querySelectorAll('[data-uid]').forEach(btn=>btn.addEventListener('click',()=>sendShareMessage(btn.dataset.uid)));
-}
-async function sendShareMessage(friendUid){
-  const user=auth.currentUser,post=allFeedPosts.find(p=>p.id===activeSharePostId);if(!user||!post)return;
+
+window.closeShareMessage=function(){
+  $('shareMessageModal').classList.remove('open');
+  activeSharePostId=null;
+};
+
+window.shareAsMessage=async function(friendUid){
+  const user=auth.currentUser;
+  const postId=activeSharePostId;
+  const original=allFeedPosts.find(p=>p.id===postId);
+  if(!user||!original||!friendUid)return;
+
   try{
     const cid=[user.uid,friendUid].sort().join('_');
-    const preview=`↗ Shared post\n\nOriginal post by ${post.authorName||'Student'}:\n${String(post.text||'').slice(0,800)}`;
-    await addDoc(collection(db,'conversations',cid,'messages'),{senderUid:user.uid,receiverUid:friendUid,text:preview,createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{},sharedPostId:post.id,messageType:'sharedPost'});
-    await addDoc(collection(db,'notifications'),{recipientUid:friendUid,actorUid:user.uid,actorName:currentProfile?.nickname||currentProfile?.name||user.displayName||'Student',type:'message',text:'shared a post with you.',chatId:cid,read:false,createdAt:serverTimestamp()});
-    await updateDoc(doc(db,'posts',post.id),{shareCount:Number(post.shareCount||0)+1}).catch(()=>{});
-    closeShareMessage();showToast('Post shared as a message.');await loadFeed();
-  }catch(e){console.error(e);showToast(e?.code==='permission-denied'?'Firestore blocked the message share.':'Could not share as a message.');}
-}
-$('shareMessageSearch').addEventListener('input',e=>renderShareMessageList(e.target.value));
+    const text=`↗ Shared post\n\nOriginal post by ${original.authorName||'Student'}:\n${String(original.text||'').slice(0,900)}`;
 
-window.openManageMenu=function(postId,pinned){
+    await addDoc(collection(db,'conversations',cid,'messages'),{
+      senderUid:user.uid,
+      receiverUid:friendUid,
+      text,
+      createdAt:serverTimestamp(),
+      hiddenFor:[],
+      unsent:false,
+      reactions:{}
+    });
+
+    await addDoc(collection(db,'notifications'),{
+      recipientUid:friendUid,
+      actorUid:user.uid,
+      actorName:currentProfile?.nickname || currentProfile?.name || user.displayName || 'Student',
+      type:'message',
+      text:'shared a post with you.',
+      chatId:cid,
+      read:false,
+      createdAt:serverTimestamp()
+    });
+
+    await updateDoc(doc(db,'posts',postId),{
+      shareCount:Number(original.shareCount||0)+1
+    }).catch(()=>{});
+
+    closeShareMessage();
+    showToast('Post shared as a message.');
+    await loadFeed();
+  }catch(e){
+    console.error(e);
+    showToast(e?.code==='permission-denied'
+      ? 'Firestore blocked the message share.'
+      : 'Could not share as a message.');
+  }
+};
+
+window.openManageMenuwindow.openManageMenu=function(postId,pinned){
   activeManagePostId=postId;
   activeManagePostIdPinned=Boolean(pinned);
   $('manageMenuBackdrop').classList.add('open');
@@ -1459,7 +1630,11 @@ window.savePostVisibility=async function(visibility){
     if(!snap.exists()) throw new Error('Post not found.');
     if(snap.data()?.authorUid!==user.uid) throw new Error('Not your post.');
 
-    await updateDoc(doc(db,'posts',postId),{visibility});
+    await loadFriendIds();
+    await updateDoc(doc(db,'posts',postId),{
+      visibility,
+      audienceUids: visibility==='friends' ? Array.from(friendIds) : []
+    });
     $('privacyModal').classList.remove('open');
     activePrivacyPostId=null;
     showToast('Privacy updated.');
@@ -1532,7 +1707,8 @@ onAuthStateChanged(auth,async user=>{
   firebaseUser=user;
   if(user){
     await loadCurrentProfile();
-    await loadMentionFriends();
+    await loadFriendIds();
+    await loadMentionableFriends();
     setHeaderUser(user,currentProfile);
     await loadFeed();
   }else{
