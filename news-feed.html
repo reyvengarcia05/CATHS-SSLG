@@ -689,10 +689,11 @@ a{-webkit-tap-highlight-color:transparent}
   background:rgba(0,0,0,.6);
   backdrop-filter:blur(8px);
   -webkit-backdrop-filter:blur(8px);
-  z-index:10000;
+  z-index:2147483000;
   align-items:center;justify-content:center;padding:16px;
+  visibility:hidden;opacity:0;pointer-events:none;
 }
-.login-modal.show{display:flex}
+.login-modal.show{display:flex!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important}
 .login-modal-content{
   width:90%;max-width:400px;
   padding:30px;border-radius:25px;
@@ -742,7 +743,7 @@ a{-webkit-tap-highlight-color:transparent}
   </div>
 
   <div class="header-right">
-    <button id="headerProfileBtn" class="header-profile-btn" type="button" onclick="toggleHeaderMenu()">
+    <button id="headerProfileBtn" class="header-profile-btn" type="button">
       👤 <span>Login</span>
     </button>
 
@@ -888,7 +889,7 @@ a{-webkit-tap-highlight-color:transparent}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import {
-  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence
+  getAuth, setPersistence, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 import {
   getFirestore, collection, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc,
@@ -908,11 +909,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-
-// Keep the same Firebase login session when moving between pages.
-setPersistence(auth, browserLocalPersistence).catch(err => {
-  console.error('Auth persistence setup failed:', err);
-});
+setPersistence(auth, browserLocalPersistence).catch(err=>console.warn('Auth persistence setup:', err));
 const googleProvider = new GoogleAuthProvider();
 
 let firebaseUser = null;
@@ -997,24 +994,36 @@ function setHeaderUser(user, profile){
 }
 
 window.openLogin = function(){
-  const modal = $('newsLoginModal');
-  if(!modal) return;
+  const modal = document.getElementById('newsLoginModal');
+  if(!modal){
+    console.error('newsLoginModal not found');
+    return;
+  }
   modal.classList.add('show');
   modal.setAttribute('aria-hidden','false');
+  modal.style.display='flex';
+  modal.style.visibility='visible';
+  modal.style.opacity='1';
+  modal.style.pointerEvents='auto';
+  document.body.style.overflow='hidden';
 };
 
 window.closeLogin = function(){
-  const modal = $('newsLoginModal');
+  const modal = document.getElementById('newsLoginModal');
   if(!modal) return;
   modal.classList.remove('show');
   modal.setAttribute('aria-hidden','true');
+  modal.style.display='none';
+  modal.style.visibility='hidden';
+  modal.style.opacity='0';
+  modal.style.pointerEvents='none';
+  document.body.style.overflow='';
 };
 
 window.googleLogin = async function(){
   const btn = $('newsGoogleLoginBtn');
   if(btn){ btn.disabled=true; btn.textContent='Signing in...'; }
   try{
-    await setPersistence(auth, browserLocalPersistence);
     await signInWithPopup(auth, googleProvider);
     window.closeLogin();
   }catch(e){
@@ -1036,8 +1045,17 @@ window.toggleHeaderMenu = function(){
     window.openLogin();
     return;
   }
-  menu.classList.toggle('open');
+  menu?.classList.toggle('open');
 };
+
+const headerProfileBtn = $('headerProfileBtn');
+if(headerProfileBtn){
+  headerProfileBtn.addEventListener('click', function(event){
+    event.preventDefault();
+    event.stopPropagation();
+    window.toggleHeaderMenu();
+  });
+}
 
 document.addEventListener('click', event=>{
   const menu = $('profileMenu');
@@ -1667,34 +1685,21 @@ document.addEventListener('keydown',e=>{
   }
 });
 
-// Restore and react to the exact same Firebase login session used by index.html.
-onAuthStateChanged(auth,async user=>{
-  firebaseUser=user;
+// Restore and react to the same persistent Firebase login session used by index.html.
+onAuthStateChanged(auth, async user => {
+  firebaseUser = user;
 
-  if(user){
-    // Show the Firebase account immediately, then enrich it with the Firestore profile.
+  if (user) {
     setHeaderUser(user, null);
     await loadCurrentProfile();
     setHeaderUser(user, currentProfile);
     await loadFeed();
-  }else{
-    currentProfile=null;
-
-    // Fallback for the UI while Firebase finishes restoring the persisted session.
-    const savedName = localStorage.getItem('userName');
-    const savedPhoto = localStorage.getItem('userPhoto');
-    if(savedName || savedPhoto){
-      const fallbackUser = {
-        displayName: savedName || 'User',
-        photoURL: savedPhoto || ''
-      };
-      setHeaderUser(fallbackUser, null);
-    }else{
-      setHeaderUser(null,null);
-    }
-
-    await loadFeed();
+    return;
   }
+
+  currentProfile = null;
+  setHeaderUser(null, null);
+  await loadFeed();
 });
 </script>
 </body>
