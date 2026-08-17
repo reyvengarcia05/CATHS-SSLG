@@ -182,216 +182,207 @@ body{overflow:hidden;}
 
 
 /* =========================================================
-   FINAL CHAT MESSAGE LAYOUT — single authoritative override
-   Other user: MESSAGE · EMOJI · REPLY · DOTS
-   Me:          DOTS · REPLY · EMOJI · MESSAGE
+   FINAL MESSAGE HOVER ACTIONS
+   - Mouse: controls appear only when hovering the message.
+   - Other user: MESSAGE -> EMOJI -> REPLY -> DOTS
+   - Me: DOTS -> REPLY -> EMOJI -> MESSAGE
    ========================================================= */
-.message-row{
-  width:100%;
+
+.message-main-line{
+  position:relative;
   display:flex;
   align-items:flex-end;
   gap:0;
-  position:relative;
-  padding:2px 0;
-}
-.message-row:not(.mine){justify-content:flex-start;flex-direction:row;}
-.message-row.mine{justify-content:flex-end;flex-direction:row;}
-.message-content{
-  display:flex;
-  flex-direction:column;
-  min-width:0;
-  max-width:min(88%,600px);
-}
-.message-row.mine .message-content{align-items:flex-end;}
-.message-row:not(.mine) .message-content{align-items:flex-start;}
-.message-sender{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  margin:0 0 5px 4px;
-  min-height:24px;
-}
-.message-sender .sender-avatar{
-  width:24px;height:24px;flex:0 0 24px;
-  border-radius:50%;overflow:hidden;
-  background:#e8eef7;color:#183c8c;
-  display:flex;align-items:center;justify-content:center;
-  font-size:9px;font-weight:800;
-}
-.message-sender .sender-avatar img{width:100%;height:100%;object-fit:cover;}
-.message-sender-name{font-size:10px;font-weight:800;color:#fff;opacity:.95;}
-.message-sender-time{font-size:8px;color:rgba(255,255,255,.58);}
-.message-main-line{
-  display:flex;
-  align-items:flex-end;
-  gap:6px;
-  position:relative;
   width:max-content;
   max-width:100%;
+  overflow:visible;
 }
-.message-row:not(.mine) .message-main-line{flex-direction:row;}
-.message-row.mine .message-main-line{flex-direction:row-reverse;}
+
 .message-main-line .bubble{
-  max-width:min(560px,calc(100vw - 180px));
-  margin:0;
   flex:0 1 auto;
+  max-width:min(560px,78vw);
+  margin:0;
 }
+
+.message-hover-actions{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  display:flex;
+  align-items:center;
+  gap:5px;
+  z-index:80;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .15s ease, visibility .15s ease;
+}
+
+.message-row:not(.mine) .message-hover-actions{
+  left:calc(100% + 8px);
+}
+
+.message-row.mine .message-hover-actions{
+  right:calc(100% + 8px);
+  flex-direction:row-reverse;
+}
+
+.message-row:hover .message-hover-actions,
+.message-row:focus-within .message-hover-actions{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+}
+
 .message-reaction-trigger,
 .message-reply-btn,
 .message-tools-btn{
-  flex:0 0 28px;
-  width:28px;height:28px;
-  border-radius:50%;
-  border:1px solid rgba(0,0,0,.08);
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  opacity:.78;
-  transition:transform .12s ease,opacity .12s ease,background .12s ease;
+  width:30px!important;
+  height:30px!important;
+  min-width:30px!important;
+  padding:0!important;
+  flex:0 0 30px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border-radius:50%!important;
+  border:1px solid rgba(0,0,0,.08)!important;
+  box-shadow:0 3px 10px rgba(0,0,0,.10)!important;
+  cursor:pointer!important;
+  line-height:1!important;
 }
+
 .message-reaction-trigger{
-  background:#fff;color:#183c8c;
-  font-size:15px;
-  box-shadow:0 3px 10px rgba(0,0,0,.08);
-  font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;
+  background:#fff!important;
+  color:#183c8c!important;
+  font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif!important;
+  font-size:16px!important;
 }
+
 .message-reply-btn{
-  background:rgba(255,255,255,.16);
-  color:#fff;
-  font-size:14px;
-  font-weight:800;
+  background:rgba(255,255,255,.16)!important;
+  color:#fff!important;
+  font-size:16px!important;
 }
+
 .message-tools-btn{
-  background:rgba(255,255,255,.16);
-  color:#fff;
-  font-size:17px;
-  font-weight:900;
+  background:rgba(255,255,255,.16)!important;
+  color:#fff!important;
+  font-size:18px!important;
 }
+
 .message-row.mine .message-reply-btn,
 .message-row.mine .message-tools-btn{
-  background:rgba(0,0,0,.09);
-  color:#183c8c;
+  background:rgba(255,255,255,.72)!important;
+  color:#183c8c!important;
 }
+
 .message-reaction-trigger:hover,
 .message-reply-btn:hover,
-.message-tools-btn:hover{opacity:1;transform:scale(1.05);}
-.message-row .message-tools-btn{opacity:1;}
+.message-tools-btn:hover{
+  transform:scale(1.08)!important;
+  opacity:1!important;
+}
+
+/* Reaction picker is anchored to the hover action group, never in document flow. */
+.message-hover-actions .react-picker{
+  position:absolute!important;
+  bottom:calc(100% + 8px)!important;
+  right:0!important;
+  left:auto!important;
+  display:none!important;
+  width:max-content!important;
+  max-width:min(360px,80vw)!important;
+  max-height:230px!important;
+  overflow:auto!important;
+  padding:8px!important;
+  gap:5px!important;
+  flex-wrap:wrap!important;
+  align-content:flex-start!important;
+  background:rgba(255,255,255,.98)!important;
+  border:1px solid rgba(0,0,0,.08)!important;
+  border-radius:14px!important;
+  box-shadow:0 18px 45px rgba(0,0,0,.24)!important;
+}
+
+.message-row.mine .message-hover-actions .react-picker{
+  right:0!important;
+  left:auto!important;
+}
+
+.message-hover-actions .react-picker.open{
+  display:flex!important;
+  visibility:visible!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+}
+
+.message-hover-actions .react-picker button{
+  width:32px!important;
+  height:32px!important;
+  min-width:32px!important;
+  border:0!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  font-size:20px!important;
+  line-height:1!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  cursor:pointer!important;
+  font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif!important;
+}
+
+.message-hover-actions .react-picker button:hover{
+  background:#eef4ff!important;
+  transform:scale(1.08);
+}
+
+/* More menu is anchored to the three-dot button and does not push the bubble. */
+.message-hover-actions .message-actions{
+  position:absolute!important;
+  top:calc(100% + 8px)!important;
+  right:0!important;
+  left:auto!important;
+  z-index:400!important;
+}
+
+.message-row.mine .message-hover-actions .message-actions{
+  right:0!important;
+  left:auto!important;
+}
+
 .message-reactions{
-  display:flex;
-  align-items:center;
-  gap:2px;
-  flex-wrap:wrap;
-  width:max-content;
-  max-width:100%;
-  margin-top:5px;
-  padding:2px 5px;
-  min-height:25px;
-  border:1px solid rgba(0,0,0,.08);
-  background:rgba(255,255,255,.88);
-  border-radius:10px;
-  box-shadow:0 3px 10px rgba(0,0,0,.06);
+  margin-top:5px!important;
+  align-self:flex-start!important;
 }
-.message-row.mine .message-reactions{align-self:flex-end;background:rgba(255,244,168,.92);}
-.message-reaction-chip{
-  border:0;background:transparent;color:#183c8c;
-  border-radius:6px;padding:2px 5px;
-  font-size:12px;line-height:1;cursor:pointer;
-  font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;
+
+.message-row.mine .message-reactions{
+  align-self:flex-end!important;
 }
-.message-actions{
-  position:absolute;
-  top:calc(100% + 7px);
-  min-width:190px;
-  max-width:230px;
-  background:#fff;
-  color:#183c8c;
-  border-radius:14px;
-  padding:6px;
-  box-shadow:0 15px 40px rgba(0,0,0,.22);
-  display:none;
-  z-index:250;
+
+/* Only the recipient/other user gets the sender profile row in direct chats. */
+.message-row.mine .message-sender{
+  display:none!important;
 }
-.message-actions.open{display:block;}
-.message-row:not(.mine) .message-actions{left:0;}
-.message-row.mine .message-actions{right:0;}
-.message-actions button{
-  width:100%;border:0;background:transparent;text-align:left;
-  padding:9px 10px;border-radius:9px;color:#183c8c;
-  font-size:10px;font-weight:700;cursor:pointer;
+
+@media (hover:none) and (pointer:coarse){
+  /* On touch devices keep the action rail hidden; long-press opens reactions. */
+  .message-row .message-hover-actions{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+  }
 }
-.message-actions button:hover{background:#eef4ff;}
-.message-actions .danger{color:#b91c1c;}
-.reply-preview{
-  display:flex;
-  flex-direction:column;
-  gap:2px;
-  margin:0 0 7px 0;
-  padding:6px 9px;
-  border-left:3px solid rgba(24,60,140,.36);
-  background:rgba(255,255,255,.22);
-  color:rgba(24,60,140,.78);
-  border-radius:7px;
-  max-width:100%;
-}
-.reply-preview strong{
-  font-size:8px;
-  font-weight:800;
-  color:rgba(24,60,140,.76);
-}
-.reply-preview span{
-  font-size:9px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  max-width:100%;
-}
-.message-row.mine .reply-preview{
-  background:rgba(255,255,255,.18);
-  border-left-color:rgba(24,60,140,.34);
-}
-.message-row:not(.mine) .bubble{background:#fff;color:#183c8c;}
-.message-row.mine .bubble{background:var(--yellow);color:#183c8c;}
-.react-picker{
-  position:absolute;
-  display:none;
-  gap:4px;
-  align-items:center;
-  padding:7px 8px;
-  background:#fff;
-  border:1px solid rgba(0,0,0,.08);
-  border-radius:12px;
-  box-shadow:0 14px 40px rgba(0,0,0,.22);
-  z-index:300;
-  bottom:calc(100% + 8px);
-  max-width:320px;
-  flex-wrap:wrap;
-}
-.react-picker.open{display:flex;}
-.message-row:not(.mine) .react-picker{left:36px;right:auto;}
-.message-row.mine .react-picker{right:36px;left:auto;}
-.react-picker button{
-  border:0;background:transparent;width:31px;height:31px;
-  border-radius:7px;font-size:20px;line-height:1;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;
-}
-.react-picker button:hover{background:#eef4ff;transform:scale(1.1);}
-.react-picker .react-picker-plus{
-  font-family:inherit!important;font-size:17px!important;
-  background:#eef4ff!important;color:#183c8c!important;font-weight:800;
-}
-@media(max-width:800px){
-  .message-content{max-width:92%;}
-  .message-sender .sender-avatar{width:23px;height:23px;flex-basis:23px;}
-  .message-sender-name{font-size:9px;}
-  .message-main-line .bubble{max-width:calc(100vw - 90px);}
-  .message-reaction-trigger,.message-reply-btn,.message-tools-btn{width:27px;height:27px;flex-basis:27px;opacity:1;}
-}
-@media(max-width:520px){
-  .message-content{max-width:94%;}
-  .message-main-line .bubble{max-width:calc(100vw - 76px);}
-  .message-actions{min-width:175px;}
+
+@media (max-width:800px){
+  .message-main-line .bubble{
+    max-width:min(78vw,520px);
+  }
+
+  .message-hover-actions .react-picker{
+    max-width:86vw!important;
+  }
 }
 
 </style>
@@ -504,6 +495,7 @@ let activeConversation=null;
 let unsubscribeMessages=null;
 let unsubscribeGroups=null;
 let pendingActionMessage=null;
+const renderedMessageCache=new Map();
 
 const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 function showToast(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>el.classList.remove('show'),2400)}
@@ -650,24 +642,30 @@ function renderMessageDoc(d,currentUid){
   const unsent=msg.unsent===true;
   const forwarded=msg.forwardedFrom;
   const reactions=msg.reactions&&typeof msg.reactions==='object'?msg.reactions:{};
+
   const chips=Object.entries(reactions)
     .filter(([_,count])=>Number(count)>0)
-    .map(([emoji,count])=>`<button class="message-reaction-chip" type="button" onclick="reactMessage('${esc(id)}','${esc(emoji)}')">${esc(emoji)} ${Number(count)||1}</button>`)
+    .map(([emoji,count])=>`<button class="message-reaction-chip" type="button" onclick="reactMessage('${esc(id)}','${esc(emoji)}',event)">${esc(emoji)} ${Number(count)||1}</button>`)
     .join('');
 
   const trigger=`<button type="button" class="message-reaction-trigger" aria-label="React" title="React" onclick="toggleReactionPicker('${esc(id)}',event)">😊</button>`;
+  const replyButton=`<button class="message-reply-btn" type="button" title="Reply" aria-label="Reply" onclick="replyToMessage('${esc(id)}',event)">↩</button>`;
+  const toolsButton=`<button class="message-tools-btn" type="button" title="More" aria-label="More" onclick="toggleMessageActions('${esc(id)}',event)">⋯</button>`;
 
   const actionMenu=`<div class="message-actions" id="actions-${esc(id)}">
-    ${mine&&!unsent?`<button type="button" onclick="unsendForMe('${esc(id)}')">🗑️ Unsend for me</button><button class="danger" type="button" onclick="unsendForEveryone('${esc(id)}')">🗑️ Unsend for everyone</button>`:`<button type="button" onclick="unsendForMe('${esc(id)}')">🗑️ Unsend for me</button>`}
+    ${mine&&!unsent
+      ? `<button type="button" onclick="unsendForMe('${esc(id)}')">👤 Unsend for me</button>
+         <button class="danger" type="button" onclick="unsendForEveryone('${esc(id)}')">🗑️ Unsend for everyone</button>`
+      : `<button type="button" onclick="unsendForMe('${esc(id)}')">👤 Unsend for me</button>`}
     <button type="button" onclick="prepareForward('${esc(id)}')">↗️ Forward</button>
-    <button type="button" onclick="togglePinMessage('${esc(id)}')">📌 ${msg.pinned?'Unpin message':'Pin message'}</button>
   </div>`;
 
-  const replyPreview = msg.replyTo?.text ? `
-    <div class="reply-preview">
-      <strong>${esc(msg.replyTo.senderName || 'Message')}</strong>
-      <span>${esc(msg.replyTo.text).slice(0,180)}</span>
-    </div>` : '';
+  const replyPreview=msg.replyTo?.text
+    ? `<div class="reply-preview">
+         <strong>${esc(msg.replyTo.senderName||'Reply')}</strong>
+         <span>${esc(msg.replyTo.text).slice(0,180)}</span>
+       </div>`
+    : '';
 
   const body=unsent
     ? `<span class="unsent-text">This message was unsent.</span>`
@@ -675,23 +673,20 @@ function renderMessageDoc(d,currentUid){
 
   const rowClass=mine?'message-row mine':'message-row';
 
-  // Only other users get a profile row. Use the real profile data for direct chats;
-  // group messages use the cached sender profile already attached in renderMessages().
-  let senderLine='';
-  if(!mine){
-    const senderProfile = activeConversation?.kind==='friend'
-      ? (activeFriend || msg)
-      : msg;
-    const senderName = senderProfile?.nickname || senderProfile?.name || senderProfile?.displayName || msg.senderName || 'Student';
-    senderLine=`<div class="message-sender">
-      ${avatarHtml(senderProfile,'sender-avatar')}
-      <span class="message-sender-name">${esc(senderName)}</span>
-      <span class="message-sender-time">${esc(formatTime(msg.createdAt))}</span>
-    </div>`;
-  }
+  // Only the other person's message shows their profile/name in a direct chat.
+  // In group chats, all other participants show their real profile.
+  const showSender = !mine;
+  const senderLine = showSender
+    ? `<div class="message-sender">
+         ${avatarHtml(msg,'sender-avatar')}
+         <span class="message-sender-name">${esc(msg.senderName||'Student')}</span>
+         <span class="message-sender-time">${esc(formatTime(msg.createdAt))}</span>
+       </div>`
+    : '';
 
-  const reactionBar=chips?`<div class="message-reactions">${chips}</div>`:'';
-  const replyButton=`<button class="message-reply-btn" type="button" title="Reply" aria-label="Reply" onclick="replyToMessage('${esc(id)}',event)">↩</button>`;
+  const reactionBar=chips
+    ? `<div class="message-reactions">${chips}</div>`
+    : '';
 
   return `<div class="${rowClass}" data-message-id="${esc(id)}">
     <div class="message-content">
@@ -702,38 +697,71 @@ function renderMessageDoc(d,currentUid){
           <small>${formatTime(msg.createdAt)}</small>
           ${reactionBar}
         </div>
-        ${trigger}
-        ${replyButton}
-        <button class="message-tools-btn" type="button" title="More" aria-label="More" onclick="toggleMessageActions('${esc(id)}',event)">⋯</button>
-        ${actionMenu}
+
+        <div class="message-hover-actions" data-message-actions-for="${esc(id)}">
+          ${trigger}
+          ${replyButton}
+          ${toolsButton}
+          <div class="react-picker" id="react-picker-${esc(id)}"></div>
+          ${actionMenu}
+        </div>
       </div>
     </div>
   </div>`;
 }
 
 async function renderMessages(docs,currentUid,forceBottom=false){
-  const box=$('messages');if(!box)return;
+  const box=$('messages');
+  if(!box)return;
+
   const nearBottom=(box.scrollHeight-box.scrollTop-box.clientHeight)<80;
   const filteredDocs=(activeConversation?.kind==='friend' && activeFriend && isBlocked(activeFriend.uid))?[]:docs;
-  const merged=[...filteredDocs].sort((a,b)=>(a.data()?.createdAt?.toMillis?.()||0)-(b.data()?.createdAt?.toMillis?.()||0)).slice(-300);
+
+  const merged=[...filteredDocs]
+    .sort((a,b)=>(a.data()?.createdAt?.toMillis?.()||0)-(b.data()?.createdAt?.toMillis?.()||0))
+    .slice(-300);
+
+  renderedMessageCache.clear();
+
   if(activeConversation?.kind==='group'){
-    await Promise.all(merged.map(async d=>{const m=d.data()||{};if(m.senderUid){const p=await cachedUserProfile(m.senderUid);m.senderName=p.nickname||p.name||p.displayName||'Student';m.photoURL=p.photoURL||'';m.senderUid=m.senderUid;d.__renderData=m;}}));
+    await Promise.all(merged.map(async d=>{
+      const m={...(d.data()||{})};
+      if(m.senderUid){
+        const p=await cachedUserProfile(m.senderUid);
+        m.senderName=p.nickname||p.name||p.displayName||'Student';
+        m.photoURL=p.photoURL||'';
+      }
+      d.__renderData=m;
+      renderedMessageCache.set(d.id,m);
+    }));
   }else{
     const friendName=activeFriend?.nickname||activeFriend?.name||activeFriend?.displayName||'Student';
     const friendPhoto=activeFriend?.photoURL||'';
+
     merged.forEach(d=>{
-      const raw=d.data()||{};
-      const mine=raw.senderUid===currentUid;
-      d.__renderData={
-        ...raw,
-        senderName:mine?(auth.currentUser?.displayName||'You'):friendName,
-        photoURL:mine?(auth.currentUser?.photoURL||''):friendPhoto
+      const base={...(d.data()||{})};
+      const senderIsMe=base.senderUid===currentUid;
+      const renderData={
+        ...base,
+        senderName:senderIsMe
+          ? (auth.currentUser?.displayName||'You')
+          : friendName,
+        photoURL:senderIsMe
+          ? (auth.currentUser?.photoURL||'')
+          : friendPhoto
       };
+      d.__renderData=renderData;
+      renderedMessageCache.set(d.id,renderData);
     });
   }
-  const html=merged.map(d=>renderMessageDoc({...d,data:()=>d.__renderData||d.data()},currentUid)).join('');
+
+  const html=merged
+    .map(d=>renderMessageDoc({...d,data:()=>d.__renderData||d.data()},currentUid))
+    .join('');
+
   box.innerHTML=html||'<div class="chat-empty" style="min-height:100%"><div class="empty-inner"><div class="empty-icon">👋</div><h3>Start the conversation</h3><p>Send your first message.</p></div></div>';
-  if(forceBottom||nearBottom) box.scrollTop=box.scrollHeight;
+
+  if(forceBottom||nearBottom)box.scrollTop=box.scrollHeight;
 }
 function listenDirectMessages(a,b){
   if(unsubscribeMessages)unsubscribeMessages();
@@ -763,29 +791,25 @@ async function sendMessage(e){
     const replyToId=input.dataset.replyTo||'';
     let replyTo=null;
     if(replyToId){
-      const replyData=await getMessageData(replyToId);
+      const cached=renderedMessageCache.get(replyToId);
+      const replyData=cached
+        ? {data:cached}
+        : await getMessageData(replyToId);
+
       if(replyData){
-        const original=replyData.data||{};
-        let originalSenderName=original.senderName||'';
-        let originalSenderPhoto=original.photoURL||'';
-        if(!originalSenderName && original.senderUid){
-          if(original.senderUid===me.uid){
-            originalSenderName=me.displayName||'You';
-            originalSenderPhoto=me.photoURL||'';
-          }else if(activeConversation.kind==='friend' && activeFriend){
-            originalSenderName=activeFriend.nickname||activeFriend.name||activeFriend.displayName||'Student';
-            originalSenderPhoto=activeFriend.photoURL||'';
-          }else{
-            const rp=await cachedUserProfile(original.senderUid);
-            originalSenderName=rp.nickname||rp.name||rp.displayName||'Student';
-            originalSenderPhoto=rp.photoURL||'';
-          }
+        const replySenderUid=replyData.data?.senderUid||'';
+        let replySenderName=replyData.data?.senderName||'';
+
+        if(!replySenderName){
+          replySenderName = replySenderUid===me.uid
+            ? (me.displayName||'You')
+            : (activeFriend?.nickname||activeFriend?.name||activeFriend?.displayName||'Student');
         }
+
         replyTo={
           messageId:replyToId,
-          text:String(original.text||'').slice(0,500),
-          senderName:originalSenderName,
-          photoURL:originalSenderPhoto
+          text:String(replyData.data?.text||'').slice(0,500),
+          senderName:replySenderName
         };
       }
     }
@@ -808,13 +832,30 @@ window.toggleMessageActions=(id,e)=>{e.stopPropagation();closeMessageActions();$
 window.replyToMessage=async function(id,e){
   e?.stopPropagation();
   closeMessageActions();
+  closeReactionPickers();
+
   const input=$('messageInput');
   if(!input)return;
+
   try{
-    const item=await getMessageData(id);
-    const text=String(item?.data?.text||'').trim();
+    let messageData=renderedMessageCache.get(id);
+
+    if(!messageData){
+      const item=await getMessageData(id);
+      messageData=item?.data||null;
+    }
+
+    if(!messageData){
+      showToast('Message is no longer available.');
+      return;
+    }
+
+    const text=String(messageData.text||'').trim();
     input.dataset.replyTo=id;
-    input.placeholder=text?`Replying to: ${text.slice(0,50)}${text.length>50?'…':''}`:'Reply to message…';
+    input.placeholder=text
+      ? `Replying to: ${text.slice(0,50)}${text.length>50?'…':''}`
+      : 'Reply to message…';
+
     input.focus();
     showToast('Replying to message.');
   }catch(err){
@@ -867,7 +908,8 @@ function openMoreReactionPicker(messageId,event){
   picker.classList.add('open');
 }
 window.openMoreReactionPicker=openMoreReactionPicker;
-async function reactMessage(messageId,emoji){
+async function reactMessage(messageId,emoji,event){
+  event?.stopPropagation();
   closeMessageActions();closeReactionPickers();
   const ref=await messageRef(messageId);if(!ref||!auth.currentUser)return;
   try{
@@ -894,23 +936,6 @@ async function unsendForEveryone(messageId){
   }catch(e){console.error(e);showToast('Could not unsend for everyone.')}
 }
 window.unsendForEveryone=unsendForEveryone;
-
-async function togglePinMessage(messageId){
-  closeMessageActions();
-  const ref=await messageRef(messageId);
-  if(!ref)return;
-  try{
-    const snap=await getDoc(ref);
-    if(!snap.exists())return;
-    const next=!Boolean(snap.data()?.pinned);
-    await updateDoc(ref,{pinned:next});
-    showToast(next?'Message pinned.':'Message unpinned.');
-  }catch(e){
-    console.error('Pin message error:',e);
-    showToast(e?.code==='permission-denied'?'Pinning is blocked by Firestore Rules.':'Could not update pinned message.');
-  }
-}
-window.togglePinMessage=togglePinMessage;
 
 async function prepareForward(messageId){pendingActionMessage=messageId;closeMessageActions();renderForwardChoices();openModal('forwardModal')}
 window.prepareForward=prepareForward;
