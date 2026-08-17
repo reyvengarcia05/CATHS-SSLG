@@ -40,7 +40,7 @@ body{min-height:100vh;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700)
 .message-reaction-chip:hover{background:rgba(24,60,140,.08);transform:scale(1.06)}
 .message-reaction-trigger{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;border:0;border-radius:7px;background:transparent;color:#183c8c;cursor:pointer;font-size:17px;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
 .message-reaction-trigger:hover{background:#eef4ff}
-.react-picker{position:absolute;display:none;gap:4px;align-items:center;padding:6px 7px;background:rgba(255,255,255,.99);border:1px solid rgba(0,0,0,.08);border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.2);z-index:220;bottom:calc(100% + 7px);right:0;max-width:190px;flex-wrap:nowrap}
+.react-picker{position:absolute;display:none;gap:4px;align-items:center;padding:6px 7px;background:rgba(255,255,255,.99);border:1px solid rgba(0,0,0,.08);border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.2);z-index:220;bottom:calc(100% + 7px);right:0;max-width:320px;flex-wrap:wrap}
 .react-picker.open{display:flex}
 .react-picker button{border:0;background:transparent;width:31px;height:31px;border-radius:7px;font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;transition:transform .12s ease,background .12s ease}
 .react-picker button:hover{background:#eef4ff;transform:scale(1.15)}
@@ -95,7 +95,7 @@ body{overflow:hidden;}
 .conversation-empty{padding:20px;text-align:center;font-size:10px;opacity:.7}
 
 @media(max-width:800px){.messenger{grid-template-columns:1fr;grid-template-rows:240px minmax(0,1fr)}.sidebar{border-right:none;border-bottom:1px solid rgba(255,255,255,.13);max-height:none;min-height:0}.chat{min-height:0}.chat-back{display:block;border:none;background:rgba(255,255,255,.12);color:#fff;width:34px;height:34px;border-radius:10px;cursor:pointer}.bubble{max-width:82%}}
-@media(max-width:520px){.container{padding:10px 8px 92px}.messenger{border-radius:20px}.sidebar{padding:13px}.chat-head{padding:12px}.messages{padding:14px 10px}.message-compose{padding:10px}.send-btn{padding:0 13px;min-width:62px}.nav-item{min-width:52px;font-size:8px}.nav-item div{font-size:20px}.message-reaction-trigger{display:none}.message-reactions{margin-top:5px}.react-picker{max-width:190px;left:0;right:auto}.bubble-wrap{max-width:90%}}
+@media(max-width:520px){.container{padding:10px 8px 92px}.messenger{border-radius:20px}.sidebar{padding:13px}.chat-head{padding:12px}.messages{padding:14px 10px}.message-compose{padding:10px}.send-btn{padding:0 13px;min-width:62px}.nav-item{min-width:52px;font-size:8px}.nav-item div{font-size:20px}.message-reaction-trigger{display:none}.message-reactions{margin-top:5px}.react-picker{max-width:280px;left:0;right:auto}.bubble-wrap{max-width:90%}}
 @media (hover:hover) and (pointer:fine){.message-reaction-trigger{display:inline-flex}}
 @media (hover:none) and (pointer:coarse){.message-reaction-trigger{display:none}}
 
@@ -167,8 +167,7 @@ body{overflow:hidden;}
 .message-reply-btn{background:rgba(255,255,255,.16);color:#fff;font-size:14px;font-weight:800}
 .message-tools-btn{background:rgba(255,255,255,.16);color:#fff;font-size:17px;font-weight:900}
 .message-row.mine .message-reply-btn,.message-row.mine .message-tools-btn{background:rgba(0,0,0,.08);color:#183c8c}
-.message-reaction-trigger:hover{opacity:1}
-.message-reply-btn:hover,.message-tools-btn:hover{opacity:1;transform:none!important;scale:1!important;translate:none!important}
+.message-reaction-trigger:hover,.message-reply-btn:hover,.message-tools-btn:hover{opacity:1;transform:scale(1.05)}
 .message-reactions{margin-top:5px;align-self:flex-start}
 .message-row.mine .message-reactions{align-self:flex-end}
 @media (hover:hover) and (pointer:fine){
@@ -182,55 +181,57 @@ body{overflow:hidden;}
 }
 
 
-/* FINAL CHAT ACTION LAYOUT OVERRIDES */
-.message-row{display:flex!important;align-items:flex-end!important;width:100%!important;gap:0!important;position:relative!important;overflow:visible!important;}
-.message-row.mine{justify-content:flex-end!important;}
-.message-row:not(.mine){justify-content:flex-start!important;}
-.message-content{display:flex!important;flex-direction:column!important;min-width:0!important;max-width:min(82%,560px)!important;position:relative!important;}
-.message-row.mine .message-content{align-items:flex-end!important;}
-.message-row:not(.mine) .message-content{align-items:flex-start!important;}
-.message-sender{display:flex!important;align-items:center!important;gap:6px!important;margin:0 0 4px 2px!important;min-height:22px!important;}
-.message-row.mine .message-sender{display:none!important;}
-.message-main-line{display:flex!important;align-items:flex-end!important;gap:5px!important;width:max-content!important;max-width:100%!important;position:relative!important;overflow:visible!important;}
-.message-row.mine .message-main-line{flex-direction:row-reverse!important;}
-.message-row:not(.mine) .message-main-line{flex-direction:row!important;}
-.message-main-line .bubble{margin:0!important;max-width:min(560px,78vw)!important;}
-.message-hover-actions{position:absolute!important;top:50%!important;transform:translateY(-50%)!important;display:flex!important;align-items:center!important;gap:5px!important;z-index:300!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;white-space:nowrap!important;}
-.message-row:hover .message-hover-actions,.message-row:focus-within .message-hover-actions{opacity:1!important;visibility:visible!important;pointer-events:auto!important;}
-.message-row:not(.mine) .message-hover-actions{left:calc(100% + 8px)!important;right:auto!important;}
-.message-row.mine .message-hover-actions{right:calc(100% + 8px)!important;left:auto!important;flex-direction:row-reverse!important;}
-.message-reaction-trigger,.message-reply-btn,.message-tools-btn{width:30px!important;height:30px!important;min-width:30px!important;flex:0 0 30px!important;padding:0!important;border-radius:50%!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;cursor:pointer!important;}
-.message-actions{position:absolute!important;top:calc(100% + 8px)!important;right:0!important;left:auto!important;z-index:500!important;display:none!important;min-width:190px!important;}
-.message-actions.open{display:block!important;}
-.message-hover-actions .react-picker{position:absolute!important;bottom:calc(100% + 8px)!important;left:auto!important;right:0!important;z-index:500!important;display:none!important;width:max-content!important;max-width:min(360px,85vw)!important;max-height:240px!important;overflow:auto!important;flex-wrap:wrap!important;align-content:flex-start!important;}
-.message-hover-actions .react-picker.open{display:flex!important;}
-.message-reactions{margin-top:5px!important;}
-@media (hover:none) and (pointer:coarse){
-  .message-hover-actions{opacity:0!important;visibility:hidden!important;pointer-events:none!important;}
+/* === FINAL EMOJI REACTION FIX ===
+   The emoji picker opens from the message's 😊 button and sits BELOW the bubble.
+   It does not affect message alignment or cause layout jumps. */
+.message-main-line{position:relative;}
+.message-hover-actions{position:relative;display:inline-flex;align-items:center;gap:5px;flex:0 0 auto;}
+.message-reaction-trigger{cursor:pointer;position:relative;z-index:5;}
+.react-picker{
+  position:absolute !important;
+  top:calc(100% + 7px) !important;
+  bottom:auto !important;
+  display:none;
+  align-items:center;
+  justify-content:flex-start;
+  gap:4px;
+  padding:6px 8px;
+  min-height:42px;
+  width:max-content;
+  max-width:min(92vw,290px);
+  background:#fff;
+  border:1px solid rgba(0,0,0,.10);
+  border-radius:12px;
+  box-shadow:0 12px 30px rgba(0,0,0,.20);
+  z-index:1000;
+  flex-wrap:nowrap;
 }
-@media (max-width:800px){
-  .message-content{max-width:90%!important;}
-  .message-main-line .bubble{max-width:min(78vw,520px)!important;}
+.react-picker.open{display:flex !important;}
+.message-row:not(.mine) .react-picker{left:0;right:auto;}
+.message-row.mine .react-picker{right:0;left:auto;}
+.react-picker button{
+  flex:0 0 31px;
+  width:31px;
+  height:31px;
+  border:0;
+  border-radius:8px;
+  background:transparent;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  font-size:20px;
+  line-height:1;
+  padding:0;
+  font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;
 }
-
-/* Keep the ⋯ button perfectly stationary on hover. */
-.message-hover-actions .message-tools-btn,
-.message-hover-actions .message-tools-btn:hover,
-.message-hover-actions .message-tools-btn:focus,
-.message-hover-actions .message-tools-btn:active{
-  transform:none!important;
-  scale:1!important;
-  translate:none!important;
+.react-picker button:hover{background:#eef4ff;transform:none;}
+.react-picker-plus{font-family:Poppins,sans-serif!important;font-weight:800!important;font-size:17px!important;color:#183c8c!important;background:#eef4ff!important;}
+@media(max-width:520px){
+  .react-picker{max-width:calc(100vw - 30px);}
+  .message-row.mine .react-picker{right:0;left:auto;}
+  .message-row:not(.mine) .react-picker{left:0;right:auto;}
 }
-.message-hover-actions .message-tools-btn{
-  position:relative!important;
-  top:auto!important;
-  left:auto!important;
-  right:auto!important;
-  bottom:auto!important;
-  margin:0!important;
-}
-
 </style>
 </head>
 <body>
@@ -472,7 +473,10 @@ async function openGroup(group){
 window.clearChatSelection=()=>{activeFriend=null;activeGroup=null;activeConversation=null;if(unsubscribeMessages)unsubscribeMessages();$('chatPane').innerHTML='<div class="chat-empty"><div class="empty-inner"><div class="empty-icon">💬</div><h3>Select a conversation</h3><p>Choose a friend or group to start chatting.</p></div></div>';renderConversations()};
 
 function closeMessageActions(){document.querySelectorAll('.message-actions.open').forEach(x=>x.classList.remove('open'))}
-document.addEventListener('click',e=>{if(!e.target.closest('.message-tools-btn')&&!e.target.closest('.message-actions'))closeMessageActions();if(!e.target.closest('.message-reaction-chip')&&!e.target.closest('.react-picker'))closeReactionPickers()});
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.message-tools-btn')&&!e.target.closest('.message-actions'))closeMessageActions();
+  if(!e.target.closest('.message-reaction-trigger')&&!e.target.closest('.message-reaction-chip')&&!e.target.closest('.react-picker'))closeReactionPickers();
+});
 
 const REACTION_EMOJIS=['👍','❤️','😂','😮','😢','😡','🥰','😍','😘','😭','😎','🤔','🙏','👏','🎉','🔥','💯','🤣','😳','😴','🤗','🙌','💔','❤️‍🔥','🥳','😱','🤩','🤗','😇','🙂','😊','😉','😌','😏','😅','😂','🤣','😆','😄','😁','😃','😀','😎','🤓','🧐','😮','😯','😲','🥺','😢','😭','😤','😠','🤬','🤯','😬','😰','😥','😓','🤥','😶','🤐','🫠','🙄','😑','😐','🤨','🤔','🤭','🫢','🫣','🤫','🤤','😪','🤮','🤢','🥴','😵','🤠','🥳','🤡','💩','👻','💀','☠️','👽','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾','🙈','🙉','🙊','💋','💌','💘','💝','💖','💗','💓','💞','💟','❣️','💔','❤️','🧡','💛','💚','💙','💜','🤎','🖤','🤍','✨','⭐','🌟','💫','🔥','🎉','🎊','👏','🙌','🙏','💯','✅','❌','⚡','💥','💬','📌','🚀','❤️‍🔥','🥹','🫶'];
 const profileCache=new Map();
@@ -487,39 +491,34 @@ function renderMessageDoc(d,currentUid){
   const forwarded=msg.forwardedFrom;
   const reactions=msg.reactions&&typeof msg.reactions==='object'?msg.reactions:{};
   const chips=Object.entries(reactions).filter(([_,count])=>Number(count)>0)
-    .map(([emoji,count])=>`<button class="message-reaction-chip" type="button" onclick="reactMessage('${esc(id)}','${esc(emoji)}',event)">${esc(emoji)} ${Number(count)||1}</button>`).join('');
-
+    .map(([emoji,count])=>`<button class="message-reaction-chip" type="button" onclick="reactMessage('${esc(id)}','${esc(emoji)}')">${esc(emoji)} ${Number(count)||1}</button>`).join('');
   const trigger=`<button type="button" class="message-reaction-trigger" aria-label="React" title="React" onclick="toggleReactionPicker('${esc(id)}',event)">😊</button>`;
-  const replyButton=`<button class="message-reply-btn" type="button" title="Reply" aria-label="Reply" onclick="replyToMessage('${esc(id)}',event)">↩</button>`;
-  const toolsButton=`<button class="message-tools-btn" type="button" title="More" aria-label="More" onclick="toggleMessageActions('${esc(id)}',event)">⋯</button>`;
+  const picker=`<div class="react-picker" id="react-picker-${esc(id)}"></div>`;
   const actionMenu=`<div class="message-actions" id="actions-${esc(id)}">
-      <button type="button" onclick="togglePinMessage('${esc(id)}')">📌 Pin message</button>
-      <button type="button" onclick="prepareForward('${esc(id)}')">↗️ Forward</button>
-      <button type="button" onclick="unsendForMe('${esc(id)}')">👤 Unsend for me</button>
-      ${mine&&!unsent?`<button class="danger" type="button" onclick="unsendForEveryone('${esc(id)}')">🗑️ Unsend for everyone</button>`:''}
-    </div>`;
-
-  const replyPreview=msg.replyTo?.text?`<div class="reply-preview"><strong>${esc(msg.replyTo.senderName||'Reply')}</strong><span>${esc(msg.replyTo.text).slice(0,180)}</span></div>`:'';
+    <button type="button" onclick="prepareForward('${esc(id)}')">↗️ Forward</button>
+    ${mine&&!unsent?`<button type="button" onclick="unsendForMe('${esc(id)}')">👤 Unsend for me</button><button class="danger" type="button" onclick="unsendForEveryone('${esc(id)}')">🗑️ Unsend for everyone</button>`:`<button type="button" onclick="unsendForMe('${esc(id)}')">👤 Unsend for me</button>`}
+  </div>`;
+  const replyPreview=msg.replyTo?.text?`<div class="reply-preview"><strong>Reply</strong><span>${esc(msg.replyTo.text).slice(0,180)}</span></div>`:'';
   const body=unsent?`<span class="unsent-text">This message was unsent.</span>`:`${replyPreview}${forwarded?`<div class="forwarded-box">↗ Forwarded message</div>`:''}${esc(msg.text||'')}`;
   const rowClass=mine?'message-row mine':'message-row';
-  const showSender=!mine || activeConversation?.kind==='group';
-  const senderLine=showSender?`<div class="message-sender">${avatarHtml(msg,'sender-avatar')}<span class="message-sender-name">${esc(msg.senderName||'Student')}</span><span class="message-sender-time">${esc(formatTime(msg.createdAt))}</span></div>`:'';
+  const senderLine = `<div class="message-sender">${avatarHtml(msg,'sender-avatar')}<span class="message-sender-name">${esc(msg.senderName||'Student')}</span><span class="message-sender-time">${esc(formatTime(msg.createdAt))}</span></div>`;
   const reactionBar=chips?`<div class="message-reactions">${chips}</div>`:'';
-
+  const replyButton=`<button class="message-reply-btn" type="button" title="Reply" aria-label="Reply" onclick="replyToMessage('${esc(id)}',event)">↩</button>`;
   return `<div class="${rowClass}" data-message-id="${esc(id)}">
     <div class="message-content">
       ${senderLine}
       <div class="message-main-line">
         <div class="bubble">${body}<small>${formatTime(msg.createdAt)}</small>${reactionBar}</div>
-        <div class="message-hover-actions" data-message-actions-for="${esc(id)}">
-          ${trigger}${replyButton}${toolsButton}
-          <div class="react-picker" id="react-picker-${esc(id)}"></div>
-          ${actionMenu}
-        </div>
+        ${trigger}
+        ${picker}
+        ${replyButton}
+        <button class="message-tools-btn" type="button" title="More" aria-label="More" onclick="toggleMessageActions('${esc(id)}',event)">⋯</button>
+        ${actionMenu}
       </div>
     </div>
   </div>`;
 }
+
 
 async function renderMessages(docs,currentUid,forceBottom=false){
   const box=$('messages');if(!box)return;
@@ -564,9 +563,9 @@ async function sendMessage(e){
     const replyToId=input.dataset.replyTo||'';
     let replyTo=null;
     if(replyToId){
-      const cached=renderedMessageCache.get(replyToId);
-      if(cached){
-        replyTo={messageId:replyToId,text:String(cached.text||'').slice(0,500),senderName:cached.senderName||''};
+      const replyData=await getMessageData(replyToId);
+      if(replyData){
+        replyTo={messageId:replyToId,text:String(replyData.data.text||'').slice(0,500),senderName:replyData.data.senderName||''};
       }
     }
     if(activeConversation.kind==='friend'){
@@ -585,28 +584,22 @@ async function sendMessage(e){
 
 window.toggleMessageActions=(id,e)=>{e.stopPropagation();closeMessageActions();$('actions-'+id)?.classList.add('open')};
 
-window.replyToMessage=function(id,e){
-  e?.preventDefault();
+window.replyToMessage=async function(id,e){
   e?.stopPropagation();
   closeMessageActions();
-  closeReactionPickers();
   const input=$('messageInput');
   if(!input)return;
-  let data=renderedMessageCache.get(id);
-  if(!data){
-    const row=document.querySelector(`[data-message-id="${CSS.escape(id)}"]`);
-    if(row){
-      const bubble=row.querySelector('.bubble');
-      data={text:bubble?.querySelector('.reply-preview span')?.textContent || bubble?.childNodes[0]?.textContent || '',senderUid:''};
-    }
+  try{
+    const item=await getMessageData(id);
+    const text=String(item?.data?.text||'').trim();
+    input.dataset.replyTo=id;
+    input.placeholder=text?`Replying to: ${text.slice(0,50)}${text.length>50?'…':''}`:'Reply to message…';
+    input.focus();
+    showToast('Replying to message.');
+  }catch(err){
+    console.error('Reply setup error:',err);
+    showToast('Could not prepare reply.');
   }
-  if(!data){showToast('Message is no longer available.');return;}
-  const text=String(data.text||'').trim();
-  if(!text || text==='This message was unsent.') { showToast('This message cannot be replied to.'); return; }
-  input.dataset.replyTo=id;
-  input.placeholder=`Replying to: ${text.slice(0,50)}${text.length>50?'…':''}`;
-  input.focus();
-  showToast('Replying to message.');
 };
 
 async function messageRef(messageId){
@@ -615,7 +608,7 @@ async function messageRef(messageId){
   return null;
 }
 function closeReactionPickers(){document.querySelectorAll('.react-picker.open').forEach(x=>x.classList.remove('open'))}
-const PRIMARY_REACTIONS=['👍','❤️','😂','😮','😢'];
+const PRIMARY_REACTIONS=['👍','❤️','😂','😢','😡'];
 function ensureReactionPicker(messageId){
   let picker=$(`react-picker-${messageId}`);
   if(!picker){
@@ -631,9 +624,11 @@ function ensureReactionPicker(messageId){
 function renderPrimaryPicker(messageId){
   const picker=ensureReactionPicker(messageId);if(!picker)return;
   picker.dataset.mode='primary';
-  picker.innerHTML=PRIMARY_REACTIONS.map(emoji=>`<button type="button" aria-label="React ${esc(emoji)}" onclick="reactMessage('${esc(messageId)}','${emoji}')">${emoji}</button>`).join('');
+  picker.innerHTML=PRIMARY_REACTIONS.map(emoji=>`<button type="button" aria-label="React ${esc(emoji)}" onclick="event.stopPropagation();reactMessage('${esc(messageId)}','${emoji}')">${emoji}</button>`).join('')+
+    `<button type="button" class="react-picker-plus" aria-label="More emojis" onclick="event.stopPropagation();openMoreReactionPicker('${esc(messageId)}',event)">+</button>`;
 }
 function toggleReactionPicker(messageId,event){
+  event?.preventDefault();
   event?.stopPropagation();
   closeMessageActions();
   const picker=ensureReactionPicker(messageId);if(!picker)return;
@@ -648,7 +643,7 @@ function openMoreReactionPicker(messageId,event){
   event?.stopPropagation();
   const picker=ensureReactionPicker(messageId);if(!picker)return;
   picker.dataset.mode='full';
-  picker.innerHTML=REACTION_EMOJIS.map(emoji=>`<button type="button" aria-label="React ${esc(emoji)}" onclick="reactMessage('${esc(messageId)}','${emoji}')">${emoji}</button>`).join('');
+  picker.innerHTML=REACTION_EMOJIS.map(emoji=>`<button type="button" aria-label="React ${esc(emoji)}" onclick="event.stopPropagation();reactMessage('${esc(messageId)}','${emoji}')">${emoji}</button>`).join('');
   picker.classList.add('open');
 }
 window.openMoreReactionPicker=openMoreReactionPicker;
@@ -663,15 +658,6 @@ async function reactMessage(messageId,emoji){
   }catch(e){console.error(e);showToast('Could not react to message.')}
 }
 window.reactMessage=reactMessage;
-
-function pinStorageKey(messageId){return `caths_pinned_${auth.currentUser?.uid||'guest'}_${messageId}`;}
-window.togglePinMessage=function(messageId){
-  const key=pinStorageKey(messageId);
-  const on=localStorage.getItem(key)==='1';
-  if(on){localStorage.removeItem(key);showToast('Message unpinned.');}
-  else{localStorage.setItem(key,'1');showToast('Message pinned for you.');}
-  closeMessageActions();
-};
 
 async function unsendForMe(messageId){
   closeMessageActions();const ref=await messageRef(messageId);if(!ref)return;
@@ -803,12 +789,7 @@ document.addEventListener('touchstart',e=>{
   clearLongPress(); longPressTarget=row;
   longPressTimer=setTimeout(()=>{
     const id=row.dataset.messageId;
-    if(id){
-      const actions=row.querySelector('.message-hover-actions');
-      if(actions){actions.style.opacity='1';actions.style.visibility='visible';actions.style.pointerEvents='auto';}
-      toggleReactionPicker(id,e);
-      if(navigator.vibrate)navigator.vibrate(20)
-    }
+    if(id){toggleReactionPicker(id,e); if(navigator.vibrate)navigator.vibrate(20)}
     clearLongPress();
   },3000);
 },{passive:true});
