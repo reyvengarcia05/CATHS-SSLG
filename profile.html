@@ -2200,6 +2200,13 @@ async function reactToPost(postId, emoji, event){
             const snap=await getDoc(doc(db,'users',user.uid));
             const profile=snap.exists()?snap.data()||{}:{};
             await setDoc(ref,{uid:user.uid,emoji,authorName:profile.name||profile.nickname||profile.displayName||user.displayName||'User',username:profile.username||'',photoURL:profile.photoURL||user.photoURL||'',updatedAt:serverTimestamp()});
+            const postSnap=await getDoc(doc(db,'posts',postId));
+            if(postSnap.exists()){
+                const postData=postSnap.data()||{};
+                if(postData.authorUid&&postData.authorUid!==user.uid){
+                    await addDoc(collection(db,'notifications'),{recipientUid:postData.authorUid,actorUid:user.uid,actorName:profile.nickname||profile.name||profile.displayName||user.displayName||'Student',type:'reaction',text:`reacted ${emoji} to your post.`,postId,read:false,createdAt:serverTimestamp()});
+                }
+            }
         }
         document.getElementById('picker-'+postId)?.classList.remove('open');
         await refreshPostCounts(postId);
@@ -2348,6 +2355,18 @@ async function submitComment(){
             text,
             createdAt:serverTimestamp()
         });
+        const postSnap=await getDoc(doc(db,'posts',activeCommentPostId));
+        if(postSnap.exists()){
+            const postData=postSnap.data()||{};
+            if(postData.authorUid && postData.authorUid!==user.uid){
+                await addDoc(collection(db,'notifications'),{
+                    recipientUid:postData.authorUid, actorUid:user.uid,
+                    actorName:profile.nickname||profile.name||profile.displayName||user.displayName||'Student',
+                    type:'comment', text:'commented on your post.',
+                    postId:activeCommentPostId, read:false, createdAt:serverTimestamp()
+                });
+            }
+        }
         input.value='';
         await loadComments(activeCommentPostId);
         await refreshPostCounts(activeCommentPostId);
@@ -2410,6 +2429,9 @@ async function sharePost(postId){
         const postRef=doc(db,'posts',postId);
         const current=Number(original.shareCount||0);
         await updateDoc(postRef,{shareCount:current+1});
+        if(original.authorUid&&original.authorUid!==user.uid){
+            await addDoc(collection(db,'notifications'),{recipientUid:original.authorUid,actorUid:user.uid,actorName:profile.nickname||profile.name||profile.displayName||user.displayName||'Student',type:'share',text:'shared your post.',postId,read:false,createdAt:serverTimestamp()});
+        }
 
         await loadPosts();
         const countText=document.getElementById('postsCount');
