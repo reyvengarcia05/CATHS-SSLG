@@ -682,6 +682,50 @@ a{-webkit-tap-highlight-color:transparent}
   }
 }
 
+
+/* SAME LOGIN MODAL DESIGN AS INDEX */
+.login-modal{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.6);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  z-index:10000;
+  align-items:center;justify-content:center;padding:16px;
+}
+.login-modal.show{display:flex}
+.login-modal-content{
+  width:90%;max-width:400px;
+  padding:30px;border-radius:25px;
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  text-align:center;color:white;
+  border:1px solid rgba(255,255,255,.2);
+  box-shadow:0 25px 70px rgba(0,0,0,.45);
+  animation:newsLoginPop .3s ease;
+  position:relative;
+}
+.login-modal-content h2{font-size:24px;margin-bottom:6px}
+.login-modal-content p{font-size:12px;opacity:.82;margin-bottom:18px}
+.login-modal-close{
+  position:absolute;top:10px;right:13px;
+  border:none;background:transparent;color:#fff;
+  font-size:28px;line-height:1;cursor:pointer;
+}
+#newsGoogleLoginBtn{
+  width:100%;padding:13px;border:none;border-radius:13px;
+  background:#fff;color:#183c8c;font-weight:800;cursor:pointer;
+  box-shadow:0 8px 20px rgba(0,0,0,.12);
+}
+#newsGoogleLoginBtn:disabled{opacity:.65;cursor:not-allowed}
+@keyframes newsLoginPop{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+@media(max-width:600px){
+  .login-modal-content{padding:23px 18px;border-radius:21px}
+  .login-modal-content h2{font-size:21px}
+  .login-modal-content p{font-size:12px}
+  #newsGoogleLoginBtn{padding:13px;font-size:13px}
+}
+
 </style>
 </head>
 
@@ -832,10 +876,19 @@ a{-webkit-tap-highlight-color:transparent}
   </div>
 </div>
 
+<div id="newsLoginModal" class="login-modal" aria-hidden="true">
+  <div class="login-modal-content" role="dialog" aria-modal="true" aria-labelledby="newsLoginTitle">
+    <button class="login-modal-close" type="button" aria-label="Close" onclick="closeLogin()">&times;</button>
+    <h2 id="newsLoginTitle">Welcome Back</h2>
+    <p>Sign in to continue</p>
+    <button id="newsGoogleLoginBtn" type="button" onclick="googleLogin()">Continue with Google</button>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import {
-  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 import {
   getFirestore, collection, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc,
@@ -855,6 +908,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+// Keep the same Firebase login session when moving between pages.
+setPersistence(auth, browserLocalPersistence).catch(err => {
+  console.error('Auth persistence setup failed:', err);
+});
 const googleProvider = new GoogleAuthProvider();
 
 let firebaseUser = null;
@@ -938,10 +996,44 @@ function setHeaderUser(user, profile){
   }
 }
 
+window.openLogin = function(){
+  const modal = $('newsLoginModal');
+  if(!modal) return;
+  modal.classList.add('show');
+  modal.setAttribute('aria-hidden','false');
+};
+
+window.closeLogin = function(){
+  const modal = $('newsLoginModal');
+  if(!modal) return;
+  modal.classList.remove('show');
+  modal.setAttribute('aria-hidden','true');
+};
+
+window.googleLogin = async function(){
+  const btn = $('newsGoogleLoginBtn');
+  if(btn){ btn.disabled=true; btn.textContent='Signing in...'; }
+  try{
+    await setPersistence(auth, browserLocalPersistence);
+    await signInWithPopup(auth, googleProvider);
+    window.closeLogin();
+  }catch(e){
+    console.error('Google login error:',e);
+    showToast(e?.code==='auth/popup-closed-by-user' ? 'Login cancelled.' : 'Google login failed.');
+  }finally{
+    if(btn){ btn.disabled=false; btn.textContent='Continue with Google'; }
+  }
+};
+
+window.addEventListener('click',e=>{
+  const modal=$('newsLoginModal');
+  if(modal && e.target===modal) window.closeLogin();
+});
+
 window.toggleHeaderMenu = function(){
   const menu = $('profileMenu');
   if(!firebaseUser){
-    window.location.href = 'profile.html';
+    window.openLogin();
     return;
   }
   menu.classList.toggle('open');
@@ -1344,6 +1436,24 @@ window.sendComment=async function(){
       text,
       createdAt:serverTimestamp()
     });
+
+    const commentPostSnap = await getDoc(doc(db,'posts',activeCommentPostId));
+    if(commentPostSnap.exists()){
+      const postData=commentPostSnap.data()||{};
+      if(postData.authorUid && postData.authorUid!==user.uid){
+        await addDoc(collection(db,'notifications'),{
+          recipientUid:postData.authorUid,
+          actorUid:user.uid,
+          actorName:profile.nickname || profile.name || profile.displayName || user.displayName || 'Student',
+          type:'comment',
+          text:'commented on your post.',
+          postId:activeCommentPostId,
+          read:false,
+          createdAt:serverTimestamp()
+        });
+      }
+    }
+
     $('commentInput').value='';
     await loadComments(activeCommentPostId);
     await refreshPostCounts(activeCommentPostId);
@@ -1431,6 +1541,19 @@ window.sharePost=async function(postId){
     await updateDoc(doc(db,'posts',postId),{
       shareCount:Number(original.shareCount||0)+1
     }).catch(()=>{});
+
+    if(original.authorUid && original.authorUid!==user.uid){
+      await addDoc(collection(db,'notifications'),{
+        recipientUid:original.authorUid,
+        actorUid:user.uid,
+        actorName:profile.nickname || profile.name || profile.displayName || user.displayName || 'Student',
+        type:'share',
+        text:'shared your post.',
+        postId,
+        read:false,
+        createdAt:serverTimestamp()
+      });
+    }
 
     showToast('Post shared to your profile.');
     await loadFeed();
@@ -1540,18 +1663,36 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
     document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open'));
     $('manageMenuBackdrop')?.classList.remove('open');
+    window.closeLogin?.();
   }
 });
 
+// Restore and react to the exact same Firebase login session used by index.html.
 onAuthStateChanged(auth,async user=>{
   firebaseUser=user;
+
   if(user){
+    // Show the Firebase account immediately, then enrich it with the Firestore profile.
+    setHeaderUser(user, null);
     await loadCurrentProfile();
-    setHeaderUser(user,currentProfile);
+    setHeaderUser(user, currentProfile);
     await loadFeed();
   }else{
     currentProfile=null;
-    setHeaderUser(null,null);
+
+    // Fallback for the UI while Firebase finishes restoring the persisted session.
+    const savedName = localStorage.getItem('userName');
+    const savedPhoto = localStorage.getItem('userPhoto');
+    if(savedName || savedPhoto){
+      const fallbackUser = {
+        displayName: savedName || 'User',
+        photoURL: savedPhoto || ''
+      };
+      setHeaderUser(fallbackUser, null);
+    }else{
+      setHeaderUser(null,null);
+    }
+
     await loadFeed();
   }
 });
