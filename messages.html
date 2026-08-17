@@ -21,6 +21,27 @@ body{min-height:100vh;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700)
 .bottom-nav{position:fixed;left:0;right:0;bottom:0;height:78px;background:linear-gradient(90deg,#1e3a8a,#b59f1a);display:flex;justify-content:space-around;align-items:center;z-index:60;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}.nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#fff;font-size:9px;min-width:60px;transition:.22s}.nav-item div{font-size:22px;height:26px;display:flex;align-items:center;justify-content:center;margin-bottom:3px}.nav-item.active{color:var(--yellow);transform:translateY(-6px) scale(1.07);font-weight:700}.nav-item.active div{font-size:25px}
 @media(max-width:800px){.messenger{grid-template-columns:1fr;min-height:calc(100vh - 160px)}.sidebar{border-right:none;border-bottom:1px solid rgba(255,255,255,.13);max-height:290px}.chat{min-height:480px}.chat-back{display:block;border:none;background:rgba(255,255,255,.12);color:#fff;width:34px;height:34px;border-radius:10px;cursor:pointer}.bubble{max-width:82%}}
 @media(max-width:520px){.container{padding:10px 8px 100px}.messenger{border-radius:20px}.sidebar{padding:13px}.chat-head{padding:12px}.messages{padding:14px 10px}.message-compose{padding:10px}.send-btn{padding:0 13px;min-width:62px}.nav-item{min-width:52px;font-size:8px}.nav-item div{font-size:20px}}
+
+/* =========================================
+   MESSAGES HEADER — NORMAL / NON-STICKY
+   ========================================= */
+.messages-header,
+header,
+.top-header,
+.app-header {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    z-index: 10;
+}
+
+/* Prevent a fixed/sticky header class from reserving or
+   pinning the header while scrolling. */
+body {
+    padding-top: 0 !important;
+}
+
 </style>
 </head>
 <body>
@@ -99,7 +120,82 @@ async function openChat(friend){
 }
 window.clearChatSelection=()=>{activeFriend=null;if(unsubscribeMessages)unsubscribeMessages();$('chatPane').innerHTML='<div class="chat-empty"><div class="empty-inner"><div class="empty-icon">💬</div><h3>Select a friend</h3><p>Choose a friend from the list to start a private conversation.</p></div></div>';renderFriendList(friends)};
 function listenMessages(a,b){if(unsubscribeMessages)unsubscribeMessages();const id=chatId(a,b);const ref=collection(db,'conversations',id,'messages');const q=query(ref,orderBy('createdAt','asc'),limit(200));unsubscribeMessages=onSnapshot(q,snap=>{const box=$('messages');if(!box)return;if(snap.empty){box.innerHTML='<div class="chat-empty" style="min-height:100%"><div class="empty-inner"><div class="empty-icon">👋</div><h3>Start the conversation</h3><p>Send your first message to this friend.</p></div></div>';return}box.innerHTML=snap.docs.map(d=>{const m=d.data()||{};const mine=m.senderUid===a;return `<div class="message-row ${mine?'mine':''}"><div class="bubble">${esc(m.text||'')}<small>${formatTime(m.createdAt)}</small></div></div>`}).join('');box.scrollTop=box.scrollHeight},e=>{console.error(e);const box=$('messages');if(box)box.innerHTML='<div class="no-friends">Could not load messages. Check your Firestore Rules.</div>'});}
-async function sendMessage(e){e.preventDefault();const me=auth.currentUser;if(!me||!activeFriend)return;const input=$('messageInput'),btn=$('sendBtn');const text=input.value.trim();if(!text)return;btn.disabled=true;btn.textContent='Sending...';try{if(!(await ensureFriend(activeFriend.uid))){showToast('You are no longer friends with this student.');return}const id=chatId(me.uid,activeFriend.uid);await addDoc(collection(db,'conversations',id,'messages'),{senderUid:me.uid,receiverUid:activeFriend.uid,text,createdAt:serverTimestamp()});input.value='';input.focus();}catch(err){console.error(err);showToast(err?.code==='permission-denied'?'Messaging is blocked by Firestore Rules.':'Could not send message.');}finally{btn.disabled=false;btn.textContent='Send'}}
+async function sendMessage(e){
+  e.preventDefault();
+  const me=auth.currentUser;
+  if(!me||!activeFriend)return;
+
+  const input=$('messageInput'),btn=$('sendBtn');
+  const text=input.value.trim();
+  if(!text)return;
+
+  btn.disabled=true;
+  btn.textContent='Sending...';
+
+  try{
+    if(!(await ensureFriend(activeFriend.uid))){
+      showToast('You are no longer friends with this student.');
+      return;
+    }
+
+    const id=chatId(me.uid,activeFriend.uid);
+
+    // 1) Save the actual message first.
+    await addDoc(
+      collection(db,'conversations',id,'messages'),
+      {
+        senderUid:me.uid,
+        receiverUid:activeFriend.uid,
+        text,
+        createdAt:serverTimestamp()
+      }
+    );
+
+    // 2) Create a notification for the receiver.
+    // The Firestore Rules only allow the logged-in user to
+    // create a notification with their own UID as actorUid.
+    try{
+      const actorName=String(
+        me.displayName ||
+        me.nickname ||
+        activeFriend?.senderNickname ||
+        'Student'
+      );
+
+      await addDoc(
+        collection(db,'notifications'),
+        {
+          recipientUid:activeFriend.uid,
+          actorUid:me.uid,
+          actorName,
+          type:'message',
+          text:'sent you a message.',
+          chatId:id,
+          read:false,
+          createdAt:serverTimestamp()
+        }
+      );
+    }catch(notificationError){
+      // Do not fail the message itself if notification creation
+      // is temporarily unavailable.
+      console.warn('Message notification could not be created:',notificationError);
+    }
+
+    input.value='';
+    input.focus();
+
+  }catch(err){
+    console.error(err);
+    showToast(
+      err?.code==='permission-denied'
+        ? 'Messaging is blocked by Firestore Rules.'
+        : 'Could not send message.'
+    );
+  }finally{
+    btn.disabled=false;
+    btn.textContent='Send';
+  }
+}
 onAuthStateChanged(auth,user=>{if(!user){location.href='profile.html';return}loadFriends()});
 </script>
 </body>
