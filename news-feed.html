@@ -787,7 +787,8 @@ a{-webkit-tap-highlight-color:transparent}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import {
-  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged,
+  setPersistence, browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 import {
   getFirestore, collection, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc,
@@ -807,6 +808,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+// Keep the same Google login session available across all CATHS-MAIN pages.
+setPersistence(auth, browserLocalPersistence).catch(err => {
+  console.error('Auth persistence setup failed:', err);
+});
 const googleProvider = new GoogleAuthProvider();
 
 let firebaseUser = null;
@@ -1137,46 +1143,61 @@ function canSeePost(post){
 
 async function loadFeed(){
   const list=$('feedList');
+  if(!list) return;
+
   list.innerHTML=`<div class="state-card"><div class="loading-box"><div class="spinner"></div><p>Loading your feed...</p></div></div>`;
 
   try{
-    // Keep the existing Firebase login/session exactly as-is.
+    // These are independent of the public-post query. A temporary friend/profile
+    // read failure must never prevent public posts from appearing.
     await loadFriendIds();
     await loadMentionableFriends();
 
     const postsById = new Map();
+    const errors = [];
 
-    // PUBLIC: every returned document is explicitly public, so it matches
-    // the existing Firestore allow-read rule.
-    const publicSnap = await getDocs(query(
-      collection(db,'posts'),
-      where('visibility','==','public'),
-      limit(100)
-    ));
-    publicSnap.docs.forEach(d=>postsById.set(d.id,{id:d.id,...d.data()}));
+    // PUBLIC POSTS
+    try{
+      const publicSnap = await getDocs(query(
+        collection(db,'posts'),
+        where('visibility','==','public'),
+        limit(100)
+      ));
+      publicSnap.docs.forEach(d=>postsById.set(d.id,{id:d.id,...d.data()}));
+    }catch(e){
+      console.error('Public feed query failed:',e);
+      errors.push(e);
+    }
 
-    // FRIENDS-ONLY: query one friend at a time. This is intentionally kept
-    // compatible with your ORIGINAL Firestore rule that checks:
-    // friends/{currentUser}/list/{post.authorUid}
+    // FRIENDS-ONLY POSTS
+    // Use audienceUids because the Firestore rules explicitly allow a query
+    // when the authenticated UID is contained in this list. This also avoids
+    // running one query per friend and avoids rules/query mismatches.
     if(firebaseUser){
-      for(const friendId of Array.from(friendIds).slice(0,100)){
+      try{
         const friendSnap = await getDocs(query(
           collection(db,'posts'),
-          where('visibility','==','friends'),
-          where('authorUid','==',friendId),
+          where('audienceUids','array-contains',firebaseUser.uid),
           limit(100)
         ));
         friendSnap.docs.forEach(d=>postsById.set(d.id,{id:d.id,...d.data()}));
+      }catch(e){
+        console.error('Friends feed query failed:',e);
+        errors.push(e);
       }
 
-      // ONLY-ME: only the current user's own posts are queried.
-      const ownSnap = await getDocs(query(
-        collection(db,'posts'),
-        where('visibility','==','onlyMe'),
-        where('authorUid','==',firebaseUser.uid),
-        limit(100)
-      ));
-      ownSnap.docs.forEach(d=>postsById.set(d.id,{id:d.id,...d.data()}));
+      // ONLY-ME: query only the current user's own posts.
+      try{
+        const ownSnap = await getDocs(query(
+          collection(db,'posts'),
+          where('authorUid','==',firebaseUser.uid),
+          limit(100)
+        ));
+        ownSnap.docs.forEach(d=>postsById.set(d.id,{id:d.id,...d.data()}));
+      }catch(e){
+        console.error('Own feed query failed:',e);
+        errors.push(e);
+      }
     }
 
     const posts = Array.from(postsById.values())
@@ -1191,17 +1212,35 @@ async function loadFeed(){
     allFeedPosts=posts;
 
     if(!posts.length){
-      list.innerHTML=`
-        <div class="state-card">
-          <div class="state-icon">📰</div>
-          <h3>Your feed is empty</h3>
-          <p>Public posts and posts shared by your friends will appear here.</p>
-        </div>`;
+      if(errors.length && !postsById.size){
+        const firstError=errors[0];
+        list.innerHTML=`
+          <div class="state-card">
+            <div class="state-icon">⚠️</div>
+            <h3>Could not load the feed</h3>
+            <p>${firstError?.code==='permission-denied'
+              ? 'Firestore denied the News Feed query. Make sure the latest Firestore rules are published.'
+              : 'Please check your internet connection and Firestore configuration.'}</p>
+          </div>`;
+      }else{
+        list.innerHTML=`
+          <div class="state-card">
+            <div class="state-icon">📰</div>
+            <h3>Your feed is empty</h3>
+            <p>Public posts and posts shared by your friends will appear here.</p>
+          </div>`;
+      }
       return;
     }
 
+    // Render whatever was successfully loaded immediately. A failing optional
+    // friends/own query no longer wipes out the public feed.
     list.innerHTML=posts.map(renderPost).join('');
-    for(const post of posts) await refreshPostCounts(post.id);
+
+    // Counts are non-critical UI; don't block the feed itself on them.
+    await Promise.all(posts.map(post=>refreshPostCounts(post.id).catch(err=>{
+      console.error('Post counts failed:',post.id,err);
+    })));
   }catch(e){
     console.error('Feed load error',e);
     list.innerHTML=`
@@ -1210,11 +1249,10 @@ async function loadFeed(){
         <h3>Could not load the feed</h3>
         <p>${e?.code==='permission-denied'
           ? 'Firestore denied a News Feed query. Check that your current rules are published.'
-          : 'Check your Firestore rules and make sure the posts collection can be read.'}</p>
+          : 'Check your connection and Firebase configuration.'}</p>
       </div>`;
   }
 }
-
 function renderPost(post){
   const own = firebaseUser?.uid === post.authorUid;
   const visibilityLabel =
