@@ -1575,9 +1575,9 @@ and connect with the school community.
         <span>Student Voice</span>
     </a>
 
-    <a href="friends.html" class="nav-item" onclick="openProtectedNavigation(event, 'friends.html')">
+    <a href="friends.html" class="nav-item" onclick="openFriendsNavigation(event)">
         <div>👥</div>
-        <span>Add Friends</span>
+        <span>Friends</span>
     </a>
 
     <a href="profile.html" class="nav-item" onclick="openProtectedNavigation(event, 'profile.html')">
@@ -1910,6 +1910,23 @@ window.openProtectedNavigation = function(event, destination){
     }
 
     window.pendingNavigation = destination;
+    openLogin(false);
+};
+
+/* =========================
+   FRIENDS BOTTOM NAVIGATION
+   Always routes to friends.html.
+   If logged out, resume there after Google login.
+   ========================= */
+window.openFriendsNavigation = function(event){
+    if (event) event.preventDefault();
+
+    if (auth.currentUser) {
+        window.location.href = "friends.html";
+        return;
+    }
+
+    window.pendingNavigation = "friends.html";
     openLogin(false);
 };
 
