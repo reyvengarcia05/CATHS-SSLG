@@ -582,177 +582,6 @@ a{-webkit-tap-highlight-color:transparent}
   .post-actions{grid-template-columns:1fr}
   .reaction-picker{left:auto;right:0}
 }
-
-/* =========================================================
-   NEWS FEED ENHANCEMENTS
-   ========================================================= */
-.post-author-link{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  flex:1;
-  min-width:0;
-  color:inherit;
-  text-decoration:none;
-  cursor:pointer;
-  border-radius:14px;
-  padding:3px 5px 3px 0;
-  transition:transform .18s ease,background .18s ease;
-}
-.post-author-link:hover{
-  background:rgba(255,255,255,.07);
-  transform:translateX(2px);
-}
-.post-author-link:active{
-  transform:scale(.985);
-}
-.post-date-full{
-  font-size:9px;
-  opacity:.72;
-  margin-top:3px;
-  line-height:1.25;
-}
-.reaction-picker{
-  display:flex !important;
-  opacity:0;
-  visibility:hidden;
-  pointer-events:none;
-  transform:translateY(7px) scale(.94);
-  transform-origin:left bottom;
-  transition:
-    opacity .18s ease,
-    transform .18s cubic-bezier(.2,.8,.2,1),
-    visibility .18s ease;
-}
-.reaction-picker.open{
-  opacity:1;
-  visibility:visible;
-  pointer-events:auto;
-  transform:translateY(0) scale(1);
-}
-.reaction-emoji{
-  position:relative;
-  transition:transform .16s cubic-bezier(.2,.8,.2,1),background .16s ease;
-}
-.reaction-emoji:hover{
-  transform:translateY(-5px) scale(1.16);
-}
-.reaction-emoji:active{
-  transform:scale(.88);
-}
-.reaction-emoji.reacted-pop{
-  animation:reactionPop .42s cubic-bezier(.2,1.4,.35,1);
-}
-.post-action.react-clicked{
-  animation:reactButtonPop .36s cubic-bezier(.2,1.45,.35,1);
-}
-@keyframes reactionPop{
-  0%{transform:scale(.65) translateY(6px);opacity:.5}
-  60%{transform:scale(1.28) translateY(-4px);opacity:1}
-  100%{transform:scale(1) translateY(0)}
-}
-@keyframes reactButtonPop{
-  0%{transform:scale(1)}
-  55%{transform:scale(1.08)}
-  100%{transform:scale(1)}
-}
-.post-avatar,.post-author-link strong{
-  transition:transform .18s ease;
-}
-.post-author-link:focus-visible{outline:2px solid rgba(255,215,0,.9);outline-offset:2px}
-.post-author-link:hover .post-avatar{
-  transform:scale(1.04);
-}
-@media(max-width:768px){
-  .post-author-link{
-    padding-right:3px;
-  }
-  .post-date-full{
-    font-size:8px;
-  }
-  .reaction-picker{
-    left:0;
-    bottom:calc(100% + 8px);
-  }
-}
-@media(max-width:380px){
-  .reaction-picker{
-    left:auto;
-    right:0;
-  }
-}
-
-
-/* LOGIN MODAL — MATCHES INDEX.HTML DESIGN */
-.login-modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
-  z-index:10000;
-  padding:16px;
-}
-.login-modal.show{display:block!important;}
-.login-modal-content{
-  width:90%;
-  max-width:400px;
-  margin:120px auto;
-  padding:30px;
-  border-radius:25px;
-  background:rgba(255,255,255,.12);
-  backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
-  text-align:center;
-  color:white;
-  border:1px solid rgba(255,255,255,.2);
-  animation:newsLoginPop .3s ease;
-}
-.login-modal-content h2{font-size:24px;margin-bottom:6px}
-.login-modal-content p{font-size:12px;opacity:.82;margin-bottom:0}
-.login-modal-close{
-  float:right;
-  border:none;
-  background:transparent;
-  color:inherit;
-  font-size:28px;
-  line-height:1;
-  cursor:pointer;
-  padding:0;
-  margin:-8px -3px 0 0;
-}
-#newsGoogleLoginBtn,
-.google-login{
-  width:100%;
-  padding:14px;
-  margin-top:15px;
-  border:none;
-  border-radius:15px;
-  cursor:pointer;
-  font-weight:700;
-  background:white;
-  color:black;
-}
-#newsGoogleLoginBtn:disabled{opacity:.65;cursor:not-allowed}
-@keyframes newsLoginPop{
-  from{opacity:0;transform:scale(.8)}
-  to{opacity:1;transform:scale(1)}
-}
-@media(max-width:600px){
-  .login-modal{padding:16px}
-  .login-modal-content{
-    width:100%;
-    max-width:360px;
-    margin:18vh auto 0;
-    padding:23px 18px;
-    border-radius:21px;
-  }
-  .login-modal-content h2{font-size:21px}
-  .login-modal-content p{font-size:12px}
-  #newsGoogleLoginBtn{padding:13px;font-size:13px}
-  .login-modal-close{font-size:25px}
-}
 </style>
 </head>
 
@@ -769,7 +598,7 @@ a{-webkit-tap-highlight-color:transparent}
   </div>
 
   <div class="header-right">
-    <button id="headerProfileBtn" class="header-profile-btn" type="button" onclick="handleHeaderLoginClick(event)">
+    <button id="headerProfileBtn" class="header-profile-btn" type="button" onclick="toggleHeaderMenu()">
       👤 <span>Login</span>
     </button>
 
@@ -797,13 +626,13 @@ a{-webkit-tap-highlight-color:transparent}
       <h2>📰 News Feed</h2>
       <p>See public posts and posts shared by your friends.</p>
     </div>
-    <button class="post-top-btn" type="button" onclick="handlePostClick(event)">＋ Post</button>
+    <button class="post-top-btn" type="button" onclick="openPostComposer()">＋ Post</button>
   </div>
 
-  <div class="composer-shortcut" onclick="handlePostClick(event)">
+  <div class="composer-shortcut" onclick="openPostComposer()">
     <div id="composerAvatar" class="composer-avatar">👤</div>
     <div class="composer-input">What's on your mind? Share an update…</div>
-    <button class="composer-action" type="button" onclick="handlePostClick(event)">＋</button>
+    <button class="composer-action" type="button" onclick="event.stopPropagation();openPostComposer()">＋</button>
   </div>
 
   <section id="feedList" class="feed-list">
@@ -903,92 +732,10 @@ a{-webkit-tap-highlight-color:transparent}
   </div>
 </div>
 
-<div id="newsLoginModal" class="login-modal" aria-hidden="true">
-  <div class="login-modal-content" role="dialog" aria-modal="true" aria-labelledby="newsLoginTitle">
-    <button class="login-modal-close" type="button" aria-label="Close" onclick="handleCloseLogin(event)">&times;</button>
-    <h2 id="newsLoginTitle">Welcome Back</h2>
-    <p>Sign in to continue</p>
-    <button id="newsGoogleLoginBtn" type="button" onclick="handleGoogleLogin()">Continue with Google</button>
-  </div>
-</div>
-
-<script>
-(function(){
-  const get = id => document.getElementById(id);
-
-  window.openLogin = window.openLogin || function(){
-    const modal=get('newsLoginModal');
-    if(!modal) return;
-    modal.classList.add('show');
-    modal.setAttribute('aria-hidden','false');
-    modal.style.display='block';
-    document.body.style.overflow='hidden';
-  };
-
-  window.closeLogin = window.closeLogin || function(){
-    const modal=get('newsLoginModal');
-    if(!modal) return;
-    modal.classList.remove('show');
-    modal.setAttribute('aria-hidden','true');
-    modal.style.display='none';
-    document.body.style.overflow='';
-  };
-
-  window.handleHeaderLoginClick=function(event){
-    event?.preventDefault();
-    event?.stopPropagation();
-    if(!window.__newsAuthUser){
-      window.openLogin();
-      return;
-    }
-    const menu=get('profileMenu');
-    menu?.classList.toggle('open');
-  };
-
-  window.handleCloseLogin=function(event){
-    event?.preventDefault();
-    event?.stopPropagation();
-    window.closeLogin();
-  };
-
-  window.handlePostClick=function(event){
-    event?.preventDefault();
-    event?.stopPropagation();
-    if(window.__newsAuthUser){
-      if(typeof window.openPostComposer === 'function') window.openPostComposer();
-      return;
-    }
-    window.openLogin();
-  };
-
-  window.handleGoogleLogin=function(){
-    let tries=0;
-    const run=()=>{
-      if(typeof window.googleLogin === 'function'){
-        window.googleLogin();
-        return;
-      }
-      if(tries++ < 50){ setTimeout(run,100); return; }
-      const btn=get('newsGoogleLoginBtn');
-      if(btn) btn.textContent='Login is still loading...';
-    };
-    run();
-  };
-
-  document.addEventListener('DOMContentLoaded',function(){
-    const modal=get('newsLoginModal');
-    if(!modal) return;
-    modal.addEventListener('click',function(e){
-      if(e.target===modal) window.closeLogin();
-    });
-  });
-})();
-</script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import {
-  getAuth, setPersistence, browserLocalPersistence, GoogleAuthProvider,
-  signInWithPopup, signOut, onAuthStateChanged
+  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 import {
   getFirestore, collection, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc,
@@ -1009,10 +756,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
-
-await setPersistence(auth, browserLocalPersistence).catch(err => {
-  console.warn('Auth persistence setup:', err);
-});
 
 let firebaseUser = null;
 let currentProfile = null;
@@ -1095,62 +838,14 @@ function setHeaderUser(user, profile){
   }
 }
 
-window.openLogin = function(){
-  const modal = document.getElementById('newsLoginModal');
-  if(!modal){
-    console.error('newsLoginModal not found');
-    return;
-  }
-  modal.classList.add('show');
-  modal.setAttribute('aria-hidden','false');
-  modal.style.display='flex';
-  modal.style.visibility='visible';
-  modal.style.opacity='1';
-  modal.style.pointerEvents='auto';
-  document.body.style.overflow='hidden';
-};
-
-window.closeLogin = function(){
-  const modal = document.getElementById('newsLoginModal');
-  if(!modal) return;
-  modal.classList.remove('show');
-  modal.setAttribute('aria-hidden','true');
-  modal.style.display='none';
-  modal.style.visibility='hidden';
-  modal.style.opacity='0';
-  modal.style.pointerEvents='none';
-  document.body.style.overflow='';
-};
-
-window.googleLogin = async function(){
-  const btn = $('newsGoogleLoginBtn');
-  if(btn){ btn.disabled=true; btn.textContent='Signing in...'; }
-  try{
-    await signInWithPopup(auth, googleProvider);
-    window.closeLogin();
-  }catch(e){
-    console.error('Google login error:',e);
-    showToast(e?.code==='auth/popup-closed-by-user' ? 'Login cancelled.' : 'Google login failed.');
-  }finally{
-    if(btn){ btn.disabled=false; btn.textContent='Continue with Google'; }
-  }
-};
-
-window.addEventListener('click',e=>{
-  const modal=$('newsLoginModal');
-  if(modal && e.target===modal) window.closeLogin();
-});
-
 window.toggleHeaderMenu = function(){
   const menu = $('profileMenu');
   if(!firebaseUser){
-    window.openLogin();
+    window.location.href = 'profile.html';
     return;
   }
-  menu?.classList.toggle('open');
+  menu.classList.toggle('open');
 };
-
-// Header click is handled by the non-module interaction layer above.
 
 document.addEventListener('click', event=>{
   const menu = $('profileMenu');
@@ -1170,8 +865,7 @@ window.logoutUser = async function(){
 
 window.openPostComposer = function(){
   if(!auth.currentUser){
-    window.openLogin();
-    showToast('Please log in to create a post.');
+    window.location.href='profile.html';
     return;
   }
   $('postText').value='';
@@ -1192,7 +886,7 @@ $('postText').addEventListener('input',e=>{
 window.publishPost = async function(){
   const user = auth.currentUser;
   if(!user){
-    window.openLogin();
+    window.location.href='profile.html';
     return;
   }
 
@@ -1275,48 +969,13 @@ async function loadFeed(){
   try{
     await loadFriendIds();
 
-    const postsById = new Map();
-
-    // Firestore Rules are not filters, so query each visibility scope
-    // with constraints that match the security rules.
-    const publicSnap = await getDocs(query(
+    const snap = await getDocs(query(
       collection(db,'posts'),
-      where('visibility','==','public'),
+      where('visibility','in',['public','friends','onlyMe']),
       limit(100)
     ));
-    publicSnap.docs.forEach(d=>{
-      postsById.set(d.id,{id:d.id,...d.data()});
-    });
 
-    const friendIdArray = Array.from(friendIds);
-    for(let i=0;i<friendIdArray.length;i+=30){
-      const chunk = friendIdArray.slice(i,i+30);
-      if(!chunk.length) continue;
-
-      const friendSnap = await getDocs(query(
-        collection(db,'posts'),
-        where('visibility','==','friends'),
-        where('authorUid','in',chunk),
-        limit(100)
-      ));
-      friendSnap.docs.forEach(d=>{
-        postsById.set(d.id,{id:d.id,...d.data()});
-      });
-    }
-
-    if(auth.currentUser){
-      const ownSnap = await getDocs(query(
-        collection(db,'posts'),
-        where('visibility','==','onlyMe'),
-        where('authorUid','==',auth.currentUser.uid),
-        limit(100)
-      ));
-      ownSnap.docs.forEach(d=>{
-        postsById.set(d.id,{id:d.id,...d.data()});
-      });
-    }
-
-    const posts = Array.from(postsById.values())
+    const posts = snap.docs.map(d=>({id:d.id,...d.data()}))
       .filter(canSeePost)
       .sort((a,b)=>{
         if(Boolean(a.pinned)!==Boolean(b.pinned)) return a.pinned ? -1 : 1;
@@ -1366,19 +1025,16 @@ function renderPost(post){
   return `
     <article class="post-card" id="post-${esc(post.id)}">
       <div class="post-head">
-      <a class="post-author-link" href="user-profile.html?uid=${esc(post.authorUid)}" title="View ${esc(post.authorName || 'Student')}'s profile">
         ${avatarHtml(post)}
         <div class="post-author">
-          <strong>${esc(post.authorName || 'Student')}</strong>
-          <div class="post-meta">
-            ${post.username ? '@'+esc(post.username)+' • ' : ''}${formatTime(post.createdAt)}
-          </div>
-          <div class="post-date-full">${post.createdAt?.toDate ? post.createdAt.toDate().toLocaleString([], {month:'long', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit'}) : 'Date unavailable'}</div>
+          <strong>${esc(post.authorName || 'User')}</strong>
+          <div class="post-meta">${post.username ? '@'+esc(post.username)+' · ' : ''}${esc(formatTime(post.createdAt))}</div>
         </div>
-      </a>
-      <span class="post-visibility">${visibilityLabel}</span>
-      ${own ? `<button class="post-menu-btn" type="button" aria-label="Post settings" onclick="openManageMenu('${esc(post.id)}',event)">⋯</button>` : ''}
-    </div>${post.isShared ? '' : `<div class="post-text">${esc(post.text || '')}</div>`}
+        <span class="post-visibility">${visibilityLabel}</span>
+        ${own ? `<button class="post-menu-btn" type="button" onclick="openManageMenu('${esc(post.id)}',${post.pinned===true})">⋯</button>` : ''}
+      </div>
+
+      ${post.isShared ? '' : `<div class="post-text">${esc(post.text || '')}</div>`}
       ${sharedContext}
 
       <div class="post-counts" id="counts-${esc(post.id)}">Loading reactions...</div>
@@ -1409,43 +1065,6 @@ document.addEventListener('click',e=>{
     document.querySelectorAll('.reaction-picker.open').forEach(el=>el.classList.remove('open'));
   }
 });
-
-async function refreshPostCounts(postId){
-  try{
-    const reactionsSnap=await getDocs(collection(db,'posts',postId,'reactions'));
-    const commentsSnap=await getDocs(collection(db,'posts',postId,'comments'));
-    const postSnap=await getDoc(doc(db,'posts',postId));
-
-    const tally={'👍':0,'❤️':0,'😂':0,'😮':0,'😢':0};
-    reactionsSnap.docs.forEach(d=>{
-      const emoji=d.data()?.emoji||'👍';
-      tally[emoji]=(tally[emoji]||0)+1;
-    });
-
-    const parts=Object.entries(tally)
-      .filter(([_,count])=>count>0)
-      .map(([emoji,count])=>`<button type=\"button\" class=\"reaction-summary\" onclick=\"openReactions('${esc(postId)}')\">${emoji} ${count}</button>`);
-
-    const reactionSummary=parts.length
-      ? parts.join(' · ')
-      : `<button type=\"button\" class=\"reaction-summary\" onclick=\"openReactions('${esc(postId)}')\">No reactions yet</button>`;
-
-    const shareCount=postSnap.exists()?Number(postSnap.data()?.shareCount||0):0;
-    const counts=$('counts-'+postId);
-    if(counts){
-      counts.innerHTML=`${reactionSummary}<span>· 💬 ${commentsSnap.size}</span><span>· ↗ ${shareCount}</span>`;
-    }
-
-    const btn=$('react-btn-'+postId);
-    if(btn && auth.currentUser){
-      const mine=reactionsSnap.docs.find(d=>d.id===auth.currentUser.uid)?.data()?.emoji;
-      btn.textContent=mine?`${mine} Reacted`:'React';
-      btn.classList.toggle('active',!!mine);
-    }
-  }catch(e){
-    console.error('Counts error',e);
-  }
-}
 
 window.reactToPost=async function(postId,emoji,event){
   event.stopPropagation();
@@ -1486,28 +1105,50 @@ window.reactToPost=async function(postId,emoji,event){
         }
       }
     }
-    const picker=$('picker-'+postId);
-    const selectedEmoji=[...picker?.querySelectorAll('.reaction-emoji') || []]
-      .find(btn=>btn.textContent.trim()===emoji);
-    if(selectedEmoji){
-      selectedEmoji.classList.remove('reacted-pop');
-      void selectedEmoji.offsetWidth;
-      selectedEmoji.classList.add('reacted-pop');
-    }
-
-    const reactBtn=$('react-btn-'+postId);
-    if(reactBtn){
-      reactBtn.classList.remove('react-clicked');
-      void reactBtn.offsetWidth;
-      reactBtn.classList.add('react-clicked');
-    }
-
-    picker?.classList.remove('open');
+    $('picker-'+postId)?.classList.remove('open');
     await refreshPostCounts(postId);
   }catch(e){
     console.error(e);
     showToast('Could not update reaction.');
   }
+};
+
+async function refreshPostCounts(postId){
+  try{
+    const [reactionsSnap,commentsSnap,postSnap]=await Promise.all([
+      getDocs(collection(db,'posts',postId,'reactions')),
+      getDocs(collection(db,'posts',postId,'comments')),
+      getDoc(doc(db,'posts',postId))
+    ]);
+
+    const tally={'👍':0,'❤️':0,'😂':0,'😮':0,'😢':0};
+    reactionsSnap.docs.forEach(d=>{
+      const e=d.data()?.emoji||'👍';
+      tally[e]=(tally[e]||0)+1;
+    });
+
+    const parts=Object.entries(tally)
+      .filter(([_,n])=>n>0)
+      .map(([e,n])=>`<button class="reaction-summary" type="button" onclick="openReactions('${esc(postId)}')">${e} ${n}</button>`);
+
+    const reactionSummary=parts.length
+      ? parts.join(' · ')
+      : `<button class="reaction-summary" type="button" onclick="openReactions('${esc(postId)}')">No reactions yet</button>`;
+
+    const shareCount = postSnap.exists() ? Number(postSnap.data()?.shareCount||0) : 0;
+    const counts=$('counts-'+postId);
+    if(counts) counts.innerHTML=`${reactionSummary}<span>· 💬 ${commentsSnap.size}</span><span>· ↗ ${shareCount}</span>`;
+
+    const btn=$('react-btn-'+postId);
+    if(btn && auth.currentUser){
+      const mine=reactionsSnap.docs.find(d=>d.id===auth.currentUser.uid)?.data()?.emoji;
+      btn.textContent=mine?`${mine} Reacted`:'React';
+      btn.classList.toggle('active',!!mine);
+    }
+  }catch(e){
+    console.error('Counts error',e);
+  }
+}
 
 window.openComments=async function(postId){
   activeCommentPostId=postId;
@@ -1567,24 +1208,6 @@ window.sendComment=async function(){
       text,
       createdAt:serverTimestamp()
     });
-
-    const commentPostSnap = await getDoc(doc(db,'posts',activeCommentPostId));
-    if(commentPostSnap.exists()){
-      const postData=commentPostSnap.data()||{};
-      if(postData.authorUid && postData.authorUid!==user.uid){
-        await addDoc(collection(db,'notifications'),{
-          recipientUid:postData.authorUid,
-          actorUid:user.uid,
-          actorName:profile.nickname || profile.name || profile.displayName || user.displayName || 'Student',
-          type:'comment',
-          text:'commented on your post.',
-          postId:activeCommentPostId,
-          read:false,
-          createdAt:serverTimestamp()
-        });
-      }
-    }
-
     $('commentInput').value='';
     await loadComments(activeCommentPostId);
     await refreshPostCounts(activeCommentPostId);
@@ -1672,19 +1295,6 @@ window.sharePost=async function(postId){
     await updateDoc(doc(db,'posts',postId),{
       shareCount:Number(original.shareCount||0)+1
     }).catch(()=>{});
-
-    if(original.authorUid && original.authorUid!==user.uid){
-      await addDoc(collection(db,'notifications'),{
-        recipientUid:original.authorUid,
-        actorUid:user.uid,
-        actorName:profile.nickname || profile.name || profile.displayName || user.displayName || 'Student',
-        type:'share',
-        text:'shared your post.',
-        postId,
-        read:false,
-        createdAt:serverTimestamp()
-      });
-    }
 
     showToast('Post shared to your profile.');
     await loadFeed();
@@ -1794,88 +1404,21 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
     document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open'));
     $('manageMenuBackdrop')?.classList.remove('open');
-    window.closeLogin?.();
   }
 });
 
-// Restore and react to the same persistent Firebase login session used by index.html.
-onAuthStateChanged(auth, async user => {
-  firebaseUser = user;
-  window.__newsAuthUser = user || null;
-  window.__newsAuthUid = user?.uid || null;
-  window.__newsAuth = auth;
-
-  if (user) {
-    setHeaderUser(user, null);
+onAuthStateChanged(auth,async user=>{
+  firebaseUser=user;
+  if(user){
     await loadCurrentProfile();
-    setHeaderUser(user, currentProfile);
+    setHeaderUser(user,currentProfile);
     await loadFeed();
-    return;
+  }else{
+    currentProfile=null;
+    setHeaderUser(null,null);
+    await loadFeed();
   }
-
-  currentProfile = null;
-  setHeaderUser(null, null);
-  await loadFeed();
 });
 </script>
-
-<script>
-(function(){
-  // UI fallback that is independent of the large Firebase module.
-  // This guarantees that Login always opens its modal even if another
-  // part of the News Feed module encounters an initialization/runtime error.
-  function showLoginModal(){
-    var modal=document.getElementById('newsLoginModal');
-    if(!modal) return false;
-    modal.classList.add('show');
-    modal.setAttribute('aria-hidden','false');
-    modal.style.display='flex';
-    modal.style.visibility='visible';
-    modal.style.opacity='1';
-    modal.style.pointerEvents='auto';
-    document.body.style.overflow='hidden';
-    return true;
-  }
-  function hideLoginModal(){
-    var modal=document.getElementById('newsLoginModal');
-    if(!modal) return;
-    modal.classList.remove('show');
-    modal.setAttribute('aria-hidden','true');
-    modal.style.display='none';
-    modal.style.visibility='hidden';
-    modal.style.opacity='0';
-    modal.style.pointerEvents='none';
-    document.body.style.overflow='';
-  }
-  window.__showNewsLogin=showLoginModal;
-  window.__hideNewsLogin=hideLoginModal;
-
-  window.addEventListener('DOMContentLoaded',function(){
-    var loginBtn=document.getElementById('headerProfileBtn');
-    if(loginBtn){
-      loginBtn.addEventListener('click',function(e){
-        // Let the Firebase module handle logged-in users; for guests always
-        // guarantee the Login modal appears.
-        if(!window.__newsAuthUser){
-          e.preventDefault();
-          e.stopImmediatePropagation();
-          showLoginModal();
-        }
-      },true);
-    }
-
-    document.querySelectorAll('.post-top-btn,.composer-shortcut').forEach(function(el){
-      el.addEventListener('click',function(){
-        setTimeout(function(){
-          if(!window.__newsAuthUser){
-            showLoginModal();
-          }
-        },0);
-      },true);
-    });
-  });
-})();
-</script>
-
 </body>
 </html>
