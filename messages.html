@@ -40,7 +40,7 @@ body{min-height:100vh;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700)
 .message-reaction-chip:hover{background:rgba(24,60,140,.08);transform:scale(1.06)}
 .message-reaction-trigger{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;border:0;border-radius:7px;background:transparent;color:#183c8c;cursor:pointer;font-size:17px;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
 .message-reaction-trigger:hover{background:#eef4ff}
-.react-picker{position:absolute;display:none;gap:4px;align-items:center;padding:6px 7px;background:rgba(255,255,255,.99);border:1px solid rgba(0,0,0,.08);border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.2);z-index:220;bottom:calc(100% + 7px);right:0;max-width:320px;flex-wrap:wrap}
+.react-picker{position:absolute;display:none;gap:4px;align-items:center;padding:6px 7px;background:rgba(255,255,255,.99);border:1px solid rgba(0,0,0,.08);border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.2);z-index:220;bottom:calc(100% + 7px);right:0;max-width:190px;flex-wrap:nowrap}
 .react-picker.open{display:flex}
 .react-picker button{border:0;background:transparent;width:31px;height:31px;border-radius:7px;font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;transition:transform .12s ease,background .12s ease}
 .react-picker button:hover{background:#eef4ff;transform:scale(1.15)}
@@ -95,7 +95,7 @@ body{overflow:hidden;}
 .conversation-empty{padding:20px;text-align:center;font-size:10px;opacity:.7}
 
 @media(max-width:800px){.messenger{grid-template-columns:1fr;grid-template-rows:240px minmax(0,1fr)}.sidebar{border-right:none;border-bottom:1px solid rgba(255,255,255,.13);max-height:none;min-height:0}.chat{min-height:0}.chat-back{display:block;border:none;background:rgba(255,255,255,.12);color:#fff;width:34px;height:34px;border-radius:10px;cursor:pointer}.bubble{max-width:82%}}
-@media(max-width:520px){.container{padding:10px 8px 92px}.messenger{border-radius:20px}.sidebar{padding:13px}.chat-head{padding:12px}.messages{padding:14px 10px}.message-compose{padding:10px}.send-btn{padding:0 13px;min-width:62px}.nav-item{min-width:52px;font-size:8px}.nav-item div{font-size:20px}.message-reaction-trigger{display:none}.message-reactions{margin-top:5px}.react-picker{max-width:280px;left:0;right:auto}.bubble-wrap{max-width:90%}}
+@media(max-width:520px){.container{padding:10px 8px 92px}.messenger{border-radius:20px}.sidebar{padding:13px}.chat-head{padding:12px}.messages{padding:14px 10px}.message-compose{padding:10px}.send-btn{padding:0 13px;min-width:62px}.nav-item{min-width:52px;font-size:8px}.nav-item div{font-size:20px}.message-reaction-trigger{display:none}.message-reactions{margin-top:5px}.react-picker{max-width:190px;left:0;right:auto}.bubble-wrap{max-width:90%}}
 @media (hover:hover) and (pointer:fine){.message-reaction-trigger{display:inline-flex}}
 @media (hover:none) and (pointer:coarse){.message-reaction-trigger{display:none}}
 
@@ -615,7 +615,7 @@ async function messageRef(messageId){
   return null;
 }
 function closeReactionPickers(){document.querySelectorAll('.react-picker.open').forEach(x=>x.classList.remove('open'))}
-const PRIMARY_REACTIONS=['👍','❤️','😂','😢','😡'];
+const PRIMARY_REACTIONS=['👍','❤️','😂','😮','😢'];
 function ensureReactionPicker(messageId){
   let picker=$(`react-picker-${messageId}`);
   if(!picker){
@@ -631,8 +631,7 @@ function ensureReactionPicker(messageId){
 function renderPrimaryPicker(messageId){
   const picker=ensureReactionPicker(messageId);if(!picker)return;
   picker.dataset.mode='primary';
-  picker.innerHTML=PRIMARY_REACTIONS.map(emoji=>`<button type="button" aria-label="React ${esc(emoji)}" onclick="reactMessage('${esc(messageId)}','${emoji}')">${emoji}</button>`).join('')+
-    `<button type="button" class="react-picker-plus" aria-label="More emojis" onclick="openMoreReactionPicker('${esc(messageId)}',event)">+</button>`;
+  picker.innerHTML=PRIMARY_REACTIONS.map(emoji=>`<button type="button" aria-label="React ${esc(emoji)}" onclick="reactMessage('${esc(messageId)}','${emoji}')">${emoji}</button>`).join('');
 }
 function toggleReactionPicker(messageId,event){
   event?.stopPropagation();
