@@ -19,6 +19,53 @@ body{min-height:100vh;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700)
 .loading{padding:28px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:9px;font-size:11px;opacity:.86}.spinner{width:30px;height:30px;border:3px solid rgba(255,255,255,.25);border-top-color:var(--yellow);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
 .no-friends{padding:20px 12px;text-align:center;font-size:11px;opacity:.75;line-height:1.6}.toast{position:fixed;left:50%;bottom:98px;transform:translate(-50%,18px);opacity:0;pointer-events:none;background:#101827;color:#fff;padding:11px 15px;border-radius:999px;font-size:11px;transition:.25s;z-index:100}.toast.show{opacity:1;transform:translate(-50%,0)}
 .bottom-nav{position:fixed;left:0;right:0;bottom:0;height:78px;background:linear-gradient(90deg,#1e3a8a,#b59f1a);display:flex;justify-content:space-around;align-items:center;z-index:60;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}.nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#fff;font-size:9px;min-width:60px;transition:.22s}.nav-item div{font-size:22px;height:26px;display:flex;align-items:center;justify-content:center;margin-bottom:3px}.nav-item.active{color:var(--yellow);transform:translateY(-6px) scale(1.07);font-weight:700}.nav-item.active div{font-size:25px}
+
+/* Messaging enhancements */
+.side-actions{display:flex;gap:7px;margin-bottom:10px}
+.side-action-btn{flex:1;border:none;border-radius:11px;padding:9px 8px;background:rgba(255,255,255,.12);color:#fff;font-weight:800;font-size:10px;cursor:pointer}
+.side-action-btn:hover{background:rgba(255,255,255,.2)}
+.conversation-section-title{font-size:9px;text-transform:uppercase;letter-spacing:.08em;opacity:.55;margin:5px 2px}
+.conversation-badge{margin-left:auto;background:var(--yellow);color:var(--dark);font-size:8px;font-weight:800;padding:3px 6px;border-radius:999px}
+.message-row{position:relative}
+.bubble-wrap{position:relative;max-width:min(78%,560px)}
+.bubble-wrap .bubble{max-width:100%}
+.message-tools-btn{position:absolute;top:50%;transform:translateY(-50%);width:28px;height:28px;border:0;border-radius:9px;background:rgba(255,255,255,.86);color:#183c8c;cursor:pointer;font-weight:900;box-shadow:0 5px 14px rgba(0,0,0,.12);display:none}
+.message-row:not(.mine) .message-tools-btn{right:-35px}
+.message-row.mine .message-tools-btn{left:-35px}
+.message-row:hover .message-tools-btn,.message-tools-btn:focus{display:block}
+.message-reactions{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+.message-reaction-chip{border:1px solid rgba(0,61,165,.12);background:#fff;color:#183c8c;border-radius:999px;padding:2px 7px;font-size:9px;cursor:pointer}
+.message-row.mine .message-reaction-chip{background:#fff4a8}
+.forwarded-box{margin-bottom:7px;padding:7px 9px;border-left:3px solid #7d93d8;background:rgba(24,60,140,.06);border-radius:7px;font-size:9px;color:#56698f}
+.unsent-text{font-style:italic;opacity:.55}
+.message-actions{position:absolute;z-index:150;min-width:170px;background:#fff;color:#183c8c;border-radius:14px;padding:6px;box-shadow:0 15px 40px rgba(0,0,0,.22);display:none}
+.message-actions.open{display:block}
+.message-actions button{width:100%;border:0;background:transparent;text-align:left;padding:9px 10px;border-radius:9px;color:#183c8c;font-size:10px;font-weight:700;cursor:pointer}
+.message-actions button:hover{background:#eef4ff}
+.message-actions .danger{color:#b91c1c}
+.chat-head{position:relative}
+.chat-head-actions{margin-left:auto;display:flex;gap:6px}
+.chat-head-btn{border:0;background:rgba(255,255,255,.12);color:#fff;width:34px;height:34px;border-radius:10px;cursor:pointer}
+.chat-head-btn:hover{background:rgba(255,255,255,.2)}
+.group-avatar{background:#dfe8ff}
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.58);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:500;display:none;align-items:center;justify-content:center;padding:16px}
+.modal-backdrop.open{display:flex}
+.modal-card{width:100%;max-width:520px;max-height:86vh;overflow:auto;background:#fff;color:#183c8c;border-radius:22px;padding:20px;box-shadow:0 25px 70px rgba(0,0,0,.34)}
+.modal-card h3{font-size:18px;margin-bottom:6px}
+.modal-card p{font-size:11px;color:#64748b;line-height:1.55}
+.modal-head-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.modal-x{border:0;width:34px;height:34px;border-radius:50%;background:#eef4ff;color:#183c8c;font-size:18px;cursor:pointer}
+.form-label{display:block;font-size:10px;font-weight:800;margin:13px 0 6px;color:#183c8c}
+.modal-input{width:100%;border:1px solid #dce4f2;border-radius:11px;padding:11px;outline:0;color:#183c8c}
+.modal-input:focus{border-color:#6e8fd8;box-shadow:0 0 0 3px rgba(0,61,165,.08)}
+.select-friends{display:flex;flex-direction:column;gap:7px;max-height:240px;overflow:auto}
+.select-friend{display:flex;align-items:center;gap:8px;padding:8px 9px;border:1px solid #e3eaf7;border-radius:11px;background:#f8fafc}
+.select-friend input{accent-color:#003DA5}
+.modal-primary{width:100%;margin-top:14px;border:0;border-radius:12px;background:var(--dark);color:#fff;padding:12px;font-weight:800;cursor:pointer}
+.modal-secondary{width:100%;margin-top:8px;border:0;border-radius:12px;background:#eef4ff;color:#183c8c;padding:11px;font-weight:800;cursor:pointer}
+.group-members-line{font-size:9px;color:#6b7891;margin-top:4px}
+.conversation-empty{padding:20px;text-align:center;font-size:10px;opacity:.7}
+
 @media(max-width:800px){.messenger{grid-template-columns:1fr;min-height:calc(100vh - 160px)}.sidebar{border-right:none;border-bottom:1px solid rgba(255,255,255,.13);max-height:290px}.chat{min-height:480px}.chat-back{display:block;border:none;background:rgba(255,255,255,.12);color:#fff;width:34px;height:34px;border-radius:10px;cursor:pointer}.bubble{max-width:82%}}
 @media(max-width:520px){.container{padding:10px 8px 100px}.messenger{border-radius:20px}.sidebar{padding:13px}.chat-head{padding:12px}.messages{padding:14px 10px}.message-compose{padding:10px}.send-btn{padding:0 13px;min-width:62px}.nav-item{min-width:52px;font-size:8px}.nav-item div{font-size:20px}}
 </style>
@@ -34,8 +81,12 @@ body{min-height:100vh;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700)
   <section class="messenger">
     <aside class="sidebar">
       <div class="side-title"><h2>💬 Messages</h2><span id="friendCount" class="count-pill">0</span></div>
-      <input id="friendSearch" class="search" placeholder="Search friends..." autocomplete="off">
-      <div id="friendList" class="friend-list"><div class="loading"><div class="spinner"></div><div>Loading friends...</div></div></div>
+      <div class="side-actions">
+        <button id="newGroupBtn" class="side-action-btn" type="button">＋ Group</button>
+        <button id="searchFocusBtn" class="side-action-btn" type="button">🔎 Search</button>
+      </div>
+      <input id="friendSearch" class="search" placeholder="Search conversations..." autocomplete="off">
+      <div id="conversationList" class="friend-list"><div class="loading"><div class="spinner"></div><div>Loading conversations...</div></div></div>
     </aside>
 
     <section id="chatPane" class="chat">
@@ -46,11 +97,45 @@ body{min-height:100vh;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700)
   </section>
 </main>
 
+
+<div id="groupCreateModal" class="modal-backdrop">
+  <div class="modal-card">
+    <div class="modal-head-row"><h3>👥 Create Group Chat</h3><button type="button" class="modal-x" onclick="closeGroupCreate()">×</button></div>
+    <p>Create a private group with your friends.</p>
+    <label class="form-label">Group name</label>
+    <input id="groupNameInput" class="modal-input" maxlength="80" placeholder="e.g. CATHS Barkada">
+    <label class="form-label">Add friends</label>
+    <div id="groupFriendChoices" class="select-friends"></div>
+    <button id="createGroupConfirmBtn" class="modal-primary" type="button">Create Group</button>
+  </div>
+</div>
+
+<div id="groupManageModal" class="modal-backdrop">
+  <div class="modal-card">
+    <div class="modal-head-row"><h3>⚙️ Group Settings</h3><button type="button" class="modal-x" onclick="closeGroupManage()">×</button></div>
+    <p>Change the group name or add more friends.</p>
+    <label class="form-label">Group name</label>
+    <input id="groupManageNameInput" class="modal-input" maxlength="80">
+    <label class="form-label">Add friends</label>
+    <div id="groupManageFriendChoices" class="select-friends"></div>
+    <button id="saveGroupBtn" class="modal-primary" type="button">Save Changes</button>
+    <button type="button" class="modal-secondary" onclick="closeGroupManage()">Cancel</button>
+  </div>
+</div>
+
+<div id="forwardModal" class="modal-backdrop">
+  <div class="modal-card">
+    <div class="modal-head-row"><h3>↗️ Forward Message</h3><button type="button" class="modal-x" onclick="closeForward()">×</button></div>
+    <p>Select a conversation.</p>
+    <input id="forwardSearch" class="search" placeholder="Search conversations..." autocomplete="off">
+    <div id="forwardChoices" class="select-friends"></div>
+  </div>
+</div>
 <div id="toast" class="toast"></div>
 
 <nav class="bottom-nav">
   <a href="index.html" class="nav-item"><div>🏠</div><span>Home</span></a>
-  <a href="news.html" class="nav-item"><div>📢</div><span>News</span></a>
+  <a href="news-feed.html" class="nav-item"><div>📰</div><span>News Feed</span></a>
   <a href="voice.html" class="nav-item"><div>🗣️</div><span>Student Voice</span></a>
   <a href="friends.html" class="nav-item"><div>👥</div><span>Friends</span></a>
   <a href="profile.html" class="nav-item active"><div>💬</div><span>Messages</span></a>
@@ -59,147 +144,348 @@ body{min-height:100vh;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700)
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-import {getFirestore,doc,getDoc,collection,getDocs,query,where,limit,addDoc,serverTimestamp,onSnapshot,orderBy} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+import {
+  getFirestore,doc,getDoc,collection,getDocs,query,where,limit,addDoc,setDoc,updateDoc,
+  deleteDoc,serverTimestamp,onSnapshot,arrayUnion
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 const firebaseConfig={apiKey:"AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",authDomain:"caths-page.firebaseapp.com",projectId:"caths-page",storageBucket:"caths-page.firebasestorage.app",messagingSenderId:"945498022620",appId:"1:945498022620:web:71aeb4cd2472e061aeca19",measurementId:"G-CBG1YSK13G"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const $=id=>document.getElementById(id);
-const params=new URLSearchParams(location.search);let targetUid=params.get('uid')||'';let friends=[];let activeFriend=null;let unsubscribeMessages=null;
+
+let targetUid=new URLSearchParams(location.search).get('uid')||'';
+let friends=[];
+let groups=[];
+let activeFriend=null;
+let activeGroup=null;
+let activeConversation=null;
+let unsubscribeMessages=null;
+let unsubscribeGroups=null;
+let pendingActionMessage=null;
+
 const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 function showToast(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>el.classList.remove('show'),2400)}
-function avatarHtml(p,className='friend-avatar'){return p?.photoURL?`<div class="${className}"><img src="${esc(p.photoURL)}" alt=""></div>`:`<div class="${className}">${esc((p?.nickname||p?.username||p?.name||'U').charAt(0).toUpperCase())}</div>`}
+function avatarHtml(p,className='friend-avatar'){
+  return p?.photoURL?`<div class="${className}"><img src="${esc(p.photoURL)}" alt=""></div>`:`<div class="${className}">${esc((p?.nickname||p?.username||p?.name||'U').charAt(0).toUpperCase())}</div>`;
+}
+function groupAvatarHtml(g,className='friend-avatar group-avatar'){return `<div class="${className}">👥</div>`}
 function chatId(a,b){return [a,b].sort().join('_')}
 function formatTime(ts){try{const d=ts?.toDate?ts.toDate():new Date(ts);return d.toLocaleString([],{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});}catch{return ''}}
 async function getUserProfile(uid){const s=await getDoc(doc(db,'users',uid));return s.exists()?{uid,...s.data()}:({uid,name:'Student',nickname:'Student'});}
+function isGroup(){return Boolean(activeGroup)}
+
+function openModal(id){$(id)?.classList.add('open')}
+function closeModal(id){$(id)?.classList.remove('open')}
+window.closeGroupCreate=()=>closeModal('groupCreateModal');
+window.closeGroupManage=()=>closeModal('groupManageModal');
+window.closeForward=()=>closeModal('forwardModal');
+
 async function loadFriends(){
   const me=auth.currentUser;if(!me)return;
-  $('friendList').innerHTML='<div class="loading"><div class="spinner"></div><div>Loading friends...</div></div>';
   try{
     const snap=await getDocs(query(collection(db,'friends',me.uid,'list'),limit(100)));
-    friends=await Promise.all(snap.docs.map(async d=>{const base={uid:d.id,...d.data()};try{return await getUserProfile(d.id).then(p=>({...base,...p}));}catch{return base;}}));
+    friends=await Promise.all(snap.docs.map(async d=>{
+      const base={uid:d.id,...d.data()};
+      try{return await getUserProfile(d.id).then(p=>({...base,...p}))}catch{return base}
+    }));
     friends.sort((a,b)=>String(a.nickname||a.name||a.username||'').localeCompare(String(b.nickname||b.name||b.username||'')));
-    $('friendCount').textContent=String(friends.length);
-    renderFriendList(friends);
-    if(targetUid){const match=friends.find(f=>f.uid===targetUid);if(match)openChat(match);}
-  }catch(e){console.error(e);$('friendList').innerHTML='<div class="no-friends">Could not load friends.<br>Check your Firestore Rules.</div>';}
+  }catch(e){console.error('friends',e);friends=[]}
+  renderConversations();
 }
-function renderFriendList(list){
-  if(!list.length){$('friendList').innerHTML='<div class="no-friends">You have no friends yet.<br>Add friends first to start messaging.</div>';return;}
-  $('friendList').innerHTML=list.map(f=>`<button type="button" class="friend-item ${activeFriend?.uid===f.uid?'active':''}" data-uid="${esc(f.uid)}">${avatarHtml(f)}<span class="friend-info"><strong>${esc(f.nickname||f.name||f.displayName||'Student')}</strong><small>${f.username?'@'+esc(f.username):'Friend'}</small></span></button>`).join('');
-  $('friendList').querySelectorAll('.friend-item').forEach(btn=>btn.addEventListener('click',()=>{const f=friends.find(x=>x.uid===btn.dataset.uid);if(f)openChat(f)}));
+
+function listenGroups(){
+  if(unsubscribeGroups)unsubscribeGroups();
+  const me=auth.currentUser;if(!me)return;
+  const q=query(collection(db,'groups'),where('memberUids','array-contains',me.uid),limit(100));
+  unsubscribeGroups=onSnapshot(q,snap=>{
+    groups=snap.docs.map(d=>({id:d.id,...d.data(),kind:'group'})).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')));
+    renderConversations();
+    renderForwardChoices();
+  },err=>console.error('Group listener',err));
 }
-$('friendSearch').addEventListener('input',()=>{const q=$('friendSearch').value.trim().toLowerCase();renderFriendList(friends.filter(f=>String(f.nickname||f.name||f.username||'').toLowerCase().includes(q)))});
-async function ensureFriend(otherUid){const me=auth.currentUser;if(!me||!otherUid||me.uid===otherUid)return false;const s=await getDoc(doc(db,'friends',me.uid,'list',otherUid));return s.exists()}
+
+function conversationItems(){
+  return [
+    ...friends.map(f=>({...f,kind:'friend'})),
+    ...groups.map(g=>({...g,uid:g.id}))
+  ];
+}
+
+function renderConversations(list=conversationItems()){
+  const box=$('conversationList');
+  $('friendCount').textContent=String(list.length);
+  if(!list.length){box.innerHTML='<div class="conversation-empty">No conversations found.</div>';return}
+  box.innerHTML=list.map(item=>{
+    const group=item.kind==='group';
+    const name=group?(item.name||'Group Chat'):(item.nickname||item.name||item.displayName||'Student');
+    const sub=group?`${(item.memberUids||[]).length} members`:(item.username?'@'+item.username:'Friend');
+    return `<button type="button" class="friend-item ${activeConversation?.id===(group?item.id:item.uid)?'active':''}" data-kind="${group?'group':'friend'}" data-id="${esc(group?item.id:item.uid)}">
+      ${group?groupAvatarHtml(item):avatarHtml(item)}
+      <span class="friend-info"><strong>${esc(name)}</strong><small>${esc(sub)}</small></span>
+      ${group?'<span class="conversation-badge">GROUP</span>':''}
+    </button>`;
+  }).join('');
+  box.querySelectorAll('.friend-item').forEach(btn=>btn.addEventListener('click',()=>{
+    const item=conversationItems().find(x=>x.kind===btn.dataset.kind && (x.kind==='group'?x.id: x.uid)===btn.dataset.id);
+    if(item) item.kind==='group'?openGroup(item):openChat(item);
+  }));
+}
+
+$('friendSearch').addEventListener('input',e=>{
+  const q=e.target.value.trim().toLowerCase();
+  const list=conversationItems().filter(x=>{
+    const name=x.kind==='group'?(x.name||''):(x.nickname||x.name||x.username||x.displayName||'');
+    return name.toLowerCase().includes(q);
+  });
+  renderConversations(list);
+});
+$('searchFocusBtn').addEventListener('click',()=>{$('friendSearch').focus();$('friendSearch').select()});
+
+async function ensureFriend(otherUid){
+  const me=auth.currentUser;
+  if(!me||!otherUid||me.uid===otherUid)return false;
+  const s=await getDoc(doc(db,'friends',me.uid,'list',otherUid));
+  return s.exists();
+}
+
 async function openChat(friend){
   const me=auth.currentUser;if(!me||!friend)return;
   if(!(await ensureFriend(friend.uid))){showToast('You can only message your friends.');return;}
-  activeFriend=friend;targetUid=friend.uid;history.replaceState(null,'',`messages.html?uid=${encodeURIComponent(friend.uid)}`);renderFriendList(friends);
-  $('chatPane').innerHTML=`<div class="chat-head"><button class="chat-back" type="button" onclick="clearChatSelection()">←</button>${avatarHtml(friend,'chat-avatar')}<div class="chat-person"><strong>${esc(friend.nickname||friend.name||friend.displayName||'Student')}</strong><small>${friend.username?'@'+esc(friend.username):'Friend'}</small></div></div><div id="messages" class="messages"><div class="loading"><div class="spinner"></div><div>Loading messages...</div></div></div><form id="messageForm" class="message-compose"><input id="messageInput" class="message-input" maxlength="1000" placeholder="Write a message..." autocomplete="off"><button id="sendBtn" class="send-btn" type="submit">Send</button></form>`;
-  $('messageForm').addEventListener('submit',sendMessage);$('messageInput').focus();listenMessages(me.uid,friend.uid);
+  activeFriend=friend;activeGroup=null;activeConversation={kind:'friend',id:friend.uid};
+  history.replaceState(null,'',`messages.html?uid=${encodeURIComponent(friend.uid)}`);
+  renderConversations();
+  $('chatPane').innerHTML=`<div class="chat-head">
+    <button class="chat-back" type="button" onclick="clearChatSelection()">←</button>
+    ${avatarHtml(friend,'chat-avatar')}
+    <div class="chat-person"><strong>${esc(friend.nickname||friend.name||friend.displayName||'Student')}</strong><small>${friend.username?'@'+esc(friend.username):'Friend'}</small></div>
+    
+  </div>
+  <div id="messages" class="messages"><div class="loading"><div class="spinner"></div><div>Loading messages...</div></div></div>
+  <form id="messageForm" class="message-compose"><input id="messageInput" class="message-input" maxlength="1000" placeholder="Write a message..." autocomplete="off"><button id="sendBtn" class="send-btn" type="submit">Send</button></form>`;
+  $('messageForm').addEventListener('submit',sendMessage);
+  $('messageInput').focus();
+  listenDirectMessages(me.uid,friend.uid);
 }
-window.clearChatSelection=()=>{activeFriend=null;if(unsubscribeMessages)unsubscribeMessages();$('chatPane').innerHTML='<div class="chat-empty"><div class="empty-inner"><div class="empty-icon">💬</div><h3>Select a friend</h3><p>Choose a friend from the list to start a private conversation.</p></div></div>';renderFriendList(friends)};
-function listenMessages(a,b){
-  if(unsubscribeMessages) unsubscribeMessages();
 
-  const id=chatId(a,b);
-  const ref=collection(db,'conversations',id,'messages');
-
-  // Firestore Rules are not filters. Use two constrained listeners so
-  // every returned message is provably readable by the deployed rules.
-  const qMine=query(ref,where('senderUid','==',a),where('receiverUid','==',b),limit(200));
-  const qTheirs=query(ref,where('senderUid','==',b),where('receiverUid','==',a),limit(200));
-
-  let mineDocs=[], theirsDocs=[];
-
-  const render=()=>{
-    const box=$('messages');
-    if(!box)return;
-
-    const merged=[...mineDocs,...theirsDocs]
-      .sort((x,y)=>{
-        const at=x.data()?.createdAt?.toMillis?.() ?? 0;
-        const bt=y.data()?.createdAt?.toMillis?.() ?? 0;
-        return at-bt;
-      }).slice(-200);
-
-    if(!merged.length){
-      box.innerHTML='<div class="chat-empty" style="min-height:100%"><div class="empty-inner"><div class="empty-icon">👋</div><h3>Start the conversation</h3><p>Send your first message to this friend.</p></div></div>';
-      return;
-    }
-
-    box.innerHTML=merged.map(d=>{
-      const msg=d.data()||{};
-      const mine=msg.senderUid===a;
-      return `<div class="message-row ${mine?'mine':''}"><div class="bubble">${esc(msg.text||'')}<small>${formatTime(msg.createdAt)}</small></div></div>`;
-    }).join('');
-    box.scrollTop=box.scrollHeight;
-  };
-
-  const onError=e=>{
-    console.error('Message listener error:',e);
-    const box=$('messages');
-    if(box)box.innerHTML='<div class="no-friends">Could not load messages. Check your Firestore Rules and friendship status.</div>';
-  };
-
-  const unsubMine=onSnapshot(qMine,snap=>{mineDocs=snap.docs;render()},onError);
-  const unsubTheirs=onSnapshot(qTheirs,snap=>{theirsDocs=snap.docs;render()},onError);
-
-  unsubscribeMessages=()=>{
-    unsubMine();
-    unsubTheirs();
-  };
+async function openGroup(group){
+  const me=auth.currentUser;if(!me||!group)return;
+  if(!(group.memberUids||[]).includes(me.uid)){showToast('You are not a member of this group.');return}
+  activeGroup=group;activeFriend=null;activeConversation={kind:'group',id:group.id};
+  history.replaceState(null,'',`messages.html?group=${encodeURIComponent(group.id)}`);
+  renderConversations();
+  $('chatPane').innerHTML=`<div class="chat-head">
+    <button class="chat-back" type="button" onclick="clearChatSelection()">←</button>
+    ${groupAvatarHtml(group,'chat-avatar group-avatar')}
+    <div class="chat-person"><strong>${esc(group.name||'Group Chat')}</strong><small>${(group.memberUids||[]).length} members</small></div>
+    <div class="chat-head-actions"><button class="chat-head-btn" type="button" onclick="openGroupManage()">⚙</button></div>
+  </div>
+  <div id="messages" class="messages"><div class="loading"><div class="spinner"></div><div>Loading messages...</div></div></div>
+  <form id="messageForm" class="message-compose"><input id="messageInput" class="message-input" maxlength="1000" placeholder="Message the group..." autocomplete="off"><button id="sendBtn" class="send-btn" type="submit">Send</button></form>`;
+  $('messageForm').addEventListener('submit',sendMessage);
+  $('messageInput').focus();
+  listenGroupMessages(group.id);
 }
+
+window.clearChatSelection=()=>{activeFriend=null;activeGroup=null;activeConversation=null;if(unsubscribeMessages)unsubscribeMessages();$('chatPane').innerHTML='<div class="chat-empty"><div class="empty-inner"><div class="empty-icon">💬</div><h3>Select a conversation</h3><p>Choose a friend or group to start chatting.</p></div></div>';renderConversations()};
+
+function closeMessageActions(){document.querySelectorAll('.message-actions.open').forEach(x=>x.classList.remove('open'))}
+document.addEventListener('click',e=>{if(!e.target.closest('.message-tools-btn')&&!e.target.closest('.message-actions'))closeMessageActions()});
+
+function renderMessageDoc(d,currentUid){
+  const msg=d.data()||{}, id=d.id;
+  const hidden=Array.isArray(msg.hiddenFor)&&msg.hiddenFor.includes(currentUid);
+  if(hidden)return '';
+  const mine=msg.senderUid===currentUid;
+  const unsent=msg.unsent===true;
+  const forwarded=msg.forwardedFrom;
+  const reactions=msg.reactions&&typeof msg.reactions==='object'?msg.reactions:{};
+  const chips=Object.entries(reactions).map(([emoji,count])=>`<button class="message-reaction-chip" type="button" onclick="reactMessage('${esc(id)}','${esc(emoji)}')">${esc(emoji)} ${Number(count)||1}</button>`).join('');
+  const actionMenu=`<div class="message-actions" id="actions-${esc(id)}">
+    <button type="button" onclick="reactMessage('${esc(id)}','❤️')">❤️ React</button>
+    <button type="button" onclick="prepareForward('${esc(id)}')">↗️ Forward</button>
+    ${mine && !unsent?`<button type="button" onclick="unsendForMe('${esc(id)}')">👤 Unsend for me</button><button class="danger" type="button" onclick="unsendForEveryone('${esc(id)}')">🗑️ Unsend for everyone</button>`:`<button type="button" onclick="unsendForMe('${esc(id)}')">👤 Unsend for me</button>`}
+  </div>`;
+  const body=unsent?`<span class="unsent-text">This message was unsent.</span>`:
+    `${forwarded?`<div class="forwarded-box">↗ Forwarded message</div>`:''}${esc(msg.text||'')}`;
+  const rowClass=mine?'message-row mine':'message-row';
+  return `<div class="${rowClass}" data-message-id="${esc(id)}">
+    <div class="bubble-wrap">
+      <div class="bubble">${body}<small>${formatTime(msg.createdAt)}</small>${chips?`<div class="message-reactions">${chips}</div>`:''}</div>
+      <button class="message-tools-btn" type="button" onclick="toggleMessageActions('${esc(id)}',event)">⋯</button>
+      ${actionMenu}
+    </div>
+  </div>`;
+}
+
+function renderMessages(docs,currentUid){
+  const box=$('messages');if(!box)return;
+  const merged=[...docs].sort((a,b)=>(a.data()?.createdAt?.toMillis?.()||0)-(b.data()?.createdAt?.toMillis?.()||0)).slice(-300);
+  const html=merged.map(d=>renderMessageDoc(d,currentUid)).join('');
+  box.innerHTML=html||'<div class="chat-empty" style="min-height:100%"><div class="empty-inner"><div class="empty-icon">👋</div><h3>Start the conversation</h3><p>Send your first message.</p></div></div>';
+  box.scrollTop=box.scrollHeight;
+}
+function listenDirectMessages(a,b){
+  if(unsubscribeMessages)unsubscribeMessages();
+  const id=chatId(a,b),ref=collection(db,'conversations',id,'messages');
+  const qMine=query(ref,where('senderUid','==',a),where('receiverUid','==',b),limit(300));
+  const qTheirs=query(ref,where('senderUid','==',b),where('receiverUid','==',a),limit(300));
+  let mine=[],theirs=[];
+  const render=()=>renderMessages([...mine,...theirs],a);
+  const onErr=e=>{console.error('Message listener',e);const box=$('messages');if(box)box.innerHTML='<div class="no-friends">Could not load messages. Check your Firestore Rules.</div>'};
+  const u1=onSnapshot(qMine,s=>{mine=s.docs;render()},onErr),u2=onSnapshot(qTheirs,s=>{theirs=s.docs;render()},onErr);
+  unsubscribeMessages=()=>{u1();u2()};
+}
+function listenGroupMessages(groupId){
+  if(unsubscribeMessages)unsubscribeMessages();
+  const me=auth.currentUser;const ref=collection(db,'groups',groupId,'messages');
+  const q=query(ref,limit(300));
+  unsubscribeMessages=onSnapshot(q,s=>renderMessages(s.docs,me.uid),e=>{console.error('Group messages',e);$('messages').innerHTML='<div class="no-friends">Could not load group messages. Check your Firestore Rules.</div>'});
+}
+
 async function sendMessage(e){
   e.preventDefault();
-  const me=auth.currentUser;
-  if(!me||!activeFriend)return;
-
-  const input=$('messageInput'),btn=$('sendBtn');
-  const text=input.value.trim();
-  if(!text)return;
-
-  btn.disabled=true;
-  btn.textContent='Sending...';
-
+  const me=auth.currentUser;if(!me||!activeConversation)return;
+  const input=$('messageInput'),btn=$('sendBtn'),text=input.value.trim();if(!text)return;
+  btn.disabled=true;btn.textContent='Sending...';
   try{
-    if(!(await ensureFriend(activeFriend.uid))){
-      showToast('You are no longer friends with this student.');
-      return;
+    if(activeConversation.kind==='friend'){
+      if(!(await ensureFriend(activeFriend.uid))){showToast('You are no longer friends with this student.');return}
+      const id=chatId(me.uid,activeFriend.uid);
+      await addDoc(collection(db,'conversations',id,'messages'),{senderUid:me.uid,receiverUid:activeFriend.uid,text,createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{}});
+      await addDoc(collection(db,'notifications'),{recipientUid:activeFriend.uid,actorUid:me.uid,actorName:me.displayName||'Student',type:'message',text:'sent you a message.',chatId:id,read:false,createdAt:serverTimestamp()});
+    }else{
+      const group=activeGroup;if(!(group.memberUids||[]).includes(me.uid))throw new Error('Not a group member');
+      await addDoc(collection(db,'groups',group.id,'messages'),{senderUid:me.uid,text,createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{}});
     }
-
-    const id=chatId(me.uid,activeFriend.uid);
-
-    await addDoc(collection(db,'conversations',id,'messages'),{
-      senderUid:me.uid,
-      receiverUid:activeFriend.uid,
-      text,
-      createdAt:serverTimestamp()
-    });
-
-    await addDoc(collection(db,'notifications'),{
-      recipientUid:activeFriend.uid,
-      actorUid:me.uid,
-      actorName:me.displayName || 'Student',
-      type:'message',
-      text:'sent you a message.',
-      chatId:id,
-      read:false,
-      createdAt:serverTimestamp()
-    });
-
-    input.value='';
-    input.focus();
-  }catch(err){
-    console.error(err);
-    showToast(err?.code==='permission-denied'
-      ? 'Messaging or notification was blocked by Firestore Rules.'
-      : 'Could not send message.');
-  }finally{
-    btn.disabled=false;
-    btn.textContent='Send';
-  }
+    input.value='';input.focus();
+  }catch(err){console.error(err);showToast(err?.code==='permission-denied'?'Messaging or notification was blocked by Firestore Rules.':'Could not send message.')}
+  finally{btn.disabled=false;btn.textContent='Send'}
 }
-onAuthStateChanged(auth,user=>{if(!user){location.href='profile.html';return}loadFriends()});
+
+window.toggleMessageActions=(id,e)=>{e.stopPropagation();closeMessageActions();$('actions-'+id)?.classList.add('open')};
+
+async function messageRef(messageId){
+  if(activeConversation?.kind==='friend')return doc(db,'conversations',chatId(auth.currentUser.uid,activeFriend.uid),'messages',messageId);
+  if(activeConversation?.kind==='group')return doc(db,'groups',activeGroup.id,'messages',messageId);
+  return null;
+}
+async function reactMessage(messageId,emoji){
+  closeMessageActions();
+  const ref=await messageRef(messageId);if(!ref||!auth.currentUser)return;
+  try{
+    const snap=await getDoc(ref);if(!snap.exists())return;
+    const r={...(snap.data()?.reactions||{})};r[emoji]=Number(r[emoji]||0)+1;
+    await updateDoc(ref,{reactions:r});
+  }catch(e){console.error(e);showToast('Could not react to message.')}
+}
+window.reactMessage=reactMessage;
+
+async function unsendForMe(messageId){
+  closeMessageActions();const ref=await messageRef(messageId);if(!ref)return;
+  try{await updateDoc(ref,{hiddenFor:arrayUnion(auth.currentUser.uid)});showToast('Message removed for you.')}
+  catch(e){console.error(e);showToast('Could not unsend for you.')}
+}
+window.unsendForMe=unsendForMe;
+
+async function unsendForEveryone(messageId){
+  closeMessageActions();const ref=await messageRef(messageId);if(!ref)return;
+  try{const snap=await getDoc(ref);if(!snap.exists())return;if(snap.data()?.senderUid!==auth.currentUser.uid){showToast('Only the sender can unsend for everyone.');return}
+    await updateDoc(ref,{unsent:true,text:'',reactions:{}});
+    showToast('Message unsent for everyone.');
+  }catch(e){console.error(e);showToast('Could not unsend for everyone.')}
+}
+window.unsendForEveryone=unsendForEveryone;
+
+async function prepareForward(messageId){pendingActionMessage=messageId;closeMessageActions();renderForwardChoices();openModal('forwardModal')}
+window.prepareForward=prepareForward;
+window.openForwardPicker=()=>{pendingActionMessage=null;renderForwardChoices();openModal('forwardModal')};
+
+function renderForwardChoices(filter=''){
+  const box=$('forwardChoices');if(!box)return;
+  const q=filter.trim().toLowerCase();
+  const items=conversationItems().filter(x=>{
+    const name=x.kind==='group'?(x.name||''):(x.nickname||x.name||x.username||x.displayName||'');
+    return !q||name.toLowerCase().includes(q);
+  });
+  box.innerHTML=items.length?items.map(x=>{
+    const group=x.kind==='group',name=group?(x.name||'Group Chat'):(x.nickname||x.name||x.displayName||'Student');
+    return `<button type="button" class="friend-item" data-forward-kind="${group?'group':'friend'}" data-forward-id="${esc(group?x.id:x.uid)}">${group?groupAvatarHtml(x):avatarHtml(x)}<span class="friend-info"><strong>${esc(name)}</strong><small>${group?'Group':'Friend'}</small></span></button>`;
+  }).join(''):'<div class="conversation-empty">No conversations found.</div>';
+  box.querySelectorAll('[data-forward-id]').forEach(btn=>btn.addEventListener('click',()=>forwardTo(btn.dataset.forwardKind,btn.dataset.forwardId)));
+}
+$('forwardSearch').addEventListener('input',e=>renderForwardChoices(e.target.value));
+
+async function getMessageData(messageId){
+  const ref=await messageRef(messageId);if(!ref)return null;const s=await getDoc(ref);return s.exists()?{ref,data:s.data()||{}}:null;
+}
+async function forwardTo(kind,id){
+  if(!pendingActionMessage){showToast('Select a message first.');return}
+  const item=await getMessageData(pendingActionMessage);if(!item)return;
+  const me=auth.currentUser, text=String(item.data.text||'');if(!text){showToast('This message cannot be forwarded.');return}
+  try{
+    if(kind==='friend'){
+      if(!(await ensureFriend(id))){showToast('You can only forward to your friends.');return}
+      const cid=chatId(me.uid,id);
+      await addDoc(collection(db,'conversations',cid,'messages'),{senderUid:me.uid,receiverUid:id,text,forwardedFrom:{messageId:pendingActionMessage},createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{}});
+      await addDoc(collection(db,'notifications'),{recipientUid:id,actorUid:me.uid,actorName:me.displayName||'Student',type:'message',text:'forwarded a message to you.',chatId:cid,read:false,createdAt:serverTimestamp()});
+    }else{
+      const g=groups.find(x=>x.id===id);if(!g||!g.memberUids.includes(me.uid)){showToast('You are not a group member.');return}
+      await addDoc(collection(db,'groups',id,'messages'),{senderUid:me.uid,text,forwardedFrom:{messageId:pendingActionMessage},createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{}});
+    }
+    closeForward();pendingActionMessage=null;showToast('Message forwarded.');
+  }catch(e){console.error(e);showToast('Could not forward message.')}
+}
+
+$('newGroupBtn').addEventListener('click',openGroupCreate);
+$('createGroupConfirmBtn').addEventListener('click',createGroup);
+
+function fillFriendChoices(containerId,excludeIds=[]){
+  const box=$(containerId),allowed=friends.filter(f=>!excludeIds.includes(f.uid));
+  box.innerHTML=allowed.length?allowed.map(f=>`<label class="select-friend"><input type="checkbox" value="${esc(f.uid)}"><span>${esc(f.nickname||f.name||f.displayName||'Student')}</span></label>`).join(''):'<div class="conversation-empty">No additional friends available.</div>';
+}
+function openGroupCreate(){fillFriendChoices('groupFriendChoices');$('groupNameInput').value='';openModal('groupCreateModal')}
+async function createGroup(){
+  const me=auth.currentUser,name=$('groupNameInput').value.trim(),ids=[...document.querySelectorAll('#groupFriendChoices input:checked')].map(x=>x.value);
+  if(!me||!name){showToast('Enter a group name.');return}
+  if(!ids.length){showToast('Add at least one friend.');return}
+  try{
+    const memberUids=[me.uid,...ids];
+    const ref=await addDoc(collection(db,'groups'),{name,createdBy:me.uid,memberUids,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});
+    closeGroupCreate();showToast('Group created.');
+    const group={id:ref.id,name,createdBy:me.uid,memberUids,kind:'group'};
+    groups.push(group);renderConversations();await openGroup(group);
+  }catch(e){console.error(e);showToast(e?.code==='permission-denied'?'Group creation is blocked by Firestore Rules.':'Could not create group.')}
+}
+
+window.openGroupManage=()=>{
+  if(!activeGroup)return;
+  $('groupManageNameInput').value=activeGroup.name||'';
+  const existing=activeGroup.memberUids||[];
+  fillFriendChoices('groupManageFriendChoices',existing);
+  openModal('groupManageModal');
+};
+$('saveGroupBtn').addEventListener('click',saveGroupManage);
+async function saveGroupManage(){
+  const me=auth.currentUser;if(!me||!activeGroup)return;
+  const newName=$('groupManageNameInput').value.trim()||'Group Chat';
+  const addIds=[...document.querySelectorAll('#groupManageFriendChoices input:checked')].map(x=>x.value);
+  const memberUids=Array.from(new Set([...(activeGroup.memberUids||[]),...addIds]));
+  try{
+    await updateDoc(doc(db,'groups',activeGroup.id),{name:newName,memberUids,updatedAt:serverTimestamp()});
+    activeGroup={...activeGroup,name:newName,memberUids};
+    groups=groups.map(g=>g.id===activeGroup.id?activeGroup:g);
+    closeGroupManage();renderConversations();await openGroup(activeGroup);showToast('Group updated.');
+  }catch(e){console.error(e);showToast(e?.code==='permission-denied'?'You do not have permission to edit this group.':'Could not update group.')}
+}
+
+document.querySelectorAll('.modal-backdrop').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.modal-backdrop.open').forEach(m=>m.classList.remove('open'));closeMessageActions()}});
+
+onAuthStateChanged(auth,async user=>{
+  if(!user){location.href='profile.html';return}
+  await loadFriends();
+  listenGroups();
+});
 </script>
 </body>
 </html>
