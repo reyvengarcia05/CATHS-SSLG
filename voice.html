@@ -1727,6 +1727,227 @@ CELLPHONE DITO BE AHHAHAAHHAA
 
 }
     
+
+/* ===== APP-STYLE RESPONSIVE OVERRIDES ===== */
+.bottom-nav{
+  height:77px !important;
+  padding:4px 4px env(safe-area-inset-bottom) !important;
+  background:rgba(0,0,0,.28) !important;
+  backdrop-filter:blur(18px) !important;
+  -webkit-backdrop-filter:blur(18px) !important;
+  display:flex !important;
+  justify-content:space-around !important;
+  align-items:center !important;
+  z-index:9999 !important;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+.bottom-nav .nav-item{
+  flex:1 !important;
+  max-width:120px !important;
+  min-width:56px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-decoration:none !important;
+  color:white !important;
+  font-size:9px !important;
+  line-height:1.1 !important;
+  padding:4px 3px !important;
+  transition:.22s !important;
+}
+.bottom-nav .nav-item div{
+  font-size:21px !important;
+  height:26px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  margin-bottom:2px !important;
+}
+.bottom-nav .nav-item.active{
+  color:#FFD700 !important;
+  transform:translateY(-5px) scale(1.06) !important;
+  font-weight:700 !important;
+}
+.bottom-nav .nav-item.active div{font-size:24px !important}
+.bottom-nav .profile-nav-icon{
+  width:28px !important;
+  height:28px !important;
+  padding:0 !important;
+  margin:0 0 2px 0 !important;
+  background:transparent !important;
+  border:none !important;
+  box-shadow:none !important;
+  color:inherit !important;
+}
+.bottom-nav .profile-nav-icon img,
+.bottom-nav #profileNavPhoto img{
+  width:28px !important;
+  height:28px !important;
+  min-width:28px !important;
+  min-height:28px !important;
+  max-width:28px !important;
+  max-height:28px !important;
+  border-radius:50% !important;
+  object-fit:cover !important;
+  display:block !important;
+  background:transparent !important;
+  border:none !important;
+  box-shadow:none !important;
+}
+
+@media(max-width:768px){
+  body{
+    padding-bottom:82px;
+    overflow-x:hidden;
+  }
+
+  .header{
+    padding:9px 10px !important;
+    min-height:66px;
+    gap:8px;
+  }
+  .logo,.caths-logo{
+    width:39px !important;
+    height:39px !important;
+  }
+  .caths-logo{transform:none !important}
+  .header-center h1{
+    font-size:14px !important;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .header-center p{
+    font-size:8px !important;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .container{
+    width:100% !important;
+    padding-left:12px !important;
+    padding-right:12px !important;
+    padding-bottom:105px !important;
+  }
+
+  .voice-card{
+    width:100% !important;
+    max-width:none !important;
+    padding:22px 16px !important;
+    border-radius:22px !important;
+  }
+  .voice-card h2{
+    font-size:23px !important;
+    line-height:1.25;
+  }
+  .voice-card p{
+    font-size:12px !important;
+    line-height:1.6 !important;
+  }
+
+  input,select,textarea{
+    font-size:13px !important;
+    padding:13px !important;
+  }
+  textarea{min-height:140px}
+  .checkbox{
+    gap:9px !important;
+    align-items:flex-start !important;
+  }
+  .checkbox label{
+    font-size:11px !important;
+    line-height:1.45 !important;
+  }
+
+  .submit-btn,.view-btn{
+    width:100% !important;
+    min-height:52px !important;
+    height:auto !important;
+    padding:13px 14px !important;
+    font-size:14px !important;
+    border-radius:15px !important;
+  }
+
+  .bottom-nav{
+    height:70px !important;
+    padding:4px 3px !important;
+  }
+  .bottom-nav .nav-item{
+    min-width:52px !important;
+    font-size:8px !important;
+    padding:3px 2px !important;
+  }
+  .bottom-nav .nav-item div{
+    font-size:20px !important;
+    height:24px !important;
+  }
+  .bottom-nav .nav-item.active{
+    transform:translateY(-5px) scale(1.05) !important;
+  }
+  .bottom-nav .nav-item.active div{font-size:23px !important}
+  .bottom-nav .profile-nav-icon,
+  .bottom-nav #profileNavPhoto,
+  .bottom-nav #profileNavPhoto img{
+    width:25px !important;
+    height:25px !important;
+    min-width:25px !important;
+    min-height:25px !important;
+    max-width:25px !important;
+    max-height:25px !important;
+    background:transparent !important;
+    border:none !important;
+    box-shadow:none !important;
+  }
+
+  .popup{padding:12px !important}
+  .popup-content{
+    width:100% !important;
+    max-width:350px !important;
+    padding:24px 18px !important;
+    border-radius:21px !important;
+  }
+  .popup-content h2{font-size:24px !important}
+  .popup-content p{font-size:12px !important;line-height:1.55 !important}
+
+  .modal{padding:12px !important}
+  .modal-content{
+    width:100% !important;
+    max-width:100% !important;
+    max-height:84vh !important;
+    margin:8vh auto 0 !important;
+    padding:18px 14px !important;
+    border-radius:20px !important;
+    overflow-y:auto;
+  }
+
+  #loginModal .popup-content{
+    width:100% !important;
+    max-width:350px !important;
+    padding:26px 18px !important;
+  }
+  #googleLoginBtn{
+    min-height:52px !important;
+    height:auto !important;
+    font-size:14px !important;
+    border-radius:14px !important;
+  }
+}
+
+@media(max-width:380px){
+  .header{padding:8px 8px !important}
+  .logo,.caths-logo{width:36px !important;height:36px !important}
+  .header-center h1{font-size:11px !important}
+  .header-center p{font-size:7px !important}
+  .voice-card{padding:17px 13px !important}
+  .voice-card h2{font-size:20px !important}
+  .voice-card p{font-size:11px !important}
+  .bottom-nav .nav-item{min-width:44px !important;font-size:7px !important}
+  .bottom-nav .nav-item div{font-size:19px !important}
+  .bottom-nav .nav-item.active div{font-size:22px !important}
+}
+
 </style>
 </head>
 
@@ -1931,9 +2152,9 @@ required></textarea>
 <span>Home</span>
 </a>
 
-<a href="news.html" class="nav-item">
-<div>📢</div>
-<span>News</span>
+<a href="news-feed.html" class="nav-item">
+<div>📰</div>
+<span>News Feed</span>
 </a>
 
 <a href="voice.html" class="nav-item active">
@@ -1946,29 +2167,13 @@ required></textarea>
 <span>Add Friends</span>
 </a>
 
-<a href="profile.html" class="nav-item" onclick="openBottomProfile(event)">
-    <div id="profileNavPhoto">
-        👤
-    </div>
-
-    <span id="profileNavText">Profile</span>
+<a href="profile.html" class="nav-item">
+<div class="profile-nav-icon" id="profileNavPhoto">👤</div>
+<span id="profileNavText">Profile</span>
 </a>
-    
+
 </div>
 
-
-<script>
-function openBottomProfile(event){
-    event.preventDefault();
-
-    if(typeof firebaseUser !== "undefined" && firebaseUser){
-        window.location.href = "profile.html";
-        return;
-    }
-
-    openLogin(false);
-}
-</script>
 
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec";
