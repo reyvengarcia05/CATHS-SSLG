@@ -1474,6 +1474,19 @@ async function acceptRequest(req,row){
       since:serverTimestamp()
     });
     await updateDoc(doc(db,'friendRequests',req.id), {status:'accepted',respondedAt:serverTimestamp()});
+    try{
+      await addDoc(collection(db,'notifications'),{
+        recipientUid:req.from,
+        actorUid:firebaseUser.uid,
+        actorName:currentProfile.nickname || currentProfile.name || currentProfile.displayName || 'Student',
+        type:'friend_accepted',
+        text:'accepted your friend request.',
+        read:false,
+        createdAt:serverTimestamp()
+      });
+    }catch(notificationError){
+      console.warn('Friend accepted notification:',notificationError);
+    }
     row.remove();
     showToast('Friend request accepted!');
     const remaining = Math.max(0, Number($('requestCount').textContent)-1);
