@@ -1339,6 +1339,9 @@ window.addFriendFromReaction=addFriendFromReaction;
   .profile-remove-actions{grid-template-columns:1fr;gap:8px}
   .profile-remove-actions button{padding:13px}
 }
+
+.pinned-post-badge{display:inline-flex;align-items:center;gap:5px;margin:0 0 8px;padding:5px 9px;border-radius:999px;background:#fff7cc;color:#8a6500;font-size:10px;font-weight:800;border:1px solid rgba(255,215,0,.45)}
+.post-card.is-pinned{border:2px solid rgba(255,215,0,.65)!important}
 </style>
 </head>
 
@@ -2160,6 +2163,7 @@ function renderPost(post){
           </div>` : ''}
         </div>
         ${post.isShared ? '' : `<div class="post-text">${escapePostHtml(post.text)}</div>`}
+        ${post.pinned===true ? `<div class="pinned-post-badge">📌 Pinned Post</div>` : ""}
         ${sharedContext}
         <div class="post-counts" id="counts-${escapePostHtml(post.id)}">Loading reactions...</div>
         <div class="post-actions">
