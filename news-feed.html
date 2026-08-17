@@ -663,7 +663,7 @@ a{-webkit-tap-highlight-color:transparent}
     <div class="state-card">
       <div class="loading-box">
         <div class="spinner"></div>
-        <p>Loading your feed...</p>
+        <p>Loading posts...</p>
       </div>
     </div>
   </section>
@@ -867,43 +867,66 @@ function avatarHtml(post){
   return `<div class="post-avatar">${letter}</div>`;
 }
 
-function setHeaderUser(user, profile){
+function setHeaderUser(user, profile = null){
   const btn = $('headerProfileBtn');
   const menuPhoto = $('menuPhoto');
   const navPhoto = $('profileNavPhoto');
   const composerAvatar = $('composerAvatar');
 
-  if(user){
-    btn.innerHTML = user.photoURL
-      ? `<img src="${esc(user.photoURL)}" alt=""> <span>${esc(profile?.nickname || user.displayName || 'User')}</span> ▼`
-      : `👤 <span>${esc(profile?.nickname || user.displayName || 'User')}</span> ▼`;
-
-    $('menuName').textContent = profile?.nickname || user.displayName || 'User';
-    $('menuUsername').textContent = profile?.username ? '@'+profile.username : '@username';
-
-    if(user.photoURL){
-      menuPhoto.src = user.photoURL;
-      navPhoto.innerHTML = `<img src="${esc(user.photoURL)}" alt="">`;
-      composerAvatar.innerHTML = `<img src="${esc(user.photoURL)}" alt="">`;
-    }else{
-      menuPhoto.src = '';
-      navPhoto.textContent = '👤';
-      composerAvatar.textContent = (profile?.nickname || user.displayName || 'U').charAt(0).toUpperCase();
-    }
-  }else{
+  if(!user){
     btn.innerHTML = '👤 <span>Login</span>';
+    $('menuName').textContent = 'User';
+    $('menuUsername').textContent = '@username';
     menuPhoto.src = '';
     navPhoto.textContent = '🔐';
     composerAvatar.textContent = '👤';
+    return;
+  }
+
+  // Use the Firestore profile when available, then fall back to Firebase Auth.
+  const name =
+    profile?.nickname ||
+    profile?.name ||
+    profile?.displayName ||
+    user.displayName ||
+    user.email?.split('@')[0] ||
+    'User';
+
+  const username = profile?.username
+    ? '@' + profile.username
+    : (user.email ? '@' + user.email.split('@')[0] : '@username');
+
+  const photoURL = profile?.photoURL || user.photoURL || '';
+
+  btn.innerHTML = photoURL
+    ? `<img src="${esc(photoURL)}" alt=""> <span>${esc(name)}</span> ▼`
+    : `👤 <span>${esc(name)}</span> ▼`;
+
+  $('menuName').textContent = name;
+  $('menuUsername').textContent = username;
+
+  if(photoURL){
+    menuPhoto.src = photoURL;
+    menuPhoto.alt = name;
+    navPhoto.innerHTML = `<img src="${esc(photoURL)}" alt="">`;
+    composerAvatar.innerHTML = `<img src="${esc(photoURL)}" alt="">`;
+  }else{
+    menuPhoto.src = '';
+    menuPhoto.alt = '';
+    const initial = String(name).trim().charAt(0).toUpperCase() || 'U';
+    navPhoto.textContent = '👤';
+    composerAvatar.textContent = initial;
   }
 }
 
 window.toggleHeaderMenu = function(){
   const menu = $('profileMenu');
+
   if(!firebaseUser){
     window.location.href = 'profile.html';
     return;
   }
+
   menu.classList.toggle('open');
 };
 
@@ -1006,12 +1029,21 @@ window.publishPost = async function(){
 };
 
 async function loadCurrentProfile(){
-  if(!firebaseUser) return;
+  if(!firebaseUser) return null;
+
   try{
-    const snap=await getDoc(doc(db,'users',firebaseUser.uid));
-    currentProfile=snap.exists()?snap.data():null;
+    const snap = await getDoc(doc(db,'users',firebaseUser.uid));
+    currentProfile = snap.exists() ? (snap.data() || {}) : {};
+
+    // Update the header with the actual Firestore profile.
+    setHeaderUser(firebaseUser, currentProfile);
+    return currentProfile;
   }catch(e){
     console.error('Profile load',e);
+    currentProfile = {};
+    // Keep the Firebase account visible even if Firestore is unavailable.
+    setHeaderUser(firebaseUser, currentProfile);
+    return currentProfile;
   }
 }
 
@@ -1145,7 +1177,7 @@ async function loadFeed(){
   const list=$('feedList');
   if(!list) return;
 
-  list.innerHTML=`<div class="state-card"><div class="loading-box"><div class="spinner"></div><p>Loading your feed...</p></div></div>`;
+  list.innerHTML=`<div class="state-card"><div class="loading-box"><div class="spinner"></div><p>Loading posts...</p></div></div>`;
 
   try{
     // These are independent of the public-post query. A temporary friend/profile
@@ -1742,16 +1774,22 @@ document.addEventListener('keydown',e=>{
 });
 
 onAuthStateChanged(auth,async user=>{
-  firebaseUser=user;
+  firebaseUser = user;
+
   if(user){
+    // Always show the authenticated account immediately.
+    setHeaderUser(user, null);
+
+    // Then load the actual Firestore profile and update the header.
     await loadCurrentProfile();
+
+    // Feed-only data loads happen after the account is already visible.
     await loadFriendIds();
     await loadMentionableFriends();
-    setHeaderUser(user,currentProfile);
     await loadFeed();
   }else{
-    currentProfile=null;
-    setHeaderUser(null,null);
+    currentProfile = null;
+    setHeaderUser(null, null);
     await loadFeed();
   }
 });
