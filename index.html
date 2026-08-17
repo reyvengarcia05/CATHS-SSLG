@@ -1169,6 +1169,223 @@ color:black;
     }
 }
 
+
+/* =========================
+   NOTIFICATION BAR
+   ========================= */
+.header-right{
+    position:relative;
+}
+.notification-wrap{
+    position:relative;
+    display:flex;
+    align-items:center;
+}
+.notification-btn{
+    width:40px;
+    height:40px;
+    border:0;
+    border-radius:50%;
+    background:rgba(255,255,255,.14);
+    color:#fff;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+    position:relative;
+    transition:.2s ease;
+}
+.notification-btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.22)}
+.notification-badge{
+    position:absolute;
+    top:-3px;
+    right:-3px;
+    min-width:18px;
+    height:18px;
+    padding:0 5px;
+    border-radius:999px;
+    background:#FFD700;
+    color:#00296B;
+    border:2px solid #fff;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    font-size:9px;
+    font-weight:800;
+}
+.notification-badge.show{display:flex}
+.notification-panel{
+    position:absolute;
+    top:50px;
+    right:0;
+    width:320px;
+    max-width:calc(100vw - 24px);
+    background:#fff;
+    color:#0f172a;
+    border-radius:18px;
+    box-shadow:0 18px 45px rgba(0,0,0,.25);
+    overflow:hidden;
+    z-index:500;
+    display:none;
+}
+.notification-panel.open{display:block;animation:notificationIn .2s ease}
+.notification-head{
+    padding:14px 16px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:1px solid #e5e7eb;
+}
+.notification-head strong{font-size:14px}
+.notification-list{max-height:360px;overflow:auto}
+.notification-item{
+    display:flex;
+    gap:10px;
+    padding:12px 14px;
+    border-bottom:1px solid #f1f5f9;
+}
+.notification-item.unread{background:#fffbea}
+.notification-icon{
+    width:34px;height:34px;flex:0 0 34px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;background:#eef2ff;
+}
+.notification-content{min-width:0;flex:1}
+.notification-content strong{font-size:11px}
+.notification-content p{margin:2px 0 0;font-size:10px;line-height:1.4;color:#64748b}
+.notification-empty{padding:28px 16px;text-align:center;color:#64748b;font-size:11px}
+@keyframes notificationIn{
+    from{opacity:0;transform:translateY(-8px) scale(.98)}
+    to{opacity:1;transform:translateY(0) scale(1)}
+}
+.open-messages-card{
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    background:linear-gradient(135deg,#003DA5,#00296B);
+    color:#fff;
+}
+@media(max-width:768px){
+    .notification-panel{
+        position:fixed;
+        top:68px;
+        left:12px;
+        right:12px;
+        width:auto;
+        max-width:none;
+    }
+    .notification-btn{width:38px;height:38px;font-size:18px}
+}
+
+
+.notification-panel{
+ width:290px!important;max-width:calc(100vw - 24px)!important;
+ position:absolute!important;left:auto!important;right:0!important;
+ top:50px!important;opacity:0;visibility:hidden;
+ transform:translateY(-8px) scale(.96);transform-origin:top right;
+ pointer-events:none;
+ transition:opacity .22s ease,transform .22s ease,visibility .22s ease!important;
+}
+.notification-panel.open{opacity:1;visibility:visible;transform:translateY(0) scale(1);pointer-events:auto}
+@media(max-width:768px){.notification-panel{width:270px!important;right:-4px!important;left:auto!important;top:48px!important}}
+
+
+/* Open Messages uses the same Quick Actions card design */
+.open-messages-card{
+    background:inherit !important;
+    color:inherit !important;
+    border:inherit;
+}
+.open-messages-card .icon{
+    color:inherit;
+}
+.open-messages-card:hover{
+    transform:translateY(-4px);
+}
+
+
+/* =========================================================
+   QUICK NAVIGATION — BLUE GLASSMORPHISM
+   ========================================================= */
+.quick-wrapper .grid .card{
+    position:relative;
+    overflow:hidden;
+    background:linear-gradient(
+        135deg,
+        rgba(0,61,165,.72),
+        rgba(0,41,107,.48)
+    ) !important;
+    border:1px solid rgba(255,255,255,.24) !important;
+    color:#fff !important;
+    box-shadow:
+        0 10px 28px rgba(0,25,80,.20),
+        inset 0 1px 0 rgba(255,255,255,.22);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        border-color .25s ease;
+}
+
+/* Soft glass shine */
+.quick-wrapper .grid .card::before{
+    content:"";
+    position:absolute;
+    width:130px;
+    height:130px;
+    top:-70px;
+    right:-45px;
+    border-radius:50%;
+    background:rgba(255,255,255,.16);
+    filter:blur(2px);
+    pointer-events:none;
+}
+
+/* Bottom blue glass glow */
+.quick-wrapper .grid .card::after{
+    content:"";
+    position:absolute;
+    left:-20%;
+    right:-20%;
+    bottom:-55px;
+    height:90px;
+    background:rgba(0,174,255,.18);
+    filter:blur(22px);
+    pointer-events:none;
+}
+
+.quick-wrapper .grid .card:hover{
+    transform:translateY(-5px);
+    border-color:rgba(255,255,255,.42) !important;
+    box-shadow:
+        0 16px 35px rgba(0,25,80,.28),
+        inset 0 1px 0 rgba(255,255,255,.30);
+}
+
+.quick-wrapper .grid .card .icon{
+    position:relative;
+    z-index:1;
+}
+
+.quick-wrapper .grid .card h3{
+    position:relative;
+    z-index:1;
+    color:#fff !important;
+}
+
+/* Open Messages gets the exact same glass treatment */
+.quick-wrapper .grid .open-messages-card{
+    background:linear-gradient(
+        135deg,
+        rgba(0,61,165,.72),
+        rgba(0,41,107,.48)
+    ) !important;
+    color:#fff !important;
+}
+
 </style>
 </head>
 
@@ -1189,6 +1406,21 @@ color:black;
     </div>
 
    <div class="header-right">
+    <div class="notification-wrap">
+        <button id="notificationBtn" class="notification-btn" type="button" aria-label="Notifications" onclick="toggleNotifications()">
+            🔔
+            <span id="notificationBadge" class="notification-badge">0</span>
+        </button>
+        <div id="notificationPanel" class="notification-panel">
+            <div class="notification-head">
+                <strong>Notifications</strong>
+                <button type="button" onclick="markNotificationsRead()" style="border:0;background:none;color:#003DA5;font-size:10px;font-weight:700;cursor:pointer;">Mark read</button>
+            </div>
+            <div id="notificationList" class="notification-list">
+                <div class="notification-empty">No notifications yet.</div>
+            </div>
+        </div>
+    </div>
 
    <button 
     id="headerLoginBtn" 
@@ -1274,22 +1506,22 @@ and connect with the school community.
 <div class="quick-wrapper">
 
 <div class="grid">
-<a href="news.html" class="card">
+<a href="news.html" class="card" onclick="openProtectedNavigation(event, 'news.html')">
 <div class="icon">📢</div>
 <h3>News</h3>
 </a>
 
-<a href="news-feed.html" class="card">
+<a href="news-feed.html" class="card" onclick="openProtectedNavigation(event, 'news-feed.html')">
 <div class="icon">📰</div>
 <h3>News Feed</h3>
 </a>
 
-<a href="friends.html" class="card">
+<a href="friends.html" class="card" onclick="openProtectedNavigation(event, 'friends.html')">
 <div class="icon">👥</div>
 <h3>Add Friends</h3>
 </a>
 
-<a href="achievements.html" class="card">
+<a href="achievements.html" class="card" onclick="openProtectedNavigation(event, 'achievements.html')">
 <div class="icon">🏆</div>
 <h3>Achievements</h3>
 </a>
@@ -1299,9 +1531,9 @@ and connect with the school community.
 <h3>Student Voice</h3>
 </a>
 
-<a href="profile.html" class="card">
-<div class="icon">👤</div>
-<h3>Profile</h3>
+<a href="messages.html" class="card open-messages-card" onclick="openProtectedNavigation(event, 'messages.html')">
+<div class="icon">💬</div>
+<h3>Open Messages</h3>
 </a>
 
 </div>
@@ -1333,7 +1565,7 @@ and connect with the school community.
         <span>Home</span>
     </a>
 
-    <a href="news-feed.html" class="nav-item">
+    <a href="news-feed.html" class="nav-item" onclick="openProtectedNavigation(event, 'news-feed.html')">
         <div>📰</div>
         <span>News Feed</span>
     </a>
@@ -1343,12 +1575,12 @@ and connect with the school community.
         <span>Student Voice</span>
     </a>
 
-    <a href="friends.html" class="nav-item">
+    <a href="friends.html" class="nav-item" onclick="openProtectedNavigation(event, 'friends.html')">
         <div>👥</div>
         <span>Add Friends</span>
     </a>
 
-    <a href="profile.html" class="nav-item">
+    <a href="profile.html" class="nav-item" onclick="openProtectedNavigation(event, 'profile.html')">
         <div class="profile-nav-icon" id="profileNavPhoto">👤</div>
         <span>Profile</span>
     </a>
@@ -1356,7 +1588,110 @@ and connect with the school community.
 </div>
 <script>
 
-   window.userLoggedIn = false;
+   
+/* =========================
+   REAL-TIME NOTIFICATIONS
+   ========================= */
+let notificationUnsubscribe = null;
+let currentNotificationUser = null;
+let notificationItems = [];
+
+function toggleNotifications(){
+    // Guests must log in, using the exact same login modal/design
+    // already used by the rest of the Index page.
+    if(!window.userLoggedIn){
+        closeNotifications();
+        if(typeof openLogin === 'function') openLogin();
+        return;
+    }
+
+    const panel = document.getElementById('notificationPanel');
+    if(panel) panel.classList.toggle('open');
+}
+function closeNotifications(){
+    document.getElementById('notificationPanel')?.classList.remove('open');
+}
+function markNotificationsRead(){
+    notificationItems = notificationItems.map(n=>({...n,read:true}));
+    renderNotifications();
+}
+function renderNotifications(){
+    const list = document.getElementById('notificationList');
+    const badge = document.getElementById('notificationBadge');
+    if(!list || !badge) return;
+
+    const unread = notificationItems.filter(n=>!n.read).length;
+    badge.textContent = unread > 99 ? '99+' : String(unread);
+    badge.classList.toggle('show', unread > 0);
+
+    if(!notificationItems.length){
+        list.innerHTML='<div class="notification-empty">No notifications yet.</div>';
+        return;
+    }
+    list.innerHTML = notificationItems.slice(0,50).map(n=>`
+        <div class="notification-item ${n.read?'':'unread'}">
+            <div class="notification-icon">${n.icon||'🔔'}</div>
+            <div class="notification-content">
+                <strong>${escapeNotificationText(n.title||'Notification')}</strong>
+                <p>${escapeNotificationText(n.text||'')}</p>
+            </div>
+        </div>
+    `).join('');
+}
+function escapeNotificationText(value){
+    return String(value ?? '').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+}
+
+document.addEventListener('click', e=>{
+    const wrap=document.querySelector('.notification-wrap');
+    if(wrap && !wrap.contains(e.target)) closeNotifications();
+});
+
+function startNotificationListener(uid){
+    if(typeof db==='undefined' || typeof onSnapshot==='undefined' || typeof collection==='undefined') return;
+    if(notificationUnsubscribe) notificationUnsubscribe();
+
+    // Expected Firestore structure:
+    // notifications/{notificationId}
+    // { recipientUid, type, actorName, text, postId, createdAt, read }
+    const q = query(
+        collection(db,'notifications'),
+        where('recipientUid','==',uid),
+        orderBy('createdAt','desc'),
+        limit(50)
+    );
+
+    notificationUnsubscribe = onSnapshot(q, snap=>{
+        notificationItems = snap.docs.map(d=>{
+            const n=d.data()||{};
+            let icon='🔔';
+            if(n.type==='reaction' || n.type==='like') icon='❤️';
+            else if(n.type==='comment') icon='💬';
+            else if(n.type==='share') icon='↗️';
+            else if(n.type==='message') icon='✉️';
+            else if(n.type==='friend_request' || n.type==='friend_accepted') icon='👥';
+
+            return {
+                id:d.id,
+                icon,
+                title:n.actorName ? `${n.actorName}` : (n.title||'Notification'),
+                text:n.text || ({
+                    reaction:'reacted to your post.',
+                    comment:'commented on your post.',
+                    share:'shared your post.',
+                    message:'sent you a message.'
+                }[n.type] || 'You have a new notification.'),
+                read:n.read===true
+            };
+        });
+        renderNotifications();
+    }, err=>{
+        console.warn('Notification listener:',err);
+        renderNotifications();
+    });
+}
+
+window.userLoggedIn = false;
 
 function toggleProfileMenu(){
 
@@ -1398,6 +1733,7 @@ function toggleProfileMenu(){
     });
 }
    
+
 </script>
     
 <script>
@@ -1444,6 +1780,10 @@ days + "d " + hours + "h " + minutes + "m";
 function openLogin(fromStudentVoice = false){
 
     window.loginForStudentVoice = fromStudentVoice;
+
+    if (fromStudentVoice) {
+        window.pendingNavigation = null;
+    }
 
     document.getElementById("loginModal").style.display = "block";
 }
@@ -1524,6 +1864,23 @@ window.openProfile = function(event) {
 };
 
 // =========================
+// LOGIN-PROTECTED NAVIGATION
+// =========================
+window.pendingNavigation = null;
+
+window.openProtectedNavigation = function(event, destination){
+    event.preventDefault();
+
+    if (auth.currentUser) {
+        window.location.href = destination;
+        return;
+    }
+
+    window.pendingNavigation = destination;
+    openLogin(false);
+};
+
+// =========================
 // STUDENT VOICE
 // =========================
 
@@ -1559,6 +1916,16 @@ window.googleLogin = async function () {
 
             window.location.href = "voice.html";
 
+            return;
+        }
+
+        // If the user clicked a protected Quick Action or Bottom Navigation
+        // item while logged out, continue to that exact destination after login.
+        if (window.pendingNavigation) {
+            const destination = window.pendingNavigation;
+            window.pendingNavigation = null;
+            window.loginForStudentVoice = false;
+            window.location.href = destination;
             return;
         }
 
@@ -1623,6 +1990,15 @@ window.logoutUser = async function () {
 onAuthStateChanged(auth, (user) => {
 
     window.userLoggedIn = !!user;
+
+    if(user?.uid){
+        startNotificationListener(user.uid);
+    }else if(typeof notificationUnsubscribe === 'function'){
+        notificationUnsubscribe();
+        notificationUnsubscribe = null;
+        notificationItems = [];
+        renderNotifications();
+    }
 
     const headerBtn =
         document.getElementById("headerLoginBtn");
