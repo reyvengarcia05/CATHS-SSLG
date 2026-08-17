@@ -757,6 +757,8 @@ main{
 
 
 .message-btn{
+  white-space:nowrap;
+  min-height:36px;
   background:#e0f2fe;
   color:#075985;
   text-decoration:none;
@@ -766,6 +768,28 @@ main{
   gap:5px;
 }
 .message-btn:hover{background:#bae6fd}
+
+
+/* ACTIVE BOTTOM NAV */
+.bottom-nav .nav-item{color:#fff;text-decoration:none;transition:transform .22s ease,color .22s ease}
+.bottom-nav .nav-item.active{color:#FFD700 !important;transform:translateY(-7px) scale(1.08);font-weight:700}
+.bottom-nav .nav-item.active div{font-size:26px !important;color:#FFD700 !important}
+@media(max-width:768px){
+  .bottom-nav .nav-item.active{transform:translateY(-6px) scale(1.08)}
+  .bottom-nav .nav-item.active div{font-size:25px !important}
+}
+.profile-btn{
+  background:rgba(255,255,255,.14);
+  color:#fff;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  white-space:nowrap;
+  min-height:36px;
+}
+.profile-btn:hover{background:rgba(255,255,255,.22)}
 
 </style>
 </head>
@@ -879,7 +903,7 @@ main{
 
 <div class="bottom-nav">
 
-    <a href="index.html" class="nav-item active">
+    <a href="index.html" class="nav-item">
         <div>🏠</div>
         <span>Home</span>
     </a>
@@ -1237,6 +1261,15 @@ function renderSearchResults(users){
     row.appendChild(messageLink);
 
     $('searchResults').appendChild(row);
+    // Public profile viewing: user-profile.html applies the profile/privacy rules.
+    row.querySelectorAll('.row-info, .avatar, img').forEach(el=>{
+      el.style.cursor='pointer';
+      el.addEventListener('click', event=>{
+        if(event.target.closest('.actions')) return;
+        location.href=`user-profile.html?uid=${encodeURIComponent(user.id)}`;
+      });
+    });
+
     refreshRelationshipButton(user.id, row.querySelector('button'));
   });
 }
