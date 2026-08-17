@@ -691,7 +691,7 @@ color:black;
         margin-bottom: 11px;
     }
 
-    /* QUICK ACTIONS + EVENT */
+    /* QUICK ACTIONS */
     .quick-wrapper {
         display: flex;
         flex-direction: column;
@@ -865,8 +865,9 @@ color:black;
     }
 
     .bottom-nav .nav-item{
-        min-width:54px;
-        padding:4px 3px;
+        min-width:48px;
+        padding:4px 2px;
+        font-size:8px;
     }
 
     .bottom-nav .nav-item.active{
@@ -886,6 +887,11 @@ color:black;
     .bottom-nav .profile-nav-icon{
         width:27px !important;
         height:24px !important;
+        background:transparent !important;
+        padding:0 !important;
+        border:none !important;
+        box-shadow:none !important;
+        color:inherit !important;
     }
 
     .bottom-nav .profile-nav-icon img,
@@ -896,6 +902,9 @@ color:black;
         min-height:25px !important;
         max-width:25px !important;
         max-height:25px !important;
+        background:transparent !important;
+        border:none !important;
+        box-shadow:none !important;
     }
 
     /* APP-LIKE MOBILE POLISH */
@@ -991,8 +1000,10 @@ color:black;
     }
 
     .nav-item {
-        font-size: 8px;
-        min-width: 48px;
+        font-size: 7px;
+        min-width: 44px;
+        padding-left:2px;
+        padding-right:2px;
     }
 
     .nav-item div {
@@ -1265,10 +1276,10 @@ and connect with the school community.
 <div class="grid">
 <a href="news.html" class="card">
 <div class="icon">📢</div>
-<h3>Announcements</h3>
+<h3>News</h3>
 </a>
 
-<a href="news.html" class="card">
+<a href="news-feed.html" class="card">
 <div class="icon">📰</div>
 <h3>News Feed</h3>
 </a>
@@ -1284,32 +1295,14 @@ and connect with the school community.
 </a>
 
 <a href="#" class="card" onclick="openStudentVoice(event)">
-    <div class="icon">🗣️</div>
-    <h3>Student Voice</h3>
+<div class="icon">🗣️</div>
+<h3>Student Voice</h3>
 </a>
 
-    <a href="profile.html" class="card">
+<a href="profile.html" class="card">
 <div class="icon">👤</div>
 <h3>Profile</h3>
 </a>
-
-</div>
-
-
- <div class="event-panel">
-
-    <h3>📅 Upcoming Event</h3>
-
-    <div class="event-card">
-        <h4>SSLG General Assembly</h4>
-        <p>August 15, 2026</p>
-
-        <div id="countdown">
-            Loading...
-        </div>
-    </div>
-
-</div>
 
 </div>
 
@@ -1340,9 +1333,9 @@ and connect with the school community.
         <span>Home</span>
     </a>
 
-    <a href="news.html" class="nav-item">
-        <div>📢</div>
-        <span>News</span>
+    <a href="news-feed.html" class="nav-item">
+        <div>📰</div>
+        <span>News Feed</span>
     </a>
 
     <a href="#" class="nav-item" onclick="openStudentVoice(event)">
@@ -1355,13 +1348,12 @@ and connect with the school community.
         <span>Add Friends</span>
     </a>
 
-    <a href="#" class="nav-item" onclick="openProfile(event)">
+    <a href="profile.html" class="nav-item">
         <div class="profile-nav-icon" id="profileNavPhoto">👤</div>
         <span>Profile</span>
     </a>
 
 </div>
-
 <script>
 
    window.userLoggedIn = false;
