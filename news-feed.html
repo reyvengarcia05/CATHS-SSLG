@@ -969,13 +969,41 @@ async function loadFeed(){
   try{
     await loadFriendIds();
 
-    const snap = await getDocs(query(
+    const postsById = new Map();
+
+    // Firestore Rules are not filters. Query each visibility scope with
+    // constraints that the deployed rules can prove.
+    const publicSnap = await getDocs(query(
       collection(db,'posts'),
-      where('visibility','in',['public','friends','onlyMe']),
+      where('visibility','==','public'),
       limit(100)
     ));
+    publicSnap.docs.forEach(d=>postsById.set(d.id,{id:d.id,...d.data()}));
 
-    const posts = snap.docs.map(d=>({id:d.id,...d.data()}))
+    for(let i=0;i<friendIds.length;i+=30){
+      const chunk=friendIds.slice(i,i+30);
+      if(!chunk.length) continue;
+
+      const friendSnap = await getDocs(query(
+        collection(db,'posts'),
+        where('visibility','==','friends'),
+        where('authorUid','in',chunk),
+        limit(100)
+      ));
+      friendSnap.docs.forEach(d=>postsById.set(d.id,{id:d.id,...d.data()}));
+    }
+
+    if(auth.currentUser){
+      const ownSnap = await getDocs(query(
+        collection(db,'posts'),
+        where('visibility','==','onlyMe'),
+        where('authorUid','==',auth.currentUser.uid),
+        limit(100)
+      ));
+      ownSnap.docs.forEach(d=>postsById.set(d.id,{id:d.id,...d.data()}));
+    }
+
+    const posts = Array.from(postsById.values())
       .filter(canSeePost)
       .sort((a,b)=>{
         if(Boolean(a.pinned)!==Boolean(b.pinned)) return a.pinned ? -1 : 1;
