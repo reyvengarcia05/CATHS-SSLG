@@ -21,8 +21,7 @@
 }
 
 .caths-logo{
-    transform:scale(1.18);
-    transform-origin:center;
+    transform:none;
 }
 
 :root{
@@ -612,9 +611,11 @@ color:black;
 
     /* HEADER */
     .header {
-        padding: 10px 12px;
+        padding: 9px 12px;
         min-height: 68px;
         gap: 8px;
+        grid-template-columns: auto minmax(0,1fr) auto;
+        align-items: center;
     }
 
     .header > div:first-child {
@@ -622,9 +623,12 @@ color:black;
         flex-shrink: 0;
     }
 
-    .header .logo {
-        width: 42px;
-        height: 42px;
+    .header .logo,
+    .header .caths-logo {
+        width: 44px;
+        height: 44px;
+        object-fit: contain;
+        transform: none !important;
     }
 
     .title {
@@ -894,6 +898,28 @@ color:black;
         max-height:25px !important;
     }
 
+    /* APP-LIKE MOBILE POLISH */
+    .container {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .hero-card,
+    .card,
+    .announcement {
+        box-shadow: 0 10px 24px rgba(0,0,0,.12);
+    }
+
+    .bottom-nav {
+        padding-bottom: max(5px, env(safe-area-inset-bottom));
+    }
+
+    .bottom-nav .nav-item {
+        flex: 1 1 0;
+        min-width: 0;
+        max-width: 88px;
+    }
+
     /* TOUCH FRIENDLY */
     button,
     .card,
@@ -910,9 +936,11 @@ color:black;
         padding: 9px 8px;
     }
 
-    .header .logo {
-        width: 37px;
-        height: 37px;
+    .header .logo,
+    .header .caths-logo {
+        width: 38px;
+        height: 38px;
+        transform: none !important;
     }
 
     .title h1 {
@@ -1240,9 +1268,9 @@ and connect with the school community.
 <h3>Announcements</h3>
 </a>
 
-<a href="events.html" class="card">
-<div class="icon">📅</div>
-<h3>Events</h3>
+<a href="news.html" class="card">
+<div class="icon">📰</div>
+<h3>News Feed</h3>
 </a>
 
 <a href="friends.html" class="card">
