@@ -3,1809 +3,721 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CATHS-MAIN • Friends</title>
+<title>CATHS-MAIN • Messages</title>
 <link rel="icon" type="image/png" href="sslg-logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
 <style>
-:root{
-  --blue:#003DA5;
-  --darkblue:#00296B;
-  --yellow:#FFD700;
-  --white:#fff;
-  --glass:rgba(255,255,255,.13);
-  --muted:#64748b;
-  --danger:#dc2626;
-  --success:#16a34a;
-}
+:root{--blue:#003DA5;--dark:#00296B;--yellow:#FFD93D;--white:#fff;--muted:#6b7891;--line:#e6ebf4}
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
-body{
-  min-height:100vh;
-  color:#fff;
-  background:linear-gradient(135deg,#001F54,#003DA5,#FFD700);
-  padding-bottom:95px;
-}
-.header{
-  padding:14px 20px;
-  display:grid;
-  grid-template-columns:220px 1fr 220px;
-  align-items:center;
-  gap:15px;
-  background:rgba(255,255,255,.08);
-  backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
-  position:sticky;
-  top:0;
-  z-index:50;
-}
-.logo-group{display:flex;align-items:center;gap:8px}
-.logo{width:58px;height:58px;object-fit:contain}
-.caths-logo{transform:scale(1.12)}
-.header-center{text-align:center}
-.header-center h1{font-size:19px;font-weight:700;line-height:1.2}
-.header-center p{font-size:11px;opacity:.9;margin-top:3px}
-.header-right{display:flex;justify-content:flex-end;position:relative}
-.login-btn{
-  border:none;border-radius:12px;padding:9px 14px;cursor:pointer;
-  background:rgba(255,255,255,.15);color:#fff;font-weight:600;
-  display:flex;align-items:center;gap:7px;white-space:nowrap
-}
-.login-btn img{width:27px;height:27px;border-radius:50%;object-fit:cover}
+body{min-height:100vh;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700);color:#fff;padding-bottom:86px}
+.header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:rgba(0,0,0,.16);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.logo-group{display:flex;gap:7px;align-items:center}.logo{width:46px;height:46px;object-fit:contain}.header-center{text-align:center;flex:1;padding:0 10px}.header-center h1{font-size:19px;font-weight:800}.header-center p{font-size:10px;opacity:.82}.header-right{width:96px}
+.container{max-width:1120px;margin:auto;padding:22px 16px 110px}.messenger{display:grid;grid-template-columns:320px 1fr;min-height:650px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.16);border-radius:26px;overflow:hidden;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 18px 50px rgba(0,0,0,.2)}
+.sidebar{background:rgba(255,255,255,.1);border-right:1px solid rgba(255,255,255,.13);padding:18px;display:flex;flex-direction:column;min-width:0}.side-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.side-title h2{font-size:18px}.count-pill{background:var(--yellow);color:var(--dark);padding:4px 9px;border-radius:999px;font-size:10px;font-weight:800}.search{width:100%;padding:11px 13px;border:none;outline:none;border-radius:13px;background:#fff;color:#183c8c;font-size:12px;margin-bottom:12px}.friend-list{display:flex;flex-direction:column;gap:8px;overflow:auto;padding-right:3px}.friend-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:15px;background:rgba(255,255,255,.08);border:1px solid transparent;cursor:pointer;transition:.18s;text-align:left;color:#fff}.friend-item:hover{background:rgba(255,255,255,.14);transform:translateX(2px)}.friend-item.active{background:#fff;color:#183c8c;border-color:#fff}.friend-avatar{width:44px;height:44px;flex:0 0 44px;border-radius:50%;overflow:hidden;background:#e8eef7;color:#183c8c;display:flex;align-items:center;justify-content:center;font-weight:800}.friend-avatar img{width:100%;height:100%;object-fit:cover}.friend-info{min-width:0;flex:1}.friend-info strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.friend-info small{display:block;font-size:10px;opacity:.72;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.friend-item.active .friend-info small{opacity:.65}
+.chat{display:flex;flex-direction:column;min-width:0;background:rgba(255,255,255,.05)}.chat-empty{height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px}.empty-inner{max-width:360px}.empty-icon{font-size:56px;margin-bottom:10px}.empty-inner h3{font-size:22px;margin-bottom:6px}.empty-inner p{font-size:12px;opacity:.78;line-height:1.6}
+.chat-head{display:flex;align-items:center;gap:12px;padding:15px 18px;background:rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.1)}.chat-back{display:none}.chat-avatar{width:46px;height:46px;border-radius:50%;overflow:hidden;background:#e8eef7;color:#183c8c;display:flex;align-items:center;justify-content:center;font-weight:800;flex:0 0 46px}.chat-avatar img{width:100%;height:100%;object-fit:cover}.chat-person{min-width:0}.chat-person strong{display:block;font-size:14px}.chat-person small{font-size:10px;opacity:.72}.messages{flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:8px;min-height:0}.message-row{display:flex;width:100%}.message-row.mine{justify-content:flex-end}.bubble{max-width:min(72%,520px);padding:10px 13px;border-radius:17px;background:#fff;color:#183c8c;box-shadow:0 6px 18px rgba(0,0,0,.08);font-size:12px;line-height:1.55;word-break:break-word}.message-row.mine .bubble{background:var(--yellow);color:#183c8c;border-bottom-right-radius:5px}.message-row:not(.mine) .bubble{border-bottom-left-radius:5px}.bubble small{display:block;margin-top:5px;font-size:8px;opacity:.58}.message-compose{display:flex;gap:8px;padding:13px 15px;background:rgba(0,0,0,.12);border-top:1px solid rgba(255,255,255,.1)}.message-input{flex:1;min-width:0;border:none;outline:none;border-radius:14px;padding:12px 13px;font-size:12px;background:#fff;color:#183c8c;resize:none;height:44px}.send-btn{border:none;border-radius:14px;padding:0 17px;background:var(--yellow);color:var(--dark);font-weight:800;cursor:pointer;min-width:76px}.send-btn:disabled{opacity:.6;cursor:not-allowed}
+.loading{padding:28px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:9px;font-size:11px;opacity:.86}.spinner{width:30px;height:30px;border:3px solid rgba(255,255,255,.25);border-top-color:var(--yellow);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.no-friends{padding:20px 12px;text-align:center;font-size:11px;opacity:.75;line-height:1.6}.toast{position:fixed;left:50%;bottom:98px;transform:translate(-50%,18px);opacity:0;pointer-events:none;background:#101827;color:#fff;padding:11px 15px;border-radius:999px;font-size:11px;transition:.25s;z-index:100}.toast.show{opacity:1;transform:translate(-50%,0)}
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;height:78px;background:linear-gradient(90deg,#1e3a8a,#b59f1a);display:flex;justify-content:space-around;align-items:center;z-index:60;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}.nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#fff;font-size:9px;min-width:60px;transition:.22s}.nav-item div{font-size:22px;height:26px;display:flex;align-items:center;justify-content:center;margin-bottom:3px}.nav-item.active{color:var(--yellow);transform:translateY(-6px) scale(1.07);font-weight:700}.nav-item.active div{font-size:25px}
 
-.container{max-width:980px;margin:0 auto;padding:28px 18px}
-.page-title{margin-bottom:18px}
-.page-title h2{font-size:29px}
-.page-title p{font-size:13px;opacity:.9;margin-top:5px}
+/* Messaging enhancements */
+.side-actions{display:flex;gap:7px;margin-bottom:10px}
+.side-action-btn{flex:1;border:none;border-radius:11px;padding:9px 8px;background:rgba(255,255,255,.12);color:#fff;font-weight:800;font-size:10px;cursor:pointer}
+.side-action-btn:hover{background:rgba(255,255,255,.2)}
+.conversation-section-title{font-size:9px;text-transform:uppercase;letter-spacing:.08em;opacity:.55;margin:5px 2px}
+.conversation-badge{margin-left:auto;background:var(--yellow);color:var(--dark);font-size:8px;font-weight:800;padding:3px 6px;border-radius:999px}
+.message-row{position:relative}
+.bubble-wrap{position:relative;max-width:min(78%,560px)}
+.bubble-wrap .bubble{max-width:100%}
+.message-tools-btn{position:absolute;top:50%;transform:translateY(-50%);width:28px;height:28px;border:0;border-radius:9px;background:rgba(255,255,255,.86);color:#183c8c;cursor:pointer;font-weight:900;box-shadow:0 5px 14px rgba(0,0,0,.12);display:none}
+.message-row:not(.mine) .message-tools-btn{right:-35px}
+.message-row.mine .message-tools-btn{left:-35px}
+.message-row:hover .message-tools-btn,.message-tools-btn:focus{display:block}
+/* Messenger-style reaction bar + responsive triggers */
+.message-reactions{display:flex;align-items:center;gap:3px;flex-wrap:wrap;margin-top:6px;width:max-content;max-width:100%;min-height:28px;padding:3px 5px;border:1px solid rgba(0,0,0,.08);background:rgba(255,255,255,.94);border-radius:10px;box-shadow:0 3px 10px rgba(0,0,0,.07)}
+.message-row.mine .message-reactions{background:#fff4a8}
+.message-reaction-chip{border:0;background:transparent;color:#183c8c;border-radius:6px;padding:2px 5px;font-size:12px;cursor:pointer;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;transition:transform .12s ease,background .12s ease}
+.message-reaction-chip:hover{background:rgba(24,60,140,.08);transform:scale(1.06)}
+.message-reaction-trigger{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;border:0;border-radius:7px;background:transparent;color:#183c8c;cursor:pointer;font-size:17px;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.message-reaction-trigger:hover{background:#eef4ff}
+.react-picker{position:absolute;display:none;gap:4px;align-items:center;padding:6px 7px;background:rgba(255,255,255,.99);border:1px solid rgba(0,0,0,.08);border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.2);z-index:220;bottom:calc(100% + 7px);right:0;max-width:320px;flex-wrap:wrap}
+.react-picker.open{display:flex}
+.react-picker button{border:0;background:transparent;width:31px;height:31px;border-radius:7px;font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;transition:transform .12s ease,background .12s ease}
+.react-picker button:hover{background:#eef4ff;transform:scale(1.15)}
+.react-picker .react-picker-plus{font-family:inherit!important;font-size:17px!important;background:#eef4ff!important;color:#183c8c!important;font-weight:800}
+.bubble-wrap{position:relative;display:flex;align-items:flex-end;gap:5px;max-width:min(82%,560px)}
+.message-row.mine .bubble-wrap{flex-direction:row-reverse}
+.message-tools-btn{flex:0 0 auto;width:26px;height:26px;border:0;border-radius:9px;background:rgba(255,255,255,.14);color:#fff;cursor:pointer;opacity:.75}
+.message-row.mine .message-tools-btn{background:rgba(0,0,0,.08);color:#183c8c}
 
-.card{
-  background:rgba(255,255,255,.13);
-  border:1px solid rgba(255,255,255,.15);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-  box-shadow:0 16px 45px rgba(0,0,0,.16);
-  border-radius:22px;
-  padding:20px;
-  margin-bottom:18px;
-}
-.card h3{font-size:18px;margin-bottom:5px}
-.card .sub{font-size:12px;opacity:.82;margin-bottom:15px}
+/* Keep the page itself fixed; only the conversation panels scroll. */
+html,body{height:100%;}
+body{overflow:hidden;}
+.container{height:calc(100dvh - 78px);min-height:0;overflow:hidden;display:flex;}
+.messenger{height:100%;min-height:0;flex:1;}
+.sidebar{min-height:0;overflow:hidden;}
+.friend-list{min-height:0;}
+.chat{min-height:0;overflow:hidden;}
+.messages{min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;}
+.group-members-btn{font-size:11px;width:auto;padding:0 10px}
+.group-members-modal-list{display:flex;flex-direction:column;gap:7px;max-height:55vh;overflow:auto;margin-top:10px}
+.group-member-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid #e3eaf7;border-radius:12px;background:#f8fafc}
+.group-member-row .friend-avatar{width:38px;height:38px;flex-basis:38px}
+.group-member-role{margin-left:auto;font-size:9px;color:#64748b;font-weight:700}
+.forwarded-box{margin-bottom:7px;padding:7px 9px;border-left:3px solid #7d93d8;background:rgba(24,60,140,.06);border-radius:7px;font-size:9px;color:#56698f}
+.unsent-text{font-style:italic;opacity:.55}
+.message-actions{position:absolute;z-index:150;min-width:170px;background:#fff;color:#183c8c;border-radius:14px;padding:6px;box-shadow:0 15px 40px rgba(0,0,0,.22);display:none}
+.message-actions.open{display:block}
+.message-actions button{width:100%;border:0;background:transparent;text-align:left;padding:9px 10px;border-radius:9px;color:#183c8c;font-size:10px;font-weight:700;cursor:pointer}
+.message-actions button:hover{background:#eef4ff}
+.message-actions .danger{color:#b91c1c}
+.chat-head{position:relative}
+.chat-head-actions{margin-left:auto;display:flex;gap:6px}
+.chat-head-btn{border:0;background:rgba(255,255,255,.12);color:#fff;width:34px;height:34px;border-radius:10px;cursor:pointer}
+.chat-head-btn:hover{background:rgba(255,255,255,.2)}
+.group-avatar{background:#dfe8ff}
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.58);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:500;display:none;align-items:center;justify-content:center;padding:16px}
+.modal-backdrop.open{display:flex}
+.modal-card{width:100%;max-width:520px;max-height:86vh;overflow:auto;background:#fff;color:#183c8c;border-radius:22px;padding:20px;box-shadow:0 25px 70px rgba(0,0,0,.34)}
+.modal-card h3{font-size:18px;margin-bottom:6px}
+.modal-card p{font-size:11px;color:#64748b;line-height:1.55}
+.modal-head-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.modal-x{border:0;width:34px;height:34px;border-radius:50%;background:#eef4ff;color:#183c8c;font-size:18px;cursor:pointer}
+.form-label{display:block;font-size:10px;font-weight:800;margin:13px 0 6px;color:#183c8c}
+.modal-input{width:100%;border:1px solid #dce4f2;border-radius:11px;padding:11px;outline:0;color:#183c8c}
+.modal-input:focus{border-color:#6e8fd8;box-shadow:0 0 0 3px rgba(0,61,165,.08)}
+.select-friends{display:flex;flex-direction:column;gap:7px;max-height:240px;overflow:auto}
+.select-friend{display:flex;align-items:center;gap:8px;padding:8px 9px;border:1px solid #e3eaf7;border-radius:11px;background:#f8fafc}
+.select-friend input{accent-color:#003DA5}
+.modal-primary{width:100%;margin-top:14px;border:0;border-radius:12px;background:var(--dark);color:#fff;padding:12px;font-weight:800;cursor:pointer}
+.modal-secondary{width:100%;margin-top:8px;border:0;border-radius:12px;background:#eef4ff;color:#183c8c;padding:11px;font-weight:800;cursor:pointer}
+.group-members-line{font-size:9px;color:#6b7891;margin-top:4px}
+.conversation-empty{padding:20px;text-align:center;font-size:10px;opacity:.7}
 
-.profile-grid{display:grid;grid-template-columns:80px 1fr 170px;gap:15px;align-items:center}
-.avatar{width:80px;height:80px;border-radius:50%;object-fit:cover;background:#eef4ff}
-.fallback-avatar{display:flex;align-items:center;justify-content:center;color:var(--darkblue);font-size:34px;font-weight:700;background:#fff}
+@media(max-width:800px){.messenger{grid-template-columns:1fr;grid-template-rows:240px minmax(0,1fr)}.sidebar{border-right:none;border-bottom:1px solid rgba(255,255,255,.13);max-height:none;min-height:0}.chat{min-height:0}.chat-back{display:block;border:none;background:rgba(255,255,255,.12);color:#fff;width:34px;height:34px;border-radius:10px;cursor:pointer}.bubble{max-width:82%}}
+@media(max-width:520px){.container{padding:10px 8px 92px}.messenger{border-radius:20px}.sidebar{padding:13px}.chat-head{padding:12px}.messages{padding:14px 10px}.message-compose{padding:10px}.send-btn{padding:0 13px;min-width:62px}.nav-item{min-width:52px;font-size:8px}.nav-item div{font-size:20px}.message-reaction-trigger{display:none}.message-reactions{margin-top:5px}.react-picker{max-width:280px;left:0;right:auto}.bubble-wrap{max-width:90%}}
+@media (hover:hover) and (pointer:fine){.message-reaction-trigger{display:inline-flex}}
+@media (hover:none) and (pointer:coarse){.message-reaction-trigger{display:none}}
 
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-label{font-size:12px;font-weight:600;display:block;margin:0 0 7px}
-input{
-  width:100%;padding:13px 14px;border:none;outline:none;border-radius:13px;
-  font-size:13px;color:#0f172a;background:#fff;
-}
-.helper{font-size:10px;color:#e2e8f0;margin-top:6px}
-.btn{
-  border:none;border-radius:13px;padding:12px 15px;cursor:pointer;font-weight:700;
-  transition:.2s ease
-}
-.btn:active{transform:scale(.98)}
-.btn-primary{background:var(--yellow);color:var(--darkblue)}
-.btn-secondary{background:#fff;color:var(--darkblue)}
-.btn-danger{background:#fee2e2;color:#991b1b}
-.btn-success{background:#dcfce7;color:#166534}
-.btn:disabled{opacity:.5;cursor:not-allowed}
 
-.search-box{position:relative}
-.search-box input{padding-left:42px}
-.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#64748b}
-.results{display:flex;flex-direction:column;gap:10px;margin-top:15px}
-.user-row{
-  background:#fff;color:#0f172a;border-radius:16px;padding:12px;
-  display:flex;align-items:center;gap:12px;
-}
-.user-row img,.mini-avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#e2e8f0}
-.user-main{min-width:0;flex:1}
-.user-main strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.user-main small{color:#64748b;font-size:11px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.status{font-size:11px;font-weight:700;color:#64748b}
-
-.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
-.count-badge{background:var(--yellow);color:var(--darkblue);border-radius:999px;padding:4px 9px;font-size:10px;font-weight:800}
-.list{display:flex;flex-direction:column;gap:10px}
-.empty{
-  text-align:center;padding:24px 12px;background:rgba(255,255,255,.08);
-  border-radius:16px;color:rgba(255,255,255,.9);font-size:13px
-}
-.sent-request-row{background:#fff;color:#0f172a;border-radius:16px;padding:12px;display:flex;align-items:center;gap:12px}
-
-.request-row,.friend-row{
-  background:#fff;color:#0f172a;border-radius:16px;padding:12px;
-  display:flex;align-items:center;gap:12px
-}
-.row-info{flex:1;min-width:0}
-
-.friend-profile-link{
-  display:flex;align-items:center;gap:12px;flex:1;min-width:0;
-  text-decoration:none;color:inherit;border-radius:12px;padding:4px;
-  transition:.2s ease;
-}
-.friend-profile-link:hover{background:#eef4ff;transform:translateX(2px)}
-.friend-profile-link:active{transform:scale(.99)}
-.friend-profile-link .row-info{min-width:0}
-.row-info strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.row-info small{display:block;color:#64748b;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.actions{display:flex;gap:7px}
-.actions .btn{padding:8px 11px;font-size:11px}
-
-.toast{
-  position:fixed;left:50%;bottom:95px;transform:translate(-50%,20px);
-  background:#0f172a;color:#fff;padding:11px 16px;border-radius:12px;font-size:12px;
-  opacity:0;pointer-events:none;transition:.25s ease;z-index:100
-}
-.toast.show{opacity:1;transform:translate(-50%,0)}
-
-.profile-menu{
-  display:none;position:absolute;top:calc(100% + 8px);right:0;width:290px;
-  background:#fff;color:var(--darkblue);border-radius:18px;padding:14px;
-  box-shadow:0 20px 50px rgba(0,0,0,.28);z-index:60;
-  opacity:0;transform:translateY(-12px) scale(.96);transform-origin:top right;
-  pointer-events:none;
-}
-.profile-menu.open{display:block;pointer-events:auto;animation:profileMenuIn .42s cubic-bezier(.16,1,.3,1) forwards}
-.profile-menu.closing{display:block;pointer-events:none;animation:profileMenuOut .38s cubic-bezier(.4,0,.2,1) forwards}
-.profile-info{display:flex;align-items:center;gap:11px;opacity:0;transform:translateY(-8px)}
-.profile-menu.open .profile-info{animation:profileItemIn .38s cubic-bezier(.16,1,.3,1) .05s forwards}
-.profile-info img{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#e2e8f0}
-.profile-details{min-width:0}
-.profile-details strong,.profile-details small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.profile-details strong{font-size:14px}
-.profile-details small{font-size:10px;color:#64748b;margin-top:2px}
-.profile-divider{height:1px;background:#e5e7eb;margin:12px 0;opacity:0}
-.profile-menu.open .profile-divider{animation:profileFadeIn .30s ease .14s forwards}
-.profile-link{display:flex;gap:10px;align-items:center;padding:11px 12px;border-radius:12px;text-decoration:none;color:var(--darkblue);font-size:12px;font-weight:600;opacity:0;transform:translateX(14px)}
-.profile-menu.open .profile-link:nth-of-type(1){animation:profileItemIn .38s cubic-bezier(.16,1,.3,1) .17s forwards}
-.profile-menu.open .profile-link:nth-of-type(2){animation:profileItemIn .38s cubic-bezier(.16,1,.3,1) .24s forwards}
-.profile-menu.open .profile-link:nth-of-type(3){animation:profileItemIn .38s cubic-bezier(.16,1,.3,1) .31s forwards}
-.profile-link:hover{background:#eef4ff;transform:translateX(3px)}
-.logout-button{width:100%;border:none;border-radius:12px;padding:11px;background:var(--darkblue);color:#fff;font-weight:600;cursor:pointer;opacity:0;transform:translateY(8px)}
-.profile-menu.open .logout-button{animation:profileItemIn .38s cubic-bezier(.16,1,.3,1) .38s forwards}
-.profile-menu.closing .logout-button{animation:profileItemOut .16s cubic-bezier(.4,0,.2,1) 0s forwards}
-.profile-menu.closing .profile-link:nth-of-type(3){animation:profileItemOut .16s cubic-bezier(.4,0,.2,1) .035s forwards}
-.profile-menu.closing .profile-link:nth-of-type(2){animation:profileItemOut .16s cubic-bezier(.4,0,.2,1) .07s forwards}
-.profile-menu.closing .profile-link:nth-of-type(1){animation:profileItemOut .16s cubic-bezier(.4,0,.2,1) .105s forwards}
-.profile-menu.closing .profile-info{animation:profileInfoOut .18s cubic-bezier(.4,0,.2,1) .14s forwards}
-@keyframes profileMenuIn{0%{opacity:0;transform:translateY(-12px) scale(.96)}60%{opacity:1;transform:translateY(2px) scale(1.01)}100%{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes profileMenuOut{0%{opacity:1;transform:translateY(0) scale(1)}65%{opacity:1;transform:translateY(-2px) scale(.995)}100%{opacity:0;transform:translateY(-10px) scale(.97)}}
-@keyframes profileItemIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes profileFadeIn{from{opacity:0}to{opacity:1}}
-@keyframes profileItemOut{from{opacity:1;transform:translateX(0) translateY(0) scale(1)}to{opacity:0;transform:translateX(8px) translateY(-4px) scale(.98)}}
-@keyframes profileInfoOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-6px)}}
-
-.bottom-nav{
-  position:fixed;left:0;right:0;bottom:0;height:76px;
-  background:rgba(0,0,0,.28);backdrop-filter:blur(18px);
-  display:flex;justify-content:space-around;align-items:center;z-index:55
-}
-.nav-item{text-decoration:none;color:#fff;font-size:10px;text-align:center;padding:4px 8px}
-.nav-item div{font-size:22px;line-height:1;margin-bottom:4px}
-.nav-item.active{
-  color:var(--yellow);
-  transform:translateY(-6px) scale(1.12);
-  font-weight:700;
-}
-.nav-item.active div{
-  font-size:28px;
-  margin-bottom:5px;
-}
-@media (max-width:768px){
-  .nav-item.active{transform:translateY(-5px) scale(1.08)}
-  .nav-item.active div{font-size:25px}
-}
-
-#profileNavPhoto{display:flex;align-items:center;justify-content:center;width:24px;height:24px;margin:0 auto 4px}
-#profileNavPhoto img{width:24px;height:24px;border-radius:50%;object-fit:cover}
-
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:9999999;justify-content:center;align-items:center;padding:15px}
-.login-popup{position:relative;width:100%;max-width:420px;padding:35px 30px;border-radius:28px;background:rgba(34,42,60,.96);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.12);box-shadow:0 20px 60px rgba(0,0,0,.45);text-align:center;color:#fff;animation:pop .3s ease}
-.login-popup h2{font-size:42px;font-weight:700;margin-bottom:8px;color:#fff}
-.login-popup p{color:rgba(255,255,255,.85);font-size:17px;margin-bottom:22px}
-.login-close{position:absolute;top:14px;right:16px;background:transparent;border:none;padding:0;margin:0;width:28px;height:28px;font-size:20px;line-height:1;font-weight:500;color:#FFD93D;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s ease}
-.login-close:hover{color:#FFE66D;transform:scale(1.08)}
-#googleLoginBtn{width:100%;height:58px;border:none;border-radius:16px;background:#FFD93D;color:#082A75;font-size:18px;font-weight:700;cursor:pointer;margin:0;transition:.2s ease}
-#googleLoginBtn:hover{transform:translateY(-2px);filter:brightness(1.03)}
-@keyframes pop{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
-
-.loading{padding:20px;text-align:center;color:#64748b;font-size:12px}
-.hidden{display:none!important}
-
-@media(max-width:768px){
-  body{padding-bottom:82px}
-  .header{grid-template-columns:auto 1fr auto;padding:9px 11px;gap:8px}
-  .logo{width:42px;height:42px}.caths-logo{transform:scale(1.06)}
-  .header-center h1{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .header-center p{font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .login-btn{font-size:10px;padding:7px 8px;max-width:110px;overflow:hidden;text-overflow:ellipsis}
-  .container{padding:20px 12px}
-  .page-title h2{font-size:23px}.page-title p{font-size:11px}
-  .profile-grid{grid-template-columns:60px 1fr}.profile-grid > .btn{grid-column:1/-1}
-  .avatar{width:60px;height:60px}.fallback-avatar{font-size:25px}
-  .field-row{grid-template-columns:1fr}
-  .user-row,.request-row,.friend-row{padding:10px}.user-row img,.mini-avatar{width:44px;height:44px}
-  .actions{flex-direction:column}
-  .actions .btn{width:100%}
-  .profile-menu{width:calc(100vw - 20px);max-width:300px}
-  .login-popup{width:100%;max-width:350px;padding:28px 20px;border-radius:22px}
-  .login-popup h2{font-size:30px}
-  .login-popup p{font-size:13px;margin-bottom:20px}
-  #googleLoginBtn{height:54px;font-size:15px;border-radius:15px}
-  .login-close{top:12px;right:12px}
-  .bottom-nav{height:70px}.nav-item{font-size:9px;min-width:52px;padding:4px 2px}.nav-item div{font-size:21px}
-}
-
-/* REMOVE FRIEND CONFIRMATION */
-.remove-modal{
-  position:fixed;inset:0;display:none;align-items:center;justify-content:center;
-  padding:18px;background:rgba(0,13,38,.62);backdrop-filter:blur(9px);
-  -webkit-backdrop-filter:blur(9px);z-index:9999;
-}
-.remove-modal.show{display:flex;animation:removeOverlayIn .22s ease forwards}
-.remove-dialog{
-  width:min(420px,100%);background:rgba(255,255,255,.97);color:#0f172a;
-  border-radius:26px;padding:28px 24px 22px;text-align:center;
-  box-shadow:0 26px 70px rgba(0,0,0,.35);
-  border:1px solid rgba(255,255,255,.65);
-  transform:translateY(16px) scale(.96);opacity:0;
-  animation:removeDialogIn .3s cubic-bezier(.16,1,.3,1) .03s forwards;
-}
-.remove-icon{
-  width:68px;height:68px;margin:0 auto 14px;border-radius:20px;
-  display:flex;align-items:center;justify-content:center;font-size:31px;
-  background:linear-gradient(135deg,#fff1f2,#ffe4e6);
-  box-shadow:inset 0 0 0 1px rgba(220,38,38,.08);
-}
-.remove-dialog h3{font-size:21px;color:#00296B;margin-bottom:7px}
-.remove-dialog p{font-size:13px;line-height:1.6;color:#64748b;margin:0 auto 17px;max-width:330px}
-.remove-friend-preview{
-  display:flex;align-items:center;gap:11px;text-align:left;padding:11px 12px;
-  border-radius:16px;background:#f8fafc;border:1px solid #e2e8f0;margin-bottom:19px;
-}
-.remove-friend-preview img,.remove-friend-preview .fallback-avatar{
-  width:48px;height:48px;border-radius:50%;object-fit:cover;flex:0 0 48px;
-}
-.remove-friend-preview strong{display:block;font-size:13px;color:#0f172a}
-.remove-friend-preview span{display:block;font-size:11px;color:#64748b;margin-top:2px}
-.remove-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.remove-actions button{width:100%;border:none;border-radius:14px;padding:12px 14px;font-weight:700;cursor:pointer;transition:.2s ease}
-.remove-cancel{background:#eef2f7;color:#334155}
-.remove-confirm{background:#dc2626;color:#fff;box-shadow:0 7px 18px rgba(220,38,38,.22)}
-.remove-actions button:hover{transform:translateY(-1px)}
-.remove-actions button:active{transform:scale(.98)}
-@keyframes removeOverlayIn{from{opacity:0}to{opacity:1}}
-@keyframes removeDialogIn{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
-@media(max-width:480px){
-  .remove-dialog{border-radius:22px;padding:24px 17px 18px}
-  .remove-dialog h3{font-size:19px}
-  .remove-dialog p{font-size:12px}
-  .remove-actions{grid-template-columns:1fr;gap:8px}
-  .remove-actions button{padding:13px}
+/* Final Messenger-style message layout */
+.message-row{align-items:flex-start;gap:7px;position:relative}
+.message-row.mine{flex-direction:row-reverse}
+.message-sender{display:flex;align-items:center;gap:6px;margin:0 0 4px 2px;min-height:24px}
+.message-sender .sender-avatar{width:24px;height:24px;flex:0 0 24px;border-radius:50%;overflow:hidden;background:#e8eef7;color:#183c8c;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800}
+.message-sender .sender-avatar img{width:100%;height:100%;object-fit:cover}
+.message-sender-name{font-size:10px;font-weight:800;color:#fff;opacity:.95}
+.message-sender-time{font-size:8px;color:rgba(255,255,255,.62)}
+.message-content{display:flex;flex-direction:column;min-width:0;max-width:min(82%,560px)}
+.message-main-line{display:flex;align-items:flex-end;gap:5px;position:relative}
+.message-row.mine .message-content{align-items:flex-end}
+.message-row.mine .message-sender{justify-content:flex-end}
+.message-row.mine .message-sender-name{color:#fff}
+.message-main-line .bubble{max-width:100%}
+.message-reaction-trigger{display:inline-flex;flex:0 0 27px;width:27px;height:27px;border-radius:50%;background:#fff;color:#183c8c;border:1px solid rgba(0,0,0,.08);align-items:center;justify-content:center;font-size:15px;box-shadow:0 3px 10px rgba(0,0,0,.1);opacity:.86}
+.message-reaction-trigger:hover{opacity:1;transform:scale(1.05)}
+.message-tools-btn{display:inline-flex;flex:0 0 27px;width:27px;height:27px;border-radius:50%;background:rgba(255,255,255,.18);color:#fff;border:0;align-items:center;justify-content:center}
+.message-row.mine .message-tools-btn{background:rgba(0,0,0,.08);color:#183c8c}
+.message-row .message-tools-btn{opacity:0;transition:opacity .15s ease}
+.message-row:hover .message-tools-btn,.message-row:focus-within .message-tools-btn{opacity:1}
+.message-reactions{border-radius:9px;min-height:25px;padding:2px 5px;gap:2px;margin-top:5px;width:max-content}
+.react-picker{max-height:210px;overflow:auto;justify-content:flex-start;align-content:flex-start}
+.react-picker button{font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.conversation-settings-modal .modal-card{max-width:390px}
+.settings-option{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:12px 13px;border:1px solid #e2e8f2;background:#f8fafc;border-radius:12px;color:#183c8c;font-size:11px;font-weight:800;cursor:pointer;margin-top:8px;text-align:left}
+.settings-option:hover{background:#eef4ff}
+.settings-option.danger{color:#b91c1c}
+.settings-status{font-size:9px;color:#64748b;font-weight:500}
+.muted-badge{font-size:10px;margin-left:5px;opacity:.8}
+.blocked-chat{padding:16px;text-align:center;color:#64748b;font-size:11px}
+.blocked-chat strong{display:block;color:#b91c1c;font-size:13px;margin-bottom:5px}
+@media(max-width:800px){
+  .message-row .message-tools-btn{opacity:1}
+  .message-content{max-width:88%}
+  .message-sender .sender-avatar{width:22px;height:22px;flex-basis:22px}
+  .message-sender-name{font-size:9px}
 }
 
 
-/* =========================================================
-   INDEX.HTML BOTTOM NAVIGATION — MATCHED ON FRIENDS PAGE
-   ========================================================= */
-.bottom-nav{
-    position:fixed;
-    bottom:0;
-    left:0;
-    right:0;
-    height:75px;
-    background:rgba(0,0,0,.25);
-    backdrop-filter:blur(20px);
-    -webkit-backdrop-filter:blur(20px);
-    display:flex;
-    justify-content:space-around;
-    align-items:center;
-    z-index:9000;
+/* Final message action order:
+   Other user:  MESSAGE  EMOJI  REPLY  DOTS
+   Me:          DOTS  REPLY  EMOJI  MESSAGE
+*/
+.message-row{display:flex;align-items:flex-end;width:100%;gap:0}
+.message-row.mine{justify-content:flex-end;flex-direction:row}
+.message-row:not(.mine){justify-content:flex-start;flex-direction:row}
+.message-content{display:flex;flex-direction:column;min-width:0;max-width:min(82%,560px)}
+.message-row.mine .message-content{align-items:flex-end}
+.message-row:not(.mine) .message-content{align-items:flex-start}
+.message-main-line{display:flex;align-items:flex-end;gap:5px;position:relative;width:max-content;max-width:100%}
+.message-row.mine .message-main-line{flex-direction:row-reverse;justify-content:flex-start}
+.message-row:not(.mine) .message-main-line{flex-direction:row;justify-content:flex-start}
+.message-main-line .bubble{max-width:min(100%,560px);margin:0}
+.message-reaction-trigger,.message-tools-btn,.message-reply-btn{
+  flex:0 0 28px;width:28px;height:28px;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid rgba(0,0,0,.08);cursor:pointer;opacity:.82;
+  transition:transform .12s ease,opacity .12s ease,background .12s ease;
 }
-
-.bottom-nav a,
-.bottom-nav a:link,
-.bottom-nav a:visited,
-.bottom-nav a:hover,
-.bottom-nav a:active{
-    text-decoration:none;
-    color:white;
+.message-reaction-trigger{background:#fff;color:#183c8c;font-size:15px;box-shadow:0 3px 10px rgba(0,0,0,.08);font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.message-reply-btn{background:rgba(255,255,255,.16);color:#fff;font-size:14px;font-weight:800}
+.message-tools-btn{background:rgba(255,255,255,.16);color:#fff;font-size:17px;font-weight:900}
+.message-row.mine .message-reply-btn,.message-row.mine .message-tools-btn{background:rgba(0,0,0,.08);color:#183c8c}
+.message-reaction-trigger:hover,.message-reply-btn:hover,.message-tools-btn:hover{opacity:1;transform:scale(1.05)}
+.message-reactions{margin-top:5px;align-self:flex-start}
+.message-row.mine .message-reactions{align-self:flex-end}
+@media (hover:hover) and (pointer:fine){
+  .message-reply-btn,.message-tools-btn,.message-reaction-trigger{opacity:.72}
+  .message-row:hover .message-reply-btn,.message-row:hover .message-tools-btn,.message-row:hover .message-reaction-trigger,
+  .message-row:focus-within .message-reply-btn,.message-row:focus-within .message-tools-btn,.message-row:focus-within .message-reaction-trigger{opacity:1}
 }
-
-.bottom-nav .nav-item{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    min-width:72px;
-    padding:5px 8px;
-    line-height:1.1;
-    text-align:center;
-    font-size:12px;
-    cursor:pointer;
-    transition:transform .22s ease,color .22s ease;
+@media (max-width:800px){
+  .message-row .message-reply-btn,.message-row .message-tools-btn,.message-row .message-reaction-trigger{opacity:1}
+  .message-content{max-width:88%}
 }
-
-.bottom-nav .nav-item div{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    width:30px;
-    height:28px;
-    font-size:22px;
-    line-height:1;
-    margin-bottom:3px;
-}
-
-.bottom-nav .nav-item.active{
-    color:var(--yellow);
-    transform:translateY(-5px) scale(1.08);
-}
-
-.bottom-nav .nav-item.active div{
-    font-size:25px;
-}
-
-.bottom-nav .profile-nav-icon{
-    width:30px !important;
-    height:28px !important;
-    display:flex !important;
-    align-items:center !important;
-    justify-content:center !important;
-    margin:0 0 3px 0 !important;
-    background:transparent !important;
-}
-
-.bottom-nav .profile-nav-icon img,
-.bottom-nav #profileNavPhoto img{
-    width:28px !important;
-    height:28px !important;
-    min-width:28px !important;
-    min-height:28px !important;
-    max-width:28px !important;
-    max-height:28px !important;
-    border-radius:50% !important;
-    object-fit:cover !important;
-    display:block !important;
-    background:transparent !important;
-    border:none !important;
-    box-shadow:none !important;
-}
-
-@media(max-width:768px){
-    .bottom-nav{
-        height:70px;
-        padding:5px 3px calc(5px + env(safe-area-inset-bottom));
-        z-index:9000;
-    }
-
-    .bottom-nav .nav-item{
-        min-width:48px;
-        flex:1 1 0;
-        max-width:88px;
-        padding:4px 2px;
-        font-size:8px;
-    }
-
-    .bottom-nav .nav-item div{
-        width:27px;
-        height:24px;
-        font-size:21px;
-        margin-bottom:2px;
-    }
-
-    .bottom-nav .nav-item.active{
-        transform:translateY(-4px) scale(1.06);
-    }
-
-    .bottom-nav .nav-item.active div{
-        font-size:24px;
-    }
-
-    .bottom-nav .profile-nav-icon{
-        width:27px !important;
-        height:24px !important;
-        padding:0 !important;
-        border:none !important;
-        box-shadow:none !important;
-        background:transparent !important;
-    }
-
-    .bottom-nav .profile-nav-icon img,
-    .bottom-nav #profileNavPhoto img{
-        width:25px !important;
-        height:25px !important;
-        min-width:25px !important;
-        min-height:25px !important;
-        max-width:25px !important;
-        max-height:25px !important;
-    }
-}
-
-@media(max-width:380px){
-    .bottom-nav .nav-item{
-        min-width:44px;
-        padding-left:2px;
-        padding-right:2px;
-        font-size:7px;
-    }
-
-    .bottom-nav .nav-item div{
-        font-size:19px;
-    }
-}
-
-
-/* =========================================================
-   MOBILE-FIRST FRIENDS PAGE POLISH
-   ========================================================= */
-*{box-sizing:border-box}
-html{width:100%;overflow-x:hidden}
-body{
-  width:100%;
-  max-width:100%;
-  overflow-x:hidden;
-  -webkit-text-size-adjust:100%;
-  padding-bottom:92px;
-}
-
-img{max-width:100%;height:auto}
-
-.container,
-.main-container,
-.page-container,
-.content,
-main{
-  width:100%;
-  max-width:100%;
-}
-
-@media (max-width:768px){
-  body{
-    padding-bottom:86px;
-  }
-
-  .header,
-  header{
-    width:100%;
-    padding-left:14px !important;
-    padding-right:14px !important;
-  }
-
-  .header-left,
-  .header-right{
-    min-width:0;
-  }
-
-  .header-left{
-    gap:8px !important;
-  }
-
-  .logo,
-  .brand-logo{
-    max-width:42px !important;
-    max-height:42px !important;
-  }
-
-  .header-title,
-  .brand-title,
-  header h1{
-    font-size:16px !important;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-  }
-
-  .container,
-  .main-container,
-  .page-container,
-  .content,
-  main{
-    width:100% !important;
-    max-width:100% !important;
-    padding-left:12px !important;
-    padding-right:12px !important;
-    margin-left:0 !important;
-    margin-right:0 !important;
-  }
-
-  .card{
-    width:100% !important;
-    max-width:100% !important;
-    margin-left:0 !important;
-    margin-right:0 !important;
-    padding:15px !important;
-    border-radius:18px !important;
-  }
-
-  .section-head{
-    gap:8px !important;
-    flex-wrap:wrap;
-  }
-
-  .section-head h3{
-    font-size:17px !important;
-    line-height:1.25;
-  }
-
-  .sub{
-    font-size:12px !important;
-    line-height:1.45;
-  }
-
-  /* Search area */
-  #searchInput{
-    width:100% !important;
-    min-width:0 !important;
-    font-size:16px !important; /* prevents iOS zoom */
-  }
-
-  .search-row,
-  .search-box,
-  .field-row{
-    width:100% !important;
-    min-width:0 !important;
-  }
-
-  /* Request/friend rows become compact mobile cards */
-  .request-row,
-  .sent-request-row,
-  .friend-row{
-    width:100% !important;
-    min-width:0 !important;
-    gap:10px !important;
-    padding:11px !important;
-    align-items:center !important;
-    overflow:hidden;
-  }
-
-  .row-info{
-    min-width:0 !important;
-    flex:1 1 auto !important;
-    overflow:hidden;
-  }
-
-  .row-info strong,
-  .row-info small{
-    display:block;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-  }
-
-  .row-info strong{
-    font-size:13px !important;
-  }
-
-  .row-info small{
-    font-size:11px !important;
-  }
-
-  .actions{
-    flex:0 0 auto !important;
-    display:flex !important;
-    gap:5px !important;
-  }
-
-  .actions .btn{
-    min-height:36px !important;
-    padding:7px 9px !important;
-    font-size:11px !important;
-    white-space:nowrap;
-  }
-
-  .friend-profile-link{
-    min-width:0 !important;
-    flex:1 1 auto !important;
-    overflow:hidden;
-    display:flex !important;
-    align-items:center !important;
-    gap:10px !important;
-  }
-
-  /* Profile/setup fields */
-  .profile-grid{
-    grid-template-columns:1fr !important;
-    gap:12px !important;
-  }
-
-  .profile-grid > *{
-    min-width:0 !important;
-  }
-
-  input,
-  select,
-  textarea,
-  button{
-    max-width:100%;
-  }
-
-  input,
-  select,
-  textarea{
-    font-size:16px !important;
-  }
-
-  /* Keep the bottom nav usable with a thumb */
-  .bottom-nav{
-    height:70px !important;
-    padding:4px 2px calc(5px + env(safe-area-inset-bottom)) !important;
-  }
-
-  .bottom-nav .nav-item{
-    min-width:0 !important;
-    width:20% !important;
-    max-width:none !important;
-    padding:4px 1px !important;
-    font-size:8px !important;
-    overflow:hidden;
-  }
-
-  .bottom-nav .nav-item span{
-    max-width:100%;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-  }
-
-  /* Prevent horizontal overflow from wide badges/buttons */
-  .count-badge{
-    flex:0 0 auto;
-  }
-
-  .toast{
-    left:12px !important;
-    right:12px !important;
-    bottom:82px !important;
-    width:auto !important;
-    max-width:none !important;
-    text-align:center;
-  }
-}
-
-@media (max-width:430px){
-  .card{
-    padding:13px !important;
-    border-radius:16px !important;
-  }
-
-  .request-row,
-  .sent-request-row,
-  .friend-row{
-    padding:9px !important;
-  }
-
-  .actions .btn{
-    min-height:34px !important;
-    padding:6px 8px !important;
-    font-size:10px !important;
-  }
-
-  .bottom-nav .nav-item div{
-    font-size:20px !important;
-  }
-
-  .bottom-nav .nav-item.active div{
-    font-size:23px !important;
-  }
-}
-
-@media (max-width:360px){
-  .card{
-    padding:11px !important;
-  }
-
-  .request-row,
-  .sent-request-row,
-  .friend-row{
-    gap:7px !important;
-  }
-
-  .actions{
-    gap:3px !important;
-  }
-
-  .actions .btn{
-    padding:6px 6px !important;
-    font-size:9px !important;
-  }
-
-  .row-info strong{
-    font-size:12px !important;
-  }
-
-  .row-info small{
-    font-size:10px !important;
-  }
-}
-
-
-/* =========================================================
-   MOBILE TOAST — CENTERED ABOVE BOTTOM NAV
-   ========================================================= */
-@media (max-width:768px){
-  .toast{
-    left:50% !important;
-    right:auto !important;
-    bottom:82px !important;
-    width:max-content !important;
-    max-width:calc(100vw - 32px) !important;
-    transform:translateX(-50%) translateY(10px) !important;
-    text-align:center !important;
-    white-space:normal !important;
-    overflow-wrap:anywhere;
-    z-index:10000 !important;
-  }
-
-  .toast.show{
-    transform:translateX(-50%) translateY(0) !important;
-  }
-}
-
-@media (max-width:430px){
-  .toast{
-    bottom:82px !important;
-    max-width:calc(100vw - 28px) !important;
-    padding:10px 16px !important;
-    border-radius:999px !important;
-    font-size:12px !important;
-  }
-}
-
-
-.message-btn{
-  white-space:nowrap;
-  min-height:36px;
-  background:#e0f2fe;
-  color:#075985;
-  text-decoration:none;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:5px;
-}
-.message-btn:hover{background:#bae6fd}
-
-
-/* ACTIVE BOTTOM NAV */
-.bottom-nav .nav-item{color:#fff;text-decoration:none;transition:transform .22s ease,color .22s ease}
-.bottom-nav .nav-item.active{color:#FFD700 !important;transform:translateY(-7px) scale(1.08);font-weight:700}
-.bottom-nav .nav-item.active div{font-size:26px !important;color:#FFD700 !important}
-@media(max-width:768px){
-  .bottom-nav .nav-item.active{transform:translateY(-6px) scale(1.08)}
-  .bottom-nav .nav-item.active div{font-size:25px !important}
-}
-.profile-btn{
-  background:rgba(255,255,255,.14);
-  color:#fff;
-  text-decoration:none;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:5px;
-  white-space:nowrap;
-  min-height:36px;
-}
-.profile-btn:hover{background:rgba(255,255,255,.22)}
 
 </style>
 </head>
 <body>
-
 <header class="header">
-  <div class="logo-group">
-    <img src="sslg-logo.png" class="logo" alt="SSLG">
-    <img src="caths-logo.png" class="logo caths-logo" alt="CATHS">
-  </div>
-
-  <div class="header-center">
-    <h1>CATHS-MAIN Friends</h1>
-    <p>Connect with your school community</p>
-  </div>
-
-  <div class="header-right">
-    <button id="headerLoginBtn" class="login-btn" type="button" onclick="toggleHeaderProfile()">👤 <span>Login</span></button>
-    <div id="profileMenu" class="profile-menu">
-      <div class="profile-info">
-        <img id="menuPhoto" src="" alt="Profile">
-        <div class="profile-details">
-          <strong id="menuName">User</strong>
-          <small id="menuUsername">@username</small>
-        </div>
-      </div>
-      <div class="profile-divider"></div>
-      <a href="profile.html" class="profile-link">👤 Profile</a>
-      <a href="friends.html" class="profile-link">👥 Friends</a>
-      <a href="voice.html" class="profile-link">🗣️ Your Concern</a>
-      <div class="profile-divider"></div>
-      <button class="logout-button" type="button" onclick="logoutUser()">🚪 Log Out</button>
-    </div>
-  </div>
+  <div class="logo-group"><img src="sslg-logo.png" class="logo" alt="SSLG"><img src="caths-logo.png" class="logo" alt="CATHS"></div>
+  <div class="header-center"><h1>CATHS-MAIN Messages</h1><p>Private messages between friends</p></div>
+  <div class="header-right"></div>
 </header>
 
 <main class="container">
-  <div class="page-title">
-    <h2>👥 Friends</h2>
-    <p>Find classmates using their username or nickname.</p>
-  </div>
-
-  <section class="card" id="profileSetupCard">
-    <h3>✨ Create your username</h3>
-    <div class="sub">Your username and nickname are what other students will use to find you.</div>
-
-    <div class="profile-grid">
-      <div id="setupAvatar" class="avatar fallback-avatar">👤</div>
-      <div>
-        <div class="field-row">
-          <div>
-            <label for="usernameInput">Username</label>
-            <input id="usernameInput" maxlength="30" placeholder="e.g. reyven123" autocomplete="off">
-            <div class="helper">3–20 characters. Letters, numbers, periods and underscores only.</div>
-          </div>
-          <div>
-            <label for="nicknameInput">Nickname</label>
-            <input id="nicknameInput" maxlength="20" placeholder="e.g. Reyven" autocomplete="off">
-<small id="nickname-limit-note" class="sub">Nickname: up to 20 characters.</small>
-            <div class="helper">This is the name shown to your friends.</div>
-          </div>
-        </div>
+  <section class="messenger">
+    <aside class="sidebar">
+      <div class="side-title"><h2>💬 Messages</h2><span id="friendCount" class="count-pill">0</span></div>
+      <div class="side-actions">
+        <button id="newGroupBtn" class="side-action-btn" type="button">＋ Group</button>
+        <button id="searchFocusBtn" class="side-action-btn" type="button">🔎 Search</button>
       </div>
-      <button id="saveProfileBtn" class="btn btn-primary" type="button" onclick="saveProfile()">Save Profile</button>
-    </div>
-  </section>
+      <input id="friendSearch" class="search" placeholder="Search conversations..." autocomplete="off">
+      <div id="conversationList" class="friend-list"><div class="loading"><div class="spinner"></div><div>Loading conversations...</div></div></div>
+    </aside>
 
-  <section class="card">
-    <h3>🔎 Find Friends</h3>
-    <div class="sub">Search by username or nickname.</div>
-    <div class="search-box">
-      <span class="search-icon">🔍</span>
-      <input id="searchInput" placeholder="Search username or nickname..." autocomplete="off">
-    </div>
-    <div id="searchResults" class="results">
-      <div class="empty">Start typing to search students.</div>
-    </div>
-  </section>
-
-  <section class="card">
-    <div class="section-head">
-      <h3>🔔 Friend Requests</h3>
-      <span class="count-badge" id="requestCount">0</span>
-    </div>
-    <div id="requestsList" class="list">
-      <div class="loading">Loading requests...</div>
-    </div>
-  </section>
-
-  <section class="card">
-    <div class="section-head">
-      <h3>📨 Sent Friend Requests</h3>
-      <span class="count-badge" id="sentRequestCount">0</span>
-    </div>
-    <div class="sub">See the students you have requested to add.</div>
-    <div id="sentRequestsList" class="list">
-      <div class="loading">Loading sent requests...</div>
-    </div>
-  </section>
-
-  <section class="card">
-    <div class="section-head">
-      <h3>👥 My Friends</h3>
-      <span class="count-badge" id="friendCount">0</span>
-    </div>
-    <div id="friendsList" class="list">
-      <div class="loading">Loading friends...</div>
-    </div>
+    <section id="chatPane" class="chat">
+      <div class="chat-empty">
+        <div class="empty-inner"><div class="empty-icon">💬</div><h3>Select a friend</h3><p>Choose a friend from the list to start a private conversation.</p></div>
+      </div>
+    </section>
   </section>
 </main>
 
-<div class="bottom-nav">
 
-    <a href="index.html" class="nav-item">
-        <div>🏠</div>
-        <span>Home</span>
-    </a>
-
-    <a href="news-feed.html" class="nav-item">
-        <div>📰</div>
-        <span>News Feed</span>
-    </a>
-
-    <a href="#" class="nav-item" onclick="openStudentVoice(event)">
-        <div>🗣️</div>
-        <span>Student Voice</span>
-    </a>
-
-    <a href="friends.html" class="nav-item">
-        <div>👥</div>
-        <span>Add Friends</span>
-    </a>
-
-    <a href="profile.html" class="nav-item">
-        <div class="profile-nav-icon" id="profileNavPhoto">👤</div>
-        <span>Profile</span>
-    </a>
-
-</div>
-
-
-<div id="removeFriendModal" class="remove-modal" aria-hidden="true">
-  <div class="remove-dialog" role="dialog" aria-modal="true" aria-labelledby="removeFriendTitle">
-    <div class="remove-icon">👥</div>
-    <h3 id="removeFriendTitle">Remove Friend?</h3>
-    <p>This person will be removed from your friends list. You can send a new friend request later.</p>
-    <div id="removeFriendPreview" class="remove-friend-preview"></div>
-    <div class="remove-actions">
-      <button type="button" class="remove-cancel" onclick="closeRemoveFriendModal()">Cancel</button>
-      <button type="button" class="remove-confirm" id="confirmRemoveFriendBtn">Remove Friend</button>
-    </div>
+<div id="groupCreateModal" class="modal-backdrop">
+  <div class="modal-card">
+    <div class="modal-head-row"><h3>👥 Create Group Chat</h3><button type="button" class="modal-x" onclick="closeGroupCreate()">×</button></div>
+    <p>Create a private group with your friends.</p>
+    <label class="form-label">Group name</label>
+    <input id="groupNameInput" class="modal-input" maxlength="80" placeholder="e.g. CATHS Barkada">
+    <label class="form-label">Add friends</label>
+    <div id="groupFriendChoices" class="select-friends"></div>
+    <button id="createGroupConfirmBtn" class="modal-primary" type="button">Create Group</button>
   </div>
 </div>
 
-<div id="toast" class="toast"></div>
-
-<div id="loginOverlay" class="overlay">
-  <div class="login-popup">
-    <button class="login-close" type="button" onclick="closeLoginDialog()">✕</button>
-
-    <h2>Welcome Back</h2>
-
-    <p>Sign in to continue</p>
-
-    <button id="googleLoginBtn" type="button" onclick="googleLogin()">
-      Continue with Google
-    </button>
+<div id="groupManageModal" class="modal-backdrop">
+  <div class="modal-card">
+    <div class="modal-head-row"><h3>⚙️ Group Settings</h3><button type="button" class="modal-x" onclick="closeGroupManage()">×</button></div>
+    <p>Change the group name or add more friends.</p>
+    <label class="form-label">Group name</label>
+    <input id="groupManageNameInput" class="modal-input" maxlength="80">
+    <label class="form-label">Add friends</label>
+    <div id="groupManageFriendChoices" class="select-friends"></div>
+    <button id="saveGroupBtn" class="modal-primary" type="button">Save Changes</button>
+    <button type="button" class="modal-secondary" onclick="closeGroupManage()">Cancel</button>
   </div>
 </div>
+
+<div id="forwardModal" class="modal-backdrop">
+  <div class="modal-card">
+    <div class="modal-head-row"><h3>↗️ Forward Message</h3><button type="button" class="modal-x" onclick="closeForward()">×</button></div>
+    <p>Select a conversation.</p>
+    <input id="forwardSearch" class="search" placeholder="Search conversations..." autocomplete="off">
+    <div id="forwardChoices" class="select-friends"></div>
+  </div>
+</div>
+<div id="groupMembersModal" class="modal-backdrop">
+  <div class="modal-card">
+    <div class="modal-head-row"><h3>👥 Group Members</h3><button type="button" class="modal-x" onclick="closeGroupMembers()">×</button></div>
+    <p id="groupMembersSubtitle">Members in this group</p>
+    <div id="groupMembersList" class="group-members-modal-list"></div>
+  </div>
+</div>
+
+<div id="conversationSettingsModal" class="modal-backdrop conversation-settings-modal">
+  <div class="modal-card">
+    <div class="modal-head-row"><h3>⚙️ Conversation Settings</h3><button type="button" class="modal-x" onclick="closeConversationSettings()">×</button></div>
+    <p id="conversationSettingsSubtitle">Manage this conversation.</p>
+    <button id="muteConversationBtn" class="settings-option" type="button"></button>
+    <button id="blockConversationBtn" class="settings-option danger" type="button"></button>
+    <button type="button" class="modal-secondary" onclick="closeConversationSettings()">Done</button>
+  </div>
+</div>\n\n<div id="toast" class="toast"></div>
+
+<nav class="bottom-nav">
+  <a href="index.html" class="nav-item"><div>🏠</div><span>Home</span></a>
+  <a href="news-feed.html" class="nav-item"><div>📰</div><span>News Feed</span></a>
+  <a href="voice.html" class="nav-item"><div>🗣️</div><span>Student Voice</span></a>
+  <a href="friends.html" class="nav-item"><div>👥</div><span>Friends</span></a>
+  <a href="profile.html" class="nav-item active"><div>💬</div><span>Messages</span></a>
+</nav>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signOut,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-import {
-  getFirestore,
-  collection,
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-  deleteDoc,
-  addDoc,
-  query,
-  where,
-  orderBy,
-  limit,
-  getDocs,
-  serverTimestamp
+  getFirestore,doc,getDoc,collection,getDocs,query,where,limit,addDoc,setDoc,updateDoc,
+  deleteDoc,serverTimestamp,onSnapshot,arrayUnion
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",
-  authDomain: "caths-page.firebaseapp.com",
-  projectId: "caths-page",
-  storageBucket: "caths-page.firebasestorage.app",
-  messagingSenderId: "945498022620",
-  appId: "1:945498022620:web:71aeb4cd2472e061aeca19",
-  measurementId: "G-CBG1YSK13G"
-};
+const firebaseConfig={apiKey:"AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",authDomain:"caths-page.firebaseapp.com",projectId:"caths-page",storageBucket:"caths-page.firebasestorage.app",messagingSenderId:"945498022620",appId:"1:945498022620:web:71aeb4cd2472e061aeca19",measurementId:"G-CBG1YSK13G"};
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+const $=id=>document.getElementById(id);
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const googleProvider = new GoogleAuthProvider();
+let targetUid=new URLSearchParams(location.search).get('uid')||'';
+let friends=[];
+let groups=[];
+let activeFriend=null;
+let activeGroup=null;
+let activeConversation=null;
+let unsubscribeMessages=null;
+let unsubscribeGroups=null;
+let pendingActionMessage=null;
 
-let firebaseUser = null;
-let currentProfile = null;
-let searchTimer = null;
-
-const $ = (id) => document.getElementById(id);
-
-function escapeHtml(value=''){
-  return String(value)
-    .replaceAll('&','&amp;')
-    .replaceAll('<','&lt;')
-    .replaceAll('>','&gt;')
-    .replaceAll('"','&quot;')
-    .replaceAll("'",'&#039;');
+const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+function showToast(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>el.classList.remove('show'),2400)}
+function avatarHtml(p,className='friend-avatar'){
+  return p?.photoURL?`<div class="${className}"><img src="${esc(p.photoURL)}" alt=""></div>`:`<div class="${className}">${esc((p?.nickname||p?.username||p?.name||'U').charAt(0).toUpperCase())}</div>`;
 }
-
-function normalize(value=''){
-  return String(value).trim().toLowerCase();
-}
-
-function validUsername(value){
-  return /^[a-zA-Z0-9._]{3,20}$/.test(value);
-}
-
-function showToast(message){
-  const toast = $('toast');
-  toast.textContent = message;
-  toast.classList.add('show');
-  clearTimeout(showToast.timer);
-  showToast.timer = setTimeout(() => toast.classList.remove('show'), 2600);
-}
-
-function avatarHtml(user, className='mini-avatar'){
-  if(user.photoURL){
-    return `<img class="${className}" src="${escapeHtml(user.photoURL)}" alt="Profile">`;
-  }
-  const letter = escapeHtml((user.nickname || user.username || user.displayName || 'U').charAt(0).toUpperCase());
-  return `<div class="${className} fallback-avatar">${letter}</div>`;
-}
-
-function setHeaderUser(user, profile){
-  const btn = $('headerLoginBtn');
-  const photo = $('menuPhoto');
-  const nav = $('profileNavPhoto');
-  if(user){
-    btn.innerHTML = user.photoURL
-      ? `<img src="${escapeHtml(user.photoURL)}" alt=""> <span>${escapeHtml(user.displayName || 'User')}</span> ▼`
-      : `👤 <span>${escapeHtml(user.displayName || 'User')}</span> ▼`;
-    $('menuName').textContent = profile?.nickname || user.displayName || 'User';
-    $('menuUsername').textContent = profile?.username ? '@' + profile.username : '@username';
-    if(user.photoURL){
-      photo.src = user.photoURL;
-      nav.innerHTML = `<img src="${escapeHtml(user.photoURL)}" alt="Profile">`;
-    }else{
-      photo.src = '';
-      nav.textContent = '👤';
-    }
-  }else{
-    btn.textContent = '👤 Login';
-    nav.textContent = '🔐';
-  }
-}
-
-window.toggleHeaderProfile = function(){
-  if(!firebaseUser){
-    $('loginOverlay').style.display = 'flex';
-    return;
-  }
-  const menu = $('profileMenu');
-  if(!menu) return;
-  if(menu.classList.contains('open')){
-    menu.classList.remove('open');
-    menu.classList.add('closing');
-    menu.addEventListener('animationend', function handleClose(e){
-      if(e.animationName !== 'profileMenuOut') return;
-      menu.style.display = 'none';
-      menu.classList.remove('closing');
-      menu.removeEventListener('animationend', handleClose);
-    });
-    return;
-  }
-  menu.style.display = 'block';
-  menu.classList.remove('closing');
-  requestAnimationFrame(() => menu.classList.add('open'));
-};
-
-window.closeLoginDialog = function(){
-  $('loginOverlay').style.display = 'none';
-};
-
-window.googleLogin = async function(){
-  try{
-    await signInWithPopup(auth, googleProvider);
-    closeLoginDialog();
-  }catch(error){
-    console.error(error);
-    showToast('Google login failed.');
-  }
-};
-
-window.logoutUser = async function(){
-  try{
-    await signOut(auth);
-    $('profileMenu').classList.remove('open');
-  }catch(error){
-    console.error(error);
-    showToast('Logout failed.');
-  }
-};
-
-async function ensureSignedIn(){
-  if(firebaseUser) return true;
-  $('loginOverlay').style.display = 'flex';
-  return false;
-}
-
-async function loadCurrentProfile(){
-  if(!firebaseUser) return;
-  const ref = doc(db, 'users', firebaseUser.uid);
-  const snap = await getDoc(ref);
-  currentProfile = snap.exists() ? {id:snap.id, ...snap.data()} : null;
-
-  $('usernameInput').value = currentProfile?.username || '';
-  $('nicknameInput').value = currentProfile?.nickname || firebaseUser.displayName || '';
-
-  const avatar = $('setupAvatar');
-  if(firebaseUser.photoURL){
-    avatar.className = 'avatar';
-    avatar.innerHTML = `<img class="avatar" src="${escapeHtml(firebaseUser.photoURL)}" alt="Profile">`;
-  }else{
-    avatar.className = 'avatar fallback-avatar';
-    avatar.textContent = (currentProfile?.nickname || firebaseUser.displayName || 'U').charAt(0).toUpperCase();
-  }
-
-  setHeaderUser(firebaseUser, currentProfile);
-}
-
-window.saveProfile = async function(){
-  if(!(await ensureSignedIn())) return;
-
-  const username = normalize($('usernameInput').value);
-  const nickname = $('nicknameInput').value.trim();
-
-  if(!validUsername(username)){
-    showToast('Username must be 3–20 characters using letters, numbers, . or _.');
-    return;
-  }
-  if(nickname.length < 2 || nickname.length > 30){
-    showToast('Nickname must be 2–30 characters.');
-    return;
-  }
-
-  const existing = await getDocs(query(
-    collection(db,'users'),
-    where('username','==',username),
-    limit(1)
-  ));
-  const conflict = existing.docs.find(d => d.id !== firebaseUser.uid);
-  if(conflict){
-    showToast('That username is already taken.');
-    return;
-  }
-
-  const data = {
-    username,
-    nickname,
-    displayName: firebaseUser.displayName || nickname,
-    email: firebaseUser.email || '',
-    photoURL: firebaseUser.photoURL || '',
-    updatedAt: serverTimestamp()
-  };
-
-  try{
-    await setDoc(doc(db,'users',firebaseUser.uid), {
-      ...data,
-      createdAt: currentProfile?.createdAt || serverTimestamp()
-    }, {merge:true});
-    currentProfile = {id:firebaseUser.uid, ...data, createdAt: currentProfile?.createdAt};
-    setHeaderUser(firebaseUser, currentProfile);
-    showToast('Profile saved! Your username is now searchable.');
-    await loadRequests();
-    await loadFriends();
-  }catch(error){
-    console.error(error);
-    showToast('Could not save profile. Check Firestore setup/rules.');
-  }
-};
-
-async function findUsers(term){
-  if(!term || term.length < 2){
-    $('searchResults').innerHTML = '<div class="empty">Type at least 2 characters to search.</div>';
-    return;
-  }
-
-  if(!firebaseUser){
-    $('searchResults').innerHTML = '<div class="empty">Please log in first to search for friends.</div>';
-    return;
-  }
-
-  $('searchResults').innerHTML = '<div class="loading">Searching...</div>';
-
-  try{
-    const qUsername = query(
-      collection(db,'users'),
-      where('username','>=',term),
-      where('username','<=',term + '\uf8ff'),
-      limit(20)
-    );
-    const qNickname = query(
-      collection(db,'users'),
-      where('nickname','>=',term),
-      where('nickname','<=',term + '\uf8ff'),
-      limit(20)
-    );
-
-    const [usernameSnap, nicknameSnap] = await Promise.all([
-      getDocs(qUsername),
-      getDocs(qNickname)
-    ]);
-
-    const map = new Map();
-    [...usernameSnap.docs, ...nicknameSnap.docs].forEach(snap => {
-      if(snap.id !== firebaseUser.uid) map.set(snap.id, {id:snap.id,...snap.data()});
-    });
-
-    const users = [...map.values()].sort((a,b)=>String(a.nickname||'').localeCompare(String(b.nickname||'')));
-    renderSearchResults(users);
-  }catch(error){
-    console.error(error);
-    $('searchResults').innerHTML = '<div class="empty">Search failed. Make sure Firestore is enabled and the rules are published.</div>';
-  }
-}
-
-function renderSearchResults(users){
-  if(!users.length){
-    $('searchResults').innerHTML = '<div class="empty">No students found.</div>';
-    return;
-  }
-
-  $('searchResults').innerHTML = '';
-  users.forEach(user => {
-    const row = document.createElement('div');
-    row.className = 'user-row';
-    row.innerHTML = `
-      ${avatarHtml(user)}
-      <div class="user-main">
-        <strong>${escapeHtml(user.nickname || user.displayName || 'Student')}</strong>
-        <small>@${escapeHtml(user.username || '')}</small>
-      </div>
-      <button class="btn btn-primary" data-user-id="${escapeHtml(user.id)}">Add Friend</button>
-    `;
-    row.querySelector('button').addEventListener('click', ()=>handleRelationshipAction(user, row.querySelector('button')));
-
-    const messageLink = document.createElement('a');
-    messageLink.className = 'btn message-btn';
-    messageLink.href = `messages.html?uid=${encodeURIComponent(user.id)}`;
-    messageLink.textContent = '💬 Message';
-    messageLink.title = `Message ${user.nickname || user.username || 'student'}`;
-    row.appendChild(messageLink);
-
-    $('searchResults').appendChild(row);
-    // Public profile viewing: user-profile.html applies the profile/privacy rules.
-    row.querySelectorAll('.row-info, .avatar, img').forEach(el=>{
-      el.style.cursor='pointer';
-      el.addEventListener('click', event=>{
-        if(event.target.closest('.actions')) return;
-        location.href=`user-profile.html?uid=${encodeURIComponent(user.id)}`;
-      });
-    });
-
-    refreshRelationshipButton(user.id, row.querySelector('button'));
-  });
-}
-
-async function getRequestBetween(otherUid){
-  if(!firebaseUser) return null;
-
-  // Only a CURRENT pending request should affect the search button.
-  // Old accepted/rejected requests must not make the button say Respond.
-  const sent = await getDocs(query(
-    collection(db,'friendRequests'),
-    where('from','==',firebaseUser.uid),
-    where('to','==',otherUid),
-    where('status','==','pending'),
-    limit(1)
-  ));
-  if(!sent.empty) return {id:sent.docs[0].id,...sent.docs[0].data()};
-
-  const incoming = await getDocs(query(
-    collection(db,'friendRequests'),
-    where('from','==',otherUid),
-    where('to','==',firebaseUser.uid),
-    where('status','==','pending'),
-    limit(1)
-  ));
-  if(!incoming.empty) return {id:incoming.docs[0].id,...incoming.docs[0].data()};
-
-  return null;
-}
-
-async function areFriends(otherUid){
-  if(!firebaseUser) return false;
-  const ref = doc(db,'friends',firebaseUser.uid,'list',otherUid);
-  return (await getDoc(ref)).exists();
-}
-
-async function refreshRelationshipButton(otherUid, button){
-  try{
-    if(await areFriends(otherUid)){
-      button.textContent = '✓ Friends';
-      button.disabled = true;
-      button.className = 'btn btn-success';
-      return;
-    }
-    const req = await getRequestBetween(otherUid);
-    if(req){
-      if(req.from === firebaseUser.uid && req.status === 'pending'){
-        button.textContent = 'Cancel Request';
-        button.disabled = false;
-        button.className = 'btn btn-secondary';
-      }else{
-        button.textContent = 'Respond';
-        button.disabled = false;
-        button.className = 'btn btn-primary';
-      }
-    }
-  }catch(error){ console.error(error); }
-}
-
-async function handleRelationshipAction(user, button){
-  if(!(await ensureSignedIn())) return;
-  try{
-    if(await areFriends(user.id)){
-      button.textContent = '✓ Friends';
-      button.disabled = true;
-      button.className = 'btn btn-success';
-      return;
-    }
-
-    const req = await getRequestBetween(user.id);
-    if(req && req.from === firebaseUser.uid && req.status === 'pending'){
-      await cancelFriendRequest(req, user);
-      return;
-    }
-
-    if(req && req.from !== firebaseUser.uid){
-      showToast('You have a friend request from this user. Check Friend Requests below.');
-      return;
-    }
-
-    await sendFriendRequest(user);
-  }catch(error){
-    console.error(error);
-    showToast('Could not update friend request.');
-  }
-}
-
-async function cancelFriendRequest(req, user){
-  if(!req?.id || !firebaseUser) return;
-  try{
-    await deleteDoc(doc(db,'friendRequests',req.id));
-    showToast(`Friend request to ${user.nickname || user.username} cancelled.`);
-    await loadSentRequests();
-    await findUsers(normalize($('searchInput').value));
-  }catch(error){
-    console.error(error);
-    showToast('Could not cancel friend request.');
-  }
-}
-
-async function sendFriendRequest(user){
-  if(!(await ensureSignedIn())) return;
-  if(!currentProfile?.username){
-    showToast('Save your username first.');
-    $('usernameInput').focus();
-    return;
-  }
-  if(user.id === firebaseUser.uid) return;
-
-  try{
-    if(await areFriends(user.id)){
-      showToast('You are already friends.');
-      return;
-    }
-    const existing = await getRequestBetween(user.id);
-    if(existing){
-      showToast(existing.from === firebaseUser.uid ? 'Friend request already sent.' : 'You already have a request from this user.');
-      return;
-    }
-
-    await addDoc(collection(db,'friendRequests'), {
-      from: firebaseUser.uid,
-      fromUsername: currentProfile.username,
-      fromNickname: currentProfile.nickname,
-      fromPhotoURL: firebaseUser.photoURL || '',
-      to: user.id,
-      toUsername: user.username,
-      toNickname: user.nickname,
-      toPhotoURL: user.photoURL || '',
-      status: 'pending',
-      createdAt: serverTimestamp()
-    });
-
-    try{
-      await addDoc(collection(db,'notifications'),{
-        recipientUid:user.id,
-        actorUid:firebaseUser.uid,
-        actorName:currentProfile.nickname || currentProfile.name || currentProfile.displayName || 'Student',
-        type:'friend_request',
-        text:'sent you a friend request.',
-        read:false,
-        createdAt:serverTimestamp()
-      });
-    }catch(notificationError){
-      console.warn('Friend request notification:',notificationError);
-    }
-
-    showToast(`Friend request sent to ${user.nickname || user.username}.`);
-    await loadSentRequests();
-    await findUsers(normalize($('searchInput').value));
-  }catch(error){
-    console.error(error);
-    showToast('Could not send friend request.');
-  }
-}
-
-async function loadRequests(){
-  if(!firebaseUser){
-    $('requestsList').innerHTML = '<div class="empty">Log in to see friend requests.</div>';
-    $('requestCount').textContent = '0';
-    return;
-  }
-  try{
-    const snap = await getDocs(query(
-      collection(db,'friendRequests'),
-      where('to','==',firebaseUser.uid),
-      where('status','==','pending'),
-      limit(50)
-    ));
-    $('requestCount').textContent = String(snap.size);
-
-    if(snap.empty){
-      $('requestsList').innerHTML = '<div class="empty">No new friend requests.</div>';
-      return;
-    }
-
-    $('requestsList').innerHTML = '';
-    snap.docs.forEach(d=>{
-      const req = {id:d.id,...d.data()};
-      const row = document.createElement('div');
-      row.className = 'request-row';
-      row.innerHTML = `
-        ${avatarHtml({photoURL:req.fromPhotoURL,nickname:req.fromNickname,username:req.fromUsername})}
-        <div class="row-info">
-          <strong>${escapeHtml(req.fromNickname || req.fromUsername || 'Student')}</strong>
-          <small>@${escapeHtml(req.fromUsername || '')} sent you a friend request.</small>
-        </div>
-        <div class="actions">
-          <button class="btn btn-success">Accept</button>
-          <button class="btn btn-danger">Reject</button>
-        </div>
-      `;
-      row.querySelector('.btn-success').addEventListener('click',()=>acceptRequest(req,row));
-      row.querySelector('.btn-danger').addEventListener('click',()=>rejectRequest(req,row));
-      $('requestsList').appendChild(row);
-    });
-  }catch(error){
-    console.error(error);
-    $('requestsList').innerHTML = '<div class="empty">Could not load requests. Check Firestore rules.</div>';
-  }
-}
-
-async function acceptRequest(req,row){
-  try{
-    await setDoc(doc(db,'friends',firebaseUser.uid,'list',req.from), {
-      uid:req.from,
-      username:req.fromUsername || '',
-      nickname:req.fromNickname || '',
-      photoURL:req.fromPhotoURL || '',
-      since:serverTimestamp()
-    });
-    await setDoc(doc(db,'friends',req.from,'list',firebaseUser.uid), {
-      uid:firebaseUser.uid,
-      username:currentProfile.username,
-      nickname:currentProfile.nickname,
-      photoURL:firebaseUser.photoURL || '',
-      since:serverTimestamp()
-    });
-    await updateDoc(doc(db,'friendRequests',req.id), {status:'accepted',respondedAt:serverTimestamp()});
-    try{
-      await addDoc(collection(db,'notifications'),{
-        recipientUid:req.from,
-        actorUid:firebaseUser.uid,
-        actorName:currentProfile.nickname || currentProfile.name || currentProfile.displayName || 'Student',
-        type:'friend_accepted',
-        text:'accepted your friend request.',
-        read:false,
-        createdAt:serverTimestamp()
-      });
-    }catch(notificationError){
-      console.warn('Friend accepted notification:',notificationError);
-    }
-    row.remove();
-    showToast('Friend request accepted!');
-    const remaining = Math.max(0, Number($('requestCount').textContent)-1);
-    $('requestCount').textContent = String(remaining);
-    await loadFriends();
-  }catch(error){
-    console.error(error);
-    showToast('Could not accept request.');
-  }
-}
-
-async function rejectRequest(req,row){
-  try{
-    await updateDoc(doc(db,'friendRequests',req.id), {status:'rejected',respondedAt:serverTimestamp()});
-    row.remove();
-    showToast('Friend request rejected.');
-    const remaining = Math.max(0, Number($('requestCount').textContent)-1);
-    $('requestCount').textContent = String(remaining);
-  }catch(error){
-    console.error(error);
-    showToast('Could not reject request.');
-  }
-}
-
-async function loadSentRequests(){
-  if(!firebaseUser){
-    $('sentRequestsList').innerHTML = '<div class="empty">Log in to see sent friend requests.</div>';
-    $('sentRequestCount').textContent = '0';
-    return;
-  }
-
-  try{
-    const snap = await getDocs(query(
-      collection(db,'friendRequests'),
-      where('from','==',firebaseUser.uid),
-      where('status','==','pending'),
-      limit(50)
-    ));
-
-    $('sentRequestCount').textContent = String(snap.size);
-
-    if(snap.empty){
-      $('sentRequestsList').innerHTML = '<div class="empty">You have not sent any pending friend requests.</div>';
-      return;
-    }
-
-    const requests = snap.docs.map(d=>({id:d.id,...d.data()}));
-
-    requests.sort((a,b)=>{
-      const aTime = a.createdAt?.seconds || 0;
-      const bTime = b.createdAt?.seconds || 0;
-      return bTime - aTime;
-    });
-
-    $('sentRequestsList').innerHTML = '';
-
-    requests.forEach(req=>{
-      const row = document.createElement('div');
-      row.className = 'sent-request-row';
-
-      row.innerHTML = `
-        ${avatarHtml({
-          photoURL:req.toPhotoURL,
-          nickname:req.toNickname,
-          username:req.toUsername
-        })}
-        <div class="row-info">
-          <strong>${escapeHtml(req.toNickname || req.toUsername || 'Student')}</strong>
-          <small>@${escapeHtml(req.toUsername || '')} • Request pending</small>
-        </div>
-        <div class="actions">
-          <button class="btn btn-secondary">Cancel</button>
-        </div>
-      `;
-
-      const profileLink = document.createElement('a');
-      profileLink.href = `user-profile.html?uid=${encodeURIComponent(req.to)}`;
-      profileLink.className = 'friend-profile-link';
-      profileLink.innerHTML = `
-        ${avatarHtml({
-          photoURL:req.toPhotoURL,
-          nickname:req.toNickname,
-          username:req.toUsername
-        })}
-        <div class="row-info">
-          <strong>${escapeHtml(req.toNickname || req.toUsername || 'Student')}</strong>
-          <small>@${escapeHtml(req.toUsername || '')} • Request pending</small>
-        </div>
-      `;
-
-      const actions = row.querySelector('.actions');
-      row.innerHTML = '';
-      row.appendChild(profileLink);
-      row.appendChild(actions);
-
-      actions.querySelector('button').addEventListener('click', async ()=>{
-        const button = actions.querySelector('button');
-        button.disabled = true;
-        button.textContent = 'Cancelling...';
-
-        try{
-          await deleteDoc(doc(db,'friendRequests',req.id));
-          showToast(`Friend request to ${req.toNickname || req.toUsername || 'student'} cancelled.`);
-          await loadSentRequests();
-          await findUsers(normalize($('searchInput').value));
-        }catch(error){
-          console.error(error);
-          button.disabled = false;
-          button.textContent = 'Cancel';
-          showToast('Could not cancel friend request.');
-        }
-      });
-
-      $('sentRequestsList').appendChild(row);
-    });
-  }catch(error){
-    console.error(error);
-    $('sentRequestsList').innerHTML = '<div class="empty">Could not load sent requests. Check Firestore rules.</div>';
-  }
-}
+function groupAvatarHtml(g,className='friend-avatar group-avatar'){return `<div class="${className}">👥</div>`}
+function chatId(a,b){return [a,b].sort().join('_')}
+function formatTime(ts){try{const d=ts?.toDate?ts.toDate():new Date(ts);return d.toLocaleString([],{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});}catch{return ''}}
+async function getUserProfile(uid){const s=await getDoc(doc(db,'users',uid));return s.exists()?{uid,...s.data()}:({uid,name:'Student',nickname:'Student'});}
+function isGroup(){return Boolean(activeGroup)}
+
+function openModal(id){$(id)?.classList.add('open')}
+function closeModal(id){$(id)?.classList.remove('open')}
+window.closeGroupCreate=()=>closeModal('groupCreateModal');
+window.closeGroupManage=()=>closeModal('groupManageModal');
+window.closeForward=()=>closeModal('forwardModal');
 
 async function loadFriends(){
-  if(!firebaseUser){
-    $('friendsList').innerHTML = '<div class="empty">Log in to see your friends.</div>';
-    $('friendCount').textContent = '0';
-    return;
-  }
+  const me=auth.currentUser;if(!me)return;
   try{
-    const snap = await getDocs(query(collection(db,'friends',firebaseUser.uid,'list'), limit(100)));
-    $('friendCount').textContent = String(snap.size);
-    if(snap.empty){
-      $('friendsList').innerHTML = '<div class="empty">You have no friends yet. Search for students above to add someone.</div>';
-      return;
-    }
-
-    const friends = snap.docs.map(d=>({id:d.id,...d.data()}));
-    friends.sort((a,b)=>String(a.nickname||a.username||'').localeCompare(String(b.nickname||b.username||'')));
-    $('friendsList').innerHTML = '';
-
-    friends.forEach(friend=>{
-      const row = document.createElement('div');
-      row.className = 'friend-row';
-      row.innerHTML = `
-        <a class="friend-profile-link" href="user-profile.html?uid=${encodeURIComponent(friend.uid)}" aria-label="View ${escapeHtml(friend.nickname || friend.username || 'student')} profile">
-          ${avatarHtml({photoURL:friend.photoURL,nickname:friend.nickname,username:friend.username})}
-          <div class="row-info">
-            <strong>${escapeHtml(friend.nickname || friend.username || 'Student')}</strong>
-            <small>@${escapeHtml(friend.username || '')}</small>
-          </div>
-        </a>
-        <div class="actions">
-          <button class="btn btn-danger">Remove Friend</button>
-        </div>
-      `;
-      row.querySelector('.btn-danger').addEventListener('click',()=>openRemoveFriendModal(friend,row));
-            const messageLink = document.createElement('a');
-      messageLink.className = 'btn message-btn';
-      messageLink.href = `messages.html?uid=${encodeURIComponent(friend.uid)}`;
-      messageLink.textContent = '💬 Message';
-      messageLink.title = `Message ${friend.nickname || friend.username || 'friend'}`;
-      const actions = row.querySelector('.actions');
-      if(actions) actions.prepend(messageLink);
-      else row.appendChild(messageLink);
-
-$('friendsList').appendChild(row);
-    });
-  }catch(error){
-    console.error(error);
-    $('friendsList').innerHTML = '<div class="empty">Could not load friends. Check Firestore rules.</div>';
-  }
+    const snap=await getDocs(query(collection(db,'friends',me.uid,'list'),limit(100)));
+    friends=await Promise.all(snap.docs.map(async d=>{
+      const base={uid:d.id,...d.data()};
+      try{return await getUserProfile(d.id).then(p=>({...base,...p}))}catch{return base}
+    }));
+    friends.sort((a,b)=>String(a.nickname||a.name||a.username||'').localeCompare(String(b.nickname||b.name||b.username||'')));
+  }catch(e){console.error('friends',e);friends=[]}
+  renderConversations();
 }
 
-let pendingRemoveFriend = null;
-
-function openRemoveFriendModal(friend,row){
-  pendingRemoveFriend = {friend,row};
-  const preview = $('removeFriendPreview');
-  preview.innerHTML = `
-    ${avatarHtml({photoURL:friend.photoURL,nickname:friend.nickname,username:friend.username}, 'mini-avatar')}
-    <div>
-      <strong>${escapeHtml(friend.nickname || friend.username || 'Student')}</strong>
-      <span>@${escapeHtml(friend.username || '')}</span>
-    </div>
-  `;
-  const modal = $('removeFriendModal');
-  modal.classList.add('show');
-  modal.setAttribute('aria-hidden','false');
+function listenGroups(){
+  if(unsubscribeGroups)unsubscribeGroups();
+  const me=auth.currentUser;if(!me)return;
+  const q=query(collection(db,'groups'),where('memberUids','array-contains',me.uid),limit(100));
+  unsubscribeGroups=onSnapshot(q,snap=>{
+    groups=snap.docs.map(d=>({id:d.id,...d.data(),kind:'group'})).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')));
+    renderConversations();
+    renderForwardChoices();
+  },err=>console.error('Group listener',err));
 }
 
-function closeRemoveFriendModal(){
-  const modal = $('removeFriendModal');
-  modal.classList.remove('show');
-  modal.setAttribute('aria-hidden','true');
-  pendingRemoveFriend = null;
+function conversationItems(){
+  return [
+    ...friends.map(f=>({...f,kind:'friend'})),
+    ...groups.map(g=>({...g,uid:g.id}))
+  ];
 }
 
-async function removeFriend(friend,row){
-  try{
-    await deleteDoc(doc(db,'friends',firebaseUser.uid,'list',friend.uid));
-    await deleteDoc(doc(db,'friends',friend.uid,'list',firebaseUser.uid));
-    row.remove();
-    const count = Math.max(0, Number($('friendCount').textContent)-1);
-    $('friendCount').textContent = String(count);
-    if(count === 0) $('friendsList').innerHTML = '<div class="empty">You have no friends yet.</div>';
-    closeRemoveFriendModal();
-    showToast('Friend removed successfully.');
-  }catch(error){
-    console.error(error);
-    closeRemoveFriendModal();
-    showToast('Could not remove friend.');
-  }
+function renderConversations(list=conversationItems()){
+  const box=$('conversationList');
+  $('friendCount').textContent=String(list.length);
+  if(!list.length){box.innerHTML='<div class="conversation-empty">No conversations found.</div>';return}
+  box.innerHTML=list.map(item=>{
+    const group=item.kind==='group';
+    const name=group?(item.name||'Group Chat'):(item.nickname||item.name||item.displayName||'Student');
+    const sub=group?`${(item.memberUids||[]).length} members`:(item.username?'@'+item.username:'Friend');
+    return `<button type="button" class="friend-item ${activeConversation?.id===(group?item.id:item.uid)?'active':''}" data-kind="${group?'group':'friend'}" data-id="${esc(group?item.id:item.uid)}">
+      ${group?groupAvatarHtml(item):avatarHtml(item)}
+      <span class="friend-info"><strong>${esc(name)}</strong><small>${esc(sub)}</small></span>
+      ${group?'<span class="conversation-badge">GROUP</span>':''}
+    </button>`;
+  }).join('');
+  box.querySelectorAll('.friend-item').forEach(btn=>btn.addEventListener('click',()=>{
+    const item=conversationItems().find(x=>x.kind===btn.dataset.kind && (x.kind==='group'?x.id: x.uid)===btn.dataset.id);
+    if(item) item.kind==='group'?openGroup(item):openChat(item);
+  }));
 }
 
-$('confirmRemoveFriendBtn').addEventListener('click',()=>{
-  if(!pendingRemoveFriend || !firebaseUser) return;
-  const {friend,row} = pendingRemoveFriend;
-  const button = $('confirmRemoveFriendBtn');
-  button.disabled = true;
-  button.textContent = 'Removing...';
-  removeFriend(friend,row).finally(()=>{
-    button.disabled = false;
-    button.textContent = 'Remove Friend';
+$('friendSearch').addEventListener('input',e=>{
+  const q=e.target.value.trim().toLowerCase();
+  const list=conversationItems().filter(x=>{
+    const name=x.kind==='group'?(x.name||''):(x.nickname||x.name||x.username||x.displayName||'');
+    return name.toLowerCase().includes(q);
   });
+  renderConversations(list);
 });
+$('searchFocusBtn').addEventListener('click',()=>{$('friendSearch').focus();$('friendSearch').select()});
 
-$('removeFriendModal').addEventListener('click',(event)=>{
-  if(event.target === $('removeFriendModal')) closeRemoveFriendModal();
-});
+async function ensureFriend(otherUid){
+  const me=auth.currentUser;
+  if(!me||!otherUid||me.uid===otherUid)return false;
+  const s=await getDoc(doc(db,'friends',me.uid,'list',otherUid));
+  return s.exists();
+}
 
-document.addEventListener('keydown',(event)=>{
-  if(event.key === 'Escape' && $('removeFriendModal').classList.contains('show')){
-    closeRemoveFriendModal();
-  }
-});
+async function openChat(friend){
+  const me=auth.currentUser;if(!me||!friend)return;
+  if(!(await ensureFriend(friend.uid))){showToast('You can only message your friends.');return;}
+  activeFriend=friend;activeGroup=null;activeConversation={kind:'friend',id:friend.uid};
+  history.replaceState(null,'',`messages.html?uid=${encodeURIComponent(friend.uid)}`);
+  renderConversations();
+  const muted=isMuted(friend.uid), blocked=isBlocked(friend.uid);
+  $('chatPane').innerHTML=`<div class="chat-head">
+    <button class="chat-back" type="button" onclick="clearChatSelection()">←</button>
+    ${avatarHtml(friend,'chat-avatar')}
+    <div class="chat-person"><strong>${esc(friend.nickname||friend.name||friend.displayName||'Student')}${muted?' <span class=\"muted-badge\">🔕</span>':''}</strong><small>${friend.username?'@'+esc(friend.username):'Friend'}</small></div>
+    <div class="chat-head-actions"><button class="chat-head-btn" type="button" onclick="openConversationSettings()">⚙</button></div>
+  </div>
+  <div id="messages" class="messages"><div class="loading"><div class="spinner"></div><div>Loading messages...</div></div></div>
+  <form id="messageForm" class="message-compose"><input id="messageInput" class="message-input" maxlength="1000" placeholder="Write a message..." autocomplete="off"><button id="sendBtn" class="send-btn" type="submit">Send</button></form>`;
+  $('messageForm').addEventListener('submit',sendMessage);
+  $('messageInput').focus();
+  listenDirectMessages(me.uid,friend.uid);
+}
 
-$('searchInput').addEventListener('input',()=>{
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(()=>findUsers(normalize($('searchInput').value)),350);
-});
-
-document.addEventListener('click',(event)=>{
-  const menu = $('profileMenu');
-  const headerRight = document.querySelector('.header-right');
-  if(menu.classList.contains('open') && !headerRight.contains(event.target)){
-    menu.classList.remove('open');
-    menu.classList.add('closing');
-    menu.addEventListener('animationend', function handleClose(e){
-      if(e.animationName !== 'profileMenuOut') return;
-      menu.style.display = 'none';
-      menu.classList.remove('closing');
-      menu.removeEventListener('animationend', handleClose);
-    });
-  }
-});
-
-$('loginOverlay').addEventListener('click',(event)=>{
-  if(event.target === $('loginOverlay')) closeLoginDialog();
-});
-
-onAuthStateChanged(auth, async (user)=>{
-  firebaseUser = user;
-  if(!user){
-    currentProfile = null;
-    setHeaderUser(null,null);
-    $('profileSetupCard').innerHTML = `
-      <h3>🔐 Login to use Friends</h3>
-      <div class="sub">Sign in with Google first, then create your username/nickname.</div>
-      <button class="btn btn-primary" onclick="googleLogin()">Continue with Google</button>
-    `;
-    $('searchResults').innerHTML = '<div class="empty">Please log in first to search students.</div>';
-    await loadRequests();
-    await loadFriends();
-    return;
-  }
-
-  $('profileSetupCard').innerHTML = `
-    <h3>✨ Your Friends Profile</h3>
-    <div class="sub">Choose the username and nickname that other students will search for.</div>
-    <div class="profile-grid">
-      <div id="setupAvatar" class="avatar fallback-avatar">👤</div>
-      <div>
-        <div class="field-row">
-          <div>
-            <label for="usernameInput">Username</label>
-            <input id="usernameInput" maxlength="20" placeholder="e.g. reyven123" autocomplete="off">
-            <div class="helper">3–20 characters. Letters, numbers, periods and underscores only.</div>
-          </div>
-          <div>
-            <label for="nicknameInput">Nickname</label>
-            <input id="nicknameInput" maxlength="30" placeholder="e.g. Reyven" autocomplete="off">
-            <div class="helper">This is the name shown to your friends.</div>
-          </div>
-        </div>
-      </div>
-      <button id="saveProfileBtn" class="btn btn-primary" type="button" onclick="saveProfile()">Save Profile</button>
+async function openGroup(group){
+  const me=auth.currentUser;if(!me||!group)return;
+  if(!(group.memberUids||[]).includes(me.uid)){showToast('You are not a member of this group.');return}
+  activeGroup=group;activeFriend=null;activeConversation={kind:'group',id:group.id};
+  history.replaceState(null,'',`messages.html?group=${encodeURIComponent(group.id)}`);
+  renderConversations();
+  $('chatPane').innerHTML=`<div class="chat-head">
+    <button class="chat-back" type="button" onclick="clearChatSelection()">←</button>
+    ${groupAvatarHtml(group,'chat-avatar group-avatar')}
+    <div class="chat-person"><strong>${esc(group.name||'Group Chat')}</strong><small>${(group.memberUids||[]).length} members</small></div>
+    <div class="chat-head-actions">
+      <button class="chat-head-btn group-members-btn" type="button" onclick="openGroupMembers()">👥</button>
+      <button class="chat-head-btn" type="button" onclick="openGroupManage()">⚙</button>
     </div>
-  `;
+  </div>
+  <div id="messages" class="messages"><div class="loading"><div class="spinner"></div><div>Loading messages...</div></div></div>
+  <form id="messageForm" class="message-compose"><input id="messageInput" class="message-input" maxlength="1000" placeholder="Message the group..." autocomplete="off"><button id="sendBtn" class="send-btn" type="submit">Send</button></form>`;
+  $('messageForm').addEventListener('submit',sendMessage);
+  $('messageInput').focus();
+  listenGroupMessages(group.id);
+}
 
-  await loadCurrentProfile();
-  await loadRequests();
-  await loadSentRequests();
+window.clearChatSelection=()=>{activeFriend=null;activeGroup=null;activeConversation=null;if(unsubscribeMessages)unsubscribeMessages();$('chatPane').innerHTML='<div class="chat-empty"><div class="empty-inner"><div class="empty-icon">💬</div><h3>Select a conversation</h3><p>Choose a friend or group to start chatting.</p></div></div>';renderConversations()};
+
+function closeMessageActions(){document.querySelectorAll('.message-actions.open').forEach(x=>x.classList.remove('open'))}
+document.addEventListener('click',e=>{if(!e.target.closest('.message-tools-btn')&&!e.target.closest('.message-actions'))closeMessageActions();if(!e.target.closest('.message-reaction-chip')&&!e.target.closest('.react-picker'))closeReactionPickers()});
+
+const REACTION_EMOJIS=['👍','❤️','😂','😮','😢','😡','🥰','😍','😘','😭','😎','🤔','🙏','👏','🎉','🔥','💯','🤣','😳','😴','🤗','🙌','💔','❤️‍🔥','🥳','😱','🤩','🤗','😇','🙂','😊','😉','😌','😏','😅','😂','🤣','😆','😄','😁','😃','😀','😎','🤓','🧐','😮','😯','😲','🥺','😢','😭','😤','😠','🤬','🤯','😬','😰','😥','😓','🤥','😶','🤐','🫠','🙄','😑','😐','🤨','🤔','🤭','🫢','🫣','🤫','🤤','😪','🤮','🤢','🥴','😵','🤠','🥳','🤡','💩','👻','💀','☠️','👽','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾','🙈','🙉','🙊','💋','💌','💘','💝','💖','💗','💓','💞','💟','❣️','💔','❤️','🧡','💛','💚','💙','💜','🤎','🖤','🤍','✨','⭐','🌟','💫','🔥','🎉','🎊','👏','🙌','🙏','💯','✅','❌','⚡','💥','💬','📌','🚀','❤️‍🔥','🥹','🫶'];
+const profileCache=new Map();
+async function cachedUserProfile(uid){if(!uid)return {uid,name:'Student'};if(profileCache.has(uid))return profileCache.get(uid);const p=await getUserProfile(uid).catch(()=>({uid,name:'Student'}));profileCache.set(uid,p);return p}
+
+function renderMessageDoc(d,currentUid){
+  const msg=d.data()||{}, id=d.id;
+  const hidden=Array.isArray(msg.hiddenFor)&&msg.hiddenFor.includes(currentUid);
+  if(hidden)return '';
+  const mine=msg.senderUid===currentUid;
+  const unsent=msg.unsent===true;
+  const forwarded=msg.forwardedFrom;
+  const reactions=msg.reactions&&typeof msg.reactions==='object'?msg.reactions:{};
+  const chips=Object.entries(reactions).filter(([_,count])=>Number(count)>0)
+    .map(([emoji,count])=>`<button class="message-reaction-chip" type="button" onclick="reactMessage('${esc(id)}','${esc(emoji)}')">${esc(emoji)} ${Number(count)||1}</button>`).join('');
+  const trigger=`<button type="button" class="message-reaction-trigger" aria-label="React" title="React" onclick="toggleReactionPicker('${esc(id)}',event)">😊</button>`;
+  const actionMenu=`<div class="message-actions" id="actions-${esc(id)}">
+    <button type="button" onclick="prepareForward('${esc(id)}')">↗️ Forward</button>
+    ${mine&&!unsent?`<button type="button" onclick="unsendForMe('${esc(id)}')">👤 Unsend for me</button><button class="danger" type="button" onclick="unsendForEveryone('${esc(id)}')">🗑️ Unsend for everyone</button>`:`<button type="button" onclick="unsendForMe('${esc(id)}')">👤 Unsend for me</button>`}
+  </div>`;
+  const body=unsent?`<span class="unsent-text">This message was unsent.</span>`:`${forwarded?`<div class="forwarded-box">↗ Forwarded message</div>`:''}${esc(msg.text||'')}`;
+  const rowClass=mine?'message-row mine':'message-row';
+  const senderLine = `<div class="message-sender">${avatarHtml(msg,'sender-avatar')}<span class="message-sender-name">${esc(msg.senderName||'Student')}</span><span class="message-sender-time">${esc(formatTime(msg.createdAt))}</span></div>`;
+  const reactionBar=chips?`<div class="message-reactions">${chips}</div>`:'';
+  const replyButton=`<button class="message-reply-btn" type="button" title="Reply" aria-label="Reply" onclick="replyToMessage('${esc(id)}',event)">↩</button>`;
+  return `<div class="${rowClass}" data-message-id="${esc(id)}">
+    <div class="message-content">
+      ${senderLine}
+      <div class="message-main-line">
+        <div class="bubble">${body}<small>${formatTime(msg.createdAt)}</small>${reactionBar}</div>
+        ${trigger}
+        ${replyButton}
+        <button class="message-tools-btn" type="button" title="More" aria-label="More" onclick="toggleMessageActions('${esc(id)}',event)">⋯</button>
+        ${actionMenu}
+      </div>
+    </div>
+  </div>`;
+}
+
+
+async function renderMessages(docs,currentUid,forceBottom=false){
+  const box=$('messages');if(!box)return;
+  const nearBottom=(box.scrollHeight-box.scrollTop-box.clientHeight)<80;
+  const filteredDocs=(activeConversation?.kind==='friend' && activeFriend && isBlocked(activeFriend.uid))?[]:docs;
+  const merged=[...filteredDocs].sort((a,b)=>(a.data()?.createdAt?.toMillis?.()||0)-(b.data()?.createdAt?.toMillis?.()||0)).slice(-300);
+  if(activeConversation?.kind==='group'){
+    await Promise.all(merged.map(async d=>{const m=d.data()||{};if(m.senderUid){const p=await cachedUserProfile(m.senderUid);m.senderName=p.nickname||p.name||p.displayName||'Student';m.photoURL=p.photoURL||'';d.__renderData=m;}}));
+  }else{
+    const friendName=activeFriend?.nickname||activeFriend?.name||activeFriend?.displayName||'Student';
+    merged.forEach(d=>{d.__renderData={...(d.data()||{}),senderName:d.data()?.senderUid===currentUid?(auth.currentUser?.displayName||'You'):friendName};});
+  }
+  const html=merged.map(d=>renderMessageDoc({...d,data:()=>d.__renderData||d.data()},currentUid)).join('');
+  box.innerHTML=html||'<div class="chat-empty" style="min-height:100%"><div class="empty-inner"><div class="empty-icon">👋</div><h3>Start the conversation</h3><p>Send your first message.</p></div></div>';
+  if(forceBottom||nearBottom) box.scrollTop=box.scrollHeight;
+}
+function listenDirectMessages(a,b){
+  if(unsubscribeMessages)unsubscribeMessages();
+  const id=chatId(a,b),ref=collection(db,'conversations',id,'messages');
+  const qMine=query(ref,where('senderUid','==',a),where('receiverUid','==',b),limit(300));
+  const qTheirs=query(ref,where('senderUid','==',b),where('receiverUid','==',a),limit(300));
+  let mine=[],theirs=[];
+  const render=()=>{renderMessages([...mine,...theirs],a).catch(console.error)};
+  const onErr=e=>{console.error('Message listener',e);const box=$('messages');if(box)box.innerHTML='<div class="no-friends">Could not load messages. Check your Firestore Rules.</div>'};
+  const u1=onSnapshot(qMine,s=>{mine=s.docs;render()},onErr),u2=onSnapshot(qTheirs,s=>{theirs=s.docs;render()},onErr);
+  unsubscribeMessages=()=>{u1();u2()};
+}
+function listenGroupMessages(groupId){
+  if(unsubscribeMessages)unsubscribeMessages();
+  const me=auth.currentUser;const ref=collection(db,'groups',groupId,'messages');
+  const q=query(ref,limit(300));
+  unsubscribeMessages=onSnapshot(q,s=>renderMessages(s.docs,me.uid).catch(console.error),e=>{console.error('Group messages',e);$('messages').innerHTML='<div class="no-friends">Could not load group messages. Check your Firestore Rules.</div>'});
+}
+
+async function sendMessage(e){
+  e.preventDefault();
+  const me=auth.currentUser;if(!me||!activeConversation)return;
+  if(activeConversation.kind==='friend' && isBlocked(activeFriend.uid)){showToast('Unblock this user before sending a message.');return}
+  const input=$('messageInput'),btn=$('sendBtn'),text=input.value.trim();if(!text)return;
+  btn.disabled=true;btn.textContent='Sending...';
+  try{
+    if(activeConversation.kind==='friend'){
+      if(!(await ensureFriend(activeFriend.uid))){showToast('You are no longer friends with this student.');return}
+      const id=chatId(me.uid,activeFriend.uid);
+      await addDoc(collection(db,'conversations',id,'messages'),{senderUid:me.uid,receiverUid:activeFriend.uid,text,createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{}});
+      await addDoc(collection(db,'notifications'),{recipientUid:activeFriend.uid,actorUid:me.uid,actorName:me.displayName||'Student',type:'message',text:'sent you a message.',chatId:id,read:false,createdAt:serverTimestamp()});
+    }else{
+      const group=activeGroup;if(!(group.memberUids||[]).includes(me.uid))throw new Error('Not a group member');
+      await addDoc(collection(db,'groups',group.id,'messages'),{senderUid:me.uid,text,createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{}});
+    }
+    input.value='';input.focus();
+  }catch(err){console.error(err);showToast(err?.code==='permission-denied'?'Messaging or notification was blocked by Firestore Rules.':'Could not send message.')}
+  finally{btn.disabled=false;btn.textContent='Send'}
+}
+
+window.toggleMessageActions=(id,e)=>{e.stopPropagation();closeMessageActions();$('actions-'+id)?.classList.add('open')};
+
+window.replyToMessage=function(id,e){
+  e?.stopPropagation();
+  closeMessageActions();
+  try{
+    const row=document.querySelector(`[data-message-id=\"${CSS.escape(id)}\"]`);
+    const input=$('messageInput');
+    if(!input)return;
+    const bubble=row?.querySelector('.bubble');
+    const text=(bubble?.textContent||'').replace(/\n.*$/,'').trim();
+    input.focus();
+    input.dataset.replyTo=id;
+    input.placeholder=text?`Replying to: ${text.slice(0,50)}${text.length>50?'…':''}`:'Reply to message…';
+    showToast('Replying to message.');
+  }catch(err){console.error(err)}
+};
+
+async function messageRef(messageId){
+  if(activeConversation?.kind==='friend')return doc(db,'conversations',chatId(auth.currentUser.uid,activeFriend.uid),'messages',messageId);
+  if(activeConversation?.kind==='group')return doc(db,'groups',activeGroup.id,'messages',messageId);
+  return null;
+}
+function closeReactionPickers(){document.querySelectorAll('.react-picker.open').forEach(x=>x.classList.remove('open'))}
+function toggleReactionPicker(messageId,event){
+  event?.stopPropagation();
+  closeMessageActions();
+  const picker=$('react-picker-'+messageId);
+  if(!picker)return;
+  const was=picker.classList.contains('open');
+  closeReactionPickers();
+  if(was)return;
+  picker.innerHTML=REACTION_EMOJIS.map(emoji=>`<button type="button" aria-label="React ${esc(emoji)}" onclick="reactMessage('${esc(messageId)}','${emoji}')">${emoji}</button>`).join('');
+  picker.classList.add('open');
+}
+window.toggleReactionPicker=toggleReactionPicker;
+function openMoreReactionPicker(messageId,event){event?.stopPropagation();toggleReactionPicker(messageId,event)}
+window.openMoreReactionPicker=openMoreReactionPicker;
+async function reactMessage(messageId,emoji){
+  closeMessageActions();closeReactionPickers();
+  const ref=await messageRef(messageId);if(!ref||!auth.currentUser)return;
+  try{
+    const snap=await getDoc(ref);if(!snap.exists())return;
+    const r={...(snap.data()?.reactions||{})};
+    r[emoji]=Number(r[emoji]||0)+1;
+    await updateDoc(ref,{reactions:r});
+  }catch(e){console.error(e);showToast('Could not react to message.')}
+}
+window.reactMessage=reactMessage;
+
+async function unsendForMe(messageId){
+  closeMessageActions();const ref=await messageRef(messageId);if(!ref)return;
+  try{await updateDoc(ref,{hiddenFor:arrayUnion(auth.currentUser.uid)});showToast('Message removed for you.')}
+  catch(e){console.error(e);showToast('Could not unsend for you.')}
+}
+window.unsendForMe=unsendForMe;
+
+async function unsendForEveryone(messageId){
+  closeMessageActions();const ref=await messageRef(messageId);if(!ref)return;
+  try{const snap=await getDoc(ref);if(!snap.exists())return;if(snap.data()?.senderUid!==auth.currentUser.uid){showToast('Only the sender can unsend for everyone.');return}
+    await updateDoc(ref,{unsent:true,text:'',reactions:{}});
+    showToast('Message unsent for everyone.');
+  }catch(e){console.error(e);showToast('Could not unsend for everyone.')}
+}
+window.unsendForEveryone=unsendForEveryone;
+
+async function prepareForward(messageId){pendingActionMessage=messageId;closeMessageActions();renderForwardChoices();openModal('forwardModal')}
+window.prepareForward=prepareForward;
+window.openForwardPicker=()=>{pendingActionMessage=null;renderForwardChoices();openModal('forwardModal')};
+
+function renderForwardChoices(filter=''){
+  const box=$('forwardChoices');if(!box)return;
+  const q=filter.trim().toLowerCase();
+  const items=conversationItems().filter(x=>{
+    const name=x.kind==='group'?(x.name||''):(x.nickname||x.name||x.username||x.displayName||'');
+    return !q||name.toLowerCase().includes(q);
+  });
+  box.innerHTML=items.length?items.map(x=>{
+    const group=x.kind==='group',name=group?(x.name||'Group Chat'):(x.nickname||x.name||x.displayName||'Student');
+    return `<button type="button" class="friend-item" data-forward-kind="${group?'group':'friend'}" data-forward-id="${esc(group?x.id:x.uid)}">${group?groupAvatarHtml(x):avatarHtml(x)}<span class="friend-info"><strong>${esc(name)}</strong><small>${group?'Group':'Friend'}</small></span></button>`;
+  }).join(''):'<div class="conversation-empty">No conversations found.</div>';
+  box.querySelectorAll('[data-forward-id]').forEach(btn=>btn.addEventListener('click',()=>forwardTo(btn.dataset.forwardKind,btn.dataset.forwardId)));
+}
+$('forwardSearch').addEventListener('input',e=>renderForwardChoices(e.target.value));
+
+async function getMessageData(messageId){
+  const ref=await messageRef(messageId);if(!ref)return null;const s=await getDoc(ref);return s.exists()?{ref,data:s.data()||{}}:null;
+}
+async function forwardTo(kind,id){
+  if(!pendingActionMessage){showToast('Select a message first.');return}
+  const item=await getMessageData(pendingActionMessage);if(!item)return;
+  const me=auth.currentUser, text=String(item.data.text||'');if(!text){showToast('This message cannot be forwarded.');return}
+  try{
+    if(kind==='friend'){
+      if(!(await ensureFriend(id))){showToast('You can only forward to your friends.');return}
+      const cid=chatId(me.uid,id);
+      await addDoc(collection(db,'conversations',cid,'messages'),{senderUid:me.uid,receiverUid:id,text,forwardedFrom:{messageId:pendingActionMessage},createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{}});
+      await addDoc(collection(db,'notifications'),{recipientUid:id,actorUid:me.uid,actorName:me.displayName||'Student',type:'message',text:'forwarded a message to you.',chatId:cid,read:false,createdAt:serverTimestamp()});
+    }else{
+      const g=groups.find(x=>x.id===id);if(!g||!g.memberUids.includes(me.uid)){showToast('You are not a group member.');return}
+      await addDoc(collection(db,'groups',id,'messages'),{senderUid:me.uid,text,forwardedFrom:{messageId:pendingActionMessage},createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{}});
+    }
+    closeForward();pendingActionMessage=null;showToast('Message forwarded.');
+  }catch(e){console.error(e);showToast('Could not forward message.')}
+}
+
+$('newGroupBtn').addEventListener('click',openGroupCreate);
+$('createGroupConfirmBtn').addEventListener('click',createGroup);
+
+function fillFriendChoices(containerId,excludeIds=[]){
+  const box=$(containerId),allowed=friends.filter(f=>!excludeIds.includes(f.uid));
+  box.innerHTML=allowed.length?allowed.map(f=>`<label class="select-friend"><input type="checkbox" value="${esc(f.uid)}"><span>${esc(f.nickname||f.name||f.displayName||'Student')}</span></label>`).join(''):'<div class="conversation-empty">No additional friends available.</div>';
+}
+function openGroupCreate(){fillFriendChoices('groupFriendChoices');$('groupNameInput').value='';openModal('groupCreateModal')}
+async function createGroup(){
+  const me=auth.currentUser,name=$('groupNameInput').value.trim(),ids=[...document.querySelectorAll('#groupFriendChoices input:checked')].map(x=>x.value);
+  if(!me||!name){showToast('Enter a group name.');return}
+  if(!ids.length){showToast('Add at least one friend.');return}
+  try{
+    const memberUids=[me.uid,...ids];
+    const ref=await addDoc(collection(db,'groups'),{name,createdBy:me.uid,memberUids,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});
+    closeGroupCreate();showToast('Group created.');
+    const group={id:ref.id,name,createdBy:me.uid,memberUids,kind:'group'};
+    groups.push(group);renderConversations();await openGroup(group);
+  }catch(e){console.error(e);showToast(e?.code==='permission-denied'?'Group creation is blocked by Firestore Rules.':'Could not create group.')}
+}
+
+window.closeGroupMembers=()=>closeModal('groupMembersModal');
+window.openGroupMembers=async()=>{
+  if(!activeGroup)return;
+  const box=$('groupMembersList');
+  $('groupMembersSubtitle').textContent=`${(activeGroup.memberUids||[]).length} members in ${activeGroup.name||'this group'}`;
+  box.innerHTML='<div class="loading"><div class="spinner"></div><div>Loading members...</div></div>';
+  openModal('groupMembersModal');
+  try{
+    const members=await Promise.all((activeGroup.memberUids||[]).map(uid=>getUserProfile(uid)));
+    members.sort((a,b)=>{if(a.uid===activeGroup.createdBy)return -1;if(b.uid===activeGroup.createdBy)return 1;return String(a.nickname||a.name||a.username||'').localeCompare(String(b.nickname||b.name||b.username||''));});
+    box.innerHTML=members.map(m=>`<div class="group-member-row">${avatarHtml(m)}<div class="friend-info"><strong>${esc(m.nickname||m.name||m.displayName||'Student')}</strong><small>${m.username?'@'+esc(m.username):''}</small></div>${m.uid===activeGroup.createdBy?'<span class="group-member-role">Creator</span>':''}</div>`).join('') || '<div class="conversation-empty">No members found.</div>';
+  }catch(e){console.error(e);box.innerHTML='<div class="conversation-empty">Could not load group members.</div>';}
+};
+
+window.openGroupManage=()=>{
+  if(!activeGroup)return;
+  $('groupManageNameInput').value=activeGroup.name||'';
+  const existing=activeGroup.memberUids||[];
+  fillFriendChoices('groupManageFriendChoices',existing);
+  openModal('groupManageModal');
+};
+$('saveGroupBtn').addEventListener('click',saveGroupManage);
+async function saveGroupManage(){
+  const me=auth.currentUser;if(!me||!activeGroup)return;
+  const newName=$('groupManageNameInput').value.trim()||'Group Chat';
+  const addIds=[...document.querySelectorAll('#groupManageFriendChoices input:checked')].map(x=>x.value);
+  const memberUids=Array.from(new Set([...(activeGroup.memberUids||[]),...addIds]));
+  try{
+    await updateDoc(doc(db,'groups',activeGroup.id),{name:newName,memberUids,updatedAt:serverTimestamp()});
+    activeGroup={...activeGroup,name:newName,memberUids};
+    groups=groups.map(g=>g.id===activeGroup.id?activeGroup:g);
+    closeGroupManage();renderConversations();await openGroup(activeGroup);showToast('Group updated.');
+  }catch(e){console.error(e);showToast(e?.code==='permission-denied'?'You do not have permission to edit this group.':'Could not update group.')}
+}
+
+document.querySelectorAll('.modal-backdrop').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.modal-backdrop.open').forEach(m=>m.classList.remove('open'));closeMessageActions();closeReactionPickers()}});
+
+// Mobile: open reactions after a real 3-second press on a message.
+let longPressTimer=null;
+let longPressTarget=null;
+function clearLongPress(){if(longPressTimer){clearTimeout(longPressTimer);longPressTimer=null}longPressTarget=null}
+document.addEventListener('touchstart',e=>{
+  const row=e.target.closest('.message-row'); if(!row)return;
+  if(e.target.closest('button,input,a,.message-actions,.react-picker'))return;
+  clearLongPress(); longPressTarget=row;
+  longPressTimer=setTimeout(()=>{
+    const id=row.dataset.messageId;
+    if(id){toggleReactionPicker(id,e); if(navigator.vibrate)navigator.vibrate(20)}
+    clearLongPress();
+  },3000);
+},{passive:true});
+document.addEventListener('touchmove',clearLongPress,{passive:true});
+document.addEventListener('touchend',clearLongPress,{passive:true});
+document.addEventListener('touchcancel',clearLongPress,{passive:true});
+
+// Conversation settings: mute/block are persisted locally for this signed-in browser.
+function prefKey(type,uid){return `caths_${type}_${auth.currentUser?.uid||'guest'}_${uid}`}
+function isMuted(uid){return localStorage.getItem(prefKey('mute',uid))==='1'}
+function isBlocked(uid){return localStorage.getItem(prefKey('block',uid))==='1'}
+function setPref(type,uid,on){const k=prefKey(type,uid);if(on)localStorage.setItem(k,'1');else localStorage.removeItem(k)}
+function renderConversationSettings(){
+  const uid=activeFriend?.uid; if(!uid)return;
+  $('conversationSettingsSubtitle').textContent=`Manage ${activeFriend.nickname||activeFriend.name||'this conversation'}.`;
+  const muted=isMuted(uid),blocked=isBlocked(uid);
+  const mb=$('muteConversationBtn');mb.innerHTML=`🔕 ${muted?'Unmute this friend':'Mute this friend'} <span class="settings-status">${muted?'Muted on this device':''}</span>`;
+  const bb=$('blockConversationBtn');bb.textContent=blocked?'✅ Unblock this user':'🚫 Block this user';
+}
+window.openConversationSettings=()=>{if(!activeFriend)return;renderConversationSettings();openModal('conversationSettingsModal')};
+window.closeConversationSettings=()=>closeModal('conversationSettingsModal');
+$('muteConversationBtn').addEventListener('click',()=>{if(!activeFriend)return;const next=!isMuted(activeFriend.uid);setPref('mute',activeFriend.uid,next);renderConversationSettings();showToast(next?'Conversation muted.':'Conversation unmuted.')});
+$('blockConversationBtn').addEventListener('click',()=>{if(!activeFriend)return;const uid=activeFriend.uid;const next=!isBlocked(uid);setPref('block',uid,next);renderConversationSettings();showToast(next?'User blocked on this device.':'User unblocked.');if(next){$('conversationSettingsModal').classList.remove('open');renderConversations();clearChatSelection()}});
+
+
+onAuthStateChanged(auth,async user=>{
+  if(!user){location.href='profile.html';return}
   await loadFriends();
+  listenGroups();
 });
 </script>
-
 </body>
 </html>
