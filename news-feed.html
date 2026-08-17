@@ -967,15 +967,59 @@ async function loadFeed(){
   list.innerHTML=`<div class="state-card"><div class="loading-box"><div class="spinner"></div><p>Loading your feed...</p></div></div>`;
 
   try{
+    // Firestore Rules are query-sensitive. Keep each query narrow enough
+    // that the rules can prove every returned document is readable.
+    if(!firebaseUser){
+      list.innerHTML=`
+        <div class="state-card">
+          <div class="state-icon">🔐</div>
+          <h3>Log in to view your feed</h3>
+          <p>Please log in to see posts from your school community.</p>
+        </div>`;
+      return;
+    }
+
     await loadFriendIds();
 
-    const snap = await getDocs(query(
+    const postsById = new Map();
+
+    // 1) Public posts: every returned document satisfies visibility == public.
+    const publicSnap = await getDocs(query(
       collection(db,'posts'),
-      where('visibility','in',['public','friends','onlyMe']),
+      where('visibility','==','public'),
       limit(100)
     ));
+    publicSnap.docs.forEach(d=>{
+      postsById.set(d.id,{id:d.id,...d.data()});
+    });
 
-    const posts = snap.docs.map(d=>({id:d.id,...d.data()}))
+    // 2) Friends-only posts: query one exact friend at a time so the
+    // security rule can prove that resource.data.authorUid is that friend.
+    const friendIdsArray = Array.from(friendIds).slice(0,100);
+    for(const friendId of friendIdsArray){
+      const friendSnap = await getDocs(query(
+        collection(db,'posts'),
+        where('visibility','==','friends'),
+        where('authorUid','==',friendId),
+        limit(100)
+      ));
+      friendSnap.docs.forEach(d=>{
+        postsById.set(d.id,{id:d.id,...d.data()});
+      });
+    }
+
+    // 3) Only-Me posts: exact authorUid == current user.
+    const ownSnap = await getDocs(query(
+      collection(db,'posts'),
+      where('visibility','==','onlyMe'),
+      where('authorUid','==',firebaseUser.uid),
+      limit(100)
+    ));
+    ownSnap.docs.forEach(d=>{
+      postsById.set(d.id,{id:d.id,...d.data()});
+    });
+
+    const posts = Array.from(postsById.values())
       .filter(canSeePost)
       .sort((a,b)=>{
         if(Boolean(a.pinned)!==Boolean(b.pinned)) return a.pinned ? -1 : 1;
@@ -1004,7 +1048,9 @@ async function loadFeed(){
       <div class="state-card">
         <div class="state-icon">⚠️</div>
         <h3>Could not load the feed</h3>
-        <p>Check your Firestore rules and make sure the posts collection can be read.</p>
+        <p>${e?.code==='permission-denied'
+          ? 'Firestore denied the feed query. The News Feed queries have been narrowed to match your security rules.'
+          : 'Check your Firestore rules and make sure the posts collection can be read.'}</p>
       </div>`;
   }
 }
