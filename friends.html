@@ -1402,6 +1402,21 @@ async function sendFriendRequest(user){
       status: 'pending',
       createdAt: serverTimestamp()
     });
+
+    try{
+      await addDoc(collection(db,'notifications'),{
+        recipientUid:user.id,
+        actorUid:firebaseUser.uid,
+        actorName:currentProfile.nickname || currentProfile.name || currentProfile.displayName || 'Student',
+        type:'friend_request',
+        text:'sent you a friend request.',
+        read:false,
+        createdAt:serverTimestamp()
+      });
+    }catch(notificationError){
+      console.warn('Friend request notification:',notificationError);
+    }
+
     showToast(`Friend request sent to ${user.nickname || user.username}.`);
     await loadSentRequests();
     await findUsers(normalize($('searchInput').value));
