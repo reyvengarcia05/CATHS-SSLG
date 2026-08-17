@@ -55,6 +55,7 @@ html,body{height:100%;}
 body{overflow:hidden;}
 .container{height:calc(100dvh - 78px);min-height:0;overflow:hidden;display:flex;}
 .messenger{height:100%;min-height:0;flex:1;}
+.messages{height:0;}
 .sidebar{min-height:0;overflow:hidden;}
 .friend-list{min-height:0;}
 .chat{min-height:0;overflow:hidden;}
@@ -138,6 +139,53 @@ body{overflow:hidden;}
   .message-sender-name{font-size:9px}
 }
 
+
+/* Chat layout matched to the provided Messenger reference */
+.message-row{align-items:flex-end;gap:8px;position:relative}
+.message-row:not(.mine){padding-left:0}
+.message-content{display:flex;flex-direction:column;min-width:0;max-width:min(82%,560px)}
+.message-row:not(.mine) .message-content{align-items:flex-start}
+.message-row.mine .message-content{align-items:flex-end}
+.message-sender{display:flex;align-items:center;gap:6px;margin:0 0 4px 2px;min-height:23px}
+.message-row.mine .message-sender{justify-content:flex-end;margin-right:2px}
+.message-sender .sender-avatar{width:28px;height:28px;flex:0 0 28px;border-radius:50%;overflow:hidden;background:#e8eef7;color:#183c8c;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800}
+.message-sender .sender-avatar img{width:100%;height:100%;object-fit:cover}
+.message-sender-name{font-size:10px;font-weight:800;color:rgba(255,255,255,.96)}
+.message-sender-time{font-size:8px;color:rgba(255,255,255,.58)}
+.message-main-line{display:flex;align-items:flex-end;gap:5px;position:relative}
+.message-row.mine .message-main-line{flex-direction:row-reverse}
+.message-main-line .bubble{max-width:100%;margin:0}
+.message-row:not(.mine) .bubble{background:#303030;color:#f4f4f4;border-bottom-left-radius:5px}
+.message-row.mine .bubble{background:linear-gradient(135deg,#6f4bf6,#4f68ff);color:#fff;border-bottom-right-radius:5px}
+.bubble{border-radius:20px;padding:9px 14px;box-shadow:none;font-size:14px;line-height:1.45}
+.bubble small{font-size:8px;margin-top:5px;opacity:.48}
+.message-reaction-trigger{display:inline-flex;flex:0 0 30px;width:30px;height:30px;border-radius:50%;background:#343434;color:#e9e9e9;border:1px solid rgba(255,255,255,.06);align-items:center;justify-content:center;font-size:16px;box-shadow:none;cursor:pointer;opacity:0;transition:opacity .15s ease,transform .12s ease}
+.message-row:hover .message-reaction-trigger,.message-row:focus-within .message-reaction-trigger{opacity:1}
+.message-row.mine .message-reaction-trigger{background:#3d4dbe;color:#fff}
+.message-reaction-trigger:hover{transform:scale(1.06)}
+.message-tools-btn{display:inline-flex;flex:0 0 28px;width:28px;height:28px;border-radius:50%;background:transparent;color:#d2d2d2;border:0;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity .15s ease}
+.message-row:hover .message-tools-btn,.message-row:focus-within .message-tools-btn{opacity:1}
+.message-row.mine .message-tools-btn{color:#fff}
+.message-quick-action{display:inline-flex;flex:0 0 28px;width:28px;height:28px;border-radius:50%;background:transparent;color:#d2d2d2;border:0;align-items:center;justify-content:center;cursor:pointer;opacity:0;font-size:16px;transition:opacity .15s ease}
+.message-row:hover .message-quick-action,.message-row:focus-within .message-quick-action{opacity:1}
+.message-row.mine .message-quick-action{color:#fff}
+.message-reactions{display:flex;align-items:center;gap:2px;flex-wrap:wrap;margin-top:5px;width:max-content;max-width:100%;min-height:0;padding:2px 5px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.92);border-radius:11px;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.message-row.mine .message-reactions{background:#fff3a8}
+.message-reaction-chip{border:0;background:transparent;color:#183c8c;border-radius:7px;padding:3px 5px;font-size:11px;cursor:pointer;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.message-reaction-chip:hover{background:rgba(24,60,140,.08)}
+.message-actions{position:absolute;z-index:150;min-width:180px;background:#fff;color:#183c8c;border-radius:14px;padding:6px;box-shadow:0 15px 40px rgba(0,0,0,.25);display:none}
+.message-actions.open{display:block}
+.message-row:not(.mine) .message-actions{left:calc(100% - 70px);top:34px}
+.message-row.mine .message-actions{right:calc(100% - 70px);top:34px}
+@media (hover:none) and (pointer:coarse){
+  .message-reaction-trigger,.message-tools-btn,.message-quick-action{opacity:1}
+}
+@media(max-width:800px){
+  .message-content{max-width:88%}
+  .bubble{font-size:14px}
+  .message-sender .sender-avatar{width:26px;height:26px;flex-basis:26px}
+  .message-sender-name{font-size:9px}
+}
 </style>
 </head>
 <body>
@@ -395,29 +443,41 @@ function renderMessageDoc(d,currentUid){
   const reactions=msg.reactions&&typeof msg.reactions==='object'?msg.reactions:{};
   const chips=Object.entries(reactions).filter(([_,count])=>Number(count)>0)
     .map(([emoji,count])=>`<button class="message-reaction-chip" type="button" onclick="reactMessage('${esc(id)}','${esc(emoji)}')">${esc(emoji)} ${Number(count)||1}</button>`).join('');
+
+  const body=unsent
+    ? `<span class="unsent-text">This message was unsent.</span>`
+    : `${forwarded?`<div class="forwarded-box">↗ Forwarded message</div>`:''}${esc(msg.text||'')}`;
+
+  const senderName=msg.senderName||'Student';
+  const senderTime=formatTime(msg.createdAt);
+  const senderLine = mine ? '' : `<div class="message-sender">
+    ${avatarHtml(msg,'sender-avatar')}
+    <span class="message-sender-name">${esc(senderName)}</span>
+    <span class="message-sender-time">${esc(senderTime)}</span>
+  </div>`;
+
+  const reactionBar=chips?`<div class="message-reactions">${chips}</div>`:'';
+  const quickForward=`<button class="message-quick-action" type="button" aria-label="Forward" title="Forward" onclick="prepareForward('${esc(id)}')">↗</button>`;
   const trigger=`<button type="button" class="message-reaction-trigger" aria-label="React" title="React" onclick="toggleReactionPicker('${esc(id)}',event)">😊</button>`;
   const actionMenu=`<div class="message-actions" id="actions-${esc(id)}">
     <button type="button" onclick="prepareForward('${esc(id)}')">↗️ Forward</button>
     ${mine&&!unsent?`<button type="button" onclick="unsendForMe('${esc(id)}')">👤 Unsend for me</button><button class="danger" type="button" onclick="unsendForEveryone('${esc(id)}')">🗑️ Unsend for everyone</button>`:`<button type="button" onclick="unsendForMe('${esc(id)}')">👤 Unsend for me</button>`}
   </div>`;
-  const body=unsent?`<span class="unsent-text">This message was unsent.</span>`:`${forwarded?`<div class="forwarded-box">↗ Forwarded message</div>`:''}${esc(msg.text||'')}`;
+
   const rowClass=mine?'message-row mine':'message-row';
-  const senderLine = activeConversation?.kind==='group' ? `<div class="message-sender">${avatarHtml(msg,'sender-avatar')}<span class="message-sender-name">${esc(msg.senderName||'Student')}</span><span class="message-sender-time">${esc(formatTime(msg.createdAt))}</span></div>` : '';
-  const reactionBar=chips?`<div class="message-reactions">${chips}</div>`:'';
   return `<div class="${rowClass}" data-message-id="${esc(id)}">
     <div class="message-content">
       ${senderLine}
       <div class="message-main-line">
-        <div class="bubble">${body}<small>${activeConversation?.kind==='group'?'':formatTime(msg.createdAt)}</small>${reactionBar}</div>
+        <div class="bubble">${body}<small>${esc(senderTime)}</small>${reactionBar}</div>
         ${trigger}
-        <button class="message-tools-btn" type="button" onclick="toggleMessageActions('${esc(id)}',event)">⋯</button>
+        ${quickForward}
+        <button class="message-tools-btn" type="button" aria-label="Message options" onclick="toggleMessageActions('${esc(id)}',event)">⋮</button>
         ${actionMenu}
       </div>
-      ${activeConversation?.kind==='friend' ? `<div class=\"message-sender\">${avatarHtml(msg,'sender-avatar')}<span class=\"message-sender-name\">${esc(msg.senderName||'Student')}</span><span class=\"message-sender-time\">${esc(formatTime(msg.createdAt))}</span></div>` : ''}
     </div>
   </div>`;
 }
-
 
 async function renderMessages(docs,currentUid,forceBottom=false){
   const box=$('messages');if(!box)return;
@@ -428,7 +488,17 @@ async function renderMessages(docs,currentUid,forceBottom=false){
     await Promise.all(merged.map(async d=>{const m=d.data()||{};if(m.senderUid){const p=await cachedUserProfile(m.senderUid);m.senderName=p.nickname||p.name||p.displayName||'Student';m.photoURL=p.photoURL||'';d.__renderData=m;}}));
   }else{
     const friendName=activeFriend?.nickname||activeFriend?.name||activeFriend?.displayName||'Student';
-    merged.forEach(d=>{d.__renderData={...(d.data()||{}),senderName:d.data()?.senderUid===currentUid?(auth.currentUser?.displayName||'You'):friendName};});
+    const friendPhoto=activeFriend?.photoURL||'';
+    const myName=auth.currentUser?.displayName||'You';
+    const myPhoto=auth.currentUser?.photoURL||'';
+    merged.forEach(d=>{
+      const raw=d.data()||{};
+      const isMine=raw.senderUid===currentUid;
+      d.__renderData={...raw,
+        senderName:isMine?myName:friendName,
+        photoURL:isMine?myPhoto:friendPhoto
+      };
+    });
   }
   const html=merged.map(d=>renderMessageDoc({...d,data:()=>d.__renderData||d.data()},currentUid)).join('');
   box.innerHTML=html||'<div class="chat-empty" style="min-height:100%"><div class="empty-inner"><div class="empty-icon">👋</div><h3>Start the conversation</h3><p>Send your first message.</p></div></div>';
