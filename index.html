@@ -1651,17 +1651,15 @@ function startNotificationListener(uid){
     if(typeof db==='undefined' || typeof onSnapshot==='undefined' || typeof collection==='undefined') return;
     if(notificationUnsubscribe) notificationUnsubscribe();
 
-    // Expected Firestore structure:
-    // notifications/{notificationId}
-    // { recipientUid, type, actorName, text, postId, createdAt, read }
+    // Avoid a composite-index requirement here: fetch only this user's
+    // notifications and sort them in the browser.
     const q = query(
         collection(db,'notifications'),
         where('recipientUid','==',uid),
-        orderBy('createdAt','desc'),
         limit(50)
     );
 
-    notificationUnsubscribe = onSnapshot(q, snap=>{
+    notificationUnsubscribe = onSnapshot(q,snap=>{
         notificationItems = snap.docs.map(d=>{
             const n=d.data()||{};
             let icon='🔔';
@@ -1673,8 +1671,9 @@ function startNotificationListener(uid){
 
             return {
                 id:d.id,
+                createdAt:n.createdAt?.toMillis?.() || 0,
                 icon,
-                title:n.actorName ? `${n.actorName}` : (n.title||'Notification'),
+                title:n.actorName ? String(n.actorName) : (n.title||'Notification'),
                 text:n.text || ({
                     reaction:'reacted to your post.',
                     comment:'commented on your post.',
@@ -1683,9 +1682,10 @@ function startNotificationListener(uid){
                 }[n.type] || 'You have a new notification.'),
                 read:n.read===true
             };
-        });
+        }).sort((a,b)=>b.createdAt-a.createdAt);
+
         renderNotifications();
-    }, err=>{
+    },err=>{
         console.warn('Notification listener:',err);
         renderNotifications();
     });
