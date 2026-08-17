@@ -33,9 +33,25 @@ body{min-height:100vh;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700)
 .message-row:not(.mine) .message-tools-btn{right:-35px}
 .message-row.mine .message-tools-btn{left:-35px}
 .message-row:hover .message-tools-btn,.message-tools-btn:focus{display:block}
-.message-reactions{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
-.message-reaction-chip{border:1px solid rgba(0,61,165,.12);background:#fff;color:#183c8c;border-radius:999px;padding:2px 7px;font-size:9px;cursor:pointer}
+/* iPhone-like message reactions */
+.message-reactions{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px;align-items:center}
+.message-reaction-chip{border:1px solid rgba(0,0,0,.07);background:rgba(255,255,255,.96);color:#183c8c;border-radius:999px;padding:3px 7px;font-size:12px;cursor:pointer;line-height:1;box-shadow:0 2px 8px rgba(0,0,0,.06);font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;transition:transform .15s ease,box-shadow .15s ease}
+.message-reaction-chip:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 5px 12px rgba(0,0,0,.1)}
 .message-row.mine .message-reaction-chip{background:#fff4a8}
+.react-picker{position:absolute;display:none;gap:5px;align-items:center;padding:7px 8px;background:rgba(255,255,255,.98);border:1px solid rgba(0,0,0,.06);border-radius:18px;box-shadow:0 14px 40px rgba(0,0,0,.2);z-index:220;bottom:calc(100% + 7px);right:0;max-width:280px;flex-wrap:wrap}
+.react-picker.open{display:flex}
+.react-picker button{border:0;background:transparent;width:31px;height:31px;border-radius:50%;font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;transition:transform .12s ease,background .12s ease}
+.react-picker button:hover{background:#eef4ff;transform:scale(1.18)}
+.react-plus{font-family:inherit!important;font-size:17px!important;background:#eef4ff!important;color:#183c8c!important;font-weight:800}
+.bubble-wrap{position:relative;display:flex;align-items:flex-end;gap:5px;max-width:min(82%,560px)}
+.message-row.mine .bubble-wrap{flex-direction:row-reverse}
+.message-tools-btn{flex:0 0 auto;width:26px;height:26px;border:0;border-radius:9px;background:rgba(255,255,255,.14);color:#fff;cursor:pointer;opacity:.75}
+.message-row.mine .message-tools-btn{background:rgba(0,0,0,.08);color:#183c8c}
+.group-members-btn{font-size:11px;width:auto;padding:0 10px}
+.group-members-modal-list{display:flex;flex-direction:column;gap:7px;max-height:55vh;overflow:auto;margin-top:10px}
+.group-member-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid #e3eaf7;border-radius:12px;background:#f8fafc}
+.group-member-row .friend-avatar{width:38px;height:38px;flex-basis:38px}
+.group-member-role{margin-left:auto;font-size:9px;color:#64748b;font-weight:700}
 .forwarded-box{margin-bottom:7px;padding:7px 9px;border-left:3px solid #7d93d8;background:rgba(24,60,140,.06);border-radius:7px;font-size:9px;color:#56698f}
 .unsent-text{font-style:italic;opacity:.55}
 .message-actions{position:absolute;z-index:150;min-width:170px;background:#fff;color:#183c8c;border-radius:14px;padding:6px;box-shadow:0 15px 40px rgba(0,0,0,.22);display:none}
@@ -131,6 +147,14 @@ body{min-height:100vh;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700)
     <div id="forwardChoices" class="select-friends"></div>
   </div>
 </div>
+<div id="groupMembersModal" class="modal-backdrop">
+  <div class="modal-card">
+    <div class="modal-head-row"><h3>👥 Group Members</h3><button type="button" class="modal-x" onclick="closeGroupMembers()">×</button></div>
+    <p id="groupMembersSubtitle">Members in this group</p>
+    <div id="groupMembersList" class="group-members-modal-list"></div>
+  </div>
+</div>
+
 <div id="toast" class="toast"></div>
 
 <nav class="bottom-nav">
@@ -277,7 +301,10 @@ async function openGroup(group){
     <button class="chat-back" type="button" onclick="clearChatSelection()">←</button>
     ${groupAvatarHtml(group,'chat-avatar group-avatar')}
     <div class="chat-person"><strong>${esc(group.name||'Group Chat')}</strong><small>${(group.memberUids||[]).length} members</small></div>
-    <div class="chat-head-actions"><button class="chat-head-btn" type="button" onclick="openGroupManage()">⚙</button></div>
+    <div class="chat-head-actions">
+      <button class="chat-head-btn group-members-btn" type="button" onclick="openGroupMembers()">👥</button>
+      <button class="chat-head-btn" type="button" onclick="openGroupManage()">⚙</button>
+    </div>
   </div>
   <div id="messages" class="messages"><div class="loading"><div class="spinner"></div><div>Loading messages...</div></div></div>
   <form id="messageForm" class="message-compose"><input id="messageInput" class="message-input" maxlength="1000" placeholder="Message the group..." autocomplete="off"><button id="sendBtn" class="send-btn" type="submit">Send</button></form>`;
@@ -289,7 +316,7 @@ async function openGroup(group){
 window.clearChatSelection=()=>{activeFriend=null;activeGroup=null;activeConversation=null;if(unsubscribeMessages)unsubscribeMessages();$('chatPane').innerHTML='<div class="chat-empty"><div class="empty-inner"><div class="empty-icon">💬</div><h3>Select a conversation</h3><p>Choose a friend or group to start chatting.</p></div></div>';renderConversations()};
 
 function closeMessageActions(){document.querySelectorAll('.message-actions.open').forEach(x=>x.classList.remove('open'))}
-document.addEventListener('click',e=>{if(!e.target.closest('.message-tools-btn')&&!e.target.closest('.message-actions'))closeMessageActions()});
+document.addEventListener('click',e=>{if(!e.target.closest('.message-tools-btn')&&!e.target.closest('.message-actions'))closeMessageActions();if(!e.target.closest('.message-reaction-chip')&&!e.target.closest('.react-picker'))closeReactionPickers()});
 
 function renderMessageDoc(d,currentUid){
   const msg=d.data()||{}, id=d.id;
@@ -299,7 +326,9 @@ function renderMessageDoc(d,currentUid){
   const unsent=msg.unsent===true;
   const forwarded=msg.forwardedFrom;
   const reactions=msg.reactions&&typeof msg.reactions==='object'?msg.reactions:{};
-  const chips=Object.entries(reactions).map(([emoji,count])=>`<button class="message-reaction-chip" type="button" onclick="reactMessage('${esc(id)}','${esc(emoji)}')">${esc(emoji)} ${Number(count)||1}</button>`).join('');
+  const chips=Object.entries(reactions).filter(([_,count])=>Number(count)>0).map(([emoji,count])=>`<button class="message-reaction-chip" type="button" onclick="reactMessage('${esc(id)}','${esc(emoji)}')">${esc(emoji)} ${Number(count)||1}</button>`).join('');
+  const emojiSet=['❤️','👍','😂','😮','😢','😡'];
+  const picker=`<div class="react-picker" id="react-picker-${esc(id)}">${emojiSet.map(emoji=>`<button type="button" onclick="reactMessage('${esc(id)}','${emoji}')">${emoji}</button>`).join('')}<button type="button" class="react-plus" title="More emoji" onclick="openMoreReactionPicker('${esc(id)}',event)">+</button></div>`;
   const actionMenu=`<div class="message-actions" id="actions-${esc(id)}">
     <button type="button" onclick="reactMessage('${esc(id)}','❤️')">❤️ React</button>
     <button type="button" onclick="prepareForward('${esc(id)}')">↗️ Forward</button>
@@ -310,7 +339,8 @@ function renderMessageDoc(d,currentUid){
   const rowClass=mine?'message-row mine':'message-row';
   return `<div class="${rowClass}" data-message-id="${esc(id)}">
     <div class="bubble-wrap">
-      <div class="bubble">${body}<small>${formatTime(msg.createdAt)}</small>${chips?`<div class="message-reactions">${chips}</div>`:''}</div>
+      <div class="bubble">${body}<small>${formatTime(msg.createdAt)}</small>${chips?`<div class="message-reactions">${chips}<button class="message-reaction-chip react-plus" type="button" onclick="toggleReactionPicker('${esc(id)}',event)">+</button></div>`:`<div class="message-reactions"><button class="message-reaction-chip react-plus" type="button" onclick="toggleReactionPicker('${esc(id)}',event)">+</button></div>`}</div>
+      ${picker}
       <button class="message-tools-btn" type="button" onclick="toggleMessageActions('${esc(id)}',event)">⋯</button>
       ${actionMenu}
     </div>
@@ -369,12 +399,32 @@ async function messageRef(messageId){
   if(activeConversation?.kind==='group')return doc(db,'groups',activeGroup.id,'messages',messageId);
   return null;
 }
-async function reactMessage(messageId,emoji){
+function closeReactionPickers(){document.querySelectorAll('.react-picker.open').forEach(x=>x.classList.remove('open'))}
+function toggleReactionPicker(messageId,event){
+  event?.stopPropagation();
   closeMessageActions();
+  const picker=$('react-picker-'+messageId);
+  if(!picker)return;
+  const was=picker.classList.contains('open');
+  closeReactionPickers();
+  if(!was)picker.classList.add('open');
+}
+window.toggleReactionPicker=toggleReactionPicker;
+function openMoreReactionPicker(messageId,event){
+  event?.stopPropagation();
+  const all=['❤️','👍','😂','😮','😢','😡','🥰','😍','😘','😭','😎','🤔','🙏','👏','🎉','🔥','💯','🤣','😳','😴','🤗','🙌','💔','❤️‍🔥'];
+  const picker=$('react-picker-'+messageId);if(!picker)return;
+  picker.innerHTML=all.map(emoji=>`<button type="button" onclick="reactMessage('${esc(messageId)}','${emoji}')">${emoji}</button>`).join('');
+  picker.classList.add('open');
+}
+window.openMoreReactionPicker=openMoreReactionPicker;
+async function reactMessage(messageId,emoji){
+  closeMessageActions();closeReactionPickers();
   const ref=await messageRef(messageId);if(!ref||!auth.currentUser)return;
   try{
     const snap=await getDoc(ref);if(!snap.exists())return;
-    const r={...(snap.data()?.reactions||{})};r[emoji]=Number(r[emoji]||0)+1;
+    const r={...(snap.data()?.reactions||{})};
+    r[emoji]=Number(r[emoji]||0)+1;
     await updateDoc(ref,{reactions:r});
   }catch(e){console.error(e);showToast('Could not react to message.')}
 }
@@ -457,6 +507,20 @@ async function createGroup(){
   }catch(e){console.error(e);showToast(e?.code==='permission-denied'?'Group creation is blocked by Firestore Rules.':'Could not create group.')}
 }
 
+window.closeGroupMembers=()=>closeModal('groupMembersModal');
+window.openGroupMembers=async()=>{
+  if(!activeGroup)return;
+  const box=$('groupMembersList');
+  $('groupMembersSubtitle').textContent=`${(activeGroup.memberUids||[]).length} members in ${activeGroup.name||'this group'}`;
+  box.innerHTML='<div class="loading"><div class="spinner"></div><div>Loading members...</div></div>';
+  openModal('groupMembersModal');
+  try{
+    const members=await Promise.all((activeGroup.memberUids||[]).map(uid=>getUserProfile(uid)));
+    members.sort((a,b)=>{if(a.uid===activeGroup.createdBy)return -1;if(b.uid===activeGroup.createdBy)return 1;return String(a.nickname||a.name||a.username||'').localeCompare(String(b.nickname||b.name||b.username||''));});
+    box.innerHTML=members.map(m=>`<div class="group-member-row">${avatarHtml(m)}<div class="friend-info"><strong>${esc(m.nickname||m.name||m.displayName||'Student')}</strong><small>${m.username?'@'+esc(m.username):''}</small></div>${m.uid===activeGroup.createdBy?'<span class="group-member-role">Creator</span>':''}</div>`).join('') || '<div class="conversation-empty">No members found.</div>';
+  }catch(e){console.error(e);box.innerHTML='<div class="conversation-empty">Could not load group members.</div>';}
+};
+
 window.openGroupManage=()=>{
   if(!activeGroup)return;
   $('groupManageNameInput').value=activeGroup.name||'';
@@ -479,7 +543,7 @@ async function saveGroupManage(){
 }
 
 document.querySelectorAll('.modal-backdrop').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}));
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.modal-backdrop.open').forEach(m=>m.classList.remove('open'));closeMessageActions()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.modal-backdrop.open').forEach(m=>m.classList.remove('open'));closeMessageActions();closeReactionPickers()}});
 
 onAuthStateChanged(auth,async user=>{
   if(!user){location.href='profile.html';return}
