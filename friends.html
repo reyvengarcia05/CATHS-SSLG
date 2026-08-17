@@ -722,6 +722,51 @@ main{
   }
 }
 
+
+/* =========================================================
+   MOBILE TOAST — CENTERED ABOVE BOTTOM NAV
+   ========================================================= */
+@media (max-width:768px){
+  .toast{
+    left:50% !important;
+    right:auto !important;
+    bottom:82px !important;
+    width:max-content !important;
+    max-width:calc(100vw - 32px) !important;
+    transform:translateX(-50%) translateY(10px) !important;
+    text-align:center !important;
+    white-space:normal !important;
+    overflow-wrap:anywhere;
+    z-index:10000 !important;
+  }
+
+  .toast.show{
+    transform:translateX(-50%) translateY(0) !important;
+  }
+}
+
+@media (max-width:430px){
+  .toast{
+    bottom:82px !important;
+    max-width:calc(100vw - 28px) !important;
+    padding:10px 16px !important;
+    border-radius:999px !important;
+    font-size:12px !important;
+  }
+}
+
+
+.message-btn{
+  background:#e0f2fe;
+  color:#075985;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+}
+.message-btn:hover{background:#bae6fd}
+
 </style>
 </head>
 <body>
@@ -773,12 +818,13 @@ main{
         <div class="field-row">
           <div>
             <label for="usernameInput">Username</label>
-            <input id="usernameInput" maxlength="20" placeholder="e.g. reyven123" autocomplete="off">
+            <input id="usernameInput" maxlength="30" placeholder="e.g. reyven123" autocomplete="off">
             <div class="helper">3–20 characters. Letters, numbers, periods and underscores only.</div>
           </div>
           <div>
             <label for="nicknameInput">Nickname</label>
-            <input id="nicknameInput" maxlength="30" placeholder="e.g. Reyven" autocomplete="off">
+            <input id="nicknameInput" maxlength="20" placeholder="e.g. Reyven" autocomplete="off">
+<small id="nickname-limit-note" class="sub">Nickname: up to 20 characters.</small>
             <div class="helper">This is the name shown to your friends.</div>
           </div>
         </div>
@@ -1182,6 +1228,14 @@ function renderSearchResults(users){
       <button class="btn btn-primary" data-user-id="${escapeHtml(user.id)}">Add Friend</button>
     `;
     row.querySelector('button').addEventListener('click', ()=>handleRelationshipAction(user, row.querySelector('button')));
+
+    const messageLink = document.createElement('a');
+    messageLink.className = 'btn message-btn';
+    messageLink.href = `messages.html?uid=${encodeURIComponent(user.id)}`;
+    messageLink.textContent = '💬 Message';
+    messageLink.title = `Message ${user.nickname || user.username || 'student'}`;
+    row.appendChild(messageLink);
+
     $('searchResults').appendChild(row);
     refreshRelationshipButton(user.id, row.querySelector('button'));
   });
@@ -1542,7 +1596,16 @@ async function loadFriends(){
         </div>
       `;
       row.querySelector('.btn-danger').addEventListener('click',()=>openRemoveFriendModal(friend,row));
-      $('friendsList').appendChild(row);
+            const messageLink = document.createElement('a');
+      messageLink.className = 'btn message-btn';
+      messageLink.href = `messages.html?uid=${encodeURIComponent(friend.uid)}`;
+      messageLink.textContent = '💬 Message';
+      messageLink.title = `Message ${friend.nickname || friend.username || 'friend'}`;
+      const actions = row.querySelector('.actions');
+      if(actions) actions.prepend(messageLink);
+      else row.appendChild(messageLink);
+
+$('friendsList').appendChild(row);
     });
   }catch(error){
     console.error(error);
