@@ -969,41 +969,13 @@ async function loadFeed(){
   try{
     await loadFriendIds();
 
-    const postsById = new Map();
-
-    // Firestore Rules are not filters. Query each visibility scope with
-    // constraints that the deployed rules can prove.
-    const publicSnap = await getDocs(query(
+    const snap = await getDocs(query(
       collection(db,'posts'),
-      where('visibility','==','public'),
+      where('visibility','in',['public','friends','onlyMe']),
       limit(100)
     ));
-    publicSnap.docs.forEach(d=>postsById.set(d.id,{id:d.id,...d.data()}));
 
-    for(let i=0;i<friendIds.length;i+=30){
-      const chunk=friendIds.slice(i,i+30);
-      if(!chunk.length) continue;
-
-      const friendSnap = await getDocs(query(
-        collection(db,'posts'),
-        where('visibility','==','friends'),
-        where('authorUid','in',chunk),
-        limit(100)
-      ));
-      friendSnap.docs.forEach(d=>postsById.set(d.id,{id:d.id,...d.data()}));
-    }
-
-    if(auth.currentUser){
-      const ownSnap = await getDocs(query(
-        collection(db,'posts'),
-        where('visibility','==','onlyMe'),
-        where('authorUid','==',auth.currentUser.uid),
-        limit(100)
-      ));
-      ownSnap.docs.forEach(d=>postsById.set(d.id,{id:d.id,...d.data()}));
-    }
-
-    const posts = Array.from(postsById.values())
+    const posts = snap.docs.map(d=>({id:d.id,...d.data()}))
       .filter(canSeePost)
       .sort((a,b)=>{
         if(Boolean(a.pinned)!==Boolean(b.pinned)) return a.pinned ? -1 : 1;
@@ -1115,6 +1087,23 @@ window.reactToPost=async function(postId,emoji,event){
         photoURL:profile.photoURL || user.photoURL || '',
         updatedAt:serverTimestamp()
       });
+      // Notify the post owner (but never yourself).
+      const postSnapForNotify = await getDoc(doc(db,'posts',postId));
+      if(postSnapForNotify.exists()){
+        const postData = postSnapForNotify.data() || {};
+        if(postData.authorUid && postData.authorUid !== user.uid){
+          await addDoc(collection(db,'notifications'),{
+            recipientUid: postData.authorUid,
+            actorUid: user.uid,
+            actorName: profile.nickname || profile.name || profile.displayName || user.displayName || 'Student',
+            type:'reaction',
+            text:`reacted ${emoji} to your post.`,
+            postId,
+            read:false,
+            createdAt:serverTimestamp()
+          });
+        }
+      }
     }
     $('picker-'+postId)?.classList.remove('open');
     await refreshPostCounts(postId);
