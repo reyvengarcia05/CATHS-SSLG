@@ -1611,7 +1611,22 @@ function toggleNotifications(){
 function closeNotifications(){
     document.getElementById('notificationPanel')?.classList.remove('open');
 }
-function markNotificationsRead(){
+async function markNotificationsRead(){
+    const unread = notificationItems.filter(n=>!n.read);
+    if(!unread.length){
+        renderNotifications();
+        return;
+    }
+
+    try{
+        await Promise.all(unread.map(n=>
+            updateDoc(doc(db,'notifications',n.id),{read:true})
+        ));
+    }catch(error){
+        console.error('Mark notifications read failed:',error);
+        return;
+    }
+
     notificationItems = notificationItems.map(n=>({...n,read:true}));
     renderNotifications();
 }
@@ -1825,8 +1840,20 @@ import {
     GoogleAuthProvider,
     signInWithPopup,
     signOut,
-    onAuthStateChanged
+    onAuthStateChanged,
+    setPersistence,
+    browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+import {
+    getFirestore,
+    collection,
+    query,
+    where,
+    limit,
+    onSnapshot,
+    doc,
+    updateDoc
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
 const firebaseConfig = {
@@ -1842,6 +1869,12 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
+
+// Persist Google login across all CATHS-MAIN pages.
+setPersistence(auth, browserLocalPersistence).catch(err => {
+    console.error('Auth persistence setup failed:', err);
+});
 
 const googleProvider = new GoogleAuthProvider();
 
