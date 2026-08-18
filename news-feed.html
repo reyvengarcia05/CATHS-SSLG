@@ -191,7 +191,7 @@ a{-webkit-tap-highlight-color:transparent}
   font-weight:800;
 }
 .post-avatar img{width:100%;height:100%;object-fit:cover}
-.post-author{flex:1;min-width:0}
+.post-author-link{display:block;color:inherit;text-decoration:none;min-width:0;flex:1}.post-author{flex:1;min-width:0}
 .post-author strong{
   display:block;font-size:13px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
@@ -859,6 +859,20 @@ function formatTime(ts){
   }
 }
 
+function formatExactTime(ts){
+  try{
+    if(!ts) return 'Date not available';
+    const date = ts.toDate ? ts.toDate() : new Date(ts);
+    if(Number.isNaN(date.getTime())) return 'Date not available';
+    return date.toLocaleString([], {
+      year:'numeric', month:'long', day:'numeric',
+      hour:'numeric', minute:'2-digit'
+    });
+  }catch(e){
+    return 'Date not available';
+  }
+}
+
 function avatarHtml(post){
   if(post.photoURL){
     return `<div class="post-avatar"><img src="${esc(post.photoURL)}" alt=""></div>`;
@@ -1301,11 +1315,13 @@ function renderPost(post){
   return `
     <article class="post-card" id="post-${esc(post.id)}">
       <div class="post-head">
-        ${avatarHtml(post)}
-        <div class="post-author">
-          <strong>${esc(post.authorName || 'User')}</strong>
-          <div class="post-meta">${post.username ? '@'+esc(post.username)+' · ' : ''}${esc(formatTime(post.createdAt))}</div>
-        </div>
+        <a href="profile.html?uid=${encodeURIComponent(post.authorUid || '')}" onclick="event.stopPropagation()" style="text-decoration:none;color:inherit">${avatarHtml(post)}</a>
+        <a class="post-author-link" href="profile.html?uid=${encodeURIComponent(post.authorUid || '')}" onclick="event.stopPropagation()">
+          <div class="post-author">
+            <strong>${esc(post.authorName || 'User')}</strong>
+            <div class="post-meta">${post.username ? '@'+esc(post.username)+' · ' : ''}<span title="${esc(formatExactTime(post.createdAt))}">${esc(formatTime(post.createdAt))}</span></div>
+          </div>
+        </a>
         <span class="post-visibility">${visibilityLabel}</span>
         ${own ? `<button class="post-menu-btn" type="button" onclick="openManageMenu('${esc(post.id)}',${post.pinned===true})">⋯</button>` : ''}
       </div>
@@ -1666,7 +1682,7 @@ window.shareAsMessage=async function(friendUid){
   }
 };
 
-window.openManageMenuwindow.openManageMenu=function(postId,pinned){
+window.openManageMenu=function(postId,pinned){
   activeManagePostId=postId;
   activeManagePostIdPinned=Boolean(pinned);
   $('manageMenuBackdrop').classList.add('open');
