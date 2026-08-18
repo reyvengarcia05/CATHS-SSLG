@@ -34,17 +34,20 @@ body{min-height:100vh;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700)
 .message-row.mine .message-tools-btn{left:-35px}
 .message-row:hover .message-tools-btn,.message-tools-btn:focus{display:block}
 /* Messenger-style reaction bar + responsive triggers */
-.reaction-tools{position:absolute;right:7px;bottom:-10px;display:flex;align-items:center;gap:4px;z-index:30}
+/* Messenger-style reaction UI */
+.reaction-tools{position:absolute;right:7px;bottom:-15px;display:flex;align-items:center;gap:5px;z-index:30;pointer-events:none}
 .message-row.mine .reaction-tools{right:7px}
-.message-reactions{display:flex;align-items:center;justify-content:center;gap:2px;flex-wrap:nowrap;width:176px;height:34px;min-height:34px;padding:3px 6px;border:1px solid rgba(0,0,0,.08);background:#fff;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.10);overflow:hidden}
-.message-row.mine .message-reactions{background:#fffaf0}
-.message-reaction-chip{border:0;background:transparent;color:#183c8c;border-radius:8px;padding:2px 5px;font-size:12px;cursor:pointer;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;transition:.12s ease;flex:0 0 auto}
-.message-reaction-chip:hover{background:#eef4ff;transform:scale(1.04)}
-.message-reaction-chip.mine-reaction{background:#fff0a5;box-shadow:inset 0 0 0 1px rgba(138,109,0,.16)}
-.message-reaction-trigger{display:inline-flex!important;align-items:center;justify-content:center;width:27px;height:27px;border:0;border-radius:999px;background:#fff;color:#183c8c;cursor:pointer;font-size:16px;line-height:1;box-shadow:0 4px 12px rgba(0,0,0,.12);font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;touch-action:manipulation;flex:0 0 27px}
+.message-reactions{display:flex;align-items:center;gap:4px;flex-wrap:nowrap;pointer-events:auto}
+.message-reaction-chip{position:relative;border:1px solid rgba(24,60,140,.10);background:#fff;color:#183c8c;border-radius:999px;width:30px;height:30px;padding:0;display:inline-flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;box-shadow:0 4px 12px rgba(0,0,0,.12);transition:.12s ease;flex:0 0 30px}
+.message-reaction-chip:hover{transform:scale(1.06);background:#f8fbff}
+.message-reaction-chip .reaction-count{position:absolute;right:-3px;bottom:-3px;min-width:13px;height:13px;padding:0 3px;border-radius:999px;background:#183c8c;color:#fff;font:700 7px/13px 'Poppins',sans-serif;box-shadow:0 2px 5px rgba(0,0,0,.16)}
+.message-reaction-chip.mine-reaction{background:#fff0a5;border-color:rgba(138,109,0,.18);box-shadow:0 4px 12px rgba(0,0,0,.12),inset 0 0 0 1px rgba(138,109,0,.08)}
+.message-reaction-trigger{display:inline-flex!important;align-items:center;justify-content:center;width:29px;height:29px;border:0;border-radius:999px;background:#fff;color:#183c8c;cursor:pointer;font-size:16px;line-height:1;box-shadow:0 4px 12px rgba(0,0,0,.12);font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;touch-action:manipulation;flex:0 0 29px;pointer-events:auto;opacity:0;transform:scale(.92);transition:.14s ease}
+.message-row:hover .message-reaction-trigger,.message-row:focus-within .message-reaction-trigger,.message-reaction-trigger:focus{opacity:1;transform:scale(1)}
 .message-reaction-trigger:hover{background:#eef4ff;transform:scale(1.04)}
-.react-picker{position:absolute;display:none;gap:4px;align-items:center;padding:6px 7px;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:14px;box-shadow:0 14px 40px rgba(0,0,0,.20);z-index:230;bottom:calc(100% + 8px);right:0;max-width:min(320px,82vw);flex-wrap:wrap}
+.react-picker{position:absolute;display:none;gap:4px;align-items:center;padding:7px 8px;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:14px;box-shadow:0 14px 40px rgba(0,0,0,.20);z-index:230;bottom:calc(100% + 9px);right:0;max-width:min(320px,82vw);flex-wrap:wrap;pointer-events:auto}
 .react-picker.open{display:flex}
+.message-row:hover .react-picker,.message-row:focus-within .react-picker{display:flex}
 .react-picker button{border:0;background:transparent;width:32px;height:32px;border-radius:9px;font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;transition:.12s ease}
 .react-picker button:hover{background:#eef4ff;transform:scale(1.12)}
 .react-picker .react-picker-plus{font-family:inherit!important;font-size:17px!important;background:#eef4ff!important;color:#183c8c!important;font-weight:800}
@@ -112,10 +115,11 @@ body{overflow:hidden;}
 .group-members-line{font-size:9px;color:#6b7891;margin-top:4px}
 .conversation-empty{padding:20px;text-align:center;font-size:10px;opacity:.7}
 
-@media(max-width:800px){.messenger{grid-template-columns:1fr;grid-template-rows:240px minmax(0,1fr)}.sidebar{border-right:none;border-bottom:1px solid rgba(255,255,255,.13);max-height:none;min-height:0}.chat{min-height:0}.chat-back{display:block;border:none;background:rgba(255,255,255,.12);color:#fff;width:34px;height:34px;border-radius:10px;cursor:pointer}.bubble{max-width:82%}}
+@media(min-width:801px){.react-picker.open{display:none}}
+@media(max-width:800px){.react-picker.open{display:flex}.messenger{grid-template-columns:1fr;grid-template-rows:240px minmax(0,1fr)}.sidebar{border-right:none;border-bottom:1px solid rgba(255,255,255,.13);max-height:none;min-height:0}.chat{min-height:0}.chat-back{display:block;border:none;background:rgba(255,255,255,.12);color:#fff;width:34px;height:34px;border-radius:10px;cursor:pointer}.bubble{max-width:82%}}
 @media(max-width:520px){.container{padding:10px 8px 92px}.messenger{border-radius:20px}.sidebar{padding:13px}.chat-head{padding:12px}.messages{padding:14px 10px}.message-compose{padding:10px}.send-btn{padding:0 13px;min-width:62px}.nav-item{min-width:52px;font-size:8px}.nav-item div{font-size:20px}.message-reactions{margin-top:5px}.react-picker{max-width:280px;left:0;right:auto}.bubble-wrap{max-width:90%}}
 @media (hover:hover) and (pointer:fine){.message-reaction-trigger{display:inline-flex}}
-@media (hover:none) and (pointer:coarse){.message-reaction-trigger{display:inline-flex!important}}
+@media (hover:none) and (pointer:coarse){.message-reaction-trigger{display:inline-flex!important;opacity:1;transform:scale(1)}}
 
 
 @media(max-width:800px){
@@ -360,10 +364,52 @@ function stopFriendPresence(){
   currentPresence=null;
 }
 
-function reactionState(msg){
-  const counts=msg.reactions && typeof msg.reactions==='object' ? {...msg.reactions}:{};
-  const by=msg.reactionBy && typeof msg.reactionBy==='object' ? {...msg.reactionBy}:{};
+const reactionCache=new Map();
+const reactionUnsubs=new Map();
+let reactionRenderDocs=[];
+let reactionRenderUid='';
+function reactionState(messageId){
+  const state=reactionCache.get(messageId);
+  if(!state)return {counts:{},by:{}};
+  return {counts:{...(state.counts||{})},by:{...(state.by||{})}};
+}
+function reactionDocState(snapshot){
+  const counts={},by={};
+  snapshot.forEach(d=>{
+    const data=d.data()||{};
+    const emoji=String(data.emoji||data.reaction||data.value||'').trim();
+    if(!emoji)return;
+    counts[emoji]=(counts[emoji]||0)+1;
+    by[d.id]=emoji;
+  });
   return {counts,by};
+}
+function clearReactionListeners(){
+  reactionUnsubs.forEach(unsub=>{try{unsub()}catch{}});
+  reactionUnsubs.clear();
+  reactionCache.clear();
+  reactionRenderDocs=[];
+  reactionRenderUid='';
+}
+function syncReactionListeners(docs,currentUid){
+  const wanted=new Set(docs.map(d=>d.id));
+  for(const [messageId,unsub] of reactionUnsubs){
+    if(!wanted.has(messageId)){try{unsub()}catch{};reactionUnsubs.delete(messageId);reactionCache.delete(messageId)}
+  }
+  docs.forEach(d=>{
+    const messageId=d.id;
+    if(reactionUnsubs.has(messageId))return;
+    const ref=activeConversation?.kind==='friend'
+      ? collection(db,'conversations',chatId(auth.currentUser.uid,activeFriend.uid),'messages',messageId,'reactions')
+      : activeConversation?.kind==='group'
+        ? collection(db,'groups',activeGroup.id,'messages',messageId,'reactions')
+        : null;
+    if(!ref)return;
+    reactionUnsubs.set(messageId,onSnapshot(ref,snap=>{
+      reactionCache.set(messageId,reactionDocState(snap));
+      if(reactionRenderDocs.length)renderMessages(reactionRenderDocs,reactionRenderUid,true);
+    },err=>console.error('Message reaction listener',messageId,err)));
+  });
 }
 
 function getMyReaction(msg,uid){
@@ -719,6 +765,7 @@ async function openChat(friend){
   const me=auth.currentUser;if(!me||!friend)return;
   if(!(await ensureFriend(friend.uid))){showToast('You can only message your friends.');return;}
   stopFriendPresence();
+  clearReactionListeners();
   activeFriend=friend;activeGroup=null;activeConversation={kind:'friend',id:friend.uid};
   history.replaceState(null,'',`messages.html?uid=${encodeURIComponent(friend.uid)}`);
   renderConversations();
@@ -739,6 +786,7 @@ async function openChat(friend){
 
 async function openGroup(group){
   stopFriendPresence();
+  clearReactionListeners();
   const me=auth.currentUser;if(!me||!group)return;
   if(!(group.memberUids||[]).includes(me.uid)){showToast('You are not a member of this group.');return}
   activeGroup=group;activeFriend=null;activeConversation={kind:'group',id:group.id};
@@ -761,7 +809,7 @@ async function openGroup(group){
   setTimeout(markConversationRead,180);
 }
 
-window.clearChatSelection=()=>{stopFriendPresence();activeFriend=null;activeGroup=null;activeConversation=null;if(unsubscribeMessages)unsubscribeMessages();$('chatPane').innerHTML='<div class="chat-empty"><div class="empty-inner"><div class="empty-icon">💬</div><h3>Select a conversation</h3><p>Choose a friend or group to start chatting.</p></div></div>';renderConversations()};
+window.clearChatSelection=()=>{stopFriendPresence();clearReactionListeners();activeFriend=null;activeGroup=null;activeConversation=null;if(unsubscribeMessages)unsubscribeMessages();$('chatPane').innerHTML='<div class="chat-empty"><div class="empty-inner"><div class="empty-icon">💬</div><h3>Select a conversation</h3><p>Choose a friend or group to start chatting.</p></div></div>';renderConversations()};
 
 function closeMessageActions(){document.querySelectorAll('.message-actions.open').forEach(x=>x.classList.remove('open'))}
 document.addEventListener('click',e=>{if(!e.target.closest('.message-tools-btn')&&!e.target.closest('.message-actions'))closeMessageActions();if(!e.target.closest('.message-reaction-chip')&&!e.target.closest('.react-picker'))closeReactionPickers()});
@@ -795,14 +843,14 @@ function renderMessageDoc(d,currentUid){
 
   const mine=msg.senderUid===currentUid;
   const unsent=msg.unsent===true;
-  const {counts,by}=reactionState(msg);
+  const {counts,by}=reactionState(id);
   const myReaction=by[currentUid]||'';
 
   const chips=Object.entries(counts)
     .filter(([_,count])=>Number(count)>0)
     .map(([emoji,count])=>{
       const mineClass=myReaction===emoji?' mine-reaction':'';
-      return `<button class="message-reaction-chip${mineClass}" type="button" title="${myReaction===emoji?'Remove your reaction':'React with '+emoji}" onclick="reactMessage('${esc(id)}','${emoji}',event)">${esc(emoji)} ${Number(count)||1}</button>`;
+      return `<button class="message-reaction-chip${mineClass}" type="button" title="${myReaction===emoji?'Remove your reaction':'React with '+emoji}" onclick="reactMessage('${esc(id)}','${emoji}',event)">${esc(emoji)}<span class="reaction-count">${Number(count)||1}</span></button>`;
     }).join('');
 
   const emojiSet=['❤️','👍','😂','😮','😢','😡','🥰','🙏','👏','🎉'];
@@ -846,6 +894,9 @@ function renderMessages(docs,currentUid){
   const nearBottom=(prevScrollHeight-prevScrollTop-prevClientHeight)<90;
 
   const merged=[...docs].sort((a,b)=>(a.data()?.createdAt?.toMillis?.()||0)-(b.data()?.createdAt?.toMillis?.()||0)).slice(-300);
+  reactionRenderDocs=merged;
+  reactionRenderUid=currentUid;
+  syncReactionListeners(merged,currentUid);
   const html=merged.map(d=>renderMessageDoc(d,currentUid)).join('');
   box.innerHTML=html||'<div class="chat-empty" style="min-height:100%"><div class="empty-inner"><div class="empty-icon">👋</div><h3>Start the conversation</h3><p>Send your first message.</p></div></div>';
 
@@ -909,7 +960,7 @@ async function sendMessage(e){
       const id=chatId(me.uid,activeFriend.uid);
       await addDoc(collection(db,'conversations',id,'messages'),{
         senderUid:me.uid,receiverUid:activeFriend.uid,text,replyTo:replyTarget?{messageId:replyTarget.messageId,authorName:replyTarget.authorName,text:replyTarget.text}:null,
-        createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{},reactionBy:{},readBy:[me.uid],
+        createdAt:serverTimestamp(),hiddenFor:[],unsent:false,readBy:[me.uid],
         delivered:isUserOnline(currentPresence)
       });
       await addDoc(collection(db,'notifications'),{recipientUid:activeFriend.uid,actorUid:me.uid,actorName:me.displayName||'Student',type:'message',text:'sent you a message.',chatId:id,read:false,createdAt:serverTimestamp()});
@@ -917,7 +968,7 @@ async function sendMessage(e){
       const group=activeGroup;if(!(group.memberUids||[]).includes(me.uid))throw new Error('Not a group member');
       await addDoc(collection(db,'groups',group.id,'messages'),{
         senderUid:me.uid,text,replyTo:replyTarget?{messageId:replyTarget.messageId,authorName:replyTarget.authorName,text:replyTarget.text}:null,
-        createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{},reactionBy:{},readBy:[me.uid],delivered:true
+        createdAt:serverTimestamp(),hiddenFor:[],unsent:false,readBy:[me.uid],delivered:true
       });
     }
     input.value='';clearReplyTarget();input.focus();
@@ -948,8 +999,8 @@ function openMoreReactionPicker(messageId,event){
   const all=['❤️','👍','😂','😮','😢','😡','🥰','😍','😭','😎','🤔','🙏','👏','🎉','🔥','💯','🤣','😳','😴','🤗','🙌','💔','❤️‍🔥'];
   const picker=$('react-picker-'+messageId);
   if(!picker)return;
-  picker.innerHTML=all.map(emoji=>`<button type="button" onclick="reactMessage('${esc(messageId)}','${emoji}',event)">${emoji}</button>`).join('')+
-    `<button type="button" class="react-picker-plus" onclick="toggleReactionPicker('${esc(messageId)}',event)">+</button>`;
+  picker.innerHTML=all.map(emoji=>`<button type="button" aria-label="${emoji}" onclick="reactMessage('${esc(messageId)}','${emoji}',event)">${emoji}</button>`).join('')+
+    `<button type="button" class="react-picker-plus" title="Back" onclick="toggleReactionPicker('${esc(messageId)}',event)">−</button>`;
   picker.classList.add('open');
 }
 window.openMoreReactionPicker=openMoreReactionPicker;
@@ -959,46 +1010,21 @@ async function reactMessage(messageId,emoji,event){
   closeMessageActions();
   closeReactionPickers();
 
-  const ref=await messageRef(messageId);
   const me=auth.currentUser;
-  if(!ref||!me)return;
+  if(!me||!activeConversation)return;
+  const messageRefPath=activeConversation.kind==='friend'
+    ? doc(db,'conversations',chatId(me.uid,activeFriend.uid),'messages',messageId)
+    : doc(db,'groups',activeGroup.id,'messages',messageId);
+  const reactionRef=doc(messageRefPath,'reactions',me.uid);
 
   try{
-    const box=$('messages');
-    const beforeTop=box?.scrollTop||0;
-    const beforeHeight=box?.scrollHeight||0;
-
-    const snap=await getDoc(ref);
-    if(!snap.exists())return;
-
-    const data=snap.data()||{};
-    const counts={...(data.reactions||{})};
-    const by={...(data.reactionBy||{})};
-    const oldEmoji=String(by[me.uid]||'');
-
+    const existing=await getDoc(reactionRef);
+    const oldEmoji=existing.exists()?String(existing.data()?.emoji||existing.data()?.reaction||'').trim():'';
     if(oldEmoji===emoji){
-      if(counts[emoji]){
-        counts[emoji]=Math.max(0,Number(counts[emoji])-1);
-        if(counts[emoji]===0) delete counts[emoji];
-      }
-      delete by[me.uid];
+      await deleteDoc(reactionRef);
     }else{
-      if(oldEmoji && counts[oldEmoji]){
-        counts[oldEmoji]=Math.max(0,Number(counts[oldEmoji])-1);
-        if(counts[oldEmoji]===0) delete counts[oldEmoji];
-      }
-      counts[emoji]=Number(counts[emoji]||0)+1;
-      by[me.uid]=emoji;
+      await setDoc(reactionRef,{uid:me.uid,emoji,updatedAt:serverTimestamp()},{merge:true});
     }
-
-    await updateDoc(ref,{reactions:counts,reactionBy:by});
-
-    requestAnimationFrame(()=>{
-      if(box){
-        const delta=box.scrollHeight-beforeHeight;
-        box.scrollTop=Math.max(0,beforeTop+delta);
-      }
-    });
   }catch(e){
     console.error('React message failed:',e);
     showToast(e?.code==='permission-denied'
@@ -1018,7 +1044,7 @@ window.unsendForMe=unsendForMe;
 async function unsendForEveryone(messageId){
   closeMessageActions();const ref=await messageRef(messageId);if(!ref)return;
   try{const snap=await getDoc(ref);if(!snap.exists())return;if(snap.data()?.senderUid!==auth.currentUser.uid){showToast('Only the sender can unsend for everyone.');return}
-    await updateDoc(ref,{unsent:true,text:'',reactions:{},reactionBy:{},delivered:false});
+    await updateDoc(ref,{unsent:true,text:'',delivered:false});
     showToast('Message unsent for everyone.');
   }catch(e){console.error(e);showToast('Could not unsend for everyone.')}
 }
@@ -1057,7 +1083,7 @@ async function forwardTo(kind,id){
       await addDoc(collection(db,'conversations',cid,'messages'),{
         senderUid:me.uid,receiverUid:id,text,
         forwardedFrom:{messageId:pendingActionMessage,text,authorName:item.data.senderUid===me.uid?(me.displayName||'You'):'Student'},
-        createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{},readBy:[me.uid]
+        createdAt:serverTimestamp(),hiddenFor:[],unsent:false,readBy:[me.uid]
       });
       await addDoc(collection(db,'notifications'),{recipientUid:id,actorUid:me.uid,actorName:me.displayName||'Student',type:'message',text:'forwarded a message to you.',chatId:cid,read:false,createdAt:serverTimestamp()});
     }else{
@@ -1065,7 +1091,7 @@ async function forwardTo(kind,id){
       await addDoc(collection(db,'groups',id,'messages'),{
         senderUid:me.uid,text,
         forwardedFrom:{messageId:pendingActionMessage,text,authorName:item.data.senderUid===me.uid?(me.displayName||'You'):'Student'},
-        createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{},readBy:[me.uid]
+        createdAt:serverTimestamp(),hiddenFor:[],unsent:false,readBy:[me.uid]
       });
     }
     closeForward();pendingActionMessage=null;showToast('Message forwarded.');
@@ -1134,7 +1160,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelec
 // Long-press reaction picker removed: reactions are opened directly from the in-bubble emoji button.
 
 onAuthStateChanged(auth,async user=>{
-  if(!user){stopPresenceHeartbeat();location.href='profile.html';return}
+  if(!user){stopPresenceHeartbeat();clearReactionListeners();location.href='profile.html';return}
   startPresenceHeartbeat();
   await loadFriends();
   listenGroups();
