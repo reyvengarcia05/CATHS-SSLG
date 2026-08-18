@@ -34,13 +34,16 @@ body{min-height:100vh;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700)
 .message-row.mine .message-tools-btn{left:-35px}
 .message-row:hover .message-tools-btn,.message-tools-btn:focus{display:block}
 /* Messenger-style reaction bar + responsive triggers */
-.reaction-tools{position:absolute;right:7px;bottom:-11px;display:flex;align-items:center;gap:4px;z-index:30;opacity:0;transform:translateY(4px);pointer-events:none;transition:opacity .16s ease,transform .16s ease}
-.message-row.mine .reaction-tools{right:7px} .message-row:hover .reaction-tools,.message-row:focus-within .reaction-tools{opacity:1;transform:translateY(0);pointer-events:auto}.reaction-tools::after{content:'';position:absolute;inset:-8px -12px -12px -12px;z-index:-1}
-.message-reactions{display:flex;align-items:center;justify-content:flex-start;gap:4px;flex-wrap:wrap;max-width:220px;padding:2px;background:transparent;box-shadow:none;overflow:visible}
+.reaction-summary{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-top:5px;min-height:0;position:relative;z-index:4}
+.reaction-tools{position:absolute;right:7px;bottom:calc(100% + 7px);display:flex;align-items:center;gap:4px;z-index:40;opacity:0;transform:translateY(4px);pointer-events:none;transition:opacity .16s ease,transform .16s ease}
+.message-row.mine .reaction-tools{right:7px}.message-row:hover .reaction-tools,.message-row:focus-within .reaction-tools{opacity:1;transform:none;pointer-events:auto}
+.message-reactions{display:flex;align-items:center;gap:4px;flex-wrap:wrap;padding:0;background:transparent;border:0;box-shadow:none;max-width:220px;overflow:visible}
 .message-row.mine .message-reactions{background:transparent}
-.message-reaction-chip{border:1px solid rgba(0,0,0,.08);background:#fff;color:#183c8c;border-radius:999px;min-width:30px;height:30px;padding:2px 7px;font-size:12px;cursor:pointer;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;transition:.14s ease;box-shadow:0 3px 9px rgba(0,0,0,.12);flex:0 0 auto}
+.message-reaction-chip{border:1px solid rgba(0,0,0,.08);background:#fff;color:#183c8c;border-radius:999px;min-width:30px;height:30px;padding:2px 7px;font-size:12px;cursor:pointer;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;transition:.14s ease;box-shadow:0 3px 10px rgba(0,0,0,.12);flex:0 0 auto}
+.message-reaction-chip.mine-reaction{background:#fff0a5;border-color:#d7b927;box-shadow:0 3px 10px rgba(0,0,0,.12),inset 0 0 0 1px rgba(138,109,0,.12)}
+.message-reaction-chip:hover{transform:translateY(-1px) scale(1.04);background:#fff}
 .message-reaction-chip:hover{background:#eef4ff;transform:scale(1.04)}
-.message-reaction-chip.mine-reaction{background:#fff0a5;box-shadow:inset 0 0 0 1px rgba(138,109,0,.16)}
+
 .message-reaction-trigger{display:inline-flex!important;align-items:center;justify-content:center;width:27px;height:27px;border:0;border-radius:999px;background:#fff;color:#183c8c;cursor:pointer;font-size:16px;line-height:1;box-shadow:0 4px 12px rgba(0,0,0,.12);font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;touch-action:manipulation;flex:0 0 27px}
 .message-reaction-trigger:hover{background:#eef4ff;transform:scale(1.04)}
 .react-picker{position:absolute;display:none;gap:3px;align-items:center;padding:7px 9px;background:rgba(255,255,255,.98);border:1px solid rgba(0,0,0,.08);border-radius:15px;box-shadow:0 18px 45px rgba(0,0,0,.22);z-index:230;bottom:calc(100% + 9px);right:0;width:214px;max-width:82vw;flex-wrap:wrap;justify-content:center}
@@ -117,9 +120,7 @@ body{overflow:hidden;}
 @media (hover:hover) and (pointer:fine){.message-reaction-trigger{display:inline-flex}}
 @media (hover:none) and (pointer:coarse){
   .reaction-tools{opacity:1;transform:none;pointer-events:auto}
-  .message-reactions{max-width:180px}
   .message-reaction-trigger{display:inline-flex!important}
-  .react-picker{width:204px;right:0;left:auto}
 }
 
 
@@ -137,7 +138,7 @@ body{overflow:hidden;}
   .react-picker{right:auto;left:0;max-width:82vw}
   .message-row.mine .react-picker{right:0;left:auto}
   .reaction-tools{right:5px;bottom:-11px}
-  .message-reactions{width:160px;height:32px;min-height:32px}
+  .message-reactions{max-width:74vw}.reaction-summary{margin-top:5px}
   .message-reaction-chip{font-size:11px;padding:2px 4px}
 }
 @media(max-width:520px){
@@ -369,8 +370,8 @@ function stopFriendPresence(){
 function reactionState(msg,id=''){
   const cached=reactionCache.get(id);
   if(cached) return {counts:{...cached.counts},by:{...cached.by}};
-  const counts=msg.reactions && typeof msg.reactions==='object' ? {...msg.reactions}:{};
-  const by=msg.reactionBy && typeof msg.reactionBy==='object' ? {...msg.reactionBy}:{};
+  const counts=msg.reactions&&typeof msg.reactions==='object'?{...msg.reactions}:{};
+  const by=msg.reactionBy&&typeof msg.reactionBy==='object'?{...msg.reactionBy}:{};
   return {counts,by};
 }
 
@@ -509,45 +510,44 @@ async function openSharedPostFromMessage(postId,event){
 window.openSharedPostFromMessage=openSharedPostFromMessage;
 
 
-async function loadReactionsForMessages(docs){
+async function loadReactionSummaries(docs){
   const me=auth.currentUser;
   if(!me)return;
-  const visible=docs.slice(-80);
-  await Promise.all(visible.map(async d=>{
+  const list=docs.slice(-100);
+  await Promise.all(list.map(async d=>{
     try{
-      const ref=messageReactionsCollection(d.id);
+      const ref=reactionCollectionForMessage(d.id);
       if(!ref)return;
       const snap=await getDocs(query(ref,limit(100)));
       const counts={},by={};
       snap.docs.forEach(rd=>{
-        const r=rd.data()||{};
-        const emoji=String(r.emoji||'');
-        const uid=rd.id||r.uid;
-        if(!emoji||!uid)return;
+        const data=rd.data()||{};
+        const emoji=String(data.emoji||'');
+        if(!emoji)return;
         counts[emoji]=Number(counts[emoji]||0)+1;
-        by[uid]=emoji;
+        by[rd.id]=emoji;
       });
       reactionCache.set(d.id,{counts,by});
-    }catch(e){
-      console.error('Reaction load',d.id,e);
+    }catch(err){
+      console.error('Reaction summary load',d.id,err);
     }
   }));
-  renderMessagesAfterReactionLoad();
+  rerenderCurrentMessagesPreserveScroll();
 }
 
-function renderMessagesAfterReactionLoad(){
+function rerenderCurrentMessagesPreserveScroll(){
   const box=$('messages');
-  if(!box || !activeConversation)return;
+  const me=auth.currentUser;
+  if(!box||!me||!activeConversation)return;
   const docs=activeConversation.kind==='friend'?directMessageDocs:groupMessageDocs;
-  if(!docs.length)return;
-  const oldTop=box.scrollTop, oldHeight=box.scrollHeight;
-  const nearBottom=(oldHeight-box.scrollTop-box.clientHeight)<90;
-  box.innerHTML=docs.sort((a,b)=>(a.data()?.createdAt?.toMillis?.()||0)-(b.data()?.createdAt?.toMillis?.()||0)).slice(-300).map(d=>renderMessageDoc(d,auth.currentUser.uid)).join('');
+  const oldTop=box.scrollTop;
+  const oldHeight=box.scrollHeight;
+  const nearBottom=(oldHeight-oldTop-box.clientHeight)<90;
+  const sorted=[...docs].sort((a,b)=>(a.data()?.createdAt?.toMillis?.()||0)-(b.data()?.createdAt?.toMillis?.()||0)).slice(-300);
+  box.innerHTML=sorted.map(d=>renderMessageDoc(d,me.uid)).join('');
   requestAnimationFrame(()=>{
-    if(nearBottom) box.scrollTop=box.scrollHeight;
-    else box.scrollTop=Math.max(0,oldTop+(box.scrollHeight-oldHeight));
+    box.scrollTop=nearBottom?box.scrollHeight:Math.max(0,oldTop+(box.scrollHeight-oldHeight));
     hydrateSharedPostCards();
-    loadReactionsForMessages(docs);
   });
 }
 
@@ -871,7 +871,7 @@ function renderMessageDoc(d,currentUid){
     : `${buildReplyCard(msg.replyTo)}${buildSharedPostCard(msg)}${buildForwardedCard(msg)}${(!msg.sharedPost&&!msg.forwardedFrom)?esc(msg.text||''):''}`;
 
   const rowClass=mine?'message-row mine':'message-row';
-  const reactionBar=chips?`<div class="message-reactions">${chips}</div>`:'';
+  const reactionSummary=chips?`<div class="reaction-summary message-reactions">${chips}</div>`:'';
 
   return `<div class="${rowClass}" data-message-id="${esc(id)}">
     <div class="bubble-wrap" data-message-id="${esc(id)}">
@@ -879,8 +879,8 @@ function renderMessageDoc(d,currentUid){
         ${body}
         <small>${formatTime(msg.createdAt)}</small>
         ${deliveryLabel(msg,currentUid)}
-        <div class="reaction-tools">${reactionBar}${trigger}</div>
-        ${picker}
+        ${reactionSummary}
+        <div class="reaction-tools">${trigger}${picker}</div>
       </div>
       <button class="message-tools-btn" type="button" onclick="toggleMessageActions('${esc(id)}',event)">⋯</button>
       ${actionMenu}
@@ -906,7 +906,6 @@ function renderMessages(docs,currentUid){
       requestAnimationFrame(()=>{box.scrollTop=box.scrollHeight});
       messagesInitialRender=false;
       hydrateSharedPostCards();
-      loadReactionsForMessages(docs);
       return;
     }
     if(nearBottom){
@@ -979,12 +978,20 @@ async function sendMessage(e){
 
 window.toggleMessageActions=(id,e)=>{e.stopPropagation();closeMessageActions();$('actions-'+id)?.classList.add('open')};
 
-async function messageReactionsCollection(messageId){
-  if(activeConversation?.kind==='friend'){
-    return collection(db,'conversations',chatId(auth.currentUser.uid,activeFriend.uid),'messages',messageId,'reactions');
+async 
+function reactionCollectionForMessage(messageId){
+  const me=auth.currentUser;
+  if(!me || !activeConversation) return null;
+  if(activeConversation.kind==='friend'){
+    return collection(
+      db,'conversations',chatId(me.uid,activeFriend.uid),
+      'messages',messageId,'reactions'
+    );
   }
-  if(activeConversation?.kind==='group'){
-    return collection(db,'groups',activeGroup.id,'messages',messageId,'reactions');
+  if(activeConversation.kind==='group'){
+    return collection(
+      db,'groups',activeGroup.id,'messages',messageId,'reactions'
+    );
   }
   return null;
 }
@@ -1022,7 +1029,7 @@ async function reactMessage(messageId,emoji,event){
   closeReactionPickers();
 
   const me=auth.currentUser;
-  const reactionsRef=messageReactionsCollection(messageId);
+  const reactionsRef=reactionCollectionForMessage(messageId);
   if(!me||!reactionsRef)return;
 
   try{
@@ -1030,42 +1037,52 @@ async function reactMessage(messageId,emoji,event){
     const beforeTop=box?.scrollTop||0;
     const beforeHeight=box?.scrollHeight||0;
 
+    // One document per user. Re-click same emoji => remove.
+    // Click a different emoji => replace current reaction.
     const myRef=doc(reactionsRef,me.uid);
-    const mine=await getDoc(myRef);
-    const oldEmoji=mine.exists()?String(mine.data()?.emoji||''):'';
+    const current=await getDoc(myRef);
+    const oldEmoji=current.exists()?String(current.data()?.emoji||''):'';
 
     if(oldEmoji===emoji){
-      await deleteDoc(myRef);
+      if(current.exists()) await deleteDoc(myRef);
     }else{
-      await setDoc(myRef,{uid:me.uid,emoji,updatedAt:serverTimestamp()});
+      await setDoc(myRef,{
+        uid:me.uid,
+        emoji,
+        updatedAt:serverTimestamp()
+      });
     }
 
-    // Refresh local reaction cache for this message.
+    // Refresh only this message's reaction summary.
     const snap=await getDocs(query(reactionsRef,limit(100)));
     const counts={},by={};
-    snap.docs.forEach(d=>{
-      const r=d.data()||{}, e=String(r.emoji||'');
+    snap.docs.forEach(rd=>{
+      const data=rd.data()||{};
+      const e=String(data.emoji||'');
       if(!e)return;
       counts[e]=Number(counts[e]||0)+1;
-      by[d.id]=e;
+      by[rd.id]=e;
     });
     reactionCache.set(messageId,{counts,by});
 
+    // Re-render without moving the user's viewport.
     const docs=activeConversation?.kind==='friend'?directMessageDocs:groupMessageDocs;
-    const html=docs.sort((a,b)=>(a.data()?.createdAt?.toMillis?.()||0)-(b.data()?.createdAt?.toMillis?.()||0)).slice(-300).map(d=>renderMessageDoc(d,me.uid)).join('');
+    const sorted=[...docs].sort((a,b)=>(a.data()?.createdAt?.toMillis?.()||0)-(b.data()?.createdAt?.toMillis?.()||0)).slice(-300);
     if(box){
-      box.innerHTML=html||'';
+      box.innerHTML=sorted.map(d=>renderMessageDoc(d,me.uid)).join('');
       requestAnimationFrame(()=>{
         const delta=box.scrollHeight-beforeHeight;
         box.scrollTop=Math.max(0,beforeTop+delta);
         hydrateSharedPostCards();
       });
     }
-  }catch(e){
-    console.error('React message failed:',e);
-    showToast(e?.code==='permission-denied'
-      ? 'Firestore Rules are blocking message reactions. Add the reaction subcollection rule.'
-      : 'Could not react to message.');
+  }catch(err){
+    console.error('Reaction error:',err);
+    showToast(
+      err?.code==='permission-denied'
+      ? 'Reaction blocked by Firestore Rules. Add the reaction subcollection rule.'
+      : 'Could not react to message.'
+    );
   }
 }
 window.reactMessage=reactMessage;
