@@ -1366,11 +1366,55 @@ async function unsendForMe(messageId){
 window.unsendForMe=unsendForMe;
 
 async function unsendForEveryone(messageId){
-  closeMessageActions();const ref=await messageRef(messageId);if(!ref)return;
-  try{const snap=await getDoc(ref);if(!snap.exists())return;if(snap.data()?.senderUid!==auth.currentUser.uid){showToast('Only the sender can unsend for everyone.');return}
-    await updateDoc(ref,{unsent:true,text:'',delivered:false});
+  closeMessageActions();
+
+  const me=auth.currentUser;
+  if(!me || !messageId || !activeConversation){
+    showToast('This conversation is no longer active.');
+    return;
+  }
+
+  const ref=await messageRef(messageId);
+  if(!ref){
+    showToast('Could not find this message.');
+    return;
+  }
+
+  try{
+    const snap=await getDoc(ref);
+    if(!snap.exists()){
+      showToast('This message no longer exists.');
+      return;
+    }
+
+    const data=snap.data()||{};
+    if(data.senderUid!==me.uid){
+      showToast('Only the sender can unsend for everyone.');
+      return;
+    }
+
+    if(data.unsent===true){
+      showToast('This message is already unsent.');
+      return;
+    }
+
+    // Keep the message document so both sides can see the same
+    // "This message was unsent." state instead of deleting it.
+    await updateDoc(ref,{
+      unsent:true,
+      text:'',
+      delivered:false,
+      unsentAt:serverTimestamp()
+    });
+
     showToast('Message unsent for everyone.');
-  }catch(e){console.error(e);showToast('Could not unsend for everyone.')}
+  }catch(e){
+    console.error('Unsend for everyone failed:',e);
+    const message=e?.code==='permission-denied'
+      ? 'Firestore is blocking Unsend for everyone. Check the message update rule.'
+      : 'Could not unsend for everyone.';
+    showToast(message);
+  }
 }
 window.unsendForEveryone=unsendForEveryone;
 
