@@ -18,7 +18,12 @@ body{min-height:100vh;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700)
 .chat-head{display:flex;align-items:center;gap:12px;padding:15px 18px;background:rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.1)}.chat-back{display:none}.chat-avatar{width:46px;height:46px;border-radius:50%;overflow:hidden;background:#e8eef7;color:#183c8c;display:flex;align-items:center;justify-content:center;font-weight:800;flex:0 0 46px}.chat-avatar img{width:100%;height:100%;object-fit:cover}.chat-person{min-width:0}.chat-person strong{display:block;font-size:14px}.chat-person small{font-size:10px;opacity:.72}.messages{flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:8px;min-height:0}.message-row{display:flex;width:100%}.message-row.mine{justify-content:flex-end}.bubble{max-width:min(72%,520px);padding:10px 13px;border-radius:17px;background:#fff;color:#183c8c;box-shadow:0 6px 18px rgba(0,0,0,.08);font-size:12px;line-height:1.55;word-break:break-word}.message-row.mine .bubble{background:var(--yellow);color:#183c8c;border-bottom-right-radius:5px}.message-row:not(.mine) .bubble{border-bottom-left-radius:5px}.bubble small{display:block;margin-top:5px;font-size:8px;opacity:.58}.message-compose{display:flex;gap:8px;padding:13px 15px;background:rgba(0,0,0,.12);border-top:1px solid rgba(255,255,255,.1)}.message-input{flex:1;min-width:0;border:none;outline:none;border-radius:14px;padding:12px 13px;font-size:12px;background:#fff;color:#183c8c;resize:none;height:44px}.send-btn{border:none;border-radius:14px;padding:0 17px;background:var(--yellow);color:var(--dark);font-weight:800;cursor:pointer;min-width:76px}.send-btn:disabled{opacity:.6;cursor:not-allowed}
 .loading{padding:28px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:9px;font-size:11px;opacity:.86}.spinner{width:30px;height:30px;border:3px solid rgba(255,255,255,.25);border-top-color:var(--yellow);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
 .no-friends{padding:20px 12px;text-align:center;font-size:11px;opacity:.75;line-height:1.6}.toast{position:fixed;left:50%;bottom:98px;transform:translate(-50%,18px);opacity:0;pointer-events:none;background:#101827;color:#fff;padding:11px 15px;border-radius:999px;font-size:11px;transition:.25s;z-index:100}.toast.show{opacity:1;transform:translate(-50%,0)}
-.bottom-nav{position:fixed;left:0;right:0;bottom:0;height:78px;background:linear-gradient(90deg,#1e3a8a,#b59f1a);display:flex;justify-content:space-around;align-items:center;z-index:60;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}.nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#fff;font-size:9px;min-width:60px;transition:.22s}.nav-item div{font-size:22px;height:26px;display:flex;align-items:center;justify-content:center;margin-bottom:3px}.nav-item.active{color:var(--yellow);transform:translateY(-6px) scale(1.07);font-weight:700}.nav-item.active div{font-size:25px}
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;height:78px;background:linear-gradient(90deg,#1e3a8a,#b59f1a);display:flex;justify-content:space-around;align-items:center;z-index:60;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}.nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#fff;font-size:9px;min-width:60px;transition:.22s}.nav-item div{font-size:22px;height:26px;display:flex;align-items:center;justify-content:center;margin-bottom:3px}
+.messages-nav-photo{width:32px;height:32px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#eef4ff;color:#183c8c;font-size:19px;border:2px solid rgba(255,255,255,.9);box-shadow:0 3px 10px rgba(0,0,0,.12)}
+.messages-nav-photo img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%}
+@media(max-width:800px){.messages-nav-photo{width:28px;height:28px;font-size:17px}}
+@media(max-width:520px){.messages-nav-photo{width:24px;height:24px;font-size:15px}}
+.nav-item.active{color:var(--yellow);transform:translateY(-6px) scale(1.07);font-weight:700}.nav-item.active div{font-size:25px}
 
 /* Messaging enhancements */
 .side-actions{display:flex;gap:7px;margin-bottom:10px}
@@ -349,7 +354,7 @@ body{overflow:hidden;}
   <a href="news-feed.html" class="nav-item"><div>📰</div><span>News Feed</span></a>
   <a href="voice.html" class="nav-item"><div>🗣️</div><span>Student Voice</span></a>
   <a href="friends.html" class="nav-item"><div>👥</div><span>Friends</span></a>
-  <a href="profile.html" class="nav-item active"><div>💬</div><span>Messages</span></a>
+  <a href="profile.html" class="nav-item"><div id="messagesNavPhoto" class="messages-nav-photo">👤</div><span>Profile</span></a>
 </nav>
 
 <script type="module">
@@ -1751,8 +1756,32 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelec
 
 // Long-press reaction picker removed: reactions are opened directly from the in-bubble emoji button.
 
+async function loadMessagesNavProfilePhoto(user){
+  const el=$('messagesNavPhoto');
+  if(!el) return;
+  try{
+    let photo=user?.photoURL||'';
+    if(user?.uid){
+      const snap=await getDoc(doc(db,'users',user.uid));
+      if(snap.exists()){
+        const data=snap.data()||{};
+        photo=data.photoURL||photo;
+      }
+    }
+    if(photo){
+      el.innerHTML=`<img src="${esc(photo)}" alt="Profile">`;
+    }else{
+      el.textContent=(user?.displayName||'U').charAt(0).toUpperCase()||'U';
+    }
+  }catch(e){
+    console.error('Profile nav photo load',e);
+    el.textContent=(user?.displayName||'U').charAt(0).toUpperCase()||'U';
+  }
+}
+
 onAuthStateChanged(auth,async user=>{
   if(!user){stopPresenceHeartbeat();clearReactionListeners();clearConversationMetaListeners();clearFriendPresenceListeners();location.href='profile.html';return}
+  await loadMessagesNavProfilePhoto(user);
   startPresenceHeartbeat();
   await loadFriends();
   listenGroups();
