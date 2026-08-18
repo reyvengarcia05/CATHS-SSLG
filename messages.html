@@ -238,6 +238,9 @@ body{overflow:hidden;}
   .nav-item div{font-size:18px;height:21px}
   .nav-item.active div{font-size:20px}
 }
+.verified-badge{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;margin-left:5px;border-radius:50%;background:#1d9bf0;color:#fff;font-size:10px;font-weight:900;line-height:1;vertical-align:middle;box-shadow:0 1px 3px rgba(29,155,240,.28)}
+.chat-person strong .verified-badge{margin-left:4px}
+.friend-info strong .verified-badge{margin-left:4px}
 </style>
 </head>
 <body>
@@ -398,6 +401,11 @@ const presenceUnsubs=new Map();
 
 
 const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+const VERIFIED_ADMIN_EMAILS = new Set(['reyvengarcia15@gmail.com', 'reyvenbermudo091@gmail.com', 'reyvengarcia05@gmail.com', 'chezcadc14@gmail.com', 'nathanielgarc679@gmail.com', 'marteena.133@gmail.com', 'gabbicastillo0126@gmail.com', 'leddadanielle91@gmail.com', 'jennapastor062@gmail.com', 'dhenmark1313@gmail.com', 'christianangelointes0@gmail.com', 'alexaislacruz@gmail.com', 'galangjullianne016@gmail.com', 'vanessajotic2403@gmail.com', 'aquinobernardjr0@gmail.com', 'angellyar0909@gmail.com', 'vhergelnarciso@gmail.com', 'sicatmadisson487@gmail.com']);
+function isVerifiedAdminEmail(email){return VERIFIED_ADMIN_EMAILS.has(String(email||'').trim().toLowerCase());}
+function verifiedBadgeHtml(userOrEmail){const email=typeof userOrEmail==='string'?userOrEmail:(userOrEmail?.email||'');return isVerifiedAdminEmail(email)?'<span class="verified-badge" title="Verified admin" aria-label="Verified admin">✓</span>':'';}
+function verifiedNameHtml(user){return `${esc(user?.nickname||user?.name||user?.displayName||'Student')}${verifiedBadgeHtml(user)}`;}
+
 function showToast(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>el.classList.remove('show'),2400)}
 function avatarHtml(p,className='friend-avatar'){
   return p?.photoURL?`<div class="${className}"><img src="${esc(p.photoURL)}" alt=""></div>`:`<div class="${className}">${esc((p?.nickname||p?.username||p?.name||'U').charAt(0).toUpperCase())}</div>`;
@@ -1041,6 +1049,7 @@ function renderConversations(list=null){
     const group=item.kind==='group';
     const id=group?item.id:item.uid;
     const name=group?(item.name||'Group Chat'):(item.nickname||item.name||item.displayName||'Student');
+    const verified=group?'':verifiedBadgeHtml(item);
     const sub=group?`${(item.memberUids||[]).length} members`:(item.username?'@'+item.username:'Friend');
     const unread=getUnreadCount(item);
     const pinned=isConversationPinned(item), muted=isConversationMuted(item);
@@ -1054,7 +1063,7 @@ function renderConversations(list=null){
     return `<button type="button" class="friend-item ${activeConversation?.id===id?'active':''}${unread?' has-unread':''}" data-kind="${group?'group':'friend'}" data-id="${esc(id)}">
       ${avatarBlock}
       <span class="friend-info">
-        <strong>${esc(name)}</strong>
+        <strong>${esc(name)}${verified}</strong>
         <small>${esc(sub)}</small>
         <span class="friend-preview-line"><span class="friend-preview">${esc(previewText)}</span>${activityTime?`<time class="conversation-time">${esc(activityTime)}</time>`:''}</span>
       </span>
@@ -1113,7 +1122,7 @@ async function openChat(friend){
   $('chatPane').innerHTML=`<div class="chat-head">
     <button class="chat-back" type="button" onclick="clearChatSelection()">←</button>
     ${avatarHtml(friend,'chat-avatar')}
-    <div class="chat-person"><strong>${esc(friend.nickname||friend.name||friend.displayName||'Student')}</strong><small>${friend.username?'@'+esc(friend.username):'Friend'}</small><div id="chatPresence" class="online-wrap"><span class="offline-dot"></span><span>Offline</span></div></div>
+    <div class="chat-person"><strong>${esc(friend.nickname||friend.name||friend.displayName||'Student')}${verifiedBadgeHtml(friend)}</strong><small>${friend.username?'@'+esc(friend.username):'Friend'}</small><div id="chatPresence" class="online-wrap"><span class="offline-dot"></span><span>Offline</span></div></div>
     
   </div>
   <div id="messages" class="messages"><div class="loading"><div class="spinner"></div><div>Loading messages...</div></div></div>
@@ -1496,7 +1505,7 @@ function renderForwardChoices(filter=''){
   });
   box.innerHTML=items.length?items.map(x=>{
     const group=x.kind==='group',name=group?(x.name||'Group Chat'):(x.nickname||x.name||x.displayName||'Student');
-    return `<button type="button" class="friend-item" data-forward-kind="${group?'group':'friend'}" data-forward-id="${esc(group?x.id:x.uid)}">${group?groupAvatarHtml(x):avatarHtml(x)}<span class="friend-info"><strong>${esc(name)}</strong><small>${group?'Group':'Friend'}</small></span></button>`;
+    return `<button type="button" class="friend-item" data-forward-kind="${group?'group':'friend'}" data-forward-id="${esc(group?x.id:x.uid)}">${group?groupAvatarHtml(x):avatarHtml(x)}<span class="friend-info"><strong>${esc(name)}${verified}</strong><small>${group?'Group':'Friend'}</small></span></button>`;
   }).join(''):'<div class="conversation-empty">No conversations found.</div>';
   box.querySelectorAll('[data-forward-id]').forEach(btn=>btn.addEventListener('click',()=>forwardTo(btn.dataset.forwardKind,btn.dataset.forwardId)));
 }
@@ -1536,7 +1545,7 @@ $('createGroupConfirmBtn').addEventListener('click',createGroup);
 
 function fillFriendChoices(containerId,excludeIds=[]){
   const box=$(containerId),allowed=friends.filter(f=>!excludeIds.includes(f.uid));
-  box.innerHTML=allowed.length?allowed.map(f=>`<label class="select-friend"><input type="checkbox" value="${esc(f.uid)}"><span>${esc(f.nickname||f.name||f.displayName||'Student')}</span></label>`).join(''):'<div class="conversation-empty">No additional friends available.</div>';
+  box.innerHTML=allowed.length?allowed.map(f=>`<label class="select-friend"><input type="checkbox" value="${esc(f.uid)}"><span>${esc(f.nickname||f.name||f.displayName||'Student')}${verifiedBadgeHtml(f)}</span></label>`).join(''):'<div class="conversation-empty">No additional friends available.</div>';
 }
 function openGroupCreate(){fillFriendChoices('groupFriendChoices');$('groupNameInput').value='';openModal('groupCreateModal')}
 async function createGroup(){
@@ -1562,7 +1571,7 @@ window.openGroupMembers=async()=>{
   try{
     const members=await Promise.all((activeGroup.memberUids||[]).map(uid=>getUserProfile(uid)));
     members.sort((a,b)=>{if(a.uid===activeGroup.createdBy)return -1;if(b.uid===activeGroup.createdBy)return 1;return String(a.nickname||a.name||a.username||'').localeCompare(String(b.nickname||b.name||b.username||''));});
-    box.innerHTML=members.map(m=>`<div class="group-member-row">${avatarHtml(m)}<div class="friend-info"><strong>${esc(m.nickname||m.name||m.displayName||'Student')}</strong><small>${m.username?'@'+esc(m.username):''}</small></div>${m.uid===activeGroup.createdBy?'<span class="group-member-role">Creator</span>':(groupAdminUids(activeGroup).includes(m.uid)?'<span class="group-member-role">Admin</span>':'')}</div>`).join('') || '<div class="conversation-empty">No members found.</div>';
+    box.innerHTML=members.map(m=>`<div class="group-member-row">${avatarHtml(m)}<div class="friend-info"><strong>${esc(m.nickname||m.name||m.displayName||'Student')}${verifiedBadgeHtml(m)}</strong><small>${m.username?'@'+esc(m.username):''}</small></div>${m.uid===activeGroup.createdBy?'<span class="group-member-role">Creator</span>':(groupAdminUids(activeGroup).includes(m.uid)?'<span class="group-member-role">Admin</span>':'')}</div>`).join('') || '<div class="conversation-empty">No members found.</div>';
   }catch(e){console.error(e);box.innerHTML='<div class="conversation-empty">Could not load group members.</div>';}
 };
 
@@ -1590,7 +1599,7 @@ async function renderGroupManageMembers(){
       const roleText=`<span class="group-role">${role}</span>`;
       const adminBtn=canManage&&!creator?`<button class="group-member-action" type="button" onclick="toggleGroupAdmin('${esc(m.uid)}')">${admin?'Remove admin':'Make admin'}</button>`:'';
       const kickBtn=canManage&&!creator&&m.uid!==auth.currentUser?.uid?`<button class="group-member-action danger" type="button" onclick="kickGroupMember('${esc(m.uid)}')">Kick</button>`:'';
-      return `<div class="group-member-manage-row">${avatarHtml(m,'friend-avatar')}<div class="friend-info"><strong>${esc(m.nickname||m.name||m.displayName||'Student')}</strong><small>${m.username?'@'+esc(m.username):''}</small></div>${roleText}<div class="group-member-actions">${adminBtn}${kickBtn}</div></div>`;
+      return `<div class="group-member-manage-row">${avatarHtml(m,'friend-avatar')}<div class="friend-info"><strong>${esc(m.nickname||m.name||m.displayName||'Student')}${verifiedBadgeHtml(m)}</strong><small>${m.username?'@'+esc(m.username):''}</small></div>${roleText}<div class="group-member-actions">${adminBtn}${kickBtn}</div></div>`;
     }).join('')||'<div class="conversation-empty">No members found.</div>';
   }catch(e){console.error(e);box.innerHTML='<div class="conversation-empty">Could not load group members.</div>'}
 }
