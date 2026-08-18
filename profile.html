@@ -1861,7 +1861,7 @@ window.addFriendFromReaction=addFriendFromReaction;
 
 
     <a
-        href="news.html"
+        href="news-feed.html"
         class="nav-item">
 
         <div>
@@ -2526,6 +2526,8 @@ onAuthStateChanged(
         document.getElementById("profileEmail").textContent =
             user.email || "";
 
+        // Always start with the Google account photo.
+        // Firestore data may override it only when a saved photoURL exists.
         applyProfilePhoto(user.photoURL || "");
 
         await loadProfileData();
@@ -2536,7 +2538,7 @@ onAuthStateChanged(
             const snap = await getDoc(doc(db, "users", user.uid));
             if(snap.exists()){
                 const data = snap.data() || {};
-                if(data.photoURL) applyProfilePhoto(data.photoURL);
+                applyProfilePhoto(data.photoURL || user.photoURL || "");
             }
         }catch(error){
             console.error("Could not load remote profile:", error);
@@ -2557,22 +2559,45 @@ function profileStorageKey(){
     return email ? "profileData_" + email : "";
 }
 
+function getGoogleProfilePhotoUrl(photoUrl){
+    if(!photoUrl) return "";
+
+    // Google profile photo URLs commonly contain a small requested size such as
+    // =s96-c. Request a larger source when possible so the displayed avatar is
+    // as sharp as the account photo allows. Other providers/URLs are left intact.
+    try{
+        return String(photoUrl)
+            .replace(/=s\d+(?:-c)?(?:-rw)?$/i, "=s512-c")
+            .replace(/[?&]sz=\d+/i, "?sz=512");
+    }catch(e){
+        return photoUrl;
+    }
+}
+
 function applyProfilePhoto(photoUrl){
     const picture = document.getElementById("profilePicture");
     const placeholder = document.getElementById("profilePlaceholder");
     const navPhoto = document.getElementById("profileNavPhoto");
+    const finalPhotoUrl = getGoogleProfilePhotoUrl(photoUrl);
 
-    if(photoUrl){
-        picture.src = photoUrl;
+    if(finalPhotoUrl){
+        picture.src = finalPhotoUrl;
+        picture.alt = "Profile Picture";
         picture.style.display = "block";
+        picture.style.filter = "none";
+        picture.style.webkitFilter = "none";
+        picture.style.imageRendering = "auto";
+        picture.loading = "eager";
+        picture.decoding = "async";
         placeholder.style.display = "none";
 
         if(navPhoto){
             navPhoto.innerHTML = `
-                <img src="${photoUrl}" alt="Profile">
+                <img src="${escapePostHtml(finalPhotoUrl)}" alt="Profile" loading="eager" decoding="async" style="filter:none;-webkit-filter:none;">
             `;
         }
     }else{
+        picture.removeAttribute("src");
         picture.style.display = "none";
         placeholder.style.display = "flex";
 
@@ -2623,9 +2648,8 @@ async function loadProfileData(){
         document.getElementById("profileBio").textContent = data.bio;
     }
 
-    if(data.photoURL){
-        applyProfilePhoto(data.photoURL);
-    }
+    // Firestore photoURL has priority, otherwise keep using the Google account photo.
+    applyProfilePhoto(data.photoURL || user.photoURL || "");
 
 }
 
