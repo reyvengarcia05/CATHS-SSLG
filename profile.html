@@ -1087,6 +1087,39 @@ window.addFriendFromReaction=addFriendFromReaction;
     opacity:0;pointer-events:none;transition:.25s;z-index:100001;white-space:nowrap;
 }
 .post-toast.show{opacity:1;transform:translate(-50%,0)}
+.profile-setup-required-notice{
+    align-items:flex-start;
+    gap:11px;
+    margin:0 0 18px;
+    padding:13px 14px;
+    border-radius:16px;
+    background:linear-gradient(135deg,#fff7d6,#fff1b8);
+    border:1px solid rgba(255,193,7,.35);
+    color:#6b5200;
+}
+.profile-setup-required-icon{
+    width:34px;
+    height:34px;
+    border-radius:11px;
+    background:rgba(255,193,7,.18);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 34px;
+    font-size:18px;
+}
+.profile-setup-required-notice strong{
+    display:block;
+    font-size:12px;
+    margin-bottom:2px;
+}
+.profile-setup-required-notice span{
+    display:block;
+    font-size:10px;
+    line-height:1.5;
+    opacity:.9;
+}
+
 .success-ok{
     width:100%;
     height:48px;
@@ -1356,6 +1389,208 @@ window.addFriendFromReaction=addFriendFromReaction;
 .verified-badge{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;margin-left:6px;border-radius:50%;background:#1d9bf0;color:#fff;font-size:12px;font-weight:900;line-height:1;vertical-align:middle;box-shadow:0 2px 5px rgba(29,155,240,.25)}
 .profile-name .verified-badge{transform:translateY(-2px)}
 .friend-profile-name .verified-badge,.post-author .verified-badge{margin-left:4px;width:14px;height:14px;font-size:9px}
+/* =========================
+   PROFILE SECTION PICKER
+========================= */
+.profile-section-search-wrapper{
+    position:relative;
+    width:100%;
+    margin-bottom:12px;
+}
+.profile-section-search-wrapper input[type="text"]{
+    width:100%;
+    padding:15px 18px;
+    border:1px solid #dbe3f1;
+    outline:none;
+    border-radius:15px;
+    font-size:14px;
+    background:#fff;
+    color:#222;
+    margin:0;
+    box-shadow:0 4px 14px rgba(0,0,0,.06);
+    transition:box-shadow .25s ease,transform .25s ease;
+}
+.profile-section-search-wrapper input[type="text"]:focus{
+    box-shadow:0 8px 22px rgba(0,0,0,.14);
+    transform:translateY(-1px);
+}
+.profile-section-search-wrapper .section-suggestions{
+    position:absolute;
+    top:100%;
+    left:0;
+    right:0;
+    background:#fff;
+    border-radius:16px;
+    max-height:230px;
+    overflow-y:auto;
+    padding:7px;
+    box-shadow:0 14px 35px rgba(0,0,0,.16),0 4px 12px rgba(0,0,0,.08);
+    z-index:100005;
+    display:none;
+    border:1px solid rgba(24,60,140,.08);
+}
+.profile-section-search-wrapper .section-suggestions.show{
+    display:block !important;
+}
+.profile-section-search-wrapper .section-option{
+    padding:12px 14px;
+    color:#183c8c;
+    background:transparent;
+    font-size:14px;
+    font-weight:500;
+    border-radius:11px;
+    cursor:pointer;
+    transition:background .2s ease,transform .2s ease,color .2s ease;
+}
+.profile-section-search-wrapper .section-option:hover{
+    background:#eef4ff;
+    color:#0d2c7a;
+    transform:translateX(3px);
+}
+.profile-section-search-wrapper .section-option:active{
+    transform:scale(.98);
+}
+.profile-section-search-wrapper .section-option.no-result{
+    color:#777;
+    cursor:default;
+    text-align:center;
+}
+.profile-section-search-wrapper .section-option.no-result:hover{
+    background:transparent;
+    transform:none;
+}
+.profile-section-verification{
+    margin-top:10px;
+    padding:14px;
+    border-radius:16px;
+    background:#f8faff;
+    border:1px solid #dbe6fb;
+}
+.profile-section-verification label{
+    display:block;
+    margin:0 0 8px;
+    color:#183c8c;
+    font-size:12px;
+    font-weight:700;
+}
+.profile-section-verification input{
+    width:100%;
+    padding:13px 14px;
+    border:1px solid #dbe3f1;
+    border-radius:12px;
+    margin:0 0 10px;
+    color:#183c8c;
+    background:#fff;
+}
+.profile-verify-btn{
+    width:100% !important;
+    height:52px !important;
+    margin-top:0 !important;
+    padding:0 14px !important;
+    font-size:14px !important;
+}
+.profile-verification-message{
+    display:none;
+    padding:12px;
+    border-radius:12px;
+    text-align:center;
+    font-weight:600;
+    margin-top:10px;
+    margin-bottom:0;
+    font-size:12px;
+    line-height:1.45;
+}
+.profile-section-required-modal,
+.profile-section-verification-modal{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:rgba(0,0,0,.6);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+    z-index:100004;
+}
+.profile-section-error-popup{
+    max-width:420px;
+    width:90%;
+    padding:35px 30px;
+    border-radius:28px;
+    background:rgba(34,42,60,.97);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,.15);
+    box-shadow:0 25px 70px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08);
+    text-align:center;
+    color:#fff;
+    animation:profileSectionPopupIn .35s cubic-bezier(.16,1,.3,1);
+}
+.profile-section-error-icon{
+    width:75px;
+    height:75px;
+    margin:0 auto 18px;
+    border-radius:50%;
+    background:rgba(255,215,0,.15);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:40px;
+    box-shadow:0 0 0 8px rgba(255,215,0,.05);
+}
+.profile-section-error-popup h2{
+    color:#fff;
+    font-size:26px;
+    margin-bottom:10px;
+}
+.profile-section-error-popup p{
+    color:rgba(255,255,255,.82);
+    font-size:14px;
+    line-height:1.6;
+    margin-bottom:24px;
+}
+.profile-section-try-btn{
+    width:100%;
+    height:55px;
+    border:none;
+    border-radius:15px;
+    background:#FFD93D;
+    color:#0d2c7a;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    transition:transform .2s ease,box-shadow .2s ease,background .2s ease;
+}
+.profile-section-try-btn:hover{
+    transform:translateY(-2px);
+    background:#FFE66D;
+    box-shadow:0 8px 20px rgba(255,217,61,.25);
+}
+.profile-section-try-btn:active{transform:scale(.97)}
+@keyframes profileSectionPopupIn{
+    from{opacity:0;transform:translateY(20px) scale(.9)}
+    to{opacity:1;transform:translateY(0) scale(1)}
+}
+@media(max-width:768px){
+    .profile-section-error-popup{
+        width:92%;
+        padding:30px 22px;
+        border-radius:24px;
+    }
+    .profile-section-error-icon{
+        width:65px;height:65px;font-size:34px;
+    }
+    .profile-section-error-popup h2{font-size:23px}
+    .profile-section-error-popup p{font-size:13px}
+    .profile-section-try-btn{height:52px;font-size:15px}
+    .profile-section-search-wrapper input[type="text"]{
+        font-size:13px;
+        padding:13px;
+    }
+    .profile-section-search-wrapper .section-option{font-size:13px}
+}
+
 </style>
 </head>
 
@@ -1676,6 +1911,14 @@ window.addFriendFromReaction=addFriendFromReaction;
             ✏️ Edit Profile
         </h2>
 
+        <div id="profileSetupRequiredNotice" class="profile-setup-required-notice" style="display:none;">
+            <div class="profile-setup-required-icon">⚠️</div>
+            <div>
+                <strong>Complete your profile first</strong>
+                <span>Your profile must be completed before this window can be closed.</span>
+            </div>
+        </div>
+
 
         <div class="form-group">
             <label>Profile Picture</label>
@@ -1710,10 +1953,42 @@ window.addFriendFromReaction=addFriendFromReaction;
                 Grade & Section
             </label>
 
-            <input
-                type="text"
-                id="editSection"
-                placeholder="Example: Grade 11 - Twain">
+            <div class="section-search-wrapper profile-section-search-wrapper">
+                <input
+                    type="text"
+                    id="editSectionSearch"
+                    placeholder="🔍 Search and select your section..."
+                    autocomplete="off"
+                >
+
+                <div id="editSectionSuggestions" class="section-suggestions"></div>
+
+                <input type="hidden" id="editSection">
+            </div>
+
+            <div id="editSectionVerification" class="profile-section-verification" style="display:none;">
+                <label for="editVerificationCode">
+                    🔐 Section Verification Code
+                </label>
+
+                <input
+                    type="password"
+                    id="editVerificationCode"
+                    placeholder="Enter your section code"
+                    autocomplete="off"
+                >
+
+                <button
+                    type="button"
+                    id="editVerifySectionBtn"
+                    class="save-btn profile-verify-btn"
+                    onclick="verifyProfileSectionCode()"
+                >
+                    🔐 Verify Section
+                </button>
+
+                <div id="editVerificationMessage" class="profile-verification-message"></div>
+            </div>
 
         </div>
 
@@ -1764,6 +2039,26 @@ window.addFriendFromReaction=addFriendFromReaction;
         <button class="success-ok" onclick="closeSuccessPopup()">Okay</button>
     </div>
 </div>
+<!-- SECTION REQUIRED POPUP -->
+<div id="profileSectionRequiredPopup" class="profile-section-required-modal">
+    <div class="profile-section-error-popup">
+        <div class="profile-section-error-icon">⚠️</div>
+        <h2>Section Required</h2>
+        <p>Please select your section from the list.</p>
+        <button type="button" class="profile-section-try-btn" onclick="closeProfileSectionRequiredPopup()">Try Again</button>
+    </div>
+</div>
+
+<!-- SECTION VERIFICATION REQUIRED POPUP -->
+<div id="profileSectionVerificationPopup" class="profile-section-verification-modal">
+    <div class="profile-section-error-popup">
+        <div class="profile-section-error-icon">🔐</div>
+        <h2>Verification Required</h2>
+        <p>Please verify your section first.</p>
+        <button type="button" class="profile-section-try-btn" onclick="closeProfileSectionVerificationPopup()">Try Again</button>
+    </div>
+</div>
+
 
 
 <!-- POST PRIVACY / DELETE MODALS -->
@@ -2548,6 +2843,11 @@ onAuthStateChanged(
         applyProfilePhoto(user.photoURL || "");
 
         await loadProfileData();
+
+        if(profileSetupRequired){
+            await openEditProfile();
+        }
+
         await loadProfileFriends();
 
         // Use the saved profile photo from Firestore when available.
@@ -2626,6 +2926,23 @@ function applyProfilePhoto(photoUrl){
 
 
 /* =========================
+   PROFILE SETUP GUARD
+========================= */
+let profileSetupRequired = false;
+
+function isProfileSetupComplete(data = {}, user = auth.currentUser){
+    const name = String(data.name || data.displayName || user?.displayName || "").trim();
+    const section = String(data.section || "").trim();
+    const bio = String(data.bio || "").trim();
+    return Boolean(name && section && bio);
+}
+
+function updateProfileSetupNotice(){
+    const notice = document.getElementById("profileSetupRequiredNotice");
+    if(notice) notice.style.display = profileSetupRequired ? "flex" : "none";
+}
+
+/* =========================
    LOAD PROFILE DATA
 ========================= */
 
@@ -2667,6 +2984,10 @@ async function loadProfileData(){
 
     // Firestore photoURL has priority, otherwise keep using the Google account photo.
     applyProfilePhoto(data.photoURL || user.photoURL || "");
+
+    profileSetupRequired = !isProfileSetupComplete(data, user);
+    updateProfileSetupNotice();
+    return data;
 
 }
 
@@ -2803,6 +3124,254 @@ window.confirmProfileUnfriend=async function(){
    SAVE PROFILE
 ========================= */
 
+
+/* =========================
+   PROFILE SECTION PICKER / VERIFICATION
+   Mirrors the section picker and verification flow in voice.html.
+========================= */
+const PROFILE_SECTION_CODES = {
+  "7-Agoncillo": "483721#",
+  "7-Constantino": "C615904",
+  "7-Delos Santos": "827316D",
+  "7-Guillermo": "274856S",
+  "7-Nacpil": "N731492",
+  "7-Ocampo": "958214O",
+  "7-Tolentino": "T346781",
+  "7-Zaide": "Z820563E",
+  "8-Archimedes": "514827S",
+  "8-Bernoulli": "693152I",
+  "8-Pythagoras": "PY428715",
+  "8-Hypatia": "761304IA",
+  "8-Pascal": "235896",
+  "8-Euler": "E847231R",
+  "8-Euclid": "391625D",
+  "8-Ptolemy": "672418MY",
+  "8-Descartes": "CART159734",
+  "9-Aristotle": "RIS583216",
+  "9-Galilei": "724951LEI",
+  "9-Copernicus": "COP316847",
+  "9-Pasteur": "865203TEUR",
+  "9-Mendel": "ME492731L",
+  "9-Faraday": "137568DAY",
+  "9-Newton": "651824TON",
+  "9-Edison": "308475SON",
+  "9-Einstein": "976312TEIN",
+  "10-Aquino": "AQ428163",
+  "10-Bonifacio": "715294CIO",
+  "10-Del Pilar": "PILAR863517",
+  "10-Jacinto": "TO249681",
+  "10-Luna": "LUNA531728",
+  "10-Quezon": "QUE694315",
+  "10-Rizal": "182957AL",
+  "11-Twain": "736481IN",
+  "11-Farmer": "FARM295714",
+  "11-Lovelace": "814326LOVE",
+  "11-Guerrero": "GUER463859",
+  "11-Morgan": "927145MOR",
+  "11-Silverton": "TON351682",
+  "11-Westinghouse": "67823HOUSE4",
+  "12-Ansel": "542813SEL",
+  "12-Babbage": "BAB819365",
+  "12-Javier": "JAV274631",
+  "12-Pacioli": "635927CIOLI",
+  "12-Shakespeare": "391847PEARE",
+  "12-Mendeleev": "758216LEEV"
+};
+
+const PROFILE_SECTIONS = Object.keys(PROFILE_SECTION_CODES);
+let profileSectionVerified = false;
+let profileVerifiedSection = "";
+
+const editSectionSearch = document.getElementById("editSectionSearch");
+const editSectionSuggestions = document.getElementById("editSectionSuggestions");
+const editSectionHidden = document.getElementById("editSection");
+const editSectionVerification = document.getElementById("editSectionVerification");
+const editVerificationCode = document.getElementById("editVerificationCode");
+const editVerificationMessage = document.getElementById("editVerificationMessage");
+const editVerifySectionBtn = document.getElementById("editVerifySectionBtn");
+
+function resetProfileSectionVerification(hideBox = true){
+    profileSectionVerified = false;
+    profileVerifiedSection = "";
+
+    if(editSectionVerification && hideBox){
+        editSectionVerification.style.display = "none";
+    }
+    if(editVerificationCode){
+        editVerificationCode.value = "";
+        editVerificationCode.readOnly = false;
+    }
+    if(editVerificationMessage){
+        editVerificationMessage.style.display = "none";
+        editVerificationMessage.textContent = "";
+    }
+    if(editVerifySectionBtn){
+        editVerifySectionBtn.disabled = false;
+        editVerifySectionBtn.textContent = "🔐 Verify Section";
+        editVerifySectionBtn.style.background = "#1e3a8a";
+        editVerifySectionBtn.style.color = "white";
+    }
+}
+
+function showProfileSectionSuggestions(searchText = ""){
+    if(!editSectionSuggestions) return;
+    const search = String(searchText || "").trim().toLowerCase();
+    const filtered = PROFILE_SECTIONS.filter(section => section.toLowerCase().includes(search));
+
+    editSectionSuggestions.innerHTML = "";
+
+    if(!filtered.length){
+        const noResult = document.createElement("div");
+        noResult.className = "section-option no-result";
+        noResult.textContent = "No matching section found";
+        editSectionSuggestions.appendChild(noResult);
+    }else{
+        filtered.forEach(section => {
+            const option = document.createElement("div");
+            option.className = "section-option";
+            option.textContent = section;
+            option.addEventListener("click", e => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                editSectionSearch.value = section;
+                editSectionHidden.value = section;
+                editSectionSuggestions.classList.remove("show");
+
+                resetProfileSectionVerification(false);
+
+                if(editSectionVerification){
+                    editSectionVerification.style.display = "block";
+                }
+                if(editVerificationCode){
+                    editVerificationCode.focus();
+                }
+            });
+            editSectionSuggestions.appendChild(option);
+        });
+    }
+
+    editSectionSuggestions.classList.add("show");
+}
+
+if(editSectionSearch){
+    editSectionSearch.addEventListener("input", function(){
+        editSectionHidden.value = "";
+        resetProfileSectionVerification(true);
+        showProfileSectionSuggestions(this.value);
+    });
+
+    editSectionSearch.addEventListener("focus", function(){
+        showProfileSectionSuggestions(this.value);
+    });
+
+    editSectionSearch.addEventListener("click", function(){
+        showProfileSectionSuggestions(this.value);
+    });
+}
+
+document.addEventListener("click", event => {
+    if(!event.target.closest(".profile-section-search-wrapper")){
+        editSectionSuggestions?.classList.remove("show");
+    }
+});
+
+window.verifyProfileSectionCode = function(){
+    const section = String(editSectionHidden?.value || "").trim();
+    const code = String(editVerificationCode?.value || "").trim();
+
+    if(!section){
+        openProfileSectionRequiredPopup();
+        return;
+    }
+
+    if(!code){
+        if(editVerificationMessage){
+            editVerificationMessage.style.display = "block";
+            editVerificationMessage.style.background = "#fff3cd";
+            editVerificationMessage.style.color = "#856404";
+            editVerificationMessage.textContent = "🔐 Please enter your section verification code.";
+        }
+        return;
+    }
+
+    const correctCode = PROFILE_SECTION_CODES[section];
+
+    if(!correctCode){
+        profileSectionVerified = false;
+        profileVerifiedSection = "";
+        if(editVerificationMessage){
+            editVerificationMessage.style.display = "block";
+            editVerificationMessage.style.background = "#ffe5e5";
+            editVerificationMessage.style.color = "#b00020";
+            editVerificationMessage.textContent = "❌ Section code is not configured.";
+        }
+        return;
+    }
+
+    if(code === correctCode){
+        profileSectionVerified = true;
+        profileVerifiedSection = section;
+
+        if(editVerificationMessage){
+            editVerificationMessage.style.display = "block";
+            editVerificationMessage.style.background = "#d4edda";
+            editVerificationMessage.style.color = "#155724";
+            editVerificationMessage.textContent = "✅ Section verified successfully!";
+        }
+
+        if(editVerifySectionBtn){
+            editVerifySectionBtn.textContent = "✅ Section Verified";
+            editVerifySectionBtn.style.background = "#28a745";
+            editVerifySectionBtn.style.color = "white";
+            editVerifySectionBtn.disabled = true;
+        }
+
+        if(editVerificationCode){
+            editVerificationCode.readOnly = true;
+        }
+        return;
+    }
+
+    profileSectionVerified = false;
+    profileVerifiedSection = "";
+
+    if(editVerificationMessage){
+        editVerificationMessage.style.display = "block";
+        editVerificationMessage.style.background = "#ffe5e5";
+        editVerificationMessage.style.color = "#b00020";
+        editVerificationMessage.textContent = "❌ Incorrect section verification code.";
+    }
+
+    if(editVerifySectionBtn){
+        editVerifySectionBtn.disabled = false;
+        editVerifySectionBtn.textContent = "🔐 Verify Section";
+    }
+};
+
+window.openProfileSectionRequiredPopup = function(){
+    const popup = document.getElementById("profileSectionRequiredPopup");
+    if(popup) popup.style.display = "flex";
+};
+
+window.closeProfileSectionRequiredPopup = function(){
+    const popup = document.getElementById("profileSectionRequiredPopup");
+    if(popup) popup.style.display = "none";
+    editSectionSearch?.focus();
+    showProfileSectionSuggestions(editSectionSearch?.value || "");
+};
+
+window.openProfileSectionVerificationPopup = function(){
+    const popup = document.getElementById("profileSectionVerificationPopup");
+    if(popup) popup.style.display = "flex";
+};
+
+window.closeProfileSectionVerificationPopup = function(){
+    const popup = document.getElementById("profileSectionVerificationPopup");
+    if(popup) popup.style.display = "none";
+    editVerificationCode?.focus();
+};
+
 window.saveProfile = async function(){
 
     const user = auth.currentUser;
@@ -2811,6 +3380,16 @@ window.saveProfile = async function(){
     const name = document.getElementById("editName").value.trim();
     const section = document.getElementById("editSection").value.trim();
     const bio = document.getElementById("editBio").value.trim();
+
+    if(!section){
+        openProfileSectionRequiredPopup();
+        return;
+    }
+
+    if(!profileSectionVerified || profileVerifiedSection !== section){
+        openProfileSectionVerificationPopup();
+        return;
+    }
 
     const saveButton = document.querySelector(".save-btn");
     if(saveButton){
@@ -2848,6 +3427,8 @@ window.saveProfile = async function(){
         document.getElementById("profileBio").textContent = data.bio;
         applyProfilePhoto(data.photoURL);
 
+        profileSetupRequired = false;
+        updateProfileSetupNotice();
         closeEditProfile();
         openSuccessPopup();
 
@@ -2909,12 +3490,20 @@ window.openEditProfile = async function(){
     document.getElementById("editName").value =
         data.name || data.displayName || user.displayName || "";
 
-    document.getElementById("editSection").value =
-        data.section || "";
+    resetProfileSectionVerification(true);
+
+    const savedSection = String(data.section || "").trim();
+    document.getElementById("editSection").value = savedSection;
+
+    if(editSectionSearch){
+        editSectionSearch.value = savedSection;
+    }
 
     document.getElementById("editBio").value =
         data.bio || "";
 
+    profileSetupRequired = !isProfileSetupComplete(data, user);
+    updateProfileSetupNotice();
     document.getElementById("editOverlay").style.display = "flex";
 
 };
@@ -2922,10 +3511,18 @@ window.openEditProfile = async function(){
 
 window.closeEditProfile = function(){
 
+    if(profileSetupRequired){
+        updateProfileSetupNotice();
+        return;
+    }
+
     document.getElementById(
         "editOverlay"
     ).style.display =
         "none";
+
+    resetProfileSectionVerification(true);
+    editSectionSuggestions?.classList.remove("show");
 
 };
 
@@ -3001,12 +3598,16 @@ document.addEventListener(
             );
 
         const success = document.getElementById("successOverlay");
-
+        const profileSectionRequired = document.getElementById("profileSectionRequiredPopup");
+        const profileSectionVerification = document.getElementById("profileSectionVerificationPopup");
 
         if(event.target === edit){
 
-            edit.style.display =
-                "none";
+            if(profileSetupRequired){
+                updateProfileSetupNotice();
+            }else{
+                closeEditProfile();
+            }
 
         }
 
@@ -3027,11 +3628,30 @@ document.addEventListener(
             success.style.display = "none";
         }
 
+        if(event.target === profileSectionRequired){
+            profileSectionRequired.style.display = "none";
+        }
+
+        if(event.target === profileSectionVerification){
+            profileSectionVerification.style.display = "none";
+        }
+
     }
 );
 
 document.addEventListener("keydown", e => {
-    if(e.key === "Escape"){ closePostComposer(); closeComments(); }
+    if(e.key === "Escape"){
+        if(profileSetupRequired){
+            e.preventDefault();
+            updateProfileSetupNotice();
+        }else{
+            closeEditProfile();
+        }
+        closePostComposer();
+        closeComments();
+        closeProfileSectionRequiredPopup();
+        closeProfileSectionVerificationPopup();
+    }
 });
 
 </script>
