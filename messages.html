@@ -1422,16 +1422,42 @@ window.kickGroupMember=async(uid)=>{
 };
 window.leaveActiveGroup=async()=>{
   const me=auth.currentUser;if(!me||!activeGroup)return;
-  if(activeGroup.createdBy===me.uid){showToast('The creator cannot leave. Transfer ownership first.');return}
   if(!confirm(`Leave ${activeGroup.name||'this group'}?`))return;
   try{
-    const memberUids=(activeGroup.memberUids||[]).filter(x=>x!==me.uid);
-    const adminUids=groupAdminUids(activeGroup).filter(x=>x!==me.uid);
+    const currentMembers=[...(activeGroup.memberUids||[])];
+    const memberUids=currentMembers.filter(x=>x!==me.uid);
+    if(!memberUids.length){showToast('You are the last member. The group must keep one owner.');return}
+
+    const currentAdmins=groupAdminUids(activeGroup);
+    const adminUids=currentAdmins.filter(x=>x!==me.uid && memberUids.includes(x));
     const payload={memberUids,updatedAt:serverTimestamp()};
-    if(Object.prototype.hasOwnProperty.call(activeGroup,'adminUids'))payload.adminUids=adminUids;
+
+    // If the creator leaves, automatically transfer ownership to the first remaining member.
+    if(activeGroup.createdBy===me.uid){
+      const nextOwner=memberUids[0];
+      payload.createdBy=nextOwner;
+      payload.adminUids=Array.from(new Set([nextOwner,...adminUids]));
+    }else if(Object.prototype.hasOwnProperty.call(activeGroup,'adminUids')){
+      // Keep the stored admin list unchanged for a regular member leaving.
+      // groupAdminUids() filters out non-members automatically.
+    }
+
     await updateDoc(doc(db,'groups',activeGroup.id),payload);
-    closeGroupManage();window.clearChatSelection();showToast('You left the group.');
-  }catch(e){console.error(e);showToast(e?.code==='permission-denied'?'You cannot leave this group right now.':'Could not leave the group.')}
+
+    const nextGroup={
+      ...activeGroup,
+      memberUids,
+      createdBy:payload.createdBy||activeGroup.createdBy,
+      adminUids:payload.adminUids||activeGroup.adminUids
+    };
+    groups=groups.map(g=>g.id===activeGroup.id?nextGroup:g);
+    closeGroupManage();
+    window.clearChatSelection();
+    showToast(activeGroup.createdBy===me.uid?'You left. Ownership transferred to the next member.':'You left the group.');
+  }catch(e){
+    console.error(e);
+    showToast(e?.code==='permission-denied'?'You do not have permission to leave this group.':'Could not leave the group.');
+  }
 };
 window.toggleActiveGroupMute=()=>{
   if(!activeGroup)return;
