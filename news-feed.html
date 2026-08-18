@@ -191,7 +191,7 @@ a{-webkit-tap-highlight-color:transparent}
   font-weight:800;
 }
 .post-avatar img{width:100%;height:100%;object-fit:cover;filter:none!important;backdrop-filter:none!important;-webkit-filter:none!important}
-.post-author-link{display:block;color:inherit;text-decoration:none;min-width:0;flex:1}.post-author{flex:1;min-width:0}
+.post-author-link{display:block;color:inherit;text-decoration:none;min-width:0;flex:1}.post-author{flex:1;min-width:0}.verified-badge{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;margin-left:5px;border-radius:50%;background:#1DA1F2;color:#fff;font-size:10px;font-weight:900;vertical-align:1px;box-shadow:0 2px 6px rgba(29,161,242,.25)}
 .post-author strong{
   display:block;font-size:13px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
@@ -1179,6 +1179,20 @@ function renderMentionText(text=''){
   });
 }
 
+const ADMIN_EMAILS = new Set(['reyvengarcia15@gmail.com', 'reyvenbermudo091@gmail.com', 'reyvengarcia05@gmail.com', 'chezcadc14@gmail.com', 'nathanielgarc679@gmail.com', 'marteena.133@gmail.com', 'Gabbicastillo0126@gmail.com', 'leddadanielle91@gmail.com', 'jennapastor062@gmail.com', 'dhenmark1313@gmail.com', 'christianangelointes0@gmail.com', 'alexaislacruz@gmail.com', 'galangjullianne016@gmail.com', 'vanessajotic2403@gmail.com', 'aquinobernardjr0@gmail.com', 'angellyar0909@gmail.com', 'vhergelnarciso@gmail.com', 'sicatmadisson487@gmail.com', 'chezcadc14@gmail.com'].map(e => e.toLowerCase()));
+const verifiedEmailCache=new Map();
+async function getVerifiedEmailForUid(uid){
+  if(!uid) return false;
+  if(verifiedEmailCache.has(uid)) return verifiedEmailCache.get(uid);
+  try{
+    const snap=await getDoc(doc(db,'users',uid));
+    const verified=isAdminEmailForUser(snap.exists()?(snap.data()||{}):{});
+    verifiedEmailCache.set(uid,verified);
+    return verified;
+  }catch(e){ console.warn('verification lookup failed',uid,e); verifiedEmailCache.set(uid,false); return false; }
+}
+function isAdminEmailForUser(profile){return !!profile && ADMIN_EMAILS.has(String(profile.email||'').trim().toLowerCase());}
+
 function canSeePost(post){
   if(!firebaseUser) return post.visibility === 'public';
   if(post.authorUid===firebaseUser.uid) return true;
@@ -1279,6 +1293,11 @@ async function loadFeed(){
       return;
     }
 
+    // Resolve verification badges from the canonical users collection so the
+    // badge follows the admin Gmail list even for older posts.
+    const authorUids=[...new Set(posts.map(p=>p.authorUid).filter(Boolean))];
+    await Promise.all(authorUids.map(uid=>getVerifiedEmailForUid(uid)));
+
     // Render whatever was successfully loaded immediately. A failing optional
     // friends/own query no longer wipes out the public feed.
     list.innerHTML=posts.map(renderPost).join('');
@@ -1318,7 +1337,7 @@ function renderPost(post){
         <a href="user-profile.html?uid=${encodeURIComponent(post.authorUid || '')}" onclick="event.stopPropagation()" style="text-decoration:none;color:inherit">${avatarHtml(post)}</a>
         <a class="post-author-link" href="user-profile.html?uid=${encodeURIComponent(post.authorUid || '')}" onclick="event.stopPropagation()">
           <div class="post-author">
-            <strong>${esc(post.authorName || 'User')}</strong>
+            <strong>${esc(post.authorName || 'User')}${verifiedEmailCache.get(post.authorUid)?`<span class="verified-badge" title="Verified Admin" aria-label="Verified Admin">✓</span>`:''}</strong>
             <div class="post-meta">${post.username ? '@'+esc(post.username)+' · ' : ''}<span title="${esc(formatExactTime(post.createdAt))}">${esc(formatTime(post.createdAt))}</span></div>
           </div>
         </a>
