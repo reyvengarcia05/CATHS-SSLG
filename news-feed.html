@@ -130,7 +130,7 @@ a{-webkit-tap-highlight-color:transparent}
   color:var(--darkblue);
   font-size:18px;font-weight:800;
 }
-.composer-avatar img{width:100%;height:100%;object-fit:cover}
+.composer-avatar img{width:100%;height:100%;object-fit:cover;filter:none!important;backdrop-filter:none!important;-webkit-filter:none!important}
 .composer-input{
   flex:1;
   min-width:0;
@@ -190,7 +190,7 @@ a{-webkit-tap-highlight-color:transparent}
   justify-content:center;
   font-weight:800;
 }
-.post-avatar img{width:100%;height:100%;object-fit:cover}
+.post-avatar img{width:100%;height:100%;object-fit:cover;filter:none!important;backdrop-filter:none!important;-webkit-filter:none!important}
 .post-author-link{display:block;color:inherit;text-decoration:none;min-width:0;flex:1}.post-author{flex:1;min-width:0}
 .post-author strong{
   display:block;font-size:13px;
@@ -304,7 +304,7 @@ a{-webkit-tap-highlight-color:transparent}
 }
 .profile-menu.open{display:block;animation:menuIn .24s ease}
 .menu-profile{display:flex;align-items:center;gap:11px}
-.menu-profile img{width:46px;height:46px;border-radius:50%;object-fit:cover;background:#eef4ff}
+.menu-profile img{width:46px;height:46px;border-radius:50%;object-fit:cover;background:#eef4ff;filter:none!important;backdrop-filter:none!important;-webkit-filter:none!important}
 .menu-profile strong{display:block;font-size:14px}
 .menu-profile small{display:block;font-size:10px;color:#64748b;margin-top:2px}
 .menu-divider{height:1px;background:#e5e7eb;margin:11px 0}
@@ -419,7 +419,7 @@ a{-webkit-tap-highlight-color:transparent}
   color:#fff;font-weight:700;cursor:pointer;
 }
 .reaction-item{display:flex;align-items:center;gap:10px}
-.reaction-item img,.reaction-avatar{
+.reaction-item img,.reaction-avatar{filter:none!important;backdrop-filter:none!important;-webkit-filter:none!important;
   width:40px;height:40px;flex:0 0 40px;
   border-radius:50%;object-fit:cover;
   background:#e6edf8;display:flex;align-items:center;justify-content:center;color:var(--darkblue);font-weight:800;
@@ -1315,8 +1315,8 @@ function renderPost(post){
   return `
     <article class="post-card" id="post-${esc(post.id)}">
       <div class="post-head">
-        <a href="profile.html?uid=${encodeURIComponent(post.authorUid || '')}" onclick="event.stopPropagation()" style="text-decoration:none;color:inherit">${avatarHtml(post)}</a>
-        <a class="post-author-link" href="profile.html?uid=${encodeURIComponent(post.authorUid || '')}" onclick="event.stopPropagation()">
+        <a href="user-profile.html?uid=${encodeURIComponent(post.authorUid || '')}" onclick="event.stopPropagation()" style="text-decoration:none;color:inherit">${avatarHtml(post)}</a>
+        <a class="post-author-link" href="user-profile.html?uid=${encodeURIComponent(post.authorUid || '')}" onclick="event.stopPropagation()">
           <div class="post-author">
             <strong>${esc(post.authorName || 'User')}</strong>
             <div class="post-meta">${post.username ? '@'+esc(post.username)+' · ' : ''}<span title="${esc(formatExactTime(post.createdAt))}">${esc(formatTime(post.createdAt))}</span></div>
