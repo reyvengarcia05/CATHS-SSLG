@@ -13,7 +13,7 @@ body{min-height:100vh;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700)
 .header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:rgba(0,0,0,.16);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
 .logo-group{display:flex;gap:7px;align-items:center}.logo{width:46px;height:46px;object-fit:contain}.header-center{text-align:center;flex:1;padding:0 10px}.header-center h1{font-size:19px;font-weight:800}.header-center p{font-size:10px;opacity:.82}.header-right{width:96px}
 .container{max-width:1120px;margin:auto;padding:22px 16px 110px}.messenger{display:grid;grid-template-columns:320px 1fr;min-height:650px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.16);border-radius:26px;overflow:hidden;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 18px 50px rgba(0,0,0,.2)}
-.sidebar{background:rgba(255,255,255,.1);border-right:1px solid rgba(255,255,255,.13);padding:18px;display:flex;flex-direction:column;min-width:0}.side-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.side-title h2{font-size:18px}.count-pill{background:var(--yellow);color:var(--dark);padding:4px 9px;border-radius:999px;font-size:10px;font-weight:800}.search{width:100%;padding:11px 13px;border:none;outline:none;border-radius:13px;background:#fff;color:#183c8c;font-size:12px;margin-bottom:12px}.friend-list{display:flex;flex-direction:column;gap:8px;overflow:auto;padding-right:3px}.friend-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:15px;background:rgba(255,255,255,.08);border:1px solid transparent;cursor:pointer;transition:.18s;text-align:left;color:#fff}.friend-item:hover{background:rgba(255,255,255,.14);transform:translateX(2px)}.friend-item.active{background:#fff;color:#183c8c;border-color:#fff}.friend-avatar{width:44px;height:44px;flex:0 0 44px;border-radius:50%;overflow:hidden;background:#e8eef7;color:#183c8c;display:flex;align-items:center;justify-content:center;font-weight:800}.friend-avatar img{width:100%;height:100%;object-fit:cover}.friend-info{min-width:0;flex:1}.friend-info strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.friend-info small{display:block;font-size:10px;opacity:.72;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.friend-item.active .friend-info small{opacity:.65}.friend-preview-line{display:flex;align-items:center;gap:7px;margin-top:2px;min-width:0}.friend-preview-line .friend-preview{display:block;flex:1;min-width:0;font-size:10px;opacity:.72;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.conversation-time{flex:0 0 auto;font-size:8px;opacity:.62;white-space:nowrap}.friend-item.has-unread .friend-info strong{font-weight:800}.friend-item.has-unread .friend-preview-line .friend-preview{opacity:.95;font-weight:600}.friend-item.active .friend-preview-line .friend-preview{opacity:.68}.friend-item.active .conversation-time{opacity:.58}
+.sidebar{background:rgba(255,255,255,.1);border-right:1px solid rgba(255,255,255,.13);padding:18px;display:flex;flex-direction:column;min-width:0}.side-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.side-title h2{font-size:18px}.count-pill{background:var(--yellow);color:var(--dark);padding:4px 9px;border-radius:999px;font-size:10px;font-weight:800}.search{width:100%;padding:11px 13px;border:none;outline:none;border-radius:13px;background:#fff;color:#183c8c;font-size:12px;margin-bottom:12px}.friend-list{display:flex;flex-direction:column;gap:8px;overflow:auto;padding-right:3px}.friend-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:15px;background:rgba(255,255,255,.08);border:1px solid transparent;cursor:pointer;transition:.18s;text-align:left;color:#fff}.friend-item:hover{background:rgba(255,255,255,.14);transform:translateX(2px)}.friend-item.active{background:#fff;color:#183c8c;border-color:#fff}.friend-avatar{width:44px;height:44px;flex:0 0 44px;border-radius:50%;overflow:hidden;background:#e8eef7;color:#183c8c;display:flex;align-items:center;justify-content:center;font-weight:800}.friend-avatar img{width:100%;height:100%;object-fit:cover}.conversation-avatar-wrap{position:relative;display:block;flex:0 0 44px;width:44px;height:44px}.conversation-avatar-wrap .friend-avatar{width:44px;height:44px}.conversation-presence-dot{position:absolute;right:-1px;bottom:-1px;width:12px;height:12px;border-radius:50%;background:#9aa7bb;border:3px solid rgba(255,255,255,.92);box-shadow:0 2px 6px rgba(0,0,0,.16)}.conversation-presence-dot.online{background:#22c55e}.conversation-presence-dot.offline{background:#9aa7bb}.friend-item.active .conversation-presence-dot{border-color:#fff}.friend-item.active .conversation-presence-dot.offline{background:#a8b1c1}.friend-info{min-width:0;flex:1}.friend-info strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.friend-info small{display:block;font-size:10px;opacity:.72;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.friend-item.active .friend-info small{opacity:.65}.friend-preview-line{display:flex;align-items:center;gap:7px;margin-top:2px;min-width:0}.friend-preview-line .friend-preview{display:block;flex:1;min-width:0;font-size:10px;opacity:.72;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.conversation-time{flex:0 0 auto;font-size:8px;opacity:.62;white-space:nowrap}.friend-item.has-unread .friend-info strong{font-weight:800}.friend-item.has-unread .friend-preview-line .friend-preview{opacity:.95;font-weight:600}.friend-item.active .friend-preview-line .friend-preview{opacity:.68}.friend-item.active .conversation-time{opacity:.58}
 .chat{display:flex;flex-direction:column;min-width:0;background:rgba(255,255,255,.05)}.chat-empty{height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px}.empty-inner{max-width:360px}.empty-icon{font-size:56px;margin-bottom:10px}.empty-inner h3{font-size:22px;margin-bottom:6px}.empty-inner p{font-size:12px;opacity:.78;line-height:1.6}
 .chat-head{display:flex;align-items:center;gap:12px;padding:15px 18px;background:rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.1)}.chat-back{display:none}.chat-avatar{width:46px;height:46px;border-radius:50%;overflow:hidden;background:#e8eef7;color:#183c8c;display:flex;align-items:center;justify-content:center;font-weight:800;flex:0 0 46px}.chat-avatar img{width:100%;height:100%;object-fit:cover}.chat-person{min-width:0}.chat-person strong{display:block;font-size:14px}.chat-person small{font-size:10px;opacity:.72}.messages{flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:8px;min-height:0}.message-row{display:flex;width:100%}.message-row.mine{justify-content:flex-end}.bubble{max-width:min(72%,520px);padding:10px 13px;border-radius:17px;background:#fff;color:#183c8c;box-shadow:0 6px 18px rgba(0,0,0,.08);font-size:12px;line-height:1.55;word-break:break-word}.message-row.mine .bubble{background:var(--yellow);color:#183c8c;border-bottom-right-radius:5px}.message-row:not(.mine) .bubble{border-bottom-left-radius:5px}.bubble small{display:block;margin-top:5px;font-size:8px;opacity:.58}.message-compose{display:flex;gap:8px;padding:13px 15px;background:rgba(0,0,0,.12);border-top:1px solid rgba(255,255,255,.1)}.message-input{flex:1;min-width:0;border:none;outline:none;border-radius:14px;padding:12px 13px;font-size:12px;background:#fff;color:#183c8c;resize:none;height:44px}.send-btn{border:none;border-radius:14px;padding:0 17px;background:var(--yellow);color:var(--dark);font-weight:800;cursor:pointer;min-width:76px}.send-btn:disabled{opacity:.6;cursor:not-allowed}
 .loading{padding:28px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:9px;font-size:11px;opacity:.86}.spinner{width:30px;height:30px;border:3px solid rgba(255,255,255,.25);border-top-color:var(--yellow);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
@@ -168,7 +168,8 @@ body{overflow:hidden;}
 
 @media(min-width:801px){.react-picker{min-width:220px}}
 @media(max-width:800px){.react-picker.open{display:grid}.messenger{grid-template-columns:1fr;grid-template-rows:240px minmax(0,1fr)}.sidebar{border-right:none;border-bottom:1px solid rgba(255,255,255,.13);max-height:none;min-height:0}.chat{min-height:0}.chat-back{display:block;border:none;background:rgba(255,255,255,.12);color:#fff;width:34px;height:34px;border-radius:10px;cursor:pointer}.bubble{max-width:82%}}
-@media(max-width:520px){.container{padding:10px 8px 92px}.messenger{border-radius:20px}.sidebar{padding:13px}.chat-head{padding:12px}.messages{padding:14px 10px}.message-compose{padding:10px}.send-btn{padding:0 13px;min-width:62px}.nav-item{min-width:52px;font-size:8px}.nav-item div{font-size:20px}.message-reactions{margin-top:5px}.react-picker{width:min(180px,42vw);max-width:42vw}.bubble-wrap{max-width:100%;gap:5px}}
+@media(max-width:800px){.messenger.mobile-chat-open{grid-template-rows:minmax(0,1fr);height:calc(100dvh - 156px);min-height:0}.messenger.mobile-chat-open .sidebar{display:none}.messenger.mobile-chat-open .chat{min-height:0;height:100%}}
+@media(max-width:520px){.container{padding:8px 7px 88px}.messenger{border-radius:18px}.sidebar{padding:13px}.chat-head{padding:12px}.messages{padding:14px 10px}.message-compose{padding:10px}.send-btn{padding:0 13px;min-width:62px}.nav-item{min-width:52px;font-size:8px}.nav-item div{font-size:20px}.message-reactions{margin-top:5px}.react-picker{width:min(180px,42vw);max-width:42vw}.bubble-wrap{max-width:100%;gap:5px}}
 @media (hover:hover) and (pointer:fine){.message-reaction-trigger{display:inline-flex}}
 @media (hover:none) and (pointer:coarse){.message-reaction-trigger{display:inline-flex!important;opacity:1;transform:scale(1)}}
 
@@ -216,6 +217,21 @@ body{overflow:hidden;}
   .bubble .react-picker{width:min(180px,43vw);max-width:43vw;max-height:200px}
   .message-row:not(.mine) .bubble .react-picker{left:calc(100% + 36px)}
   .message-row.mine .bubble .react-picker{right:calc(100% + 36px)}
+}
+
+@media(max-width:520px){
+  .bottom-nav{height:72px;padding:4px 3px;gap:0}
+  .nav-item{width:20%;min-width:0;font-size:7px;line-height:1.1;gap:1px}
+  .nav-item div{font-size:19px;height:22px;margin-bottom:1px}
+  .nav-item.active{transform:translateY(-3px) scale(1.02)}
+  .nav-item.active div{font-size:21px}
+  .container{padding-bottom:84px}
+}
+@media(max-width:380px){
+  .bottom-nav{height:68px}
+  .nav-item{font-size:6.5px}
+  .nav-item div{font-size:18px;height:21px}
+  .nav-item.active div{font-size:20px}
 }
 </style>
 </head>
@@ -372,6 +388,8 @@ let activeConversationMenu=null;
 const conversationPrefsKey='cathsMessagesConversationPrefsV1';
 const conversationMetaCache=new Map();
 const conversationMetaUnsubs=new Map();
+const presenceCache=new Map();
+const presenceUnsubs=new Map();
 
 
 const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
@@ -412,6 +430,31 @@ function formatConversationListTime(value){
     return d.toLocaleDateString([], {month:'short',day:'numeric'});
   }catch{return ''}
 }
+function presenceKeyForFriend(uid){return `friend:${uid}`}
+function reconcileFriendPresenceListeners(){
+  const wanted=new Set(friends.map(f=>f.uid).filter(Boolean));
+  for(const [uid,unsub] of presenceUnsubs){
+    if(!wanted.has(uid)){try{unsub()}catch{};presenceUnsubs.delete(uid);presenceCache.delete(uid);}
+  }
+  friends.forEach(friend=>{
+    const uid=friend.uid;if(!uid||presenceUnsubs.has(uid))return;
+    const unsub=onSnapshot(doc(db,'users',uid),snap=>{
+      const profile=snap.exists()?snap.data()||{}:{};
+      presenceCache.set(uid,{online:isUserOnline(profile),lastSeen:profile.lastSeen||null});
+      const f=friends.find(x=>x.uid===uid);
+      if(f){f.online=presenceCache.get(uid).online;f.lastSeen=presenceCache.get(uid).lastSeen;}
+      renderConversations();
+    },err=>console.error('Friend presence listener',uid,err));
+    presenceUnsubs.set(uid,unsub);
+  });
+}
+function clearFriendPresenceListeners(){
+  presenceUnsubs.forEach(unsub=>{try{unsub()}catch{}});
+  presenceUnsubs.clear();
+  presenceCache.clear();
+}
+function isFriendOnline(uid){return presenceCache.get(uid)?.online===true;}
+
 function reconcileConversationMetaListeners(){
   const items=[...friends.map(f=>({...f,kind:'friend'})),...groups.map(g=>({...g,uid:g.id,kind:'group'}))];
   const wanted=new Set(items.map(conversationKey));
@@ -523,8 +566,8 @@ function startPresenceHeartbeat(){
   window.addEventListener('beforeunload',()=>{setMyPresence(false)});
   document.addEventListener('visibilitychange',()=>{
     if(document.visibilityState==='visible') setMyPresence(true);
-    else setMyPresence(false);
   });
+  window.addEventListener('pagehide',()=>setMyPresence(false),{once:false});
 }
 
 function stopPresenceHeartbeat(){
@@ -902,6 +945,7 @@ async function loadFriends(){
     }));
     friends.sort((a,b)=>String(a.nickname||a.name||a.username||'').localeCompare(String(b.nickname||b.name||b.username||'')));
   }catch(e){console.error('friends',e);friends=[]}
+  reconcileFriendPresenceListeners();
   reconcileConversationMetaListeners();
   renderConversations();
 }
@@ -999,8 +1043,11 @@ function renderConversations(list=null){
     const activityTime=conversationActivityTime(item);
     const lastSender=conversationMetaCache.get(conversationKey(item))?.senderUid||'';
     const previewText=lastSender===auth.currentUser?.uid && preview && !preview.startsWith('↗ Shared') && !preview.startsWith('↗ Forwarded') && !preview.startsWith('This message') ? `You: ${preview}` : preview;
+    const avatarBlock=group
+      ? `<span class="conversation-avatar-wrap">${groupAvatarHtml(item)}<span class="conversation-presence-dot offline" aria-label="Group"></span></span>`
+      : `<span class="conversation-avatar-wrap">${avatarHtml(item)}<span class="conversation-presence-dot ${isFriendOnline(item.uid)?'online':'offline'}" aria-label="${isFriendOnline(item.uid)?'Online':'Offline'}"></span></span>`;
     return `<button type="button" class="friend-item ${activeConversation?.id===id?'active':''}${unread?' has-unread':''}" data-kind="${group?'group':'friend'}" data-id="${esc(id)}">
-      ${group?groupAvatarHtml(item):avatarHtml(item)}
+      ${avatarBlock}
       <span class="friend-info">
         <strong>${esc(name)}</strong>
         <small>${esc(sub)}</small>
@@ -1057,6 +1104,7 @@ async function openChat(friend){
   activeFriend=friend;activeGroup=null;activeConversation={kind:'friend',id:friend.uid};
   history.replaceState(null,'',`messages.html?uid=${encodeURIComponent(friend.uid)}`);
   renderConversations();
+  $('.messenger')?.classList.add('mobile-chat-open');
   $('chatPane').innerHTML=`<div class="chat-head">
     <button class="chat-back" type="button" onclick="clearChatSelection()">←</button>
     ${avatarHtml(friend,'chat-avatar')}
@@ -1083,6 +1131,7 @@ async function openGroup(group){
   groupUserProfiles.clear();
   history.replaceState(null,'',`messages.html?group=${encodeURIComponent(group.id)}`);
   renderConversations();
+  $('.messenger')?.classList.add('mobile-chat-open');
   $('chatPane').innerHTML=`<div class="chat-head">
     <button class="chat-back" type="button" onclick="clearChatSelection()">←</button>
     ${groupAvatarHtml(group,'chat-avatar group-avatar')}
@@ -1100,7 +1149,7 @@ async function openGroup(group){
   setTimeout(markConversationRead,180);
 }
 
-window.clearChatSelection=()=>{stopFriendPresence();closeConversationActionMenu();clearReactionListeners();lastMessageRenderSignature='';groupUserProfiles.clear();activeFriend=null;activeGroup=null;activeConversation=null;if(unsubscribeMessages)unsubscribeMessages();$('chatPane').innerHTML='<div class="chat-empty"><div class="empty-inner"><div class="empty-icon">💬</div><h3>Select a conversation</h3><p>Choose a friend or group to start chatting.</p></div></div>';renderConversations()};
+window.clearChatSelection=()=>{stopFriendPresence();closeConversationActionMenu();clearReactionListeners();lastMessageRenderSignature='';groupUserProfiles.clear();activeFriend=null;activeGroup=null;activeConversation=null;document.querySelector('.messenger')?.classList.remove('mobile-chat-open');if(unsubscribeMessages)unsubscribeMessages();$('chatPane').innerHTML='<div class="chat-empty"><div class="empty-inner"><div class="empty-icon">💬</div><h3>Select a conversation</h3><p>Choose a friend or group to start chatting.</p></div></div>';renderConversations()};
 
 function closeMessageActions(){document.querySelectorAll('.message-actions.open').forEach(x=>x.classList.remove('open'))}
 document.addEventListener('click',e=>{if(!e.target.closest('.message-tools-btn')&&!e.target.closest('.message-actions'))closeMessageActions();if(!e.target.closest('.message-reaction-chip')&&!e.target.closest('.react-picker'))closeReactionPickers();if(!e.target.closest('.conversation-action-menu')&&!e.target.closest('.conversation-more'))closeConversationActionMenu()});
@@ -1703,7 +1752,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelec
 // Long-press reaction picker removed: reactions are opened directly from the in-bubble emoji button.
 
 onAuthStateChanged(auth,async user=>{
-  if(!user){stopPresenceHeartbeat();clearReactionListeners();clearConversationMetaListeners();location.href='profile.html';return}
+  if(!user){stopPresenceHeartbeat();clearReactionListeners();clearConversationMetaListeners();clearFriendPresenceListeners();location.href='profile.html';return}
   startPresenceHeartbeat();
   await loadFriends();
   listenGroups();
