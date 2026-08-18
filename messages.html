@@ -45,7 +45,8 @@ body{min-height:100vh;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700)
 .message-reaction-trigger{display:inline-flex!important;align-items:center;justify-content:center;width:29px;height:29px;border:0;border-radius:999px;background:#fff;color:#183c8c;cursor:pointer;font-size:16px;line-height:1;box-shadow:0 4px 12px rgba(0,0,0,.12);font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;touch-action:manipulation;flex:0 0 29px;pointer-events:auto;opacity:0;transform:scale(.92);transition:opacity .14s ease,transform .14s ease}
 .message-row:hover .message-reaction-trigger,.message-row:focus-within .message-reaction-trigger,.message-reaction-trigger:focus{opacity:1;transform:scale(1)}
 .message-reaction-trigger:hover{background:#eef4ff;transform:scale(1.04)}
-.react-picker{position:absolute;display:none;align-items:center;padding:9px;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:14px;box-shadow:0 14px 40px rgba(0,0,0,.20);z-index:230;bottom:calc(100% + 9px);right:0;width:220px;max-width:min(220px,82vw);max-height:236px;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scroll-behavior:auto;grid-template-columns:repeat(3,1fr);gap:6px;pointer-events:auto}
+.react-picker{position:absolute;display:none;align-items:center;padding:9px;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:14px;box-shadow:0 14px 40px rgba(0,0,0,.20);z-index:230;bottom:0;right:calc(100% + 9px);width:220px;max-width:min(220px,46vw);max-height:236px;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scroll-behavior:auto;grid-template-columns:repeat(3,1fr);gap:6px;pointer-events:auto}
+.message-row.mine .react-picker{right:auto;left:calc(100% + 9px)}
 .react-picker.open{display:grid}
 .react-picker button{border:0;background:transparent;width:100%;height:39px;border-radius:10px;font-size:21px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;transition:background-color .12s ease,transform .12s ease}
 .react-picker button:hover{background:#eef4ff;transform:scale(1.08)}
@@ -115,8 +116,8 @@ body{overflow:hidden;}
 .conversation-empty{padding:20px;text-align:center;font-size:10px;opacity:.7}
 
 @media(min-width:801px){.react-picker{min-width:220px}}
-@media(max-width:800px){.react-picker.open{display:flex}.messenger{grid-template-columns:1fr;grid-template-rows:240px minmax(0,1fr)}.sidebar{border-right:none;border-bottom:1px solid rgba(255,255,255,.13);max-height:none;min-height:0}.chat{min-height:0}.chat-back{display:block;border:none;background:rgba(255,255,255,.12);color:#fff;width:34px;height:34px;border-radius:10px;cursor:pointer}.bubble{max-width:82%}}
-@media(max-width:520px){.container{padding:10px 8px 92px}.messenger{border-radius:20px}.sidebar{padding:13px}.chat-head{padding:12px}.messages{padding:14px 10px}.message-compose{padding:10px}.send-btn{padding:0 13px;min-width:62px}.nav-item{min-width:52px;font-size:8px}.nav-item div{font-size:20px}.message-reactions{margin-top:5px}.react-picker{width:220px;max-width:82vw;left:0;right:auto}.bubble-wrap{max-width:90%}}
+@media(max-width:800px){.react-picker.open{display:grid}.messenger{grid-template-columns:1fr;grid-template-rows:240px minmax(0,1fr)}.sidebar{border-right:none;border-bottom:1px solid rgba(255,255,255,.13);max-height:none;min-height:0}.chat{min-height:0}.chat-back{display:block;border:none;background:rgba(255,255,255,.12);color:#fff;width:34px;height:34px;border-radius:10px;cursor:pointer}.bubble{max-width:82%}}
+@media(max-width:520px){.container{padding:10px 8px 92px}.messenger{border-radius:20px}.sidebar{padding:13px}.chat-head{padding:12px}.messages{padding:14px 10px}.message-compose{padding:10px}.send-btn{padding:0 13px;min-width:62px}.nav-item{min-width:52px;font-size:8px}.nav-item div{font-size:20px}.message-reactions{margin-top:5px}.react-picker{width:205px;max-width:45vw}.bubble-wrap{max-width:90%}}
 @media (hover:hover) and (pointer:fine){.message-reaction-trigger{display:inline-flex}}
 @media (hover:none) and (pointer:coarse){.message-reaction-trigger{display:inline-flex!important;opacity:1;transform:scale(1)}}
 
@@ -132,8 +133,8 @@ body{overflow:hidden;}
   .bubble{font-size:12px;padding:9px 11px}
   .message-tools-btn{width:27px;height:27px}
   .message-actions{min-width:175px;max-width:76vw}
-  .react-picker{right:auto;left:0;width:220px;max-width:82vw}
-  .message-row.mine .react-picker{right:0;left:auto}
+  .react-picker{right:calc(100% + 8px);left:auto;width:210px;max-width:45vw}
+  .message-row.mine .react-picker{right:auto;left:calc(100% + 8px)}
   .reaction-tools{right:5px;bottom:-11px}
   .message-reactions{width:160px;height:32px;min-height:32px}
   .message-reaction-chip{font-size:11px;padding:2px 4px}
