@@ -13,7 +13,7 @@ body{min-height:100vh;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700)
 .header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:rgba(0,0,0,.16);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
 .logo-group{display:flex;gap:7px;align-items:center}.logo{width:46px;height:46px;object-fit:contain}.header-center{text-align:center;flex:1;padding:0 10px}.header-center h1{font-size:19px;font-weight:800}.header-center p{font-size:10px;opacity:.82}.header-right{width:96px}
 .container{max-width:1120px;margin:auto;padding:22px 16px 110px}.messenger{display:grid;grid-template-columns:320px 1fr;min-height:650px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.16);border-radius:26px;overflow:hidden;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 18px 50px rgba(0,0,0,.2)}
-.sidebar{background:rgba(255,255,255,.1);border-right:1px solid rgba(255,255,255,.13);padding:18px;display:flex;flex-direction:column;min-width:0}.side-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.side-title h2{font-size:18px}.count-pill{background:var(--yellow);color:var(--dark);padding:4px 9px;border-radius:999px;font-size:10px;font-weight:800}.search{width:100%;padding:11px 13px;border:none;outline:none;border-radius:13px;background:#fff;color:#183c8c;font-size:12px;margin-bottom:12px}.friend-list{display:flex;flex-direction:column;gap:8px;overflow:auto;padding-right:3px}.friend-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:15px;background:rgba(255,255,255,.08);border:1px solid transparent;cursor:pointer;transition:.18s;text-align:left;color:#fff}.friend-item:hover{background:rgba(255,255,255,.14);transform:translateX(2px)}.friend-item.active{background:#fff;color:#183c8c;border-color:#fff}.friend-avatar{width:44px;height:44px;flex:0 0 44px;border-radius:50%;overflow:hidden;background:#e8eef7;color:#183c8c;display:flex;align-items:center;justify-content:center;font-weight:800}.friend-avatar img{width:100%;height:100%;object-fit:cover}.friend-info{min-width:0;flex:1}.friend-info strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.friend-info small{display:block;font-size:10px;opacity:.72;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.friend-item.active .friend-info small{opacity:.65}
+.sidebar{background:rgba(255,255,255,.1);border-right:1px solid rgba(255,255,255,.13);padding:18px;display:flex;flex-direction:column;min-width:0}.side-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.side-title h2{font-size:18px}.count-pill{background:var(--yellow);color:var(--dark);padding:4px 9px;border-radius:999px;font-size:10px;font-weight:800}.search{width:100%;padding:11px 13px;border:none;outline:none;border-radius:13px;background:#fff;color:#183c8c;font-size:12px;margin-bottom:12px}.friend-list{display:flex;flex-direction:column;gap:8px;overflow:auto;padding-right:3px}.friend-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:15px;background:rgba(255,255,255,.08);border:1px solid transparent;cursor:pointer;transition:.18s;text-align:left;color:#fff}.friend-item:hover{background:rgba(255,255,255,.14);transform:translateX(2px)}.friend-item.active{background:#fff;color:#183c8c;border-color:#fff}.friend-avatar{width:44px;height:44px;flex:0 0 44px;border-radius:50%;overflow:hidden;background:#e8eef7;color:#183c8c;display:flex;align-items:center;justify-content:center;font-weight:800}.friend-avatar img{width:100%;height:100%;object-fit:cover}.friend-info{min-width:0;flex:1}.friend-info strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.friend-info small{display:block;font-size:10px;opacity:.72;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.friend-item.active .friend-info small{opacity:.65}.friend-preview-line{display:flex;align-items:center;gap:7px;margin-top:2px;min-width:0}.friend-preview-line .friend-preview{display:block;flex:1;min-width:0;font-size:10px;opacity:.72;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.conversation-time{flex:0 0 auto;font-size:8px;opacity:.62;white-space:nowrap}.friend-item.has-unread .friend-info strong{font-weight:800}.friend-item.has-unread .friend-preview-line .friend-preview{opacity:.95;font-weight:600}.friend-item.active .friend-preview-line .friend-preview{opacity:.68}.friend-item.active .conversation-time{opacity:.58}
 .chat{display:flex;flex-direction:column;min-width:0;background:rgba(255,255,255,.05)}.chat-empty{height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px}.empty-inner{max-width:360px}.empty-icon{font-size:56px;margin-bottom:10px}.empty-inner h3{font-size:22px;margin-bottom:6px}.empty-inner p{font-size:12px;opacity:.78;line-height:1.6}
 .chat-head{display:flex;align-items:center;gap:12px;padding:15px 18px;background:rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.1)}.chat-back{display:none}.chat-avatar{width:46px;height:46px;border-radius:50%;overflow:hidden;background:#e8eef7;color:#183c8c;display:flex;align-items:center;justify-content:center;font-weight:800;flex:0 0 46px}.chat-avatar img{width:100%;height:100%;object-fit:cover}.chat-person{min-width:0}.chat-person strong{display:block;font-size:14px}.chat-person small{font-size:10px;opacity:.72}.messages{flex:1;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:8px;min-height:0}.message-row{display:flex;width:100%}.message-row.mine{justify-content:flex-end}.bubble{max-width:min(72%,520px);padding:10px 13px;border-radius:17px;background:#fff;color:#183c8c;box-shadow:0 6px 18px rgba(0,0,0,.08);font-size:12px;line-height:1.55;word-break:break-word}.message-row.mine .bubble{background:var(--yellow);color:#183c8c;border-bottom-right-radius:5px}.message-row:not(.mine) .bubble{border-bottom-left-radius:5px}.bubble small{display:block;margin-top:5px;font-size:8px;opacity:.58}.message-compose{display:flex;gap:8px;padding:13px 15px;background:rgba(0,0,0,.12);border-top:1px solid rgba(255,255,255,.1)}.message-input{flex:1;min-width:0;border:none;outline:none;border-radius:14px;padding:12px 13px;font-size:12px;background:#fff;color:#183c8c;resize:none;height:44px}.send-btn{border:none;border-radius:14px;padding:0 17px;background:var(--yellow);color:var(--dark);font-weight:800;cursor:pointer;min-width:76px}.send-btn:disabled{opacity:.6;cursor:not-allowed}
 .loading{padding:28px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:9px;font-size:11px;opacity:.86}.spinner{width:30px;height:30px;border:3px solid rgba(255,255,255,.25);border-top-color:var(--yellow);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
@@ -145,7 +145,15 @@ body{overflow:hidden;}
 .group-setting-btn{border:0;border-radius:11px;padding:10px;background:#eef4ff;color:#183c8c;font-size:9px;font-weight:800;cursor:pointer}
 .group-setting-btn.danger{background:#fff0f0;color:#b91c1c}
 .group-setting-btn.warn{background:#fff8df;color:#8a6d00}
-
+.group-confirm-card{max-width:400px;text-align:center;padding:24px 22px}
+.group-confirm-icon{width:56px;height:56px;margin:0 auto 12px;border-radius:18px;display:flex;align-items:center;justify-content:center;background:#fff0f0;font-size:26px}
+.group-confirm-card h3{font-size:17px;color:#183c8c;margin-bottom:7px}
+.group-confirm-card p{font-size:11px;color:#66728a;line-height:1.55;margin-bottom:16px}
+.group-confirm-name{font-weight:800;color:#183c8c}
+.group-confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.group-confirm-btn{border:0;border-radius:11px;padding:11px;font-size:10px;font-weight:800;cursor:pointer}
+.group-confirm-btn.cancel{background:#eef4ff;color:#183c8c}
+.group-confirm-btn.danger{background:#b91c1c;color:#fff}
 
 @media(min-width:801px){.react-picker{min-width:220px}}
 @media(max-width:800px){.react-picker.open{display:grid}.messenger{grid-template-columns:1fr;grid-template-rows:240px minmax(0,1fr)}.sidebar{border-right:none;border-bottom:1px solid rgba(255,255,255,.13);max-height:none;min-height:0}.chat{min-height:0}.chat-back{display:block;border:none;background:rgba(255,255,255,.12);color:#fff;width:34px;height:34px;border-radius:10px;cursor:pointer}.bubble{max-width:82%}}
@@ -294,6 +302,18 @@ body{overflow:hidden;}
   </div>
 </div>
 
+<div id="groupConfirmModal" class="modal-backdrop">
+  <div class="modal-card group-confirm-card">
+    <div id="groupConfirmIcon" class="group-confirm-icon">⚠️</div>
+    <h3 id="groupConfirmTitle">Are you sure?</h3>
+    <p id="groupConfirmText"></p>
+    <div class="group-confirm-actions">
+      <button id="groupConfirmCancel" class="group-confirm-btn cancel" type="button">Cancel</button>
+      <button id="groupConfirmProceed" class="group-confirm-btn danger" type="button">Confirm</button>
+    </div>
+  </div>
+</div>
+
 <div id="conversationActionMenu" class="conversation-action-menu" aria-hidden="true"></div>
 <div id="toast" class="toast"></div>
 
@@ -309,7 +329,7 @@ body{overflow:hidden;}
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 import {
-  getFirestore,doc,getDoc,collection,getDocs,query,where,limit,addDoc,setDoc,updateDoc,
+  getFirestore,doc,getDoc,collection,getDocs,query,where,limit,orderBy,addDoc,setDoc,updateDoc,
   deleteDoc,serverTimestamp,onSnapshot,arrayUnion,writeBatch
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
@@ -338,6 +358,8 @@ let groupMessageDocs=[];
 let lastMessageRenderSignature='';
 let activeConversationMenu=null;
 const conversationPrefsKey='cathsMessagesConversationPrefsV1';
+const conversationMetaCache=new Map();
+const conversationMetaUnsubs=new Map();
 
 
 const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
@@ -354,6 +376,66 @@ function getConversationPrefs(item){const p=readConversationPrefs();return p[con
 function setConversationPref(item,patch){const p=readConversationPrefs(),key=conversationPrefKey(item);p[key]={...(p[key]||{}),...patch};writeConversationPrefs(p)}
 function isConversationPinned(item){return getConversationPrefs(item).pinned===true}
 function isConversationMuted(item){return getConversationPrefs(item).muted===true}
+function conversationActivityMs(item){
+  const meta=conversationMetaCache.get(conversationKey(item));
+  return Number(meta?.createdAtMs||0);
+}
+function conversationActivityPreview(item){
+  const meta=conversationMetaCache.get(conversationKey(item));
+  if(!meta)return item.kind==='group'?'Group chat':'Tap to open conversation';
+  if(meta.unsent) return 'This message was unsent.';
+  return meta.preview || (item.kind==='group'?'Group chat':'Tap to open conversation');
+}
+function conversationActivityTime(item){
+  const meta=conversationMetaCache.get(conversationKey(item));
+  return meta?.createdAtMs ? formatConversationListTime(meta.createdAtMs) : '';
+}
+function formatConversationListTime(value){
+  try{
+    const d=new Date(value),now=new Date();
+    const sameDay=d.toDateString()===now.toDateString();
+    if(sameDay)return d.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});
+    const yesterday=new Date(now);yesterday.setDate(now.getDate()-1);
+    if(d.toDateString()===yesterday.toDateString())return 'Yesterday';
+    return d.toLocaleDateString([], {month:'short',day:'numeric'});
+  }catch{return ''}
+}
+function reconcileConversationMetaListeners(){
+  const items=[...friends.map(f=>({...f,kind:'friend'})),...groups.map(g=>({...g,uid:g.id,kind:'group'}))];
+  const wanted=new Set(items.map(conversationKey));
+  for(const [key,unsub] of conversationMetaUnsubs){
+    if(!wanted.has(key)){try{unsub()}catch{};conversationMetaUnsubs.delete(key);conversationMetaCache.delete(key);}
+  }
+  items.forEach(item=>{
+    const key=conversationKey(item);
+    if(conversationMetaUnsubs.has(key))return;
+    const ref= item.kind==='group'
+      ? collection(db,'groups',item.id,'messages')
+      : collection(db,'conversations',chatId(auth.currentUser.uid,item.uid),'messages');
+    const q=query(ref,orderBy('createdAt','desc'),limit(1));
+    const unsub=onSnapshot(q,snap=>{
+      const d=snap.docs[0];
+      const m=d?.data()||{};
+      const createdAtMs=m.createdAt?.toMillis?.() || 0;
+      conversationMetaCache.set(key,{
+        messageId:d?.id||'',
+        createdAtMs,
+        senderUid:m.senderUid||'',
+        unsent:m.unsent===true,
+        preview:safePreviewText(m).slice(0,90)
+      });
+      renderConversations();
+    },err=>{
+      console.error('Conversation preview listener',key,err);
+    });
+    conversationMetaUnsubs.set(key,unsub);
+  });
+}
+function clearConversationMetaListeners(){
+  conversationMetaUnsubs.forEach(unsub=>{try{unsub()}catch{}});
+  conversationMetaUnsubs.clear();
+  conversationMetaCache.clear();
+}
 function isGroupAdmin(group,uid=auth.currentUser?.uid){if(!group||!uid)return false;return group.createdBy===uid || (Array.isArray(group.adminUids)&&group.adminUids.includes(uid))}
 function groupAdminUids(group){const ids=Array.isArray(group?.adminUids)?[...group.adminUids]:[];if(group?.createdBy&&!ids.includes(group.createdBy))ids.unshift(group.createdBy);return ids.filter(uid=>(group?.memberUids||[]).includes(uid))}
 function messageRenderSignature(docs){
@@ -808,6 +890,7 @@ async function loadFriends(){
     }));
     friends.sort((a,b)=>String(a.nickname||a.name||a.username||'').localeCompare(String(b.nickname||b.name||b.username||'')));
   }catch(e){console.error('friends',e);friends=[]}
+  reconcileConversationMetaListeners();
   renderConversations();
 }
 
@@ -817,6 +900,7 @@ function listenGroups(){
   const q=query(collection(db,'groups'),where('memberUids','array-contains',me.uid),limit(100));
   unsubscribeGroups=onSnapshot(q,snap=>{
     groups=snap.docs.map(d=>({id:d.id,...d.data(),kind:'group'})).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')));
+    reconcileConversationMetaListeners();
     renderConversations();
     renderForwardChoices();
     refreshUnreadCounts();
@@ -826,11 +910,15 @@ function listenGroups(){
 function conversationItems(){
   const items=[
     ...friends.map(f=>({...f,kind:'friend'})),
-    ...groups.map(g=>({...g,uid:g.id}))
+    ...groups.map(g=>({...g,uid:g.id,kind:'group'}))
   ];
   return items.sort((a,b)=>{
     const ap=isConversationPinned(a),bp=isConversationPinned(b);
     if(ap!==bp)return ap?-1:1;
+    const au=getUnreadCount(a)>0,bu=getUnreadCount(b)>0;
+    if(au!==bu)return au?-1:1;
+    const at=conversationActivityMs(a),bt=conversationActivityMs(b);
+    if(at!==bt)return bt-at;
     const an=(a.kind==='group'?(a.name||''):(a.nickname||a.name||a.username||a.displayName||'')).toLowerCase();
     const bn=(b.kind==='group'?(b.name||''):(b.nickname||b.name||b.username||b.displayName||'')).toLowerCase();
     return an.localeCompare(bn);
@@ -865,11 +953,23 @@ window.toggleConversationPin=()=>{if(!activeConversationMenu)return;setConversat
 window.toggleConversationMute=()=>{if(!activeConversationMenu)return;setConversationPref(activeConversationMenu,{muted:!isConversationMuted(activeConversationMenu)});closeConversationActionMenu();renderConversations();};
 window.openGroupSettingsFromMenu=()=>{const item=activeConversationMenu;closeConversationActionMenu();if(item){const g=groups.find(x=>x.id===item.id);if(g)openGroupManage(g)}};
 
-function renderConversations(list=conversationItems()){
+function renderConversations(list=null){
   const box=$('conversationList');
-  const sorted=[...list].sort((a,b)=>{
+  let base=list;
+  if(!base){
+    const q=String($('friendSearch')?.value||'').trim().toLowerCase();
+    base=conversationItems().filter(x=>{
+      const name=x.kind==='group'?(x.name||''):(x.nickname||x.name||x.username||x.displayName||'');
+      return !q||name.toLowerCase().includes(q);
+    });
+  }
+  const sorted=[...base].sort((a,b)=>{
     const ap=isConversationPinned(a),bp=isConversationPinned(b);
     if(ap!==bp)return ap?-1:1;
+    const au=getUnreadCount(a)>0,bu=getUnreadCount(b)>0;
+    if(au!==bu)return au?-1:1;
+    const at=conversationActivityMs(a),bt=conversationActivityMs(b);
+    if(at!==bt)return bt-at;
     const an=(a.kind==='group'?(a.name||''):(a.nickname||a.name||a.username||a.displayName||'')).toLowerCase();
     const bn=(b.kind==='group'?(b.name||''):(b.nickname||b.name||b.username||b.displayName||'')).toLowerCase();
     return an.localeCompare(bn);
@@ -883,12 +983,16 @@ function renderConversations(list=conversationItems()){
     const sub=group?`${(item.memberUids||[]).length} members`:(item.username?'@'+item.username:'Friend');
     const unread=getUnreadCount(item);
     const pinned=isConversationPinned(item), muted=isConversationMuted(item);
-    return `<button type="button" class="friend-item ${activeConversation?.id===id?'active':''}" data-kind="${group?'group':'friend'}" data-id="${esc(id)}">
+    const preview=conversationActivityPreview(item);
+    const activityTime=conversationActivityTime(item);
+    const lastSender=conversationMetaCache.get(conversationKey(item))?.senderUid||'';
+    const previewText=lastSender===auth.currentUser?.uid && preview && !preview.startsWith('↗ Shared') && !preview.startsWith('↗ Forwarded') && !preview.startsWith('This message') ? `You: ${preview}` : preview;
+    return `<button type="button" class="friend-item ${activeConversation?.id===id?'active':''}${unread?' has-unread':''}" data-kind="${group?'group':'friend'}" data-id="${esc(id)}">
       ${group?groupAvatarHtml(item):avatarHtml(item)}
       <span class="friend-info">
         <strong>${esc(name)}</strong>
         <small>${esc(sub)}</small>
-        ${unread?`<span class="unread-line"><span class="unread-dot"></span>${unread===1?'1 Unread message':`${unread} Unread messages`}</span>`:`<span class="friend-preview">${group?'Group chat':'Tap to open conversation'}</span>`}
+        <span class="friend-preview-line"><span class="friend-preview">${esc(previewText)}</span>${activityTime?`<time class="conversation-time">${esc(activityTime)}</time>`:''}</span>
       </span>
       <span class="conversation-state" aria-hidden="true">${pinned?'📌':''}${muted?'🔕':''}</span>
       ${unread?`<span class="unread-count">${unread}</span>`:''}
@@ -1408,56 +1512,82 @@ window.toggleGroupAdmin=async(uid)=>{
     populateGroupAdminSelect();await renderGroupManageMembers();renderConversations();showToast(admins.has(uid)?'Admin added.':'Admin removed.');
   }catch(e){console.error(e);showToast('Could not update admin role.')}
 };
+let pendingGroupConfirmAction=null;
+function closeGroupConfirm(){pendingGroupConfirmAction=null;closeModal('groupConfirmModal')}
+function openGroupConfirm({title,text,icon='⚠️',buttonText='Confirm',onConfirm}){
+  $('groupConfirmIcon').textContent=icon;
+  $('groupConfirmTitle').textContent=title;
+  $('groupConfirmText').innerHTML=text;
+  $('groupConfirmProceed').textContent=buttonText;
+  pendingGroupConfirmAction=onConfirm;
+  openModal('groupConfirmModal');
+}
+$('groupConfirmCancel').addEventListener('click',closeGroupConfirm);
+$('groupConfirmProceed').addEventListener('click',async()=>{const action=pendingGroupConfirmAction;closeGroupConfirm();if(action)await action()});
+
 window.kickGroupMember=async(uid)=>{
   const me=auth.currentUser;if(!me||!activeGroup||!isCurrentUserGroupAdmin())return;
-  if(uid===activeGroup.createdBy||uid===me.uid){showToast(uid===me.uid?'Use Leave group to leave.':'The creator cannot be kicked.');return}
-  if(!confirm('Remove this member from the group?'))return;
-  try{
-    const memberUids=(activeGroup.memberUids||[]).filter(x=>x!==uid);
-    const adminUids=groupAdminUids(activeGroup).filter(x=>x!==uid);
-    await updateDoc(doc(db,'groups',activeGroup.id),{memberUids,adminUids,updatedAt:serverTimestamp()});
-    activeGroup={...activeGroup,memberUids,adminUids};groups=groups.map(g=>g.id===activeGroup.id?activeGroup:g);
-    populateGroupAdminSelect();await renderGroupManageMembers();renderConversations();showToast('Member removed.');
-  }catch(e){console.error(e);showToast(e?.code==='permission-denied'?'You do not have permission to remove this member.':'Could not remove member.')}
+  if(uid===activeGroup.createdBy){showToast('The creator cannot be kicked.');return}
+  if(uid===me.uid){showToast('Use Leave group to leave.');return}
+  let memberName='this member';
+  try{const profile=await getUserProfile(uid);memberName=profile.nickname||profile.name||profile.displayName||'this member'}catch{}
+  openGroupConfirm({
+    title:'Are you sure you want to kick this member?',
+    text:`You are about to remove <span class="group-confirm-name">${esc(memberName)}</span> from <strong>${esc(activeGroup.name||'this group')}</strong>.`,
+    icon:'🚫',buttonText:'Kick member',
+    onConfirm:async()=>{
+      try{
+        const memberUids=(activeGroup.memberUids||[]).filter(x=>x!==uid);
+        const adminUids=groupAdminUids(activeGroup).filter(x=>x!==uid);
+        await updateDoc(doc(db,'groups',activeGroup.id),{memberUids,adminUids,updatedAt:serverTimestamp()});
+        activeGroup={...activeGroup,memberUids,adminUids};
+        groups=groups.map(g=>g.id===activeGroup.id?activeGroup:g);
+        populateGroupAdminSelect();await renderGroupManageMembers();renderConversations();
+        showToast('Member removed.');
+      }catch(e){
+        console.error(e);
+        showToast(e?.code==='permission-denied'?'You do not have permission to remove this member.':'Could not remove member.');
+      }
+    }
+  });
 };
+
 window.leaveActiveGroup=async()=>{
   const me=auth.currentUser;if(!me||!activeGroup)return;
-  if(!confirm(`Leave ${activeGroup.name||'this group'}?`))return;
-  try{
-    const currentMembers=[...(activeGroup.memberUids||[])];
-    const memberUids=currentMembers.filter(x=>x!==me.uid);
-    if(!memberUids.length){showToast('You are the last member. The group must keep one owner.');return}
-
-    const currentAdmins=groupAdminUids(activeGroup);
-    const adminUids=currentAdmins.filter(x=>x!==me.uid && memberUids.includes(x));
-    const payload={memberUids,updatedAt:serverTimestamp()};
-
-    // If the creator leaves, automatically transfer ownership to the first remaining member.
-    if(activeGroup.createdBy===me.uid){
-      const nextOwner=memberUids[0];
-      payload.createdBy=nextOwner;
-      payload.adminUids=Array.from(new Set([nextOwner,...adminUids]));
-    }else if(Object.prototype.hasOwnProperty.call(activeGroup,'adminUids')){
-      // Keep the stored admin list unchanged for a regular member leaving.
-      // groupAdminUids() filters out non-members automatically.
+  openGroupConfirm({
+    title:'Are you sure you want to leave?',
+    text:`You are about to leave <span class="group-confirm-name">${esc(activeGroup.name||'this group')}</span>.`,
+    icon:'🚪',buttonText:'Leave group',
+    onConfirm:async()=>{
+      try{
+        const currentMembers=[...(activeGroup.memberUids||[])];
+        const memberUids=currentMembers.filter(x=>x!==me.uid);
+        const currentAdmins=groupAdminUids(activeGroup);
+        const adminUids=currentAdmins.filter(x=>x!==me.uid && memberUids.includes(x));
+        if(!memberUids.length){
+          await deleteDoc(doc(db,'groups',activeGroup.id));
+          groups=groups.filter(g=>g.id!==activeGroup.id);
+          closeGroupManage();window.clearChatSelection();showToast('You left the group.');return;
+        }
+        const payload={memberUids,adminUids,updatedAt:serverTimestamp(),createdBy:activeGroup.createdBy};
+        let ownershipTransferred=false;
+        if(activeGroup.createdBy===me.uid){
+          const nextOwner=memberUids[0];
+          payload.createdBy=nextOwner;
+          payload.adminUids=Array.from(new Set([nextOwner,...adminUids]));
+          ownershipTransferred=true;
+        }
+        await updateDoc(doc(db,'groups',activeGroup.id),payload);
+        const nextGroup={...activeGroup,memberUids,createdBy:payload.createdBy,adminUids:payload.adminUids};
+        groups=groups.map(g=>g.id===activeGroup.id?nextGroup:g);
+        closeGroupManage();window.clearChatSelection();
+        showToast(ownershipTransferred?'You left. Ownership transferred to the next member.':'You left the group.');
+      }catch(e){
+        console.error(e);
+        showToast(e?.code==='permission-denied'?'You do not have permission to leave this group.':'Could not leave the group.');
+      }
     }
-
-    await updateDoc(doc(db,'groups',activeGroup.id),payload);
-
-    const nextGroup={
-      ...activeGroup,
-      memberUids,
-      createdBy:payload.createdBy||activeGroup.createdBy,
-      adminUids:payload.adminUids||activeGroup.adminUids
-    };
-    groups=groups.map(g=>g.id===activeGroup.id?nextGroup:g);
-    closeGroupManage();
-    window.clearChatSelection();
-    showToast(activeGroup.createdBy===me.uid?'You left. Ownership transferred to the next member.':'You left the group.');
-  }catch(e){
-    console.error(e);
-    showToast(e?.code==='permission-denied'?'You do not have permission to leave this group.':'Could not leave the group.');
-  }
+  });
 };
 window.toggleActiveGroupMute=()=>{
   if(!activeGroup)return;
@@ -1495,12 +1625,12 @@ async function saveGroupManage(){
 document.querySelectorAll('.modal-backdrop').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}));
 window.addEventListener('resize',closeConversationActionMenu);
 window.addEventListener('scroll',closeConversationActionMenu,true);
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.modal-backdrop.open').forEach(m=>m.classList.remove('open'));closeMessageActions();closeReactionPickers()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.modal-backdrop.open').forEach(m=>m.classList.remove('open'));pendingGroupConfirmAction=null;closeMessageActions();closeReactionPickers()}});
 
 // Long-press reaction picker removed: reactions are opened directly from the in-bubble emoji button.
 
 onAuthStateChanged(auth,async user=>{
-  if(!user){stopPresenceHeartbeat();clearReactionListeners();location.href='profile.html';return}
+  if(!user){stopPresenceHeartbeat();clearReactionListeners();clearConversationMetaListeners();location.href='profile.html';return}
   startPresenceHeartbeat();
   await loadFriends();
   listenGroups();
