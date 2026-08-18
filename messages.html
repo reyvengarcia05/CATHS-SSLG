@@ -1492,8 +1492,8 @@ window.openGroupManage=async(group=activeGroup)=>{
   const admin=isCurrentUserGroupAdmin();
   $('groupManageNameInput').value=activeGroup.name||'';
   $('groupManageNameInput').disabled=!admin;
-  $('groupManageDescription').textContent=admin?'You can manage the group, members, and admins.':'You can leave or mute the group. Only the creator and admins can manage members.';
-  $('groupControlNote').textContent=`Creator and admins can manage members and admins.${activeGroup.createdBy?' The creator is permanent owner.':''}`;
+  $('groupManageDescription').textContent=admin?'Creator and admins have the same management permissions: add members, add/remove admins, and kick members/admins.':'You can leave or mute the group. Creator and admins manage the group.';
+  $('groupControlNote').textContent=`Creator and admins can add members, add/remove admins, and kick members/admins.${activeGroup.createdBy?' The creator is the permanent owner while they remain in the group.':''}`;
   const existing=activeGroup.memberUids||[];
   fillFriendChoices('groupManageFriendChoices',existing);
   $('groupManageFriendChoices').style.opacity=admin?'1':'.5';
