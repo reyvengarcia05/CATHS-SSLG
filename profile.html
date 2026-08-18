@@ -64,8 +64,13 @@ body{
 }
 
 .header-center{
-    flex:1;
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:min(760px,calc(100% - 220px));
     text-align:center;
+    pointer-events:none;
 }
 
 .header-center h1{
@@ -672,13 +677,15 @@ window.addFriendFromReaction=addFriendFromReaction;
 .post-counts{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:11px;opacity:.78;margin:8px 0 0}
 .reaction-summary{display:inline-flex;align-items:center;gap:3px;border:none;background:transparent;color:inherit;font:inherit;cursor:pointer;padding:0}
 .reaction-summary:hover{text-decoration:underline}
-.post-manage{margin-left:auto;position:relative}
-.post-manage-btn{border:none;background:rgba(255,255,255,.10);color:#fff;width:32px;height:32px;border-radius:10px;cursor:pointer;font-size:17px;transition:.2s}
+.post-manage{margin-left:auto;position:relative;flex:0 0 auto}
+.post-manage-btn{border:none;background:rgba(255,255,255,.10);color:#fff;width:32px;height:32px;border-radius:10px;cursor:pointer;font-size:17px;transition:.2s;display:flex;align-items:center;justify-content:center}
 .post-manage-btn:hover{background:rgba(255,255,255,.18);transform:translateY(-1px)}
-.post-menu-backdrop{position:fixed;inset:0;display:none;z-index:100000}.post-menu-backdrop.open{display:block}
-.post-menu{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);min-width:260px;max-width:calc(100vw - 32px);background:#fff;color:#183c8c;border-radius:18px;padding:9px;box-shadow:0 24px 60px rgba(0,0,0,.32);z-index:100001;animation:postMenuPop .2s ease-out}
-.post-menu button{width:100%;border:none;background:transparent;text-align:left;padding:11px 12px;border-radius:10px;color:#183c8c;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.post-menu button:hover{background:#eef4ff}.post-menu button.pin{color:#183c8c}.post-menu button.pin:hover{background:#eef4ff}.post-menu button.danger{color:#c0392b}.post-menu button.danger:hover{background:#fff0ee}
-@keyframes postMenuPop{from{opacity:0;transform:translate(-50%,-46%) scale(.96)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.post-menu-backdrop{position:absolute;right:0;top:0;width:32px;height:32px;display:none;z-index:100000;pointer-events:none}
+.post-menu-backdrop.open{display:block;pointer-events:auto}
+.post-menu{position:absolute;right:0;top:calc(100% + 8px);width:250px;max-width:min(250px,calc(100vw - 32px));background:#fff;color:#183c8c;border:1px solid #e8edf7;border-radius:16px;padding:8px;box-shadow:0 18px 44px rgba(0,0,0,.24);z-index:100001;animation:postMenuPop .18s ease-out}
+.post-menu button{width:100%;border:none;background:transparent;text-align:left;padding:11px 12px;border-radius:10px;color:#183c8c;font:inherit;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px}.post-menu button:hover{background:#eef4ff}.post-menu button.pin{color:#183c8c}.post-menu button.pin:hover{background:#eef4ff}.post-menu button.danger{color:#c0392b}.post-menu button.danger:hover{background:#fff0ee}
+@keyframes postMenuPop{from{opacity:0;transform:translateY(-4px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:768px){.post-menu{right:0;top:calc(100% + 7px);width:230px;max-width:calc(100vw - 28px)}}
 .manage-modal,.privacy-modal{position:fixed;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:18px;z-index:100002}.manage-modal.open,.privacy-modal.open{display:flex}
 .manage-box,.privacy-box{width:100%;max-width:440px;background:#fff;color:#183c8c;border-radius:24px;padding:24px;box-shadow:0 24px 70px rgba(0,0,0,.35);animation:postPop .22s ease}
 .manage-box h3,.privacy-box h3{font-size:20px;margin-bottom:7px}.manage-box p,.privacy-box p{font-size:12px;color:#6f7b91;line-height:1.55}
@@ -1122,7 +1129,11 @@ window.addFriendFromReaction=addFriendFromReaction;
     }
 
     .header-center{
+        left:50%;
+        top:50%;
+        width:calc(100% - 130px);
         padding:0 5px;
+        transform:translate(-50%,-50%);
     }
 
     .header-center h1{
@@ -1868,11 +1879,11 @@ window.addFriendFromReaction=addFriendFromReaction;
         class="nav-item">
 
         <div>
-            📢
+            📰
         </div>
 
         <span>
-            News
+            News Feed
         </span>
 
     </a>
@@ -2085,6 +2096,7 @@ async function publishPost(){
         await addDoc(collection(db,'posts'),{
             authorUid: user.uid,
             authorName: profile.name || profile.displayName || user.displayName || 'User',
+            authorEmail: profile.email || user.email || '',
             username: profile.username || '',
             photoURL: profile.photoURL || user.photoURL || '',
             text,
@@ -2115,7 +2127,7 @@ async function loadPosts(){
     list.innerHTML = '<div class="empty-posts">Loading posts...</div>';
     try{
         const snap = await getDocs(query(collection(db,'posts'), where('authorUid','==',user.uid), limit(50)));
-        const posts = snap.docs.map(d=>({id:d.id,...d.data()}));
+        const posts = snap.docs.map(d=>({id:d.id,...d.data(),authorEmail:user.email || ''}));
         posts.sort((a,b)=>{
             if(Boolean(a.pinned)!==Boolean(b.pinned)) return a.pinned ? -1 : 1;
             const ad = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
@@ -2154,7 +2166,7 @@ function renderPost(post){
         <div class="post-head">
           ${postAvatarHtml(post.photoURL)}
           <div class="post-author">
-            <strong>${escapePostHtml(post.authorName || 'User')}${verifiedBadgeHtml(post)}</strong>
+            <strong>${escapePostHtml(post.authorName || 'User')}${verifiedBadgeHtml(post.authorEmail || post.email || '')}</strong>
             <div class="post-meta">${escapePostHtml(postTimeLabel(post.createdAt))}</div>
           </div>
           <span class="post-visibility">${visibilityLabel}</span>
@@ -2245,20 +2257,17 @@ async function refreshPostCounts(postId){
 let activeManagePostId=null;
 function togglePostMenu(postId,event){
     event.stopPropagation();
+    const target=document.getElementById('menu-backdrop-'+postId);
+    const wasOpen=target?.classList.contains('open');
     document.querySelectorAll('.post-menu-backdrop.open').forEach(el=>el.classList.remove('open'));
-    const backdrop=document.getElementById('menu-backdrop-'+postId);
-    if(!backdrop) return;
-    const menu=backdrop.querySelector('.post-menu');
-    if(menu){
-        menu.style.left='50%';
-        menu.style.top='50%';
-        menu.style.transform='translate(-50%,-50%)';
-    }
-    backdrop.classList.add('open');
+    if(target && !wasOpen) target.classList.add('open');
 }
 window.togglePostMenu=togglePostMenu;
 function closePostMenu(postId,event){if(event)event.stopPropagation();document.getElementById('menu-backdrop-'+postId)?.classList.remove('open');}
 window.closePostMenu=closePostMenu;
+document.addEventListener('click',e=>{
+    if(!e.target.closest('.post-manage')) document.querySelectorAll('.post-menu-backdrop.open').forEach(el=>el.classList.remove('open'));
+});
 function openDeletePostModal(postId){activeManagePostId=postId;closePostMenu(postId);document.getElementById('deletePostModal')?.classList.add('open');}
 window.openDeletePostModal=openDeletePostModal;
 function closeDeletePostModal(){activeManagePostId=null;document.getElementById('deletePostModal')?.classList.remove('open');}
@@ -2418,6 +2427,7 @@ async function sharePost(postId){
         await addDoc(collection(db,'posts'),{
             authorUid:user.uid,
             authorName:profile.name || profile.displayName || user.displayName || 'User',
+            authorEmail:profile.email || user.email || '',
             username:profile.username || '',
             photoURL:profile.photoURL || user.photoURL || '',
             text:original.text || '',
@@ -2684,22 +2694,40 @@ async function loadProfileFriends(){
             return;
         }
 
-        const friends=snap.docs.map(d=>({id:d.id,...(d.data()||{})}));
+        const baseFriends=snap.docs.map(d=>({id:d.id,...(d.data()||{})}));
+        const friends=await Promise.all(baseFriends.map(async friend=>{
+            const friendId=friend.uid || friend.id;
+            let remote={};
+            try{
+                const userSnap=await getDoc(doc(db,'users',friendId));
+                if(userSnap.exists()) remote=userSnap.data()||{};
+            }catch(e){
+                console.warn('Could not load friend profile',friendId,e);
+            }
+            return {
+                ...friend,
+                ...remote,
+                uid:friendId,
+                email:remote.email || friend.email || ''
+            };
+        }));
+
         friends.sort((a,b)=>String(a.nickname||a.name||a.username||'').localeCompare(String(b.nickname||b.name||b.username||'')));
 
         list.innerHTML=friends.map(friend=>{
-            const friendId=friend.uid || friend.id;
+            const friendId=friend.uid;
             const friendName=friend.nickname || friend.name || friend.displayName || friend.username || 'Student';
             const username=friend.username ? `@${friend.username}` : '';
             const avatar=friend.photoURL
               ? `<div class="friend-profile-avatar"><img src="${escapePostHtml(friend.photoURL)}" alt=""></div>`
               : `<div class="friend-profile-avatar">${escapePostHtml(friendName.charAt(0).toUpperCase())}</div>`;
+            const verified=verifiedBadgeHtml(friend.email || '');
 
             return `<div class="friend-profile-row" data-friend-id="${escapePostHtml(friendId)}">
                 <a class="friend-profile-link" href="user-profile.html?uid=${encodeURIComponent(friendId)}">
                     ${avatar}
                     <div class="friend-profile-info">
-                        <span class="friend-profile-name">${escapePostHtml(friendName)}${verifiedBadgeHtml(friend)}</span>
+                        <span class="friend-profile-name">${escapePostHtml(friendName)}${verified}</span>
                         <span class="friend-profile-username">${escapePostHtml(username)}</span>
                     </div>
                 </a>
