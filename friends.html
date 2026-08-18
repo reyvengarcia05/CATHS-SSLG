@@ -791,6 +791,7 @@ main{
 }
 .profile-btn:hover{background:rgba(255,255,255,.22)}
 
+.verified-badge{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;margin-left:5px;border-radius:50%;background:#1d9bf0;color:#fff;font-size:10px;font-weight:900;line-height:1;vertical-align:middle;box-shadow:0 1px 3px rgba(29,155,240,.28)}
 </style>
 </head>
 <body>
@@ -1006,6 +1007,11 @@ let currentProfile = null;
 let searchTimer = null;
 
 const $ = (id) => document.getElementById(id);
+const VERIFIED_ADMIN_EMAILS = new Set(['reyvengarcia15@gmail.com','reyvenbermudo091@gmail.com','reyvengarcia05@gmail.com','chezcadc14@gmail.com','nathanielgarc679@gmail.com','marteena.133@gmail.com','gabbicastillo0126@gmail.com','leddadanielle91@gmail.com','jennapastor062@gmail.com','dhenmark1313@gmail.com','christianangelointes0@gmail.com','alexaislacruz@gmail.com','galangjullianne016@gmail.com','vanessajotic2403@gmail.com','aquinobernardjr0@gmail.com','angellyar0909@gmail.com','vhergelnarciso@gmail.com','sicatmadisson487@gmail.com']);
+function isVerifiedAdminEmail(email){return VERIFIED_ADMIN_EMAILS.has(String(email||'').trim().toLowerCase());}
+function verifiedBadgeHtml(userOrEmail){const email=typeof userOrEmail==='string'?userOrEmail:(userOrEmail?.email||'');return isVerifiedAdminEmail(email)?'<span class="verified-badge" title="Verified admin" aria-label="Verified admin">✓</span>':'';}
+function verifiedNameHtml(user){return `${escapeHtml(user?.nickname||user?.name||user?.displayName||user||'Student')}${verifiedBadgeHtml(user)}`;}
+
 
 function escapeHtml(value=''){
   return String(value)
@@ -1246,7 +1252,7 @@ function renderSearchResults(users){
     row.innerHTML = `
       ${avatarHtml(user)}
       <div class="user-main">
-        <strong>${escapeHtml(user.nickname || user.displayName || 'Student')}</strong>
+        <strong>${verifiedNameHtml(user)}</strong>
         <small>@${escapeHtml(user.username || '')}</small>
       </div>
       <button class="btn btn-primary" data-user-id="${escapeHtml(user.id)}">Add Friend</button>
@@ -1454,7 +1460,7 @@ async function loadRequests(){
       row.innerHTML = `
         ${avatarHtml({photoURL:req.fromPhotoURL,nickname:req.fromNickname,username:req.fromUsername})}
         <div class="row-info">
-          <strong>${escapeHtml(req.fromNickname || req.fromUsername || 'Student')}</strong>
+          <strong>${verifiedNameHtml(req.fromNickname || req.fromUsername || 'Student')}</strong>
           <small>@${escapeHtml(req.fromUsername || '')} sent you a friend request.</small>
         </div>
         <div class="actions">
@@ -1569,7 +1575,7 @@ async function loadSentRequests(){
           username:req.toUsername
         })}
         <div class="row-info">
-          <strong>${escapeHtml(req.toNickname || req.toUsername || 'Student')}</strong>
+          <strong>${verifiedNameHtml(req.toNickname || req.toUsername || 'Student')}</strong>
           <small>@${escapeHtml(req.toUsername || '')} • Request pending</small>
         </div>
         <div class="actions">
@@ -1587,7 +1593,7 @@ async function loadSentRequests(){
           username:req.toUsername
         })}
         <div class="row-info">
-          <strong>${escapeHtml(req.toNickname || req.toUsername || 'Student')}</strong>
+          <strong>${verifiedNameHtml(req.toNickname || req.toUsername || 'Student')}</strong>
           <small>@${escapeHtml(req.toUsername || '')} • Request pending</small>
         </div>
       `;
@@ -1648,7 +1654,7 @@ async function loadFriends(){
         <a class="friend-profile-link" href="user-profile.html?uid=${encodeURIComponent(friend.uid)}" aria-label="View ${escapeHtml(friend.nickname || friend.username || 'student')} profile">
           ${avatarHtml({photoURL:friend.photoURL,nickname:friend.nickname,username:friend.username})}
           <div class="row-info">
-            <strong>${escapeHtml(friend.nickname || friend.username || 'Student')}</strong>
+            <strong>${verifiedNameHtml(friend)}</strong>
             <small>@${escapeHtml(friend.username || '')}</small>
           </div>
         </a>
@@ -1682,7 +1688,7 @@ function openRemoveFriendModal(friend,row){
   preview.innerHTML = `
     ${avatarHtml({photoURL:friend.photoURL,nickname:friend.nickname,username:friend.username}, 'mini-avatar')}
     <div>
-      <strong>${escapeHtml(friend.nickname || friend.username || 'Student')}</strong>
+      <strong>${verifiedNameHtml(friend)}</strong>
       <span>@${escapeHtml(friend.username || '')}</span>
     </div>
   `;
