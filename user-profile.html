@@ -15,6 +15,7 @@ body{min-height:100vh;color:#fff;background:linear-gradient(135deg,#00296B,#003D
 .container{max-width:920px;margin:auto;padding:24px 16px 145px}.profile-card{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:28px;overflow:hidden;box-shadow:0 18px 45px rgba(0,0,0,.2)}
 .cover{height:190px;background:linear-gradient(135deg,rgba(0,41,107,.95),rgba(0,61,165,.75),rgba(255,215,0,.55));position:relative}.cover::after{content:'PUBLIC PROFILE';position:absolute;right:20px;bottom:18px;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);font-size:10px;letter-spacing:.5px;font-weight:700}
 .profile-main{padding:0 30px 30px;position:relative;z-index:2}.avatar-wrap{position:relative;z-index:3;margin-top:-62px;width:132px;height:132px;border-radius:50%;border:6px solid rgba(255,255,255,.95);background:#dfe7f5;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.25)}.avatar-wrap img{width:100%;height:100%;object-fit:cover;filter:none!important;-webkit-filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;opacity:1!important;transform:none!important}.fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:60px;color:#183c8c}
+.verified-badge{display:inline-flex;align-items:center;justify-content:center;width:21px;height:21px;margin-left:7px;border-radius:50%;background:#1DA1F2;color:#fff;font-size:13px;font-weight:900;vertical-align:3px;box-shadow:0 2px 7px rgba(29,161,242,.28)}
 .name{font-size:30px;font-weight:800;margin-top:18px;position:relative;z-index:3}.username{font-size:13px;opacity:.8;margin-top:2px}.bio{margin-top:15px;line-height:1.7;font-size:14px;max-width:720px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.chip{padding:7px 11px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.12);font-size:11px}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}.back-btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#FFD93D;color:#0d2c7a;padding:11px 18px;border-radius:13px;font-weight:800;font-size:13px}.status{margin-top:18px;padding:12px;border-radius:14px;background:rgba(255,255,255,.08);font-size:12px;text-align:center}
 /* PROFILE FRIENDS */
 .friends-section{
@@ -157,7 +158,7 @@ body{min-height:100vh;color:#fff;background:linear-gradient(135deg,#00296B,#003D
     <div class="cover"></div>
     <section class="profile-main">
       <div class="avatar-wrap"><img id="avatar" style="display:none" alt="Profile photo"><div id="fallback" class="fallback">👤</div></div>
-      <h2 id="name" class="name">Loading...</h2>
+      <h2 id="name" class="name"><span id="nameText">Loading...</span><span id="verifiedBadge" class="verified-badge" title="Verified Admin" aria-label="Verified Admin" style="display:none">✓</span></h2>
       <div id="username" class="username"></div>
       <div id="bio" class="bio">Loading profile...</div>
       <div class="chips"><span id="sectionChip" class="chip" style="display:none"></span><span class="chip">🎓 CATHS-MAIN Student</span></div>
@@ -226,6 +227,10 @@ const firebaseConfig={apiKey:"AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",authDomai
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const $=id=>document.getElementById(id);
 const params=new URLSearchParams(location.search); const uid=params.get('uid');
+const ADMIN_EMAILS = new Set(['reyvengarcia15@gmail.com', 'reyvenbermudo091@gmail.com', 'reyvengarcia05@gmail.com', 'chezcadc14@gmail.com', 'nathanielgarc679@gmail.com', 'marteena.133@gmail.com', 'Gabbicastillo0126@gmail.com', 'leddadanielle91@gmail.com', 'jennapastor062@gmail.com', 'dhenmark1313@gmail.com', 'christianangelointes0@gmail.com', 'alexaislacruz@gmail.com', 'galangjullianne016@gmail.com', 'vanessajotic2403@gmail.com', 'aquinobernardjr0@gmail.com', 'angellyar0909@gmail.com', 'vhergelnarciso@gmail.com', 'sicatmadisson487@gmail.com', 'chezcadc14@gmail.com'].map(e => e.toLowerCase()));
+function isVerifiedAdminEmail(email){return !!email && ADMIN_EMAILS.has(String(email).trim().toLowerCase());}
+function setProfileVerification(email){const b=$('verifiedBadge'); if(b) b.style.display=isVerifiedAdminEmail(email)?'inline-flex':'none';}
+
 let activeCommentPostId=null;
 let currentTarget=null;
 function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
@@ -478,9 +483,10 @@ async function loadProfile(){
   currentTarget=uid;
   try{
     const snap=await getDoc(doc(db,'users',uid));
-    if(!snap.exists()){ $('name').textContent='Profile not found'; $('bio').textContent='This student profile is no longer available.'; $('status').textContent='Profile unavailable.'; return; }
+    if(!snap.exists()){ $('nameText').textContent='Profile not found'; $('bio').textContent='This student profile is no longer available.'; $('status').textContent='Profile unavailable.'; return; }
     const d=snap.data()||{};
-    $('name').textContent=d.name||d.nickname||d.displayName||'Student';
+    $('nameText').textContent=d.name||d.nickname||d.displayName||'Student';
+    setProfileVerification(d.email||'');
     $('username').textContent=d.username?`@${d.username}`:'';
     $('bio').textContent=d.bio||'No bio yet.';
     if(d.section){$('sectionChip').style.display='inline-flex';$('sectionChip').textContent=`📚 ${d.section}`;}
@@ -494,7 +500,7 @@ async function loadProfile(){
     await updateMainFriendAction(uid);
     await loadProfileFriends();
     await loadPosts(friend, me?.uid===uid);
-  }catch(e){console.error(e);$('name').textContent='Unable to load profile';$('bio').textContent='Please check your Firebase Firestore rules.';$('status').textContent='Could not load this profile.';}
+  }catch(e){console.error(e);$('nameText').textContent='Unable to load profile';$('bio').textContent='Please check your Firebase Firestore rules.';$('status').textContent='Could not load this profile.';}
 }
 
 async function getPostsForVisibility(visibility){
