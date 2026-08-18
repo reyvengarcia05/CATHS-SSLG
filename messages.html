@@ -152,6 +152,24 @@ body{overflow:hidden;}
 .shared-post-card.unavailable{background:#f7f8fb;color:#7b879b;border-left-color:#c8d0dd;cursor:default!important}
 .shared-post-card.unavailable .shared-post-label,.shared-post-card.unavailable .shared-post-author{color:#707b8d}
 .shared-post-card.unavailable .shared-post-preview{color:#8b95a5}
+
+/* Stable side-mounted reaction picker: no layout shift / no hover blinking. */
+.bubble,.bubble-wrap{overflow:visible!important}
+.bubble .react-picker{position:absolute!important;display:none;top:50%;bottom:auto;transform:translateY(-50%);width:220px;max-width:min(44vw,220px);max-height:220px;overflow-y:auto;overflow-x:hidden;z-index:1000;flex:none!important}
+.message-row:not(.mine) .bubble .react-picker{left:calc(100% + 42px);right:auto}
+.message-row.mine .bubble .react-picker{right:calc(100% + 42px);left:auto}
+.bubble .react-picker.open{display:grid!important}
+.message-reaction-trigger{position:relative;z-index:1001}
+@media(max-width:800px){
+  .bubble .react-picker{width:min(190px,44vw);max-width:44vw;max-height:210px}
+  .message-row:not(.mine) .bubble .react-picker{left:calc(100% + 38px);right:auto}
+  .message-row.mine .bubble .react-picker{right:calc(100% + 38px);left:auto}
+}
+@media(max-width:520px){
+  .bubble .react-picker{width:min(180px,43vw);max-width:43vw;max-height:200px}
+  .message-row:not(.mine) .bubble .react-picker{left:calc(100% + 36px)}
+  .message-row.mine .bubble .react-picker{right:calc(100% + 36px)}
+}
 </style>
 </head>
 <body>
