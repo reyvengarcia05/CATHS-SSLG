@@ -50,6 +50,7 @@ body{min-height:100vh;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700)
 .react-picker button{border:0;background:transparent;width:100%;height:39px;border-radius:10px;font-size:21px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;transition:background-color .12s ease,transform .12s ease}
 .react-picker button:hover{background:#eef4ff;transform:scale(1.08)}
 .react-picker .react-picker-plus{font-family:inherit!important;font-size:18px!important;background:#eef4ff!important;color:#183c8c!important;font-weight:800}
+.group-sender-name{font-size:9px;font-weight:800;color:#5d6f98;margin:-2px 0 4px;line-height:1.2;letter-spacing:.01em}.message-row.mine .group-sender-name{display:none}
 .bubble{position:relative}
 .reply-preview{margin:0 0 8px;padding:7px 9px;border-left:3px solid #7d93d8;background:rgba(24,60,140,.06);border-radius:8px;color:#56698f;font-size:9px;line-height:1.45}
 .reply-preview strong{display:block;color:#183c8c;font-size:9px;margin-bottom:2px}
@@ -355,6 +356,7 @@ let currentPresence=null;
 let replyTarget=null;
 let directMessageDocs=[];
 let groupMessageDocs=[];
+const groupUserProfiles=new Map();
 let lastMessageRenderSignature='';
 let activeConversationMenu=null;
 const conversationPrefsKey='cathsMessagesConversationPrefsV1';
@@ -1068,6 +1070,7 @@ async function openGroup(group){
   const me=auth.currentUser;if(!me||!group)return;
   if(!(group.memberUids||[]).includes(me.uid)){showToast('You are not a member of this group.');return}
   activeGroup=group;activeFriend=null;activeConversation={kind:'group',id:group.id};
+  groupUserProfiles.clear();
   history.replaceState(null,'',`messages.html?group=${encodeURIComponent(group.id)}`);
   renderConversations();
   $('chatPane').innerHTML=`<div class="chat-head">
@@ -1087,7 +1090,7 @@ async function openGroup(group){
   setTimeout(markConversationRead,180);
 }
 
-window.clearChatSelection=()=>{stopFriendPresence();closeConversationActionMenu();clearReactionListeners();lastMessageRenderSignature='';activeFriend=null;activeGroup=null;activeConversation=null;if(unsubscribeMessages)unsubscribeMessages();$('chatPane').innerHTML='<div class="chat-empty"><div class="empty-inner"><div class="empty-icon">💬</div><h3>Select a conversation</h3><p>Choose a friend or group to start chatting.</p></div></div>';renderConversations()};
+window.clearChatSelection=()=>{stopFriendPresence();closeConversationActionMenu();clearReactionListeners();lastMessageRenderSignature='';groupUserProfiles.clear();activeFriend=null;activeGroup=null;activeConversation=null;if(unsubscribeMessages)unsubscribeMessages();$('chatPane').innerHTML='<div class="chat-empty"><div class="empty-inner"><div class="empty-icon">💬</div><h3>Select a conversation</h3><p>Choose a friend or group to start chatting.</p></div></div>';renderConversations()};
 
 function closeMessageActions(){document.querySelectorAll('.message-actions.open').forEach(x=>x.classList.remove('open'))}
 document.addEventListener('click',e=>{if(!e.target.closest('.message-tools-btn')&&!e.target.closest('.message-actions'))closeMessageActions();if(!e.target.closest('.message-reaction-chip')&&!e.target.closest('.react-picker'))closeReactionPickers();if(!e.target.closest('.conversation-action-menu')&&!e.target.closest('.conversation-more'))closeConversationActionMenu()});
@@ -1123,6 +1126,10 @@ function renderMessageDoc(d,currentUid){
   const unsent=msg.unsent===true;
   const {counts,by}=reactionState(id);
   const myReaction=by[currentUid]||'';
+  const groupSenderProfile=(!mine&&activeConversation?.kind==='group')?groupUserProfiles.get(msg.senderUid):null;
+  const groupSenderName=!mine&&activeConversation?.kind==='group'
+    ? (msg.senderName||groupSenderProfile?.nickname||groupSenderProfile?.name||groupSenderProfile?.displayName||'Member')
+    : '';
 
   const emojiSet=['❤️','👍','😂','😮','😢','😡','🥰','🙏','👏','🎉'];
   const picker=`<div class="react-picker" id="react-picker-${esc(id)}">${emojiSet.map(emoji=>`<button type="button" aria-label="${emoji}" onclick="reactMessage('${esc(id)}','${emoji}',event)">${emoji}</button>`).join('')}<button type="button" class="react-picker-plus" title="More emoji" onclick="openMoreReactionPicker('${esc(id)}',event)">+</button></div>`;
@@ -1144,6 +1151,7 @@ function renderMessageDoc(d,currentUid){
   return `<div class="${rowClass}" data-message-id="${esc(id)}">
     <div class="bubble-wrap" data-message-id="${esc(id)}">
       <div class="bubble">
+        ${groupSenderName?`<div class="group-sender-name">${esc(groupSenderName)}</div>`:''}
         ${body}
         <small>${formatTime(msg.createdAt)}</small>
         ${deliveryLabel(msg,currentUid)}
@@ -1198,6 +1206,14 @@ function renderMessages(docs,currentUid){
     hydrateSharedPostCards();
   });
 }
+async function hydrateGroupSenderProfiles(docs){
+  if(activeConversation?.kind!=='group')return;
+  const ids=[...new Set(docs.map(d=>d.data()?.senderUid).filter(Boolean))].filter(uid=>!groupUserProfiles.has(uid));
+  if(!ids.length)return;
+  const profiles=await Promise.all(ids.map(uid=>getUserProfile(uid).catch(()=>({uid}))));
+  profiles.forEach(p=>groupUserProfiles.set(p.uid,p));
+}
+
 function listenDirectMessages(a,b){
   if(unsubscribeMessages)unsubscribeMessages();
   const id=chatId(a,b),ref=collection(db,'conversations',id,'messages');
@@ -1228,8 +1244,9 @@ function listenGroupMessages(groupId){
   if(unsubscribeMessages)unsubscribeMessages();
   const me=auth.currentUser;const ref=collection(db,'groups',groupId,'messages');
   const q=query(ref,limit(300));
-  unsubscribeMessages=onSnapshot(q,s=>{
+  unsubscribeMessages=onSnapshot(q,async s=>{
     groupMessageDocs=s.docs;
+    await hydrateGroupSenderProfiles(s.docs);
     renderMessages(s.docs,me.uid);
     if(messagesInitialRender){
       requestAnimationFrame(()=>{
@@ -1262,7 +1279,7 @@ async function sendMessage(e){
     }else{
       const group=activeGroup;if(!(group.memberUids||[]).includes(me.uid))throw new Error('Not a group member');
       await addDoc(collection(db,'groups',group.id,'messages'),{
-        senderUid:me.uid,text,replyTo:replyTarget?{messageId:replyTarget.messageId,authorName:replyTarget.authorName,text:replyTarget.text}:null,
+        senderUid:me.uid,senderName:me.displayName||'Student',text,replyTo:replyTarget?{messageId:replyTarget.messageId,authorName:replyTarget.authorName,text:replyTarget.text}:null,
         createdAt:serverTimestamp(),hiddenFor:[],unsent:false,readBy:[me.uid],delivered:true
       });
     }
@@ -1396,7 +1413,7 @@ async function forwardTo(kind,id){
     }else{
       const g=groups.find(x=>x.id===id);if(!g||!g.memberUids.includes(me.uid)){showToast('You are not a group member.');return}
       await addDoc(collection(db,'groups',id,'messages'),{
-        senderUid:me.uid,text,
+        senderUid:me.uid,senderName:me.displayName||'Student',text,
         forwardedFrom:{messageId:pendingActionMessage,text,authorName:item.data.senderUid===me.uid?(me.displayName||'You'):'Student'},
         createdAt:serverTimestamp(),hiddenFor:[],unsent:false,readBy:[me.uid]
       });
@@ -1543,7 +1560,7 @@ window.kickGroupMember=async(uid)=>{
         activeGroup={...activeGroup,memberUids,adminUids};
         groups=groups.map(g=>g.id===activeGroup.id?activeGroup:g);
         populateGroupAdminSelect();await renderGroupManageMembers();renderConversations();
-        showToast('Member removed.');
+        showToast('Member removed from the group.');
       }catch(e){
         console.error(e);
         showToast(e?.code==='permission-denied'?'You do not have permission to remove this member.':'Could not remove member.');
@@ -1580,6 +1597,7 @@ window.leaveActiveGroup=async()=>{
         await updateDoc(doc(db,'groups',activeGroup.id),payload);
         const nextGroup={...activeGroup,memberUids,createdBy:payload.createdBy,adminUids:payload.adminUids};
         groups=groups.map(g=>g.id===activeGroup.id?nextGroup:g);
+        if(activeConversation?.id===activeGroup.id){activeGroup=nextGroup;}
         closeGroupManage();window.clearChatSelection();
         showToast(ownershipTransferred?'You left. Ownership transferred to the next member.':'You left the group.');
       }catch(e){
