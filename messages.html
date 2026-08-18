@@ -36,12 +36,12 @@ body{min-height:100vh;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700)
 /* Messenger-style reaction bar + responsive triggers */
 .reaction-tools{position:absolute;right:7px;bottom:-10px;display:flex;align-items:center;gap:4px;z-index:30}
 .message-row.mine .reaction-tools{right:7px}
-.message-reactions{display:flex;align-items:center;gap:2px;flex-wrap:wrap;padding:3px 5px;border:1px solid rgba(0,0,0,.08);background:#fff;border-radius:999px;box-shadow:0 4px 12px rgba(0,0,0,.10);max-width:min(230px,72vw)}
+.message-reactions{display:flex;align-items:center;justify-content:center;gap:2px;flex-wrap:nowrap;width:176px;height:34px;min-height:34px;padding:3px 6px;border:1px solid rgba(0,0,0,.08);background:#fff;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.10);overflow:hidden}
 .message-row.mine .message-reactions{background:#fffaf0}
-.message-reaction-chip{border:0;background:transparent;color:#183c8c;border-radius:999px;padding:2px 5px;font-size:12px;cursor:pointer;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;transition:.12s ease}
+.message-reaction-chip{border:0;background:transparent;color:#183c8c;border-radius:8px;padding:2px 5px;font-size:12px;cursor:pointer;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;transition:.12s ease;flex:0 0 auto}
 .message-reaction-chip:hover{background:#eef4ff;transform:scale(1.04)}
 .message-reaction-chip.mine-reaction{background:#fff0a5;box-shadow:inset 0 0 0 1px rgba(138,109,0,.16)}
-.message-reaction-trigger{display:inline-flex;align-items:center;justify-content:center;width:27px;height:27px;border:0;border-radius:999px;background:#fff;color:#183c8c;cursor:pointer;font-size:16px;line-height:1;box-shadow:0 4px 12px rgba(0,0,0,.12);font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;touch-action:manipulation}
+.message-reaction-trigger{display:inline-flex!important;align-items:center;justify-content:center;width:27px;height:27px;border:0;border-radius:999px;background:#fff;color:#183c8c;cursor:pointer;font-size:16px;line-height:1;box-shadow:0 4px 12px rgba(0,0,0,.12);font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;touch-action:manipulation;flex:0 0 27px}
 .message-reaction-trigger:hover{background:#eef4ff;transform:scale(1.04)}
 .react-picker{position:absolute;display:none;gap:4px;align-items:center;padding:6px 7px;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:14px;box-shadow:0 14px 40px rgba(0,0,0,.20);z-index:230;bottom:calc(100% + 8px);right:0;max-width:min(320px,82vw);flex-wrap:wrap}
 .react-picker.open{display:flex}
@@ -113,9 +113,9 @@ body{overflow:hidden;}
 .conversation-empty{padding:20px;text-align:center;font-size:10px;opacity:.7}
 
 @media(max-width:800px){.messenger{grid-template-columns:1fr;grid-template-rows:240px minmax(0,1fr)}.sidebar{border-right:none;border-bottom:1px solid rgba(255,255,255,.13);max-height:none;min-height:0}.chat{min-height:0}.chat-back{display:block;border:none;background:rgba(255,255,255,.12);color:#fff;width:34px;height:34px;border-radius:10px;cursor:pointer}.bubble{max-width:82%}}
-@media(max-width:520px){.container{padding:10px 8px 92px}.messenger{border-radius:20px}.sidebar{padding:13px}.chat-head{padding:12px}.messages{padding:14px 10px}.message-compose{padding:10px}.send-btn{padding:0 13px;min-width:62px}.nav-item{min-width:52px;font-size:8px}.nav-item div{font-size:20px}.message-reaction-trigger{display:none}.message-reactions{margin-top:5px}.react-picker{max-width:280px;left:0;right:auto}.bubble-wrap{max-width:90%}}
+@media(max-width:520px){.container{padding:10px 8px 92px}.messenger{border-radius:20px}.sidebar{padding:13px}.chat-head{padding:12px}.messages{padding:14px 10px}.message-compose{padding:10px}.send-btn{padding:0 13px;min-width:62px}.nav-item{min-width:52px;font-size:8px}.nav-item div{font-size:20px}.message-reactions{margin-top:5px}.react-picker{max-width:280px;left:0;right:auto}.bubble-wrap{max-width:90%}}
 @media (hover:hover) and (pointer:fine){.message-reaction-trigger{display:inline-flex}}
-@media (hover:none) and (pointer:coarse){.message-reaction-trigger{display:none}}
+@media (hover:none) and (pointer:coarse){.message-reaction-trigger{display:inline-flex!important}}
 
 
 @media(max-width:800px){
@@ -132,7 +132,7 @@ body{overflow:hidden;}
   .react-picker{right:auto;left:0;max-width:82vw}
   .message-row.mine .react-picker{right:0;left:auto}
   .reaction-tools{right:5px;bottom:-11px}
-  .message-reactions{max-width:62vw}
+  .message-reactions{width:160px;height:32px;min-height:32px}
   .message-reaction-chip{font-size:11px;padding:2px 4px}
 }
 @media(max-width:520px){
@@ -141,6 +141,10 @@ body{overflow:hidden;}
   .reply-compose-text span{max-width:58vw}
 }
 
+
+.shared-post-card.unavailable{background:#f7f8fb;color:#7b879b;border-left-color:#c8d0dd;cursor:default!important}
+.shared-post-card.unavailable .shared-post-label,.shared-post-card.unavailable .shared-post-author{color:#707b8d}
+.shared-post-card.unavailable .shared-post-preview{color:#8b95a5}
 </style>
 </head>
 <body>
@@ -275,6 +279,26 @@ function presenceText(profile){
   return isUserOnline(profile) ? 'Online' : 'Offline';
 }
 
+async function updatePendingDeliveryForFriend(uid){
+  const me=auth.currentUser;
+  if(!me||!uid||!isUserOnline(currentPresence)||activeConversation?.kind!=='friend')return;
+  try{
+    const cid=chatId(me.uid,uid);
+    const ref=collection(db,'conversations',cid,'messages');
+    const snap=await getDocs(query(ref,where('senderUid','==',me.uid),limit(300)));
+    const pending=snap.docs.filter(d=>{
+      const m=d.data()||{};
+      return m.receiverUid===uid && m.delivered!==true && m.unsent!==true;
+    });
+    if(!pending.length)return;
+    const batch=writeBatch(db);
+    pending.forEach(d=>batch.update(d.ref,{delivered:true}));
+    await batch.commit();
+  }catch(e){
+    console.error('Update pending delivery',e);
+  }
+}
+
 async function setMyPresence(online){
   const me=auth.currentUser;
   if(!me) return;
@@ -326,6 +350,7 @@ function listenFriendPresence(uid){
       : '<span class="offline-dot"></span><span>Offline</span>';
     const item=friends.find(f=>f.uid===uid);
     if(item){item.online=currentPresence.online;item.lastSeen=currentPresence.lastSeen;}
+    if(isUserOnline(currentPresence)) updatePendingDeliveryForFriend(uid);
   },err=>console.error('Presence listener',err));
 }
 
@@ -354,8 +379,22 @@ function removeCount(counts,emoji){
 
 function buildReplyCard(reply){
   if(!reply) return '';
-  const author=reply.authorName||'Student';
-  const body=String(reply.text||'').trim();
+  let author=reply.authorName||'Student';
+  let body=String(reply.text||'').trim();
+
+  if(reply.messageId){
+    const found=directMessageDocs.concat(groupMessageDocs).find(d=>d.id===reply.messageId);
+    if(found){
+      const source=normalizeSpecialMessage(found.data()||{});
+      if(source.unsent===true){
+        body='This message is unsent.';
+      }else{
+        author=source.senderUid===auth.currentUser?.uid?'You':(source.senderName||author);
+        body=safePreviewText(source)||body;
+      }
+    }
+  }
+
   return `<div class="reply-preview"><strong>↩ ${esc(author)}</strong><span>${esc(body).slice(0,500)}</span></div>`;
 }
 
@@ -372,7 +411,8 @@ function setReplyTarget(messageId){
   replyTarget={
     messageId,
     authorName:msg.senderUid===auth.currentUser?.uid ? 'You' : (msg.senderName||activeFriend?.nickname||activeFriend?.name||'Student'),
-    text:safePreviewText(msg)
+    text:msg.unsent===true?'This message is unsent.':safePreviewText(msg),
+    unsent:msg.unsent===true
   };
   const el=$('replyCompose');
   if(el){
@@ -427,12 +467,56 @@ function buildSharedPostCard(msg){
   if(!post) return '';
   const author=post.authorName||'Student';
   const body=String(post.text||'').trim();
-  return `<div class="shared-post-card">
+  const pid=post.postId||post.originalPostId||'';
+  const attrs=pid?`data-post-id="${esc(pid)}" onclick="openSharedPostFromMessage('${esc(pid)}',event)"`:''; 
+  return `<div class="shared-post-card" ${attrs} style="cursor:${pid?'pointer':'default'}">
     <div class="shared-post-label">📝 Shared post</div>
     <div class="shared-post-author">${esc(author)}</div>
     <div class="shared-post-preview">${esc(body).slice(0,700)}</div>
-    <span class="shared-post-accent">CATHS-MAIN News Feed</span>
+    <span class="shared-post-accent">${pid?'Open original post':'CATHS-MAIN News Feed'}</span>
   </div>`;
+}
+
+
+async function openSharedPostFromMessage(postId,event){
+  event?.stopPropagation();
+  if(!postId)return;
+  try{
+    const snap=await getDoc(doc(db,'posts',postId));
+    if(!snap.exists()){
+      showToast('This shared post is unavailable because it was deleted.');
+      const card=document.querySelector(`[data-post-id="${CSS.escape(postId)}"]`);
+      if(card){
+        card.classList.add('unavailable');
+        card.innerHTML='<div class="shared-post-label">📝 Shared post</div><div class="shared-post-author">This post is unavailable</div><div class="shared-post-preview">The original post has been deleted.</div>';
+      }
+      return;
+    }
+    location.href=`news.html#post-${encodeURIComponent(postId)}`;
+  }catch(e){
+    console.error('Open shared post',e);
+    showToast('Could not open the shared post.');
+  }
+}
+window.openSharedPostFromMessage=openSharedPostFromMessage;
+
+async function hydrateSharedPostCards(){
+  const cards=[...document.querySelectorAll('.shared-post-card[data-post-id]')];
+  if(!cards.length)return;
+  await Promise.all(cards.map(async card=>{
+    const postId=card.dataset.postId;
+    try{
+      const snap=await getDoc(doc(db,'posts',postId));
+      if(!snap.exists()){
+        card.classList.add('unavailable');
+        card.onclick=null;
+        card.style.cursor='default';
+        card.innerHTML='<div class="shared-post-label">📝 Shared post</div><div class="shared-post-author">This post is unavailable</div><div class="shared-post-preview">The original post has been deleted.</div>';
+      }
+    }catch(e){
+      console.error('Shared post check',postId,e);
+    }
+  }));
 }
 
 function buildForwardedCard(msg){
@@ -768,16 +852,18 @@ function renderMessages(docs,currentUid){
   requestAnimationFrame(()=>{
     if(!hadContent){
       box.scrollTop=box.scrollHeight;
+      requestAnimationFrame(()=>{box.scrollTop=box.scrollHeight});
       messagesInitialRender=false;
+      hydrateSharedPostCards();
       return;
     }
     if(nearBottom){
       box.scrollTop=box.scrollHeight;
     }else{
-      // Preserve the user's exact viewport when reactions/status/counts update.
       const delta=box.scrollHeight-prevScrollHeight;
       box.scrollTop=Math.max(0,prevScrollTop+delta);
     }
+    hydrateSharedPostCards();
   });
 }
 function listenDirectMessages(a,b){
@@ -823,7 +909,8 @@ async function sendMessage(e){
       const id=chatId(me.uid,activeFriend.uid);
       await addDoc(collection(db,'conversations',id,'messages'),{
         senderUid:me.uid,receiverUid:activeFriend.uid,text,replyTo:replyTarget?{messageId:replyTarget.messageId,authorName:replyTarget.authorName,text:replyTarget.text}:null,
-        createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{},reactionBy:{},readBy:[me.uid],delivered:true
+        createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{},reactionBy:{},readBy:[me.uid],
+        delivered:isUserOnline(currentPresence)
       });
       await addDoc(collection(db,'notifications'),{recipientUid:activeFriend.uid,actorUid:me.uid,actorName:me.displayName||'Student',type:'message',text:'sent you a message.',chatId:id,read:false,createdAt:serverTimestamp()});
     }else{
@@ -867,6 +954,7 @@ function openMoreReactionPicker(messageId,event){
 }
 window.openMoreReactionPicker=openMoreReactionPicker;
 async function reactMessage(messageId,emoji,event){
+  event?.preventDefault();
   event?.stopPropagation();
   closeMessageActions();
   closeReactionPickers();
@@ -884,15 +972,21 @@ async function reactMessage(messageId,emoji,event){
     if(!snap.exists())return;
 
     const data=snap.data()||{};
-    const {counts,by}=reactionState(data);
-    const oldEmoji=by[me.uid]||'';
+    const counts={...(data.reactions||{})};
+    const by={...(data.reactionBy||{})};
+    const oldEmoji=String(by[me.uid]||'');
 
-    // Same emoji => remove it. Different emoji => replace the previous one.
     if(oldEmoji===emoji){
-      removeCount(counts,oldEmoji);
+      if(counts[emoji]){
+        counts[emoji]=Math.max(0,Number(counts[emoji])-1);
+        if(counts[emoji]===0) delete counts[emoji];
+      }
       delete by[me.uid];
     }else{
-      if(oldEmoji) removeCount(counts,oldEmoji);
+      if(oldEmoji && counts[oldEmoji]){
+        counts[oldEmoji]=Math.max(0,Number(counts[oldEmoji])-1);
+        if(counts[oldEmoji]===0) delete counts[oldEmoji];
+      }
       counts[emoji]=Number(counts[emoji]||0)+1;
       by[me.uid]=emoji;
     }
@@ -906,8 +1000,10 @@ async function reactMessage(messageId,emoji,event){
       }
     });
   }catch(e){
-    console.error(e);
-    showToast('Could not react to message.');
+    console.error('React message failed:',e);
+    showToast(e?.code==='permission-denied'
+      ? 'Firestore Rules blocked the reaction.'
+      : 'Could not react to message.');
   }
 }
 window.reactMessage=reactMessage;
@@ -922,7 +1018,7 @@ window.unsendForMe=unsendForMe;
 async function unsendForEveryone(messageId){
   closeMessageActions();const ref=await messageRef(messageId);if(!ref)return;
   try{const snap=await getDoc(ref);if(!snap.exists())return;if(snap.data()?.senderUid!==auth.currentUser.uid){showToast('Only the sender can unsend for everyone.');return}
-    await updateDoc(ref,{unsent:true,text:'',reactions:{}});
+    await updateDoc(ref,{unsent:true,text:'',reactions:{},reactionBy:{},delivered:false});
     showToast('Message unsent for everyone.');
   }catch(e){console.error(e);showToast('Could not unsend for everyone.')}
 }
