@@ -39,7 +39,7 @@ body{min-height:100vh;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700)
 .message-reaction-chip{border:0;background:transparent;color:#183c8c;border-radius:6px;padding:2px 5px;font-size:12px;cursor:pointer;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;transition:transform .12s ease,background .12s ease}
 .message-reaction-chip:hover{background:rgba(24,60,140,.08);transform:scale(1.06)}
 .message-reaction-trigger{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;border:0;border-radius:7px;background:transparent;color:#183c8c;cursor:pointer;font-size:17px;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
-.message-reaction-trigger:hover{background:#eef4ff}
+.message-reaction-trigger:hover{background:#eef4ff}.message-reaction-trigger{touch-action:manipulation}
 .react-picker{position:absolute;display:none;gap:4px;align-items:center;padding:6px 7px;background:rgba(255,255,255,.99);border:1px solid rgba(0,0,0,.08);border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.2);z-index:220;bottom:calc(100% + 7px);right:0;max-width:320px;flex-wrap:wrap}
 .react-picker.open{display:flex}
 .react-picker button{border:0;background:transparent;width:31px;height:31px;border-radius:7px;font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;transition:transform .12s ease,background .12s ease}
@@ -185,7 +185,7 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/12.17.1/firebase
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 import {
   getFirestore,doc,getDoc,collection,getDocs,query,where,limit,addDoc,setDoc,updateDoc,
-  deleteDoc,serverTimestamp,onSnapshot,arrayUnion
+  deleteDoc,serverTimestamp,onSnapshot,arrayUnion,writeBatch
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 const firebaseConfig={apiKey:"AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",authDomain:"caths-page.firebaseapp.com",projectId:"caths-page",storageBucket:"caths-page.firebasestorage.app",messagingSenderId:"945498022620",appId:"1:945498022620:web:71aeb4cd2472e061aeca19",measurementId:"G-CBG1YSK13G"};
@@ -201,6 +201,9 @@ let activeConversation=null;
 let unsubscribeMessages=null;
 let unsubscribeGroups=null;
 let pendingActionMessage=null;
+let unreadByConversation={};
+let notificationsUnsubscribe=null;
+let messagesInitialRender=true;
 
 const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 function showToast(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>el.classList.remove('show'),2400)}
@@ -212,6 +215,116 @@ function chatId(a,b){return [a,b].sort().join('_')}
 function formatTime(ts){try{const d=ts?.toDate?ts.toDate():new Date(ts);return d.toLocaleString([],{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});}catch{return ''}}
 async function getUserProfile(uid){const s=await getDoc(doc(db,'users',uid));return s.exists()?{uid,...s.data()}:({uid,name:'Student',nickname:'Student'});}
 function isGroup(){return Boolean(activeGroup)}
+
+function isUnreadMessage(msg,currentUid){
+  if(!msg || !currentUid) return false;
+  if(msg.senderUid===currentUid) return false;
+  if(msg.unsent===true) return false;
+  const readBy=Array.isArray(msg.readBy)?msg.readBy:[];
+  return !readBy.includes(currentUid);
+}
+
+function conversationKey(item){
+  return item.kind==='group' ? `group:${item.id}` : `friend:${item.uid}`;
+}
+
+function getUnreadCount(item){
+  return Number(unreadByConversation[conversationKey(item)]||0);
+}
+
+function safePreviewText(msg){
+  if(!msg) return '';
+  if(msg.sharedPost?.text) return `↗ Shared post: ${String(msg.sharedPost.text).replace(/\s+/g,' ').trim()}`;
+  if(msg.forwardedFrom?.text) return `↗ Forwarded: ${String(msg.forwardedFrom.text).replace(/\s+/g,' ').trim()}`;
+  return String(msg.text||'').replace(/\s+/g,' ').trim();
+}
+
+function buildSharedPostCard(msg){
+  const post=msg?.sharedPost;
+  if(!post) return '';
+  const author=post.authorName||'Student';
+  const body=String(post.text||'').trim();
+  return `<div class="shared-post-card">
+    <div class="shared-post-label">📝 Shared post</div>
+    <div class="shared-post-author">${esc(author)}</div>
+    <div class="shared-post-preview">${esc(body).slice(0,700)}</div>
+    <span class="shared-post-accent">CATHS-MAIN News Feed</span>
+  </div>`;
+}
+
+function buildForwardedCard(msg){
+  const f=msg?.forwardedFrom;
+  if(!f) return '';
+  const author=f.authorName||f.originalAuthorName||'Student';
+  const body=String(f.text||'').trim();
+  return `<div class="forwarded-card">
+    <div class="forwarded-label">↗ Forwarded message</div>
+    <div class="forwarded-author">${esc(author)}</div>
+    <div class="forwarded-preview">${esc(body).slice(0,700)}</div>
+  </div>`;
+}
+
+async function markConversationRead(){
+  const me=auth.currentUser;
+  if(!me || !activeConversation || !activeFriend && !activeGroup) return;
+  try{
+    const box=$('messages');
+    if(!box) return;
+    let docs=[];
+    if(activeConversation.kind==='friend'){
+      const id=chatId(me.uid,activeFriend.uid);
+      const ref=collection(db,'conversations',id,'messages');
+      const [a,b]=await Promise.all([
+        getDocs(query(ref,where('senderUid','==',me.uid),limit(300))),
+        getDocs(query(ref,where('receiverUid','==',me.uid),limit(300)))
+      ]);
+      docs=[...a.docs,...b.docs];
+    }else{
+      const snap=await getDocs(query(collection(db,'groups',activeGroup.id,'messages'),limit(300)));
+      docs=snap.docs;
+    }
+
+    const unread=docs.filter(d=>isUnreadMessage(d.data()||{},me.uid));
+    if(!unread.length) return;
+
+    const batch=writeBatch(db);
+    unread.forEach(d=>{
+      batch.update(d.ref,{readBy:arrayUnion(me.uid)});
+    });
+    await batch.commit();
+  }catch(e){
+    console.error('markConversationRead',e);
+  }
+}
+
+function startUnreadNotificationListener(){
+  if(notificationsUnsubscribe) notificationsUnsubscribe();
+  const me=auth.currentUser;
+  if(!me) return;
+
+  const q=query(
+    collection(db,'notifications'),
+    where('recipientUid','==',me.uid),
+    where('read','==',false),
+    limit(100)
+  );
+
+  notificationsUnsubscribe=onSnapshot(q,snap=>{
+    const map={};
+
+    snap.docs.forEach(d=>{
+      const n=d.data()||{};
+      if(n.type!=='message') return;
+      if(n.chatId){
+        const key=n.groupId ? `group:${n.groupId}` : `friend:${n.actorUid||''}`;
+        map[key]=(map[key]||0)+1;
+      }
+    });
+
+    unreadByConversation=map;
+    renderConversations();
+  },err=>console.error('Unread notification listener',err));
+}
 
 function openModal(id){$(id)?.classList.add('open')}
 function closeModal(id){$(id)?.classList.remove('open')}
@@ -256,11 +369,18 @@ function renderConversations(list=conversationItems()){
   if(!list.length){box.innerHTML='<div class="conversation-empty">No conversations found.</div>';return}
   box.innerHTML=list.map(item=>{
     const group=item.kind==='group';
+    const id=group?item.id:item.uid;
     const name=group?(item.name||'Group Chat'):(item.nickname||item.name||item.displayName||'Student');
     const sub=group?`${(item.memberUids||[]).length} members`:(item.username?'@'+item.username:'Friend');
-    return `<button type="button" class="friend-item ${activeConversation?.id===(group?item.id:item.uid)?'active':''}" data-kind="${group?'group':'friend'}" data-id="${esc(group?item.id:item.uid)}">
+    const unread=getUnreadCount(item);
+    return `<button type="button" class="friend-item ${activeConversation?.id===id?'active':''}" data-kind="${group?'group':'friend'}" data-id="${esc(id)}">
       ${group?groupAvatarHtml(item):avatarHtml(item)}
-      <span class="friend-info"><strong>${esc(name)}</strong><small>${esc(sub)}</small></span>
+      <span class="friend-info">
+        <strong>${esc(name)}</strong>
+        <small>${esc(sub)}</small>
+        ${unread?`<span class="unread-line"><span class="unread-dot"></span>${unread===1?'1 Unread message':`${unread} Unread messages`}</span>`:`<span class="friend-preview">${group?'Group chat':'Tap to open conversation'}</span>`}
+      </span>
+      ${unread?`<span class="unread-count">${unread}</span>`:''}
       ${group?'<span class="conversation-badge">GROUP</span>':''}
     </button>`;
   }).join('');
@@ -304,6 +424,7 @@ async function openChat(friend){
   $('messageForm').addEventListener('submit',sendMessage);
   $('messageInput').focus();
   listenDirectMessages(me.uid,friend.uid);
+  setTimeout(markConversationRead,180);
 }
 
 async function openGroup(group){
@@ -326,6 +447,7 @@ async function openGroup(group){
   $('messageForm').addEventListener('submit',sendMessage);
   $('messageInput').focus();
   listenGroupMessages(group.id);
+  setTimeout(markConversationRead,180);
 }
 
 window.clearChatSelection=()=>{activeFriend=null;activeGroup=null;activeConversation=null;if(unsubscribeMessages)unsubscribeMessages();$('chatPane').innerHTML='<div class="chat-empty"><div class="empty-inner"><div class="empty-icon">💬</div><h3>Select a conversation</h3><p>Choose a friend or group to start chatting.</p></div></div>';renderConversations()};
@@ -333,8 +455,30 @@ window.clearChatSelection=()=>{activeFriend=null;activeGroup=null;activeConversa
 function closeMessageActions(){document.querySelectorAll('.message-actions.open').forEach(x=>x.classList.remove('open'))}
 document.addEventListener('click',e=>{if(!e.target.closest('.message-tools-btn')&&!e.target.closest('.message-actions'))closeMessageActions();if(!e.target.closest('.message-reaction-chip')&&!e.target.closest('.react-picker'))closeReactionPickers()});
 
+
+function normalizeSpecialMessage(msg){
+  if(!msg) return msg;
+  if(msg.sharedPost || msg.forwardedFrom) return msg;
+
+  const raw=String(msg.text||'');
+  if(raw.startsWith('↗ Shared post')){
+    const match=raw.match(/^↗ Shared post\s*[\r\n]+Original post by (.*?):\s*[\r\n]+([\s\S]*)$/i);
+    if(match){
+      return {
+        ...msg,
+        sharedPost:{
+          authorName:match[1]||'Student',
+          text:match[2]||''
+        }
+      };
+    }
+  }
+  return msg;
+}
+
 function renderMessageDoc(d,currentUid){
-  const msg=d.data()||{}, id=d.id;
+  const rawMsg=d.data()||{}, id=d.id;
+  const msg=normalizeSpecialMessage(rawMsg);
   const hidden=Array.isArray(msg.hiddenFor)&&msg.hiddenFor.includes(currentUid);
   if(hidden)return '';
   const mine=msg.senderUid===currentUid;
@@ -354,12 +498,15 @@ function renderMessageDoc(d,currentUid){
     ${mine && !unsent?`<button type="button" onclick="unsendForMe('${esc(id)}')">👤 Unsend for me</button><button class="danger" type="button" onclick="unsendForEveryone('${esc(id)}')">🗑️ Unsend for everyone</button>`:`<button type="button" onclick="unsendForMe('${esc(id)}')">👤 Unsend for me</button>`}
   </div>`;
   const body=unsent?`<span class="unsent-text">This message was unsent.</span>`:
-    `${forwarded?`<div class="forwarded-box">↗ Forwarded message</div>`:''}${esc(msg.text||'')}`;
+    `${buildSharedPostCard(msg)}${buildForwardedCard(msg)}${(!msg.sharedPost&&!msg.forwardedFrom)?esc(msg.text||''):''}`;
   const rowClass=mine?'message-row mine':'message-row';
   const reactionBar=chips?`<div class="message-reactions">${chips}${trigger}</div>`:'';
+  const readBy=Array.isArray(msg.readBy)?msg.readBy:[];
+  const seen=mine && activeConversation?.kind==='friend' && readBy.includes(msg.receiverUid);
+  const statusLine=mine?`<div class="message-status-line">${seen?'<span class="seen-dot"></span> Seen':'Sent'}</div>`:'';
   return `<div class="${rowClass}" data-message-id="${esc(id)}">
     <div class="bubble-wrap" data-message-id="${esc(id)}">
-      <div class="bubble">${body}<small>${formatTime(msg.createdAt)}</small>${reactionBar}</div>
+      <div class="bubble">${body}<small>${formatTime(msg.createdAt)}</small>${statusLine}${reactionBar}</div>
       ${picker}
       ${!chips?trigger:''}
       <button class="message-tools-btn" type="button" onclick="toggleMessageActions('${esc(id)}',event)">⋯</button>
@@ -370,10 +517,31 @@ function renderMessageDoc(d,currentUid){
 
 function renderMessages(docs,currentUid){
   const box=$('messages');if(!box)return;
+
+  const prevScrollTop=box.scrollTop;
+  const prevScrollHeight=box.scrollHeight;
+  const prevClientHeight=box.clientHeight;
+  const hadContent=Boolean(box.innerHTML.trim() && !box.innerHTML.includes('Loading messages...'));
+  const nearBottom=(prevScrollHeight-prevScrollTop-prevClientHeight)<90;
+
   const merged=[...docs].sort((a,b)=>(a.data()?.createdAt?.toMillis?.()||0)-(b.data()?.createdAt?.toMillis?.()||0)).slice(-300);
   const html=merged.map(d=>renderMessageDoc(d,currentUid)).join('');
   box.innerHTML=html||'<div class="chat-empty" style="min-height:100%"><div class="empty-inner"><div class="empty-icon">👋</div><h3>Start the conversation</h3><p>Send your first message.</p></div></div>';
-  box.scrollTop=box.scrollHeight;
+
+  requestAnimationFrame(()=>{
+    if(!hadContent){
+      box.scrollTop=box.scrollHeight;
+      messagesInitialRender=false;
+      return;
+    }
+    if(nearBottom){
+      box.scrollTop=box.scrollHeight;
+    }else{
+      // Preserve the user's exact viewport when reactions/status/counts update.
+      const delta=box.scrollHeight-prevScrollHeight;
+      box.scrollTop=Math.max(0,prevScrollTop+delta);
+    }
+  });
 }
 function listenDirectMessages(a,b){
   if(unsubscribeMessages)unsubscribeMessages();
@@ -402,11 +570,17 @@ async function sendMessage(e){
     if(activeConversation.kind==='friend'){
       if(!(await ensureFriend(activeFriend.uid))){showToast('You are no longer friends with this student.');return}
       const id=chatId(me.uid,activeFriend.uid);
-      await addDoc(collection(db,'conversations',id,'messages'),{senderUid:me.uid,receiverUid:activeFriend.uid,text,createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{}});
+      await addDoc(collection(db,'conversations',id,'messages'),{
+        senderUid:me.uid,receiverUid:activeFriend.uid,text,createdAt:serverTimestamp(),
+        hiddenFor:[],unsent:false,reactions:{},readBy:[me.uid]
+      });
       await addDoc(collection(db,'notifications'),{recipientUid:activeFriend.uid,actorUid:me.uid,actorName:me.displayName||'Student',type:'message',text:'sent you a message.',chatId:id,read:false,createdAt:serverTimestamp()});
     }else{
       const group=activeGroup;if(!(group.memberUids||[]).includes(me.uid))throw new Error('Not a group member');
-      await addDoc(collection(db,'groups',group.id,'messages'),{senderUid:me.uid,text,createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{}});
+      await addDoc(collection(db,'groups',group.id,'messages'),{
+        senderUid:me.uid,text,createdAt:serverTimestamp(),
+        hiddenFor:[],unsent:false,reactions:{},readBy:[me.uid]
+      });
     }
     input.value='';input.focus();
   }catch(err){console.error(err);showToast(err?.code==='permission-denied'?'Messaging or notification was blocked by Firestore Rules.':'Could not send message.')}
@@ -439,14 +613,25 @@ function openMoreReactionPicker(messageId,event){
   picker.classList.add('open');
 }
 window.openMoreReactionPicker=openMoreReactionPicker;
-async function reactMessage(messageId,emoji){
-  closeMessageActions();closeReactionPickers();
+async function reactMessage(messageId,emoji,event){
+  event?.stopPropagation();
+  closeMessageActions();
+  closeReactionPickers();
   const ref=await messageRef(messageId);if(!ref||!auth.currentUser)return;
   try{
+    const box=$('messages');
+    const beforeTop=box?.scrollTop||0;
+    const beforeHeight=box?.scrollHeight||0;
     const snap=await getDoc(ref);if(!snap.exists())return;
     const r={...(snap.data()?.reactions||{})};
     r[emoji]=Number(r[emoji]||0)+1;
     await updateDoc(ref,{reactions:r});
+    requestAnimationFrame(()=>{
+      if(box){
+        const delta=box.scrollHeight-beforeHeight;
+        box.scrollTop=Math.max(0,beforeTop+delta);
+      }
+    });
   }catch(e){console.error(e);showToast('Could not react to message.')}
 }
 window.reactMessage=reactMessage;
@@ -497,11 +682,19 @@ async function forwardTo(kind,id){
     if(kind==='friend'){
       if(!(await ensureFriend(id))){showToast('You can only forward to your friends.');return}
       const cid=chatId(me.uid,id);
-      await addDoc(collection(db,'conversations',cid,'messages'),{senderUid:me.uid,receiverUid:id,text,forwardedFrom:{messageId:pendingActionMessage},createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{}});
+      await addDoc(collection(db,'conversations',cid,'messages'),{
+        senderUid:me.uid,receiverUid:id,text,
+        forwardedFrom:{messageId:pendingActionMessage,text,authorName:item.data.senderUid===me.uid?(me.displayName||'You'):'Student'},
+        createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{},readBy:[me.uid]
+      });
       await addDoc(collection(db,'notifications'),{recipientUid:id,actorUid:me.uid,actorName:me.displayName||'Student',type:'message',text:'forwarded a message to you.',chatId:cid,read:false,createdAt:serverTimestamp()});
     }else{
       const g=groups.find(x=>x.id===id);if(!g||!g.memberUids.includes(me.uid)){showToast('You are not a group member.');return}
-      await addDoc(collection(db,'groups',id,'messages'),{senderUid:me.uid,text,forwardedFrom:{messageId:pendingActionMessage},createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{}});
+      await addDoc(collection(db,'groups',id,'messages'),{
+        senderUid:me.uid,text,
+        forwardedFrom:{messageId:pendingActionMessage,text,authorName:item.data.senderUid===me.uid?(me.displayName||'You'):'Student'},
+        createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{},readBy:[me.uid]
+      });
     }
     closeForward();pendingActionMessage=null;showToast('Message forwarded.');
   }catch(e){console.error(e);showToast('Could not forward message.')}
@@ -596,6 +789,7 @@ onAuthStateChanged(auth,async user=>{
   if(!user){location.href='profile.html';return}
   await loadFriends();
   listenGroups();
+  startUnreadNotificationListener();
 });
 </script>
 </body>
