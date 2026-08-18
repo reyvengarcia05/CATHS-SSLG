@@ -305,14 +305,14 @@ async function openReactions(postId){
             const name=profile.name || profile.displayName || reaction.authorName || 'Student';
             const username=profile.username || '';
             const photo=profile.photoURL || reaction.photoURL || '';
-            return {uid,name,username,photo,emoji:reaction.emoji || '👍'};
+            return {uid,name,username,photo,email:profile.email||reaction.email||'',emoji:reaction.emoji || '👍'};
         }));
 
         list.innerHTML=rows.map(r=>`
           <div class="reaction-user-row">
             <div class="reaction-user-avatar">${r.photo ? `<img src="${escapePostHtml(r.photo)}" alt="">` : '👤'}</div>
             <div class="reaction-user-info">
-              <strong>${escapePostHtml(r.name)}</strong>
+              <strong>${escapePostHtml(r.name)}${verifiedBadgeHtml(r)}</strong>
               <small>${r.username ? '@'+escapePostHtml(r.username) : 'Student'}</small>
             </div>
             <div class="reaction-emoji-big">${escapePostHtml(r.emoji)}</div>
@@ -1342,6 +1342,9 @@ window.addFriendFromReaction=addFriendFromReaction;
 
 .pinned-post-badge{display:inline-flex;align-items:center;gap:5px;margin:0 0 8px;padding:5px 9px;border-radius:999px;background:#fff7cc;color:#8a6500;font-size:10px;font-weight:800;border:1px solid rgba(255,215,0,.45)}
 .post-card.is-pinned{border:2px solid rgba(255,215,0,.65)!important}
+.verified-badge{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;margin-left:6px;border-radius:50%;background:#1d9bf0;color:#fff;font-size:12px;font-weight:900;line-height:1;vertical-align:middle;box-shadow:0 2px 5px rgba(29,155,240,.25)}
+.profile-name .verified-badge{transform:translateY(-2px)}
+.friend-profile-name .verified-badge,.post-author .verified-badge{margin-left:4px;width:14px;height:14px;font-size:9px}
 </style>
 </head>
 
@@ -1865,11 +1868,11 @@ window.addFriendFromReaction=addFriendFromReaction;
         class="nav-item">
 
         <div>
-           📰
+            📢
         </div>
 
         <span>
-            News Feed
+            News
         </span>
 
     </a>
@@ -2023,6 +2026,10 @@ function escapePostHtml(value){
       .replaceAll('"','&quot;')
       .replaceAll("'",'&#039;');
 }
+const VERIFIED_ADMIN_EMAILS = new Set(['reyvengarcia15@gmail.com', 'reyvenbermudo091@gmail.com', 'reyvengarcia05@gmail.com', 'chezcadc14@gmail.com', 'nathanielgarc679@gmail.com', 'marteena.133@gmail.com', 'gabbicastillo0126@gmail.com', 'leddadanielle91@gmail.com', 'jennapastor062@gmail.com', 'dhenmark1313@gmail.com', 'christianangelointes0@gmail.com', 'alexaislacruz@gmail.com', 'galangjullianne016@gmail.com', 'vanessajotic2403@gmail.com', 'aquinobernardjr0@gmail.com', 'angellyar0909@gmail.com', 'vhergelnarciso@gmail.com', 'sicatmadisson487@gmail.com']);
+function isVerifiedAdminEmail(email){return VERIFIED_ADMIN_EMAILS.has(String(email||'').trim().toLowerCase());}
+function verifiedBadgeHtml(userOrEmail){const email=typeof userOrEmail==='string'?userOrEmail:(userOrEmail?.email||'');return isVerifiedAdminEmail(email)?'<span class="verified-badge" title="Verified admin" aria-label="Verified admin">✓</span>':'';}
+
 
 function postTimeLabel(ts){
     try{
@@ -2147,7 +2154,7 @@ function renderPost(post){
         <div class="post-head">
           ${postAvatarHtml(post.photoURL)}
           <div class="post-author">
-            <strong>${escapePostHtml(post.authorName || 'User')}</strong>
+            <strong>${escapePostHtml(post.authorName || 'User')}${verifiedBadgeHtml(post)}</strong>
             <div class="post-meta">${escapePostHtml(postTimeLabel(post.createdAt))}</div>
           </div>
           <span class="post-visibility">${visibilityLabel}</span>
@@ -2520,8 +2527,8 @@ onAuthStateChanged(
 
         loginOverlay.style.display = "none";
 
-        document.getElementById("profileName").textContent =
-            user.displayName || "User";
+        document.getElementById("profileName").innerHTML =
+            escapePostHtml(user.displayName || "User") + verifiedBadgeHtml(user.email);
 
         document.getElementById("profileEmail").textContent =
             user.email || "";
@@ -2637,7 +2644,7 @@ async function loadProfileData(){
     }
 
     if(data.name){
-        document.getElementById("profileName").textContent = data.name;
+        document.getElementById("profileName").innerHTML = escapePostHtml(data.name) + verifiedBadgeHtml(data.email || user.email);
     }
 
     if(data.section){
@@ -2692,7 +2699,7 @@ async function loadProfileFriends(){
                 <a class="friend-profile-link" href="user-profile.html?uid=${encodeURIComponent(friendId)}">
                     ${avatar}
                     <div class="friend-profile-info">
-                        <span class="friend-profile-name">${escapePostHtml(friendName)}</span>
+                        <span class="friend-profile-name">${escapePostHtml(friendName)}${verifiedBadgeHtml(friend)}</span>
                         <span class="friend-profile-username">${escapePostHtml(username)}</span>
                     </div>
                 </a>
@@ -2808,7 +2815,7 @@ window.saveProfile = async function(){
             JSON.stringify(data)
         );
 
-        document.getElementById("profileName").textContent = data.name;
+        document.getElementById("profileName").innerHTML = escapePostHtml(data.name) + verifiedBadgeHtml(data.email || user.email);
         document.getElementById("profileEmail").textContent = data.email;
         document.getElementById("profileBio").textContent = data.bio;
         applyProfilePhoto(data.photoURL);
