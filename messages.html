@@ -33,6 +33,16 @@ body{min-height:100vh;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700)
 .message-row:not(.mine) .message-tools-btn{right:-35px}
 .message-row.mine .message-tools-btn{left:-35px}
 .message-row:hover .message-tools-btn,.message-tools-btn:focus{display:block}
+/* Message options open beside the bubble, like Messenger */
+.message-actions{top:6px;max-width:calc(100vw - 34px)}
+.message-row:not(.mine) .message-actions{left:calc(100% + 8px);right:auto}
+.message-row.mine .message-actions{right:calc(100% + 8px);left:auto}
+.message-row:not(.mine) .message-actions.open{transform-origin:top left}
+.message-row.mine .message-actions.open{transform-origin:top right}
+@media(max-width:520px){
+  .message-row:not(.mine) .message-actions{left:auto;right:0;top:calc(100% + 6px)}
+  .message-row.mine .message-actions{right:0;left:auto;top:calc(100% + 6px)}
+}
 /* Messenger-style reaction bar + responsive triggers */
 /* Messenger-style reaction UI */
 .reaction-tools{position:absolute;right:7px;bottom:-15px;display:flex;align-items:center;gap:5px;z-index:30;pointer-events:none}
@@ -1400,11 +1410,12 @@ async function unsendForEveryone(messageId){
 
     // Keep the message document so both sides can see the same
     // "This message was unsent." state instead of deleting it.
+    // Keep this update exactly compatible with the Firestore rule:
+    // only unsent, text, and reactions may change when the sender unsends.
     await updateDoc(ref,{
       unsent:true,
       text:'',
-      delivered:false,
-      unsentAt:serverTimestamp()
+      reactions:data.reactions && typeof data.reactions === 'object' ? data.reactions : {}
     });
 
     showToast('Message unsent for everyone.');
