@@ -646,7 +646,262 @@ body{overflow:hidden;}
   }
 }
 
+
+/* ===== Mobile message polish: Messenger-style reactions + action menu ===== */
+@media (max-width: 520px) {
+  body.mobile-conversation-open .messenger.mobile-chat-open .messages {
+    padding: 14px 10px 18px !important;
+    gap: 12px !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row {
+    position: relative !important;
+    width: 100% !important;
+    padding-bottom: 42px !important;
+    overflow: visible !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .bubble-wrap {
+    position: relative !important;
+    width: fit-content !important;
+    max-width: 86% !important;
+    overflow: visible !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .bubble {
+    position: relative !important;
+    width: fit-content !important;
+    max-width: 100% !important;
+    padding: 9px 11px 9px !important;
+    border-radius: 17px !important;
+    overflow: visible !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row.mine .bubble {
+    border-bottom-right-radius: 5px !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row:not(.mine) .bubble {
+    border-bottom-left-radius: 5px !important;
+  }
+
+  /* Reactions sit directly underneath the bubble, outside the bubble itself. */
+  body.mobile-conversation-open .messenger.mobile-chat-open .reaction-tools {
+    position: absolute !important;
+    top: calc(100% + 5px) !important;
+    bottom: auto !important;
+    left: 0 !important;
+    right: auto !important;
+    width: max-content !important;
+    max-width: min(78vw, 260px) !important;
+    height: 31px !important;
+    min-height: 31px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 4px !important;
+    white-space: nowrap !important;
+    z-index: 220 !important;
+    pointer-events: auto !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row.mine .reaction-tools {
+    left: auto !important;
+    right: 0 !important;
+    justify-content: flex-end !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-reactions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 3px !important;
+    width: auto !important;
+    max-width: calc(100% - 32px) !important;
+    height: 31px !important;
+    min-height: 31px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex-wrap: nowrap !important;
+    overflow: visible !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-reaction-chip,
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-reaction-trigger {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    flex: 0 0 30px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-reaction-chip {
+    position: relative !important;
+    background: #fff !important;
+    border: 1px solid rgba(24,60,140,.10) !important;
+    box-shadow: 0 4px 11px rgba(0,0,0,.14) !important;
+    font-size: 14px !important;
+    line-height: 1 !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-reaction-chip .reaction-count {
+    right: -3px !important;
+    bottom: -3px !important;
+    min-width: 14px !important;
+    height: 14px !important;
+    padding: 0 3px !important;
+    border-radius: 999px !important;
+    font-size: 7px !important;
+    line-height: 14px !important;
+    background: #183c8c !important;
+    color: #fff !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,.16) !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-reaction-chip.mine-reaction {
+    background: #fff0a5 !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-reaction-trigger {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #fff !important;
+    border: 1px solid rgba(24,60,140,.10) !important;
+    box-shadow: 0 4px 11px rgba(0,0,0,.14) !important;
+    opacity: 1 !important;
+    transform: none !important;
+    font-size: 16px !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-reaction-trigger:active,
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-reaction-chip:active {
+    transform: scale(.96) !important;
+  }
+
+  /* The message options card opens above the bubble, matching the screenshot style. */
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-actions {
+    position: absolute !important;
+    top: auto !important;
+    bottom: calc(100% + 8px) !important;
+    width: 255px !important;
+    min-width: 255px !important;
+    max-width: calc(100vw - 30px) !important;
+    padding: 8px !important;
+    background: #fff !important;
+    border: 0 !important;
+    border-radius: 20px !important;
+    box-shadow: 0 16px 40px rgba(0,0,0,.20) !important;
+    z-index: 900 !important;
+    overflow: hidden !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row:not(.mine) .message-actions {
+    left: 0 !important;
+    right: auto !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row.mine .message-actions {
+    left: auto !important;
+    right: 0 !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-actions button {
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-height: 47px !important;
+    padding: 10px 14px !important;
+    border-radius: 12px !important;
+    background: transparent !important;
+    color: #183c8c !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    line-height: 1.25 !important;
+    text-align: left !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-actions button:hover,
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-actions button:active {
+    background: #f3f6fb !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-actions .danger {
+    color: #a94c1e !important;
+  }
+
+  /* Keep the three-dot control reachable on touch devices. */
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-tools-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 28px !important;
+    height: 28px !important;
+    opacity: .92 !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row:not(.mine) .message-tools-btn {
+    right: -34px !important;
+    left: auto !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row.mine .message-tools-btn {
+    left: -34px !important;
+    right: auto !important;
+  }
+
+  /* Reaction picker opens below the reaction row, centered within the screen-safe area. */
+  body.mobile-conversation-open .messenger.mobile-chat-open .bubble > .react-picker {
+    position: absolute !important;
+    top: calc(100% + 42px) !important;
+    bottom: auto !important;
+    left: 0 !important;
+    right: auto !important;
+    width: min(230px, 72vw) !important;
+    max-width: 72vw !important;
+    max-height: 200px !important;
+    margin: 0 !important;
+    padding: 8px !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    border-radius: 14px !important;
+    z-index: 950 !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row.mine .bubble > .react-picker {
+    left: auto !important;
+    right: 0 !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .bubble > .react-picker button {
+    height: 36px !important;
+    font-size: 20px !important;
+    border-radius: 10px !important;
+  }
+}
+
+/* Slightly tighter phones */
+@media (max-width: 390px) {
+  body.mobile-conversation-open .messenger.mobile-chat-open .bubble-wrap {
+    max-width: 84% !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-actions {
+    width: 235px !important;
+    min-width: 235px !important;
+  }
+}
+
 </style>
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#003DA5">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
 </head>
 <body>
 <header class="header">
@@ -2449,5 +2704,16 @@ onAuthStateChanged(auth,async user=>{
   }
 });
 </script>
+
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./service-worker.js").catch((error) => {
+        console.warn("PWA service worker registration failed:", error);
+      });
+    });
+  }
+</script>
+
 </body>
 </html>
