@@ -528,50 +528,70 @@ body{overflow:hidden;}
 }
 
 
-/* Final mobile polish: pin composer to the viewport bottom and keep reactions
-   attached directly under each message bubble, Messenger-style. */
+/* Final mobile polish v4: full-screen chat + composer at the true bottom +
+   reactions in normal flow directly under each bubble. */
 @media(max-width:800px){
   body.mobile-conversation-open .messenger.mobile-chat-open .chat{
     position:relative;
+    display:flex;
+    flex-direction:column;
+    height:100%;
+    min-height:0;
   }
   body.mobile-conversation-open .messenger.mobile-chat-open .messages{
-    padding-bottom:88px;
+    flex:1 1 auto;
+    min-height:0;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    padding-bottom:18px;
   }
   body.mobile-conversation-open .messenger.mobile-chat-open .message-compose{
-    position:absolute;
-    left:0;
-    right:0;
+    position:sticky;
+    left:auto;
+    right:auto;
     bottom:0;
+    flex:0 0 auto;
+    width:100%;
     z-index:40;
     margin:0;
     box-shadow:0 -8px 20px rgba(0,0,0,.14);
   }
   body.mobile-conversation-open .messenger.mobile-chat-open .message-row{
-    padding-bottom:26px;
+    padding-bottom:2px;
+    align-items:flex-start;
   }
   body.mobile-conversation-open .messenger.mobile-chat-open .bubble-wrap{
     position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    max-width:86%;
+    gap:0;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row.mine .bubble-wrap{
+    align-items:flex-end;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .bubble{
+    position:relative;
+    max-width:100%;
   }
   body.mobile-conversation-open .messenger.mobile-chat-open .reaction-tools{
-    position:absolute;
-    top:auto;
-    bottom:-13px;
-    height:30px;
+    position:static !important;
+    width:auto;
+    max-width:100%;
     min-height:30px;
+    height:30px;
+    margin-top:4px;
     display:flex;
     align-items:center;
-    gap:4px;
+    justify-content:flex-start;
+    gap:3px;
     z-index:35;
     pointer-events:auto;
     white-space:nowrap;
   }
-  body.mobile-conversation-open .messenger.mobile-chat-open .message-row:not(.mine) .reaction-tools{
-    left:8px;
-    right:auto;
-  }
   body.mobile-conversation-open .messenger.mobile-chat-open .message-row.mine .reaction-tools{
-    right:8px;
-    left:auto;
+    justify-content:flex-end;
   }
   body.mobile-conversation-open .messenger.mobile-chat-open .message-reactions{
     display:flex;
@@ -589,36 +609,40 @@ body{overflow:hidden;}
     flex:0 0 29px;
     margin:0;
   }
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-reaction-trigger{
+    opacity:1;
+    transform:none;
+  }
   body.mobile-conversation-open .messenger.mobile-chat-open .bubble-wrap > .react-picker{
-    position:absolute!important;
-    top:calc(100% + 18px)!important;
-    bottom:auto!important;
-    left:0!important;
-    right:auto!important;
-    margin:0!important;
-    transform:none!important;
-    width:min(220px,70vw)!important;
-    max-width:70vw!important;
-    max-height:190px!important;
+    position:absolute !important;
+    top:calc(100% + 34px) !important;
+    bottom:auto !important;
+    left:0 !important;
+    right:auto !important;
+    margin:0 !important;
+    transform:none !important;
+    width:min(220px,70vw) !important;
+    max-width:70vw !important;
+    max-height:190px !important;
     z-index:90;
   }
   body.mobile-conversation-open .messenger.mobile-chat-open .message-row.mine .bubble-wrap > .react-picker{
-    left:auto!important;
-    right:0!important;
+    left:auto !important;
+    right:0 !important;
   }
 }
 @media(max-width:520px){
   body.mobile-conversation-open .messenger.mobile-chat-open .messages{
-    padding:12px 10px 94px;
+    padding:12px 10px 14px;
   }
   body.mobile-conversation-open .messenger.mobile-chat-open .message-compose{
     padding:8px 9px calc(8px + env(safe-area-inset-bottom,0px));
   }
   body.mobile-conversation-open .messenger.mobile-chat-open .message-row{
-    padding-bottom:28px;
+    padding-bottom:4px;
   }
-  body.mobile-conversation-open .messenger.mobile-chat-open .reaction-tools{
-    bottom:-13px;
+  body.mobile-conversation-open .messenger.mobile-chat-open .bubble-wrap{
+    max-width:88%;
   }
 }
 
@@ -1614,8 +1638,8 @@ function renderMessageDoc(d,currentUid){
         ${body}
         <small>${formatTime(msg.createdAt)}</small>
         ${deliveryLabel(msg,currentUid)}
-        <div class="reaction-tools">${reactionBar}${trigger}</div>
       </div>
+      <div class="reaction-tools">${reactionBar}${trigger}</div>
       ${picker}
       <button class="message-tools-btn" type="button" onclick="toggleMessageActions('${esc(id)}',event)">⋯</button>
       ${actionMenu}
