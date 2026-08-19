@@ -1387,6 +1387,13 @@ color:black;
 }
 
 </style>
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#003DA5">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
 </head>
 
 <body>
@@ -2201,5 +2208,16 @@ onAuthStateChanged(auth, (user) => {
 </script>
 
 </div>
+
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./service-worker.js").catch((error) => {
+        console.warn("PWA service worker registration failed:", error);
+      });
+    });
+  }
+</script>
+
 </body>
 </html>
