@@ -241,6 +241,57 @@ body{overflow:hidden;}
 .verified-badge{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;margin-left:5px;border-radius:50%;background:#1d9bf0;color:#fff;font-size:10px;font-weight:900;line-height:1;vertical-align:middle;box-shadow:0 1px 3px rgba(29,155,240,.28)}
 .chat-person strong .verified-badge{margin-left:4px}
 .friend-info strong .verified-badge{margin-left:4px}
+
+/* Mobile conversation mode: the open chat becomes the full mobile viewport
+   while the global bottom navigation stays visible underneath it. */
+@media (max-width:800px){
+  .messenger.mobile-chat-open{
+    position:fixed;
+    left:0;
+    right:0;
+    top:0;
+    bottom:72px;
+    width:100vw;
+    height:auto;
+    min-height:0;
+    margin:0;
+    grid-template-rows:1fr;
+    border-radius:0;
+    z-index:55;
+    overflow:hidden;
+    box-shadow:none;
+  }
+  .messenger.mobile-chat-open .sidebar{display:none}
+  .messenger.mobile-chat-open .chat{
+    display:flex;
+    min-height:0;
+    height:100%;
+    width:100%;
+  }
+  .messenger.mobile-chat-open .chat-head{flex:0 0 auto}
+  .messenger.mobile-chat-open .messages{flex:1 1 auto;min-height:0;overflow-y:auto}
+  .messenger.mobile-chat-open .message-compose{flex:0 0 auto}
+}
+@media(max-width:520px){
+  .messenger.mobile-chat-open{bottom:72px}
+  .messenger.mobile-chat-open .chat-head{padding:10px 11px}
+  .messenger.mobile-chat-open .messages{padding:14px 10px 22px}
+  .messenger.mobile-chat-open .message-compose{padding:9px 10px calc(9px + env(safe-area-inset-bottom,0px))}
+
+  /* Keep the reaction chips/emoji trigger visually under the message bubble,
+     matching desktop behavior. */
+  .messenger.mobile-chat-open .message-row{padding-bottom:16px}
+  .messenger.mobile-chat-open .reaction-tools{
+    right:6px;
+    bottom:-15px;
+    min-height:30px;
+  }
+  .messenger.mobile-chat-open .message-reactions{min-height:30px}
+}
+
+
+@media(max-width:800px){body.mobile-conversation-open{overflow:hidden;padding-bottom:72px}}
+
 </style>
 </head>
 <body>
@@ -521,10 +572,9 @@ async function getUserProfile(uid){const s=await getDoc(doc(db,'users',uid));ret
 function isGroup(){return Boolean(activeGroup)}
 
 function isUserOnline(profile){
-  if(!profile) return false;
-  if(profile.online===true) return true;
+  if(!profile || profile.online!==true) return false;
   const last=profile.lastSeen?.toDate ? profile.lastSeen.toDate() : (profile.lastSeen ? new Date(profile.lastSeen) : null);
-  return !!(last && (Date.now()-last.getTime()) < 90000);
+  return !!(last && Number.isFinite(last.getTime()) && (Date.now()-last.getTime()) < 75000);
 }
 
 function presenceText(profile){
@@ -574,13 +624,17 @@ async function setMyPresence(online){
 
 function startPresenceHeartbeat(){
   if(presenceTimer) clearInterval(presenceTimer);
-  setMyPresence(true);
-  presenceTimer=setInterval(()=>setMyPresence(true),30000);
-  window.addEventListener('beforeunload',()=>{setMyPresence(false)});
-  document.addEventListener('visibilitychange',()=>{
+  const markVisible=()=>{
     if(document.visibilityState==='visible') setMyPresence(true);
-  });
+    else setMyPresence(false);
+  };
+  markVisible();
+  presenceTimer=setInterval(()=>{
+    if(document.visibilityState==='visible') setMyPresence(true);
+  },25000);
+  document.addEventListener('visibilitychange',markVisible);
   window.addEventListener('pagehide',()=>setMyPresence(false),{once:false});
+  window.addEventListener('beforeunload',()=>setMyPresence(false),{once:false});
 }
 
 function stopPresenceHeartbeat(){
@@ -1119,6 +1173,7 @@ async function openChat(friend){
   history.replaceState(null,'',`messages.html?uid=${encodeURIComponent(friend.uid)}`);
   renderConversations();
   $('.messenger')?.classList.add('mobile-chat-open');
+  document.body.classList.add('mobile-conversation-open');
   $('chatPane').innerHTML=`<div class="chat-head">
     <button class="chat-back" type="button" onclick="clearChatSelection()">←</button>
     ${avatarHtml(friend,'chat-avatar')}
@@ -1146,6 +1201,7 @@ async function openGroup(group){
   history.replaceState(null,'',`messages.html?group=${encodeURIComponent(group.id)}`);
   renderConversations();
   $('.messenger')?.classList.add('mobile-chat-open');
+  document.body.classList.add('mobile-conversation-open');
   $('chatPane').innerHTML=`<div class="chat-head">
     <button class="chat-back" type="button" onclick="clearChatSelection()">←</button>
     ${groupAvatarHtml(group,'chat-avatar group-avatar')}
@@ -1163,7 +1219,7 @@ async function openGroup(group){
   setTimeout(markConversationRead,180);
 }
 
-window.clearChatSelection=()=>{stopFriendPresence();closeConversationActionMenu();clearReactionListeners();lastMessageRenderSignature='';groupUserProfiles.clear();activeFriend=null;activeGroup=null;activeConversation=null;document.querySelector('.messenger')?.classList.remove('mobile-chat-open');if(unsubscribeMessages)unsubscribeMessages();$('chatPane').innerHTML='<div class="chat-empty"><div class="empty-inner"><div class="empty-icon">💬</div><h3>Select a conversation</h3><p>Choose a friend or group to start chatting.</p></div></div>';renderConversations()};
+window.clearChatSelection=()=>{stopFriendPresence();closeConversationActionMenu();clearReactionListeners();lastMessageRenderSignature='';groupUserProfiles.clear();activeFriend=null;activeGroup=null;activeConversation=null;document.querySelector('.messenger')?.classList.remove('mobile-chat-open');document.body.classList.remove('mobile-conversation-open');if(unsubscribeMessages)unsubscribeMessages();$('chatPane').innerHTML='<div class="chat-empty"><div class="empty-inner"><div class="empty-icon">💬</div><h3>Select a conversation</h3><p>Choose a friend or group to start chatting.</p></div></div>';renderConversations()};
 
 function closeMessageActions(){document.querySelectorAll('.message-actions.open').forEach(x=>x.classList.remove('open'))}
 document.addEventListener('click',e=>{if(!e.target.closest('.message-tools-btn')&&!e.target.closest('.message-actions'))closeMessageActions();if(!e.target.closest('.message-reaction-chip')&&!e.target.closest('.react-picker'))closeReactionPickers();if(!e.target.closest('.conversation-action-menu')&&!e.target.closest('.conversation-more'))closeConversationActionMenu()});
