@@ -757,6 +757,233 @@ body{overflow:hidden;}
 <div id="conversationActionMenu" class="conversation-action-menu" aria-hidden="true"></div>
 <div id="toast" class="toast"></div>
 
+
+
+<style id="final-mobile-message-fix">
+/* FINAL mobile conversation fix — deliberately placed last so older mobile rules cannot override it. */
+@media (max-width:800px){
+  html, body{height:100%;}
+  body.mobile-conversation-open{
+    overflow:hidden !important;
+    padding:0 !important;
+  }
+  body.mobile-conversation-open .header{
+    position:fixed !important;
+    top:0 !important;
+    left:0 !important;
+    right:0 !important;
+    height:70px !important;
+    z-index:900 !important;
+  }
+  body.mobile-conversation-open .bottom-nav{
+    display:none !important;
+  }
+  body.mobile-conversation-open .container{
+    position:static !important;
+    width:100% !important;
+    height:100dvh !important;
+    min-height:100dvh !important;
+    margin:0 !important;
+    padding:0 !important;
+    overflow:visible !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open{
+    position:fixed !important;
+    left:0 !important;
+    right:0 !important;
+    top:70px !important;
+    bottom:0 !important;
+    width:100vw !important;
+    height:auto !important;
+    min-height:0 !important;
+    margin:0 !important;
+    padding:0 !important;
+    display:block !important;
+    border:0 !important;
+    border-radius:0 !important;
+    overflow:hidden !important;
+    z-index:850 !important;
+    box-shadow:none !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .chat{
+    width:100% !important;
+    height:100% !important;
+    min-height:0 !important;
+    display:flex !important;
+    flex-direction:column !important;
+    overflow:hidden !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .chat-head{
+    flex:0 0 auto !important;
+    min-height:62px !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .messages{
+    flex:1 1 auto !important;
+    width:100% !important;
+    min-height:0 !important;
+    height:auto !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    -webkit-overflow-scrolling:touch !important;
+    overscroll-behavior:contain !important;
+    padding:12px 10px 16px !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-compose{
+    position:relative !important;
+    left:auto !important;
+    right:auto !important;
+    bottom:auto !important;
+    flex:0 0 auto !important;
+    width:100% !important;
+    min-height:58px !important;
+    margin:0 !important;
+    padding:8px 9px calc(8px + env(safe-area-inset-bottom,0px)) !important;
+    z-index:100 !important;
+    background:rgba(0,0,0,.20) !important;
+    border-top:1px solid rgba(255,255,255,.14) !important;
+    box-shadow:0 -7px 18px rgba(0,0,0,.14) !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row{
+    width:100% !important;
+    padding:0 !important;
+    margin:0 !important;
+    align-items:flex-start !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .bubble-wrap{
+    position:relative !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    width:auto !important;
+    max-width:88% !important;
+    gap:0 !important;
+    overflow:visible !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row.mine .bubble-wrap{
+    align-items:flex-end !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .bubble{
+    position:relative !important;
+    display:block !important;
+    width:auto !important;
+    max-width:100% !important;
+    overflow:visible !important;
+    padding:9px 11px !important;
+    font-size:12px !important;
+    line-height:1.55 !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .bubble small{
+    margin-top:6px !important;
+    font-size:8px !important;
+  }
+  /* Reactions now live INSIDE the bubble, immediately after status. */
+  body.mobile-conversation-open .messenger.mobile-chat-open .reaction-tools{
+    position:static !important;
+    width:max-content !important;
+    max-width:100% !important;
+    min-height:30px !important;
+    height:30px !important;
+    margin-top:5px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:3px !important;
+    white-space:nowrap !important;
+    pointer-events:auto !important;
+    z-index:20 !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row.mine .reaction-tools{
+    align-self:flex-end !important;
+    justify-content:flex-end !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-reactions{
+    display:flex !important;
+    align-items:center !important;
+    width:auto !important;
+    height:30px !important;
+    min-height:30px !important;
+    margin:0 !important;
+    gap:3px !important;
+    flex-wrap:nowrap !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-reaction-chip,
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-reaction-trigger{
+    width:29px !important;
+    height:29px !important;
+    min-width:29px !important;
+    flex:0 0 29px !important;
+    margin:0 !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-reaction-trigger{
+    opacity:1 !important;
+    transform:none !important;
+  }
+  /* Reaction picker opens directly below the reaction row, not beside the message. */
+  body.mobile-conversation-open .messenger.mobile-chat-open .bubble > .react-picker{
+    position:absolute !important;
+    top:calc(100% + 35px) !important;
+    bottom:auto !important;
+    left:0 !important;
+    right:auto !important;
+    width:min(220px,72vw) !important;
+    max-width:72vw !important;
+    max-height:190px !important;
+    margin:0 !important;
+    padding:7px !important;
+    display:none !important;
+    grid-template-columns:repeat(5,1fr) !important;
+    border-radius:12px !important;
+    z-index:300 !important;
+    transform:none !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .bubble > .react-picker.open{
+    display:grid !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row.mine .bubble > .react-picker{
+    left:auto !important;
+    right:0 !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-actions{
+    z-index:500 !important;
+  }
+}
+@media (max-width:520px){
+  body.mobile-conversation-open .messenger.mobile-chat-open .chat-head{
+    padding:9px 10px !important;
+    gap:8px !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .chat-back{
+    width:34px !important;
+    height:34px !important;
+    flex:0 0 34px !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .chat-avatar{
+    width:42px !important;
+    height:42px !important;
+    flex:0 0 42px !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .chat-person strong{
+    font-size:13px !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .chat-person small{
+    font-size:9px !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .online-wrap{
+    font-size:9px !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .messages{
+    padding:12px 10px 14px !important;
+    gap:12px !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-input{
+    height:42px !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .send-btn{
+    min-width:58px !important;
+  }
+}
+</style>
+
 <nav class="bottom-nav">
   <a href="index.html" class="nav-item"><div>🏠</div><span>Home</span></a>
   <a href="news-feed.html" class="nav-item"><div>📰</div><span>News Feed</span></a>
@@ -1058,9 +1285,13 @@ function buildReactionChipsHtml(messageId,currentUid){
     }).join('');
 }
 function refreshReactionUI(messageId,currentUid){
-  const bar=$('message-reactions-'+messageId);
-  if(!bar)return;
-  bar.innerHTML=buildReactionChipsHtml(messageId,currentUid);
+  const bars=document.querySelectorAll(`[data-reaction-message-id="${CSS.escape(String(messageId))}"]`);
+  if(!bars.length){
+    const bar=$('message-reactions-'+messageId);
+    if(bar)bar.innerHTML=buildReactionChipsHtml(messageId,currentUid);
+    return;
+  }
+  bars.forEach(bar=>bar.innerHTML=buildReactionChipsHtml(messageId,currentUid));
 }
 function syncReactionListeners(docs,currentUid){
   const wanted=new Set(docs.map(d=>d.id));
@@ -1629,7 +1860,7 @@ function renderMessageDoc(d,currentUid){
     : `${buildReplyCard(msg.replyTo)}${buildSharedPostCard(msg)}${buildForwardedCard(msg)}${(!msg.sharedPost&&!msg.forwardedFrom)?esc(msg.text||''):''}`;
 
   const rowClass=mine?'message-row mine':'message-row';
-  const reactionBar=`<div class="message-reactions" id="message-reactions-${esc(id)}">${buildReactionChipsHtml(id,currentUid)}</div>`;
+  const reactionBar=`<div class="message-reactions" id="message-reactions-${esc(id)}" data-reaction-message-id="${esc(id)}">${buildReactionChipsHtml(id,currentUid)}</div>`;
 
   return `<div class="${rowClass}" data-message-id="${esc(id)}">
     <div class="bubble-wrap" data-message-id="${esc(id)}">
@@ -1638,9 +1869,9 @@ function renderMessageDoc(d,currentUid){
         ${body}
         <small>${formatTime(msg.createdAt)}</small>
         ${deliveryLabel(msg,currentUid)}
+        <div class="reaction-tools">${reactionBar}${trigger}</div>
+        ${picker}
       </div>
-      <div class="reaction-tools">${reactionBar}${trigger}</div>
-      ${picker}
       <button class="message-tools-btn" type="button" onclick="toggleMessageActions('${esc(id)}',event)">⋯</button>
       ${actionMenu}
     </div>
