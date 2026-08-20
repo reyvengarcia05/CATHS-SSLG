@@ -27,11 +27,6 @@ body{min-height:100vh;color:white;background:linear-gradient(135deg,#00296B,#003
 .news-card:hover{transform:translateY(-4px)}
 .news-banner{height:125px;padding:18px;display:flex;align-items:flex-end;justify-content:space-between;background:linear-gradient(135deg,rgba(0,41,107,.92),rgba(0,61,165,.8),rgba(255,215,0,.55))}.news-icon{font-size:42px}.tag{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.18);padding:6px 9px;border-radius:10px;font-size:10px;font-weight:700}
 .news-body{padding:18px}.news-meta{font-size:10px;opacity:.72;margin-bottom:6px}.news-title{font-size:17px;font-weight:700;margin-bottom:7px}.news-excerpt{font-size:12px;line-height:1.6;opacity:.88}.read-btn{margin-top:14px;border:none;background:var(--yellow);color:var(--dark);padding:10px 14px;border-radius:11px;font-weight:700;cursor:pointer;font-size:12px}
-.admin-only{display:none!important}.admin-only.show{display:inline-flex!important}
-.admin-panel{display:none;margin:16px 0;padding:16px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.10);backdrop-filter:blur(16px);border-radius:18px;box-shadow:0 12px 30px rgba(0,0,0,.12)}
-.admin-panel.show{display:block}.admin-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.admin-panel h3{margin:0;font-size:15px}.admin-note{font-size:10px;opacity:.72;margin-top:4px}.admin-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}.admin-field{display:flex;flex-direction:column;gap:6px}.admin-field.full{grid-column:1/-1}.admin-field label{font-size:10px;font-weight:800;opacity:.78}.admin-field input,.admin-field select,.admin-field textarea{width:100%;border:1px solid rgba(0,41,107,.14);border-radius:11px;padding:10px 11px;font:inherit;font-size:12px;background:rgba(255,255,255,.92);color:#00296B;outline:none}.admin-field textarea{min-height:100px;resize:vertical}.admin-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}.admin-cancel{border:1px solid rgba(0,41,107,.18);background:rgba(255,255,255,.75);color:#00296B;padding:10px 14px;border-radius:11px;font-weight:700;cursor:pointer;font-size:12px}.news-card{position:relative}.delete-news-btn{display:none;position:absolute;top:10px;right:10px;border:1px solid rgba(255,255,255,.35);background:rgba(122,0,0,.86);color:#fff;border-radius:10px;padding:7px 9px;font-size:11px;font-weight:800;cursor:pointer;z-index:3;box-shadow:0 6px 18px rgba(0,0,0,.18)}.admin-mode .delete-news-btn{display:block}
-@media(max-width:700px){.admin-grid{grid-template-columns:1fr}.admin-field.full{grid-column:auto}.admin-panel-head{align-items:flex-start;flex-direction:column}.admin-actions{width:100%}.admin-actions button{flex:1}}
-
 .empty{padding:36px 20px;text-align:center;background:rgba(255,255,255,.10);border-radius:20px}.empty div{font-size:42px;margin-bottom:8px}.empty p{font-size:13px;opacity:.78}
 .bottom-nav{position:fixed;left:0;right:0;bottom:0;height:77px;padding:4px 4px env(safe-area-inset-bottom);background:rgba(0,0,0,.28);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);display:flex;justify-content:space-around;align-items:center;z-index:9999;border-top:1px solid rgba(255,255,255,.08)}
 .nav-item{flex:1;max-width:120px;min-width:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:white;font-size:9px;transition:.22s;padding:4px 3px}.nav-item div{font-size:21px;height:26px;display:flex;align-items:center;justify-content:center;margin-bottom:2px}.nav-item.active{color:var(--yellow);transform:translateY(-5px) scale(1.06);font-weight:700}.nav-item.active div{font-size:24px}
@@ -120,12 +115,6 @@ body{padding-bottom:82px;overflow-x:hidden}
 
 <main class="container">
   <section class="hero"><h2>Latest <span>News</span> & Updates</h2><p>Stay informed about school announcements, student activities, programs, and important updates from the CATHS-MAIN community.</p></section>
-<section id="adminPanel" class="admin-panel">
-  <div class="admin-panel-head">
-    <div><h3>🛠️ Admin News Manager</h3><div class="admin-note">Only verified administrators can publish or delete news and events.</div></div>
-    <button id="openAdminComposer" class="read-btn admin-only" type="button">＋ Add News</button>
-  </div>
-</section>
 
   <div class="toolbar">
     <input id="searchInput" class="search" type="search" placeholder="🔍 Search news or announcements...">
@@ -149,135 +138,43 @@ body{padding-bottom:82px;overflow-x:hidden}
 </nav>
 
 <div id="newsModal" class="modal"><div class="modal-box"><button class="close-btn" id="closeNews">✕</button><h3 id="modalTitle"></h3><div id="modalDate" class="modal-date"></div><p id="modalBody"></p></div></div>
-<div id="adminNewsModal" class="modal"><div class="modal-box" style="max-width:560px"><button class="close-btn" id="closeAdminNews">✕</button><h3 id="adminNewsHeading">➕ Add News</h3><div class="admin-grid">
-  <div class="admin-field"><label for="adminNewsType">Category</label><select id="adminNewsType"><option value="announcement">📢 Announcement</option><option value="events">📅 Event</option><option value="news">📰 News</option></select></div>
-  <div class="admin-field"><label for="adminNewsIcon">Icon</label><input id="adminNewsIcon" maxlength="4" value="📢"></div>
-  <div class="admin-field full"><label for="adminNewsTitle">Title</label><input id="adminNewsTitle" maxlength="120" placeholder="Enter announcement or event title"></div>
-  <div class="admin-field full"><label for="adminNewsDate">Date / Label</label><input id="adminNewsDate" maxlength="80" placeholder="e.g. August 21, 2026 • School Activity"></div>
-  <div class="admin-field full"><label for="adminNewsExcerpt">Short Description</label><textarea id="adminNewsExcerpt" maxlength="300" placeholder="Short preview shown on the card"></textarea></div>
-  <div class="admin-field full"><label for="adminNewsBody">Full Details</label><textarea id="adminNewsBody" maxlength="5000" placeholder="Complete announcement or event details"></textarea></div>
-</div><div class="admin-actions"><button id="cancelAdminNews" class="admin-cancel" type="button">Cancel</button><button id="saveAdminNews" class="read-btn" type="button">Publish</button></div></div></div>
 
 <script>
-const DEFAULT_NEWS=[
- {id:'sample-1',type:'announcement',icon:'📢',tag:'Announcement',date:'School Update',title:'SSLG General Assembly',excerpt:'Important school-wide updates, announcements, and student leadership matters will be shared with the school community.',body:'This is a sample announcement. Verified administrators can publish the official announcement details here.'},
- {id:'sample-2',type:'announcement',icon:'📣',tag:'Announcement',date:'Student Affairs',title:'Student Leadership Training',excerpt:'Information about student leadership activities, registration, and participation will be posted here.',body:'Verified administrators can replace sample content with the official leadership training schedule, requirements, venue, and registration instructions.'},
- {id:'sample-3',type:'events',icon:'📅',tag:'Events',date:'School Event',title:'Upcoming School Activity',excerpt:'Keep students updated about upcoming programs, meetings, campaigns, and campus activities.',body:'Verified administrators can publish the official event date, time, location, participants, and reminders here.'}
+const NEWS=[
+ {id:1,type:'announcement',icon:'📢',tag:'Announcement',date:'School Update',title:'SSLG General Assembly',excerpt:'Important school-wide updates, announcements, and student leadership matters will be shared with the school community.',body:'This news item is a sample announcement for your CATHS-MAIN Student Voice website. Replace this text with the official announcement details, date, venue, and other information from your SSLG.'},
+ {id:2,type:'announcement',icon:'📣',tag:'Announcement',date:'Student Affairs',title:'Student Leadership Training',excerpt:'Information about student leadership activities, registration, and participation will be posted here.',body:'Use this section for the complete details of your leadership training announcement, including schedule, requirements, venue, and registration instructions.'},
+ {id:3,type:'events',icon:'📅',tag:'Events',date:'School Event',title:'Upcoming School Activity',excerpt:'Keep students updated about upcoming programs, meetings, campaigns, and campus activities.',body:'Add the official event information here. You can include the event date, time, location, participants, and reminders.'},
+ {id:4,type:'student',icon:'🎓',tag:'Student Life',date:'Student Community',title:'Student Community Update',excerpt:'Highlights, reminders, and helpful information for students can be featured in this section.',body:'Use this article for student-centered updates such as club activities, student achievements, campaigns, or important reminders.'}
 ];
-let NEWS=[...DEFAULT_NEWS],currentFilter='all',term='',adminMode=false,db=null,auth=null,unsubscribeNews=null;
-const $=id=>document.getElementById(id); const escapeHtml=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+let currentFilter='all';
+const $=id=>document.getElementById(id);
 function renderNews(){
+ const term=$('searchInput').value.trim().toLowerCase();
  const list=NEWS.filter(item=>(currentFilter==='all'||item.type===currentFilter)&&(!term||`${item.title} ${item.excerpt} ${item.tag} ${item.date}`.toLowerCase().includes(term)));
  if(!list.length){$('newsGrid').innerHTML='<div class="empty" style="grid-column:1/-1"><div>📰</div><p>No news found.</p></div>';return;}
- document.body.classList.toggle('admin-mode',adminMode);
- $('newsGrid').innerHTML=list.map(item=>`<article class="news-card"><button class="delete-news-btn" type="button" onclick="deleteNews('${escapeHtml(item.id)}')">🗑️ Delete</button><div class="news-banner"><div class="news-icon">${escapeHtml(item.icon||'📰')}</div><div class="tag">${escapeHtml(item.tag||item.type||'News')}</div></div><div class="news-body"><div class="news-meta">${escapeHtml(item.date||'')}</div><div class="news-title">${escapeHtml(item.title)}</div><div class="news-excerpt">${escapeHtml(item.excerpt)}</div><button class="read-btn" onclick="openNews('${escapeHtml(item.id)}')">Read More</button></div></article>`).join('');
+ $('newsGrid').innerHTML=list.map(item=>`<article class="news-card"><div class="news-banner"><div class="news-icon">${item.icon}</div><div class="tag">${item.tag}</div></div><div class="news-body"><div class="news-meta">${item.date}</div><div class="news-title">${escapeHtml(item.title)}</div><div class="news-excerpt">${escapeHtml(item.excerpt)}</div><button class="read-btn" onclick="openNews(${item.id})">Read More</button></div></article>`).join('');
 }
-window.openNews=function(id){const item=NEWS.find(x=>String(x.id)===String(id));if(!item)return;$('modalTitle').textContent=item.title;$('modalDate').textContent=item.date||'';$('modalBody').textContent=item.body||item.excerpt||'';$('newsModal').classList.add('show')};
+function escapeHtml(text){return String(text).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+window.openNews=function(id){const item=NEWS.find(x=>x.id===id);if(!item)return;$('modalTitle').textContent=item.title;$('modalDate').textContent=item.date;$('modalBody').textContent=item.body;$('newsModal').classList.add('show')}
 $('closeNews').onclick=()=>$('newsModal').classList.remove('show');$('newsModal').addEventListener('click',e=>{if(e.target===$('newsModal'))$('newsModal').classList.remove('show')});
-$('searchInput').addEventListener('input',e=>{term=e.target.value.trim().toLowerCase();renderNews()});
+$('searchInput').addEventListener('input',renderNews);
 document.querySelectorAll('.filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(b=>b.classList.remove('active'));btn.classList.add('active');currentFilter=btn.dataset.filter;renderNews()}));
-$('adminNewsType').addEventListener('change',e=>{const map={announcement:'📢',events:'📅',news:'📰'};$('adminNewsIcon').value=map[e.target.value]||'📰'});
-function closeAdminComposer(){$('adminNewsModal').classList.remove('show')}
-function openAdminComposer(){if(!adminMode)return; $('adminNewsHeading').textContent='➕ Add News';$('adminNewsTitle').value='';$('adminNewsDate').value='';$('adminNewsExcerpt').value='';$('adminNewsBody').value='';$('adminNewsType').value='announcement';$('adminNewsIcon').value='📢';$('adminNewsModal').classList.add('show');setTimeout(()=>$('adminNewsTitle').focus(),30)}
-$('openAdminComposer').addEventListener('click',openAdminComposer);$('closeAdminNews').onclick=closeAdminComposer;$('cancelAdminNews').onclick=closeAdminComposer;$('adminNewsModal').addEventListener('click',e=>{if(e.target===$('adminNewsModal'))closeAdminComposer()});
-window.addEventListener('DOMContentLoaded',()=>renderNews());
-</script><script type="module">
+renderNews();
+</script>
+
+<script type="module">
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js';
-import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserLocalPersistence} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js';
-import {getFirestore,collection,addDoc,deleteDoc,doc,query,orderBy,onSnapshot,serverTimestamp} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js';
+import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js';
 const firebaseConfig={apiKey:'AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc',authDomain:'caths-page.firebaseapp.com',projectId:'caths-page',storageBucket:'caths-page.firebasestorage.app',messagingSenderId:'945498022620',appId:'1:945498022620:web:71aeb4cd2472e061aeca19',measurementId:'G-CBG1YSK13G'};
-const app=initializeApp(firebaseConfig);
-
-// IMPORTANT:
-// Keep this page on the exact same Firebase Auth project and use the same
-// browser-local persistence as the other CATHS-MAIN pages. Firebase Auth
-// stores the session locally for the same web origin, so the signed-in user
-// is available after navigating between index.html, profile.html,
-// news-feed.html, news.html, etc.
-const auth=getAuth(app);
-const db=getFirestore(app);
-
-setPersistence(auth,browserLocalPersistence).catch(err=>{
-  console.error('Auth persistence setup failed:',err);
-});
-const provider=new GoogleAuthProvider();
-const ADMIN_EMAILS=new Set(['reyvengarcia15@gmail.com','reyvenbermudo091@gmail.com','reyvengarcia05@gmail.com','chezcadc14@gmail.com','nathanielgarg679@gmail.com','marteena.133@gmail.com','Gabbicastillo0126@gmail.com','leddadanielle91@gmail.com','jennapastor062@gmail.com','dhenmark1313@gmail.com','christianangelointes0@gmail.com','alexaislacruz@gmail.com','galangjullianne016@gmail.com','vanessajotic2403@gmail.com','aquinobernardjr0@gmail.com','angellyar0909@gmail.com','vhergelnarciso@gmail.com','sicatmadisson487@gmail.com'].map(e=>e.toLowerCase()));
-function isAdmin(user){return !!user?.email&&ADMIN_EMAILS.has(user.email.trim().toLowerCase())}
-function setAdminUI(user){adminMode=isAdmin(user);$('adminPanel').classList.toggle('show',adminMode);$('openAdminComposer').classList.toggle('show',adminMode);document.body.classList.toggle('admin-mode',adminMode);renderNews()}
+const app=initializeApp(firebaseConfig);const auth=getAuth(app);const provider=new GoogleAuthProvider();
 const btn=$('headerLoginBtn'),menu=$('profileMenu');let loggedUser=null;
 function closeMenu(){if(!menu.classList.contains('open'))return;menu.classList.remove('open');menu.classList.add('closing');menu.addEventListener('animationend',function h(e){if(e.animationName!=='profileOut')return;menu.style.display='none';menu.classList.remove('closing');menu.removeEventListener('animationend',h)})}
 btn.addEventListener('click',()=>{if(!loggedUser){googleLogin();return}if(menu.classList.contains('open'))closeMenu();else{menu.style.display='block';requestAnimationFrame(()=>menu.classList.add('open'))}});
 window.googleLogin=async function(){try{await signInWithPopup(auth,provider)}catch(e){console.error(e);alert('Google login failed: '+e.message)}};
-$('logoutBtn').addEventListener('click',async()=>{try{await signOut(auth);closeMenu()}catch(e){alert('Logout failed: '+e.message)}});
+$('logoutBtn').addEventListener('click',async()=>{try{await signOut(auth);location.reload()}catch(e){alert('Logout failed: '+e.message)}});
 document.addEventListener('click',e=>{if(menu.classList.contains('open')&&!document.querySelector('.header-right').contains(e.target))closeMenu()});
 $('profileNav').addEventListener('click',e=>{if(!loggedUser){e.preventDefault();googleLogin()}});
-async function loadNewsFromFirestore(){
-  try{
-    const q=query(collection(db,'news'),orderBy('createdAt','desc'));
-    if(unsubscribeNews)unsubscribeNews();
-    unsubscribeNews=onSnapshot(q,snap=>{
-      NEWS=snap.docs.map(d=>{const x=d.data()||{};return {id:d.id,type:x.type||'news',icon:x.icon||'📰',tag:x.tag||({announcement:'Announcement',events:'Events',news:'News'}[x.type]||'News'),date:x.date||'',title:x.title||'Untitled',excerpt:x.excerpt||'',body:x.body||''};});
-      if(!NEWS.length) NEWS=[...DEFAULT_NEWS];
-      renderNews();
-    },err=>{console.error('News listener',err);NEWS=[...DEFAULT_NEWS];renderNews();});
-  }catch(e){console.error('News load',e);NEWS=[...DEFAULT_NEWS];renderNews();}
-}
-
-$('saveAdminNews').addEventListener('click',async()=>{
-  const user=auth.currentUser;
-  if(!isAdmin(user)){showAdminNotice('Only verified administrators can publish news.');return;}
-  const type=$('adminNewsType').value,title=$('adminNewsTitle').value.trim(),date=$('adminNewsDate').value.trim(),excerpt=$('adminNewsExcerpt').value.trim(),body=$('adminNewsBody').value.trim(),icon=$('adminNewsIcon').value.trim()||'📰';
-  if(!title||!excerpt||!body){showAdminNotice('Please complete the title, short description, and full details.');return;}
-  const btnSave=$('saveAdminNews');btnSave.disabled=true;btnSave.textContent='Publishing...';
-  try{
-    await addDoc(collection(db,'news'),{type,icon,tag:{announcement:'Announcement',events:'Events',news:'News'}[type]||'News',title,date:date||new Date().toLocaleDateString(),excerpt,body,authorUid:user.uid,authorEmail:user.email,createdAt:serverTimestamp()});
-    closeAdminComposer();showAdminNotice('News published successfully.');
-  }catch(e){console.error(e);showAdminNotice(e?.code==='permission-denied'?'Firestore rules denied this admin action.':'Could not publish the news item.');}
-  finally{btnSave.disabled=false;btnSave.textContent='Publish';}
-});
-
-function showAdminNotice(msg){window.alert(msg)}
-window.deleteNews=async function(id){
-  const user=auth.currentUser;
-  if(!isAdmin(user)){showAdminNotice('Only verified administrators can delete news.');return;}
-  if(String(id).startsWith('sample-')){showAdminNotice('This is a sample card. Publish a real news item to manage it.');return;}
-  if(!confirm('Delete this news or event permanently?'))return;
-  try{await deleteDoc(doc(db,'news',id));showAdminNotice('News deleted.')}catch(e){console.error(e);showAdminNotice(e?.code==='permission-denied'?'Firestore rules denied this admin action.':'Could not delete this news item.')}};
-
-onAuthStateChanged(auth,user=>{
-  loggedUser=user;
-
-  if(user){
-    const displayName=user.displayName || (user.email ? user.email.split('@')[0] : 'User');
-    const photo=user.photoURL ? escapeHtml(user.photoURL) : '';
-
-    btn.innerHTML = photo
-      ? `<img src="${photo}" style="width:24px;height:24px;border-radius:50%;object-fit:cover" alt=""> <span>${escapeHtml(displayName)}</span> ▼`
-      : `👤 <span>${escapeHtml(displayName)}</span> ▼`;
-
-    if(user.photoURL){
-      $('profilePhoto').src=user.photoURL;
-      $('profileNavPhoto').innerHTML=`<img src="${photo}" alt="Profile">`;
-    }else{
-      $('profilePhoto').src='';
-      $('profileNavPhoto').textContent='👤';
-    }
-
-    $('profileName').textContent=displayName;
-    $('profileEmail').textContent=user.email||'';
-  }else{
-    btn.innerHTML='👤 <span>Login</span>';
-    $('profilePhoto').src='';
-    $('profileNavPhoto').textContent='👤';
-    $('profileName').textContent='Not signed in';
-    $('profileEmail').textContent='';
-  }
-
-  // Both logged-in and logged-out states render from the same Auth listener.
-  // This guarantees news.html reflects the current Firebase session.
-  setAdminUI(user);
-  loadNewsFromFirestore();
-});
+onAuthStateChanged(auth,user=>{loggedUser=user;if(user){btn.innerHTML=`${user.photoURL?`<img src="${user.photoURL}" style="width:24px;height:24px;border-radius:50%;object-fit:cover">`:'👤'} <span>${escapeHtml(user.displayName||'User')}</span> ▼`;if(user.photoURL){$('profilePhoto').src=user.photoURL;$('profileNavPhoto').innerHTML=`<img src="${user.photoURL}" alt="Profile">`}else{$('profilePhoto').src='';$('profileNavPhoto').textContent='👤'}$('profileName').textContent=user.displayName||'User';$('profileEmail').textContent=user.email||''}else{btn.innerHTML='👤 <span>Login</span>'; $('profileNavPhoto').textContent='👤'}});
 </script>
 </body>
 </html>
