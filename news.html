@@ -183,13 +183,15 @@ $('openAdminComposer').addEventListener('click',openAdminComposer);$('closeAdmin
 window.addEventListener('DOMContentLoaded',()=>renderNews());
 </script><script type="module">
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js';
-import {initializeAuth,browserLocalPersistence,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js';
+import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserLocalPersistence} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js';
 import {getFirestore,collection,addDoc,deleteDoc,doc,query,orderBy,onSnapshot,serverTimestamp} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js';
 const firebaseConfig={apiKey:'AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc',authDomain:'caths-page.firebaseapp.com',projectId:'caths-page',storageBucket:'caths-page.firebasestorage.app',messagingSenderId:'945498022620',appId:'1:945498022620:web:71aeb4cd2472e061aeca19',measurementId:'G-CBG1YSK13G'};
 const app=initializeApp(firebaseConfig);
-// Explicitly use browser-local Firebase Auth persistence so the same
-// Google login is restored automatically across the site's HTML pages.
-auth=initializeAuth(app,{persistence:browserLocalPersistence});
+// Use the same Firebase Auth initialization pattern as the other CATHS pages.
+auth=getAuth(app);
+// Persist the Google session locally so navigation between HTML pages
+// keeps the same signed-in user.
+setPersistence(auth,browserLocalPersistence).catch(err=>console.error('Auth persistence setup failed:',err));
 db=getFirestore(app);
 const provider=new GoogleAuthProvider();
 const ADMIN_EMAILS=new Set(['reyvengarcia15@gmail.com','reyvenbermudo091@gmail.com','reyvengarcia05@gmail.com','chezcadc14@gmail.com','nathanielgarg679@gmail.com','marteena.133@gmail.com','Gabbicastillo0126@gmail.com','leddadanielle91@gmail.com','jennapastor062@gmail.com','dhenmark1313@gmail.com','christianangelointes0@gmail.com','alexaislacruz@gmail.com','galangjullianne016@gmail.com','vanessajotic2403@gmail.com','aquinobernardjr0@gmail.com','angellyar0909@gmail.com','vhergelnarciso@gmail.com','sicatmadisson487@gmail.com'].map(e=>e.toLowerCase()));
