@@ -660,6 +660,30 @@ body{overflow:hidden;}
   .message-row.mine .reaction-tools{right:8px !important;left:auto !important}
 }
 
+
+/* Final mobile reaction behavior: no tap-to-open emoji button. Long-press opens picker. */
+@media (hover:none) and (pointer:coarse) and (max-width:520px){
+  .message-row .message-reaction-trigger{
+    display:none !important;
+    opacity:0 !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+    width:0 !important;
+    min-width:0 !important;
+    height:0 !important;
+    flex:0 0 0 !important;
+    margin:0 !important;
+    padding:0 !important;
+  }
+  .message-row .reaction-tools{
+    gap:0 !important;
+  }
+  .message-row.mobile-reaction-active .reaction-tools{
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:auto !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -994,6 +1018,121 @@ body{overflow:hidden;}
   }
   body.mobile-conversation-open .messenger.mobile-chat-open .send-btn{
     min-width:58px !important;
+  }
+}
+</style>
+
+<style id="mobile-reaction-layout-final-fix">
+/* ===== Mobile reactions: Messenger-style chips below the bubble + 2s long-press picker ===== */
+@media (hover:none) and (pointer:coarse) and (max-width:520px){
+  /* No standalone reaction button on phones. Long-press opens the picker instead. */
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-reaction-trigger{
+    display:none !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .reaction-tools{
+    position:absolute !important;
+    top:calc(100% + 6px) !important;
+    bottom:auto !important;
+    left:0 !important;
+    right:auto !important;
+    width:max-content !important;
+    max-width:calc(100vw - 24px) !important;
+    min-height:30px !important;
+    height:30px !important;
+    margin:0 !important;
+    padding:0 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    gap:3px !important;
+    pointer-events:auto !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    transform:none !important;
+    z-index:40 !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row.mine .reaction-tools{
+    left:auto !important;
+    right:0 !important;
+    justify-content:flex-end !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-reactions{
+    display:flex !important;
+    align-items:center !important;
+    gap:3px !important;
+    width:auto !important;
+    height:30px !important;
+    min-height:30px !important;
+    margin:0 !important;
+    padding:0 !important;
+    flex-wrap:nowrap !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-reaction-chip{
+    width:30px !important;
+    height:30px !important;
+    min-width:30px !important;
+    flex:0 0 30px !important;
+    padding:0 !important;
+    font-size:14px !important;
+    border-radius:50% !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-reaction-chip .reaction-count{
+    right:-3px !important;
+    bottom:-3px !important;
+    min-width:14px !important;
+    height:14px !important;
+    font-size:7px !important;
+    line-height:14px !important;
+  }
+
+  /* Only reserve space when there is an actual reaction chip. */
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row:has(.message-reaction-chip){
+    padding-bottom:40px !important;
+  }
+
+  /* Long-press opens the picker below the bubble, never in the middle of it. */
+  body.mobile-conversation-open .messenger.mobile-chat-open .bubble > .react-picker{
+    position:absolute !important;
+    top:calc(100% + 8px) !important;
+    left:0 !important;
+    right:auto !important;
+    bottom:auto !important;
+    width:min(224px,72vw) !important;
+    max-width:72vw !important;
+    max-height:190px !important;
+    margin:0 !important;
+    padding:7px !important;
+    grid-template-columns:repeat(5,1fr) !important;
+    gap:4px !important;
+    border-radius:13px !important;
+    transform:none !important;
+    z-index:300 !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .bubble:has(.message-reaction-chip) > .react-picker{
+    top:calc(100% + 42px) !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row.mine .bubble > .react-picker{
+    left:auto !important;
+    right:0 !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .bubble > .react-picker button{
+    width:100% !important;
+    height:34px !important;
+    font-size:19px !important;
+    border-radius:9px !important;
+  }
+
+  /* Make room for the picker while it is open so the next message does not cover it. */
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row:has(.react-picker.open){
+    padding-bottom:220px !important;
   }
 }
 </style>
@@ -1821,26 +1960,63 @@ async function openGroup(group){
 window.clearChatSelection=()=>{stopFriendPresence();closeConversationActionMenu();clearReactionListeners();lastMessageRenderSignature='';groupUserProfiles.clear();activeFriend=null;activeGroup=null;activeConversation=null;document.querySelector('.messenger')?.classList.remove('mobile-chat-open');document.body.classList.remove('mobile-conversation-open');if(unsubscribeMessages)unsubscribeMessages();$('chatPane').innerHTML='<div class="chat-empty"><div class="empty-inner"><div class="empty-icon">💬</div><h3>Select a conversation</h3><p>Choose a friend or group to start chatting.</p></div></div>';renderConversations()};
 
 
-/* Mobile: show reaction tools only after a 2-second long press. */
+/* Mobile: long-press a message for 2 seconds to open the reaction picker directly. */
+let suppressNextMobileMessageClick=false;
 (function initMobileReactionLongPress(){
-  let timer=null, activeRow=null, startX=0, startY=0;
+  let timer=null, pressedRow=null, startX=0, startY=0;
   const isMobileTouch=()=>window.matchMedia&&window.matchMedia('(hover:none) and (pointer:coarse) and (max-width:520px)').matches;
-  const clearLongPress=()=>{if(timer){clearTimeout(timer);timer=null;}activeRow=null;};
+  const clearLongPress=()=>{if(timer){clearTimeout(timer);timer=null;}pressedRow=null;};
+
   document.addEventListener('pointerdown',(event)=>{
     if(!isMobileTouch()||event.pointerType!=='touch')return;
     const row=event.target.closest('.message-row');
     if(!row||event.target.closest('button,input,textarea,a,.react-picker,.message-actions'))return;
-    clearLongPress(); activeRow=row; startX=event.clientX; startY=event.clientY;
-    timer=setTimeout(()=>{if(activeRow){activeRow.classList.add('mobile-reaction-active');if(navigator.vibrate)navigator.vibrate(18);}timer=null;},2000);
+    closeReactionPickers();
+    clearLongPress();
+    pressedRow=row;
+    startX=event.clientX;
+    startY=event.clientY;
+    timer=setTimeout(()=>{
+      if(!pressedRow)return;
+      const picker=pressedRow.querySelector('.react-picker');
+      if(picker){
+        closeReactionPickers();
+        picker.classList.add('open');
+        pressedRow.classList.add('mobile-reaction-active');
+        suppressNextMobileMessageClick=true;
+        if(navigator.vibrate)navigator.vibrate(18);
+      }
+      timer=null;
+    },2000);
   },{passive:true});
-  document.addEventListener('pointermove',(event)=>{if(!timer||event.pointerType!=='touch')return; if(Math.abs(event.clientX-startX)>10||Math.abs(event.clientY-startY)>10)clearLongPress();},{passive:true});
-  document.addEventListener('pointerup',(event)=>{if(event.pointerType==='touch')clearLongPress();},{passive:true});
+
+  document.addEventListener('pointermove',(event)=>{
+    if(!timer||event.pointerType!=='touch')return;
+    if(Math.abs(event.clientX-startX)>10||Math.abs(event.clientY-startY)>10)clearLongPress();
+  },{passive:true});
+
+  document.addEventListener('pointerup',(event)=>{
+    if(event.pointerType==='touch')clearLongPress();
+  },{passive:true});
   document.addEventListener('pointercancel',clearLongPress,{passive:true});
-  document.addEventListener('contextmenu',(event)=>{if(isMobileTouch()&&event.target.closest('.message-row'))event.preventDefault();});
+  document.addEventListener('contextmenu',(event)=>{
+    if(isMobileTouch()&&event.target.closest('.message-row'))event.preventDefault();
+  });
 })();
 
 function closeMessageActions(){document.querySelectorAll('.message-actions.open').forEach(x=>x.classList.remove('open'))}
-document.addEventListener('click',e=>{if(!e.target.closest('.message-tools-btn')&&!e.target.closest('.message-actions'))closeMessageActions();if(!e.target.closest('.message-reaction-chip')&&!e.target.closest('.react-picker'))closeReactionPickers();if(!e.target.closest('.conversation-action-menu')&&!e.target.closest('.conversation-more'))closeConversationActionMenu()});
+document.addEventListener('click',e=>{
+  const mobileTouch=window.matchMedia&&window.matchMedia('(hover:none) and (pointer:coarse) and (max-width:520px)').matches;
+  if(mobileTouch&&suppressNextMobileMessageClick&&e.target.closest('.message-row')){
+    suppressNextMobileMessageClick=false;
+    e.preventDefault();
+    e.stopPropagation();
+    return;
+  }
+  if(!e.target.closest('.message-tools-btn')&&!e.target.closest('.message-actions'))closeMessageActions();
+  if(!e.target.closest('.message-reaction-chip')&&!e.target.closest('.react-picker'))closeReactionPickers();
+  if(!e.target.closest('.conversation-action-menu')&&!e.target.closest('.conversation-more'))closeConversationActionMenu();
+});
 
 
 function normalizeSpecialMessage(msg){
