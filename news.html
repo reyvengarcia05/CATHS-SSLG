@@ -187,12 +187,19 @@ import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,se
 import {getFirestore,collection,addDoc,deleteDoc,doc,query,orderBy,onSnapshot,serverTimestamp} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js';
 const firebaseConfig={apiKey:'AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc',authDomain:'caths-page.firebaseapp.com',projectId:'caths-page',storageBucket:'caths-page.firebasestorage.app',messagingSenderId:'945498022620',appId:'1:945498022620:web:71aeb4cd2472e061aeca19',measurementId:'G-CBG1YSK13G'};
 const app=initializeApp(firebaseConfig);
-// Use the same Firebase Auth initialization pattern as the other CATHS pages.
-auth=getAuth(app);
-// Persist the Google session locally so navigation between HTML pages
-// keeps the same signed-in user.
-setPersistence(auth,browserLocalPersistence).catch(err=>console.error('Auth persistence setup failed:',err));
-db=getFirestore(app);
+
+// IMPORTANT:
+// Keep this page on the exact same Firebase Auth project and use the same
+// browser-local persistence as the other CATHS-MAIN pages. Firebase Auth
+// stores the session locally for the same web origin, so the signed-in user
+// is available after navigating between index.html, profile.html,
+// news-feed.html, news.html, etc.
+const auth=getAuth(app);
+const db=getFirestore(app);
+
+setPersistence(auth,browserLocalPersistence).catch(err=>{
+  console.error('Auth persistence setup failed:',err);
+});
 const provider=new GoogleAuthProvider();
 const ADMIN_EMAILS=new Set(['reyvengarcia15@gmail.com','reyvenbermudo091@gmail.com','reyvengarcia05@gmail.com','chezcadc14@gmail.com','nathanielgarg679@gmail.com','marteena.133@gmail.com','Gabbicastillo0126@gmail.com','leddadanielle91@gmail.com','jennapastor062@gmail.com','dhenmark1313@gmail.com','christianangelointes0@gmail.com','alexaislacruz@gmail.com','galangjullianne016@gmail.com','vanessajotic2403@gmail.com','aquinobernardjr0@gmail.com','angellyar0909@gmail.com','vhergelnarciso@gmail.com','sicatmadisson487@gmail.com'].map(e=>e.toLowerCase()));
 function isAdmin(user){return !!user?.email&&ADMIN_EMAILS.has(user.email.trim().toLowerCase())}
@@ -238,7 +245,39 @@ window.deleteNews=async function(id){
   try{await deleteDoc(doc(db,'news',id));showAdminNotice('News deleted.')}catch(e){console.error(e);showAdminNotice(e?.code==='permission-denied'?'Firestore rules denied this admin action.':'Could not delete this news item.')}};
 
 onAuthStateChanged(auth,user=>{
-  loggedUser=user;if(user){btn.innerHTML=`${user.photoURL?`<img src="${user.photoURL}" style="width:24px;height:24px;border-radius:50%;object-fit:cover">`:'👤'} <span>${escapeHtml(user.displayName||'User')}</span> ▼`;if(user.photoURL){$('profilePhoto').src=user.photoURL;$('profileNavPhoto').innerHTML=`<img src="${user.photoURL}" alt="Profile">`}else{$('profilePhoto').src='';$('profileNavPhoto').textContent='👤'}$('profileName').textContent=user.displayName||'User';$('profileEmail').textContent=user.email||''}else{btn.innerHTML='👤 <span>Login</span>'; $('profileNavPhoto').textContent='👤'}setAdminUI(user);loadNewsFromFirestore();});
+  loggedUser=user;
+
+  if(user){
+    const displayName=user.displayName || (user.email ? user.email.split('@')[0] : 'User');
+    const photo=user.photoURL ? escapeHtml(user.photoURL) : '';
+
+    btn.innerHTML = photo
+      ? `<img src="${photo}" style="width:24px;height:24px;border-radius:50%;object-fit:cover" alt=""> <span>${escapeHtml(displayName)}</span> ▼`
+      : `👤 <span>${escapeHtml(displayName)}</span> ▼`;
+
+    if(user.photoURL){
+      $('profilePhoto').src=user.photoURL;
+      $('profileNavPhoto').innerHTML=`<img src="${photo}" alt="Profile">`;
+    }else{
+      $('profilePhoto').src='';
+      $('profileNavPhoto').textContent='👤';
+    }
+
+    $('profileName').textContent=displayName;
+    $('profileEmail').textContent=user.email||'';
+  }else{
+    btn.innerHTML='👤 <span>Login</span>';
+    $('profilePhoto').src='';
+    $('profileNavPhoto').textContent='👤';
+    $('profileName').textContent='Not signed in';
+    $('profileEmail').textContent='';
+  }
+
+  // Both logged-in and logged-out states render from the same Auth listener.
+  // This guarantees news.html reflects the current Firebase session.
+  setAdminUI(user);
+  loadNewsFromFirestore();
+});
 </script>
 </body>
 </html>
