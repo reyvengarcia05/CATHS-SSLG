@@ -685,6 +685,124 @@ body{overflow:hidden;}
   }
 }
 </style>
+
+<style id="mobile-reaction-side-actions-final">
+/* ===== PHONE ONLY: reaction emoji + three-dots beside the message edge ===== */
+@media (hover:none) and (pointer:coarse) and (max-width:520px){
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row .message-reactions{
+    display:none !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .reaction-tools{
+    position:absolute !important;
+    top:50% !important;
+    bottom:auto !important;
+    transform:translateY(-50%) !important;
+    width:29px !important;
+    height:29px !important;
+    min-height:29px !important;
+    margin:0 !important;
+    padding:0 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:0 !important;
+    z-index:55 !important;
+    opacity:0 !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+  }
+
+  /* Incoming: emoji then dots at the right edge. */
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row:not(.mine) .reaction-tools{
+    left:calc(100% + 4px) !important;
+    right:auto !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row:not(.mine) .message-reaction-trigger{
+    order:1 !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row:not(.mine) .message-tools-btn{
+    right:-67px !important;
+  }
+
+  /* Outgoing: mirror the pair on the left side. */
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row.mine .reaction-tools{
+    right:calc(100% + 4px) !important;
+    left:auto !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row.mine .message-reaction-trigger{
+    order:1 !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row.mine .message-tools-btn{
+    left:-67px !important;
+  }
+
+  /* Only the selected/placeholder emoji is shown here. */
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-reaction-trigger{
+    display:inline-flex !important;
+    width:29px !important;
+    height:29px !important;
+    min-width:29px !important;
+    padding:0 !important;
+    margin:0 !important;
+    border:0 !important;
+    border-radius:50% !important;
+    background:#fff !important;
+    box-shadow:0 5px 14px rgba(0,0,0,.14) !important;
+    font-size:17px !important;
+    line-height:1 !important;
+    opacity:1 !important;
+    transform:none !important;
+    pointer-events:auto !important;
+    flex:0 0 29px !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-reaction-trigger:hover{
+    transform:scale(1.04) !important;
+    background:#fff !important;
+  }
+
+  /* Hidden until the message is tapped, then stays visible after a reaction is chosen. */
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row.mobile-reaction-active .reaction-tools,
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row:has(.message-reaction-chip) .reaction-tools{
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:auto !important;
+  }
+
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-tools-btn{
+    position:absolute !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+    display:block !important;
+    width:29px !important;
+    height:29px !important;
+    min-width:29px !important;
+    padding:0 !important;
+    opacity:0 !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+    border-radius:50% !important;
+    background:rgba(255,255,255,.86) !important;
+    color:#183c8c !important;
+    box-shadow:0 5px 14px rgba(0,0,0,.14) !important;
+    z-index:56 !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row.mobile-reaction-active .message-tools-btn,
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row:has(.message-reaction-chip) .message-tools-btn{
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:auto !important;
+  }
+
+  /* Keep the pair outside the bubble instead of overlapping the bubble. */
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row .bubble-wrap{
+    overflow:visible !important;
+  }
+  body.mobile-conversation-open .messenger.mobile-chat-open .message-row .bubble{
+    overflow:visible !important;
+  }
+}
+</style>
 </head>
 <body>
 <header class="header">
@@ -1960,48 +2078,19 @@ async function openGroup(group){
 window.clearChatSelection=()=>{stopFriendPresence();closeConversationActionMenu();clearReactionListeners();lastMessageRenderSignature='';groupUserProfiles.clear();activeFriend=null;activeGroup=null;activeConversation=null;document.querySelector('.messenger')?.classList.remove('mobile-chat-open');document.body.classList.remove('mobile-conversation-open');if(unsubscribeMessages)unsubscribeMessages();$('chatPane').innerHTML='<div class="chat-empty"><div class="empty-inner"><div class="empty-icon">💬</div><h3>Select a conversation</h3><p>Choose a friend or group to start chatting.</p></div></div>';renderConversations()};
 
 
-/* Mobile: long-press a message for 2 seconds to open the reaction picker directly. */
-let suppressNextMobileMessageClick=false;
-(function initMobileReactionLongPress(){
-  let timer=null, pressedRow=null, startX=0, startY=0;
+/* Mobile reaction actions: tap a message to reveal 😊 + ⋯ beside the bubble. */
+(function initMobileReactionTap(){
   const isMobileTouch=()=>window.matchMedia&&window.matchMedia('(hover:none) and (pointer:coarse) and (max-width:520px)').matches;
-  const clearLongPress=()=>{if(timer){clearTimeout(timer);timer=null;}pressedRow=null;};
-
-  document.addEventListener('pointerdown',(event)=>{
-    if(!isMobileTouch()||event.pointerType!=='touch')return;
+  document.addEventListener('click',(event)=>{
+    if(!isMobileTouch())return;
     const row=event.target.closest('.message-row');
-    if(!row||event.target.closest('button,input,textarea,a,.react-picker,.message-actions'))return;
+    if(!row)return;
+    if(event.target.closest('button,input,textarea,a,.react-picker,.message-actions'))return;
+    const wasActive=row.classList.contains('mobile-reaction-active');
+    document.querySelectorAll('.message-row.mobile-reaction-active').forEach(r=>{if(r!==row)r.classList.remove('mobile-reaction-active')});
+    if(!wasActive)row.classList.add('mobile-reaction-active');
     closeReactionPickers();
-    clearLongPress();
-    pressedRow=row;
-    startX=event.clientX;
-    startY=event.clientY;
-    timer=setTimeout(()=>{
-      if(!pressedRow)return;
-      const picker=pressedRow.querySelector('.react-picker');
-      if(picker){
-        closeReactionPickers();
-        picker.classList.add('open');
-        pressedRow.classList.add('mobile-reaction-active');
-        suppressNextMobileMessageClick=true;
-        if(navigator.vibrate)navigator.vibrate(18);
-      }
-      timer=null;
-    },2000);
-  },{passive:true});
-
-  document.addEventListener('pointermove',(event)=>{
-    if(!timer||event.pointerType!=='touch')return;
-    if(Math.abs(event.clientX-startX)>10||Math.abs(event.clientY-startY)>10)clearLongPress();
-  },{passive:true});
-
-  document.addEventListener('pointerup',(event)=>{
-    if(event.pointerType==='touch')clearLongPress();
-  },{passive:true});
-  document.addEventListener('pointercancel',clearLongPress,{passive:true});
-  document.addEventListener('contextmenu',(event)=>{
-    if(isMobileTouch()&&event.target.closest('.message-row'))event.preventDefault();
-  });
+  },true);
 })();
 
 function closeMessageActions(){document.querySelectorAll('.message-actions.open').forEach(x=>x.classList.remove('open'))}
@@ -2014,7 +2103,7 @@ document.addEventListener('click',e=>{
     return;
   }
   if(!e.target.closest('.message-tools-btn')&&!e.target.closest('.message-actions'))closeMessageActions();
-  if(!e.target.closest('.message-reaction-chip')&&!e.target.closest('.react-picker'))closeReactionPickers();
+  if(!e.target.closest('.message-reaction-chip')&&!e.target.closest('.react-picker')&&!e.target.closest('.message-reaction-trigger'))closeReactionPickers();
   if(!e.target.closest('.conversation-action-menu')&&!e.target.closest('.conversation-more'))closeConversationActionMenu();
 });
 
