@@ -1199,7 +1199,7 @@ $('submitEntryBtn').addEventListener('click',async()=>{
     closeSubmissionForm();
     showAppNotice(
       'Submission received!',
-      'Your entry has been sent successfully. An authorized admin can review your submission.',
+      'Your entry has been sent to the application system. An authorized admin can review your submission.',
       'success'
     );
   }catch(err){
@@ -1623,10 +1623,36 @@ const GOOGLE_SHEET_WEB_APP_URL='https://script.google.com/macros/s/AKfycbxWip-0Y
 function submitToGoogleSheet(params){
   return new Promise((resolve,reject)=>{
     try{
+      const cleanParams={};
+      Object.entries(params||{}).forEach(([key,value])=>{
+        cleanParams[key]=String(value??'');
+      });
+
+      // Preferred transport: navigator.sendBeacon(). It is designed for
+      // fire-and-forget POST requests and does not require CORS response
+      // access. This avoids the old iframe cleanup race that could cancel
+      // the request before Google Apps Script finished processing it.
+      try{
+        if(navigator.sendBeacon){
+          const body=new URLSearchParams(cleanParams).toString();
+          const blob=new Blob([body],{type:'application/x-www-form-urlencoded;charset=UTF-8'});
+          if(navigator.sendBeacon(GOOGLE_SHEET_WEB_APP_URL,blob)){
+            setTimeout(()=>resolve(true),120);
+            return;
+          }
+        }
+      }catch(beaconError){
+        console.warn('sendBeacon transport unavailable, using form fallback.',beaconError);
+      }
+
+      // Reliable fallback: submit a real HTML POST into a hidden iframe.
+      // IMPORTANT: keep the iframe alive long enough for Apps Script to
+      // finish. The previous version removed it after 800ms, which could
+      // cancel the request during a cold start/slow connection.
       const iframe=document.createElement('iframe');
-      const iframeName='caths_sheet_submit_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);
+      const iframeName='caths_sheet_submit_'+Date.now()+'_'+Math.random().toString(36).slice(2,9);
       iframe.name=iframeName;
-      iframe.style.display='none';
+      iframe.style.cssText='position:fixed;width:1px;height:1px;left:-10000px;top:-10000px;border:0;opacity:0;pointer-events:none;';
       document.body.appendChild(iframe);
 
       const form=document.createElement('form');
@@ -1635,26 +1661,44 @@ function submitToGoogleSheet(params){
       form.target=iframeName;
       form.style.display='none';
 
-      Object.entries(params||{}).forEach(([key,value])=>{
+      Object.entries(cleanParams).forEach(([key,value])=>{
         const input=document.createElement('input');
         input.type='hidden';
         input.name=key;
-        input.value=String(value??'');
+        input.value=value;
         form.appendChild(input);
       });
 
       document.body.appendChild(form);
 
-      // Submit synchronously so the request is handed to the browser.
-      form.submit();
-
-      // Never keep the submit button spinning while waiting for a
-      // cross-origin response we cannot read.
-      setTimeout(()=>{
-        form.remove();
-        iframe.remove();
+      let finished=false;
+      const cleanup=()=>{
+        if(finished)return;
+        finished=true;
+        window.clearTimeout(timer);
+        try{form.remove();}catch{}
+        try{iframe.remove();}catch{}
+      };
+      const finishSuccess=()=>{
+        if(finished)return;
+        finished=true;
+        window.clearTimeout(timer);
+        // Give the browser time to complete the POST before cleanup.
+        window.setTimeout(()=>{
+          try{form.remove();}catch{}
+          try{iframe.remove();}catch{}
+        },1500);
         resolve(true);
-      },800);
+      };
+      const timer=window.setTimeout(()=>{
+        cleanup();
+        // The request has already been handed to the browser; do not leave
+        // the student stuck on an infinite spinner.
+        resolve(true);
+      },15000);
+
+      iframe.addEventListener('load',finishSuccess,{once:true});
+      form.submit();
     }catch(err){
       reject(err);
     }
