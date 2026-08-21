@@ -838,7 +838,7 @@ $('appNoticeOverlay').addEventListener('click',e=>{
 
 $('publishPostNews').addEventListener('click',async()=>{
   if(!validatePublishFields())return;
-  if(!window._publishUnlocked){openCodeGate();return;
+  if(!window._publishUnlocked){openCodeGate();return;}
   window._publishUnlocked=false;
   if(!window.loggedUser||!adminMode){
     showAppNotice('Admin access required','Only authorized SSLG administrators can publish news.','error');
