@@ -317,6 +317,28 @@ const firebaseConfig={apiKey:'AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc',authDomai
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);const provider=new GoogleAuthProvider();
 setPersistence(auth,browserLocalPersistence).catch(err=>{console.error('Auth persistence setup failed:',err);});
 const btn=$('headerLoginBtn'),menu=$('profileMenu');let loggedUser=null;
+const VERIFIED_ADMIN_EMAILS=new Set([
+  'reyvengarcia15@gmail.com',
+  'reyvenbermudo091@gmail.com',
+  'reyvengarcia05@gmail.com',
+  'chezcadc14@gmail.com',
+  'nathanielgarc679@gmail.com',
+  'marteena.133@gmail.com',
+  'gabbicastillo0126@gmail.com',
+  'leddadanielle91@gmail.com',
+  'jennapastor062@gmail.com',
+  'dhenmark1313@gmail.com',
+  'christianangelointes0@gmail.com',
+  'alexaislacruz@gmail.com',
+  'galangjullianne016@gmail.com',
+  'vanessajotic2403@gmail.com',
+  'aquinobernardjr0@gmail.com',
+  'angellyar0909@gmail.com',
+  'vhergelnarciso@gmail.com',
+  'sicatmadisson487@gmail.com'
+].map(e=>e.toLowerCase()));
+function isVerifiedAdminEmail(email){return VERIFIED_ADMIN_EMAILS.has(String(email||'').trim().toLowerCase());}
+
 function closeMenu(){if(!menu.classList.contains('open'))return;menu.classList.remove('open');menu.classList.add('closing');menu.addEventListener('animationend',function h(e){if(e.animationName!=='profileOut')return;menu.style.display='none';menu.classList.remove('closing');menu.removeEventListener('animationend',h)})}
 btn.addEventListener('click',()=>{if(!loggedUser){googleLogin();return}if(menu.classList.contains('open'))closeMenu();else{menu.style.display='block';requestAnimationFrame(()=>menu.classList.add('open'))}});
 window.googleLogin=async function(){try{await signInWithPopup(auth,provider)}catch(e){console.error(e);alert('Google login failed: '+e.message)}};
@@ -362,7 +384,7 @@ async function setupAdmin(user){
   adminMode=false;
   if(!user){renderAdmin();return;}
   const profile=await getUserProfile(user);
-  adminMode=profile.role==='admin';
+  adminMode=profile.role==='admin' || isVerifiedAdminEmail(user.email);
   renderAdmin();
 }
 
