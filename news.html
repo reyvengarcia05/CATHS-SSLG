@@ -575,6 +575,56 @@ body{padding-bottom:82px;overflow-x:hidden}
   .submission-btn{min-height:44px}
 }
 
+
+/* ===== Admin-only submissions viewer ===== */
+.admin-submissions-btn{
+  border:none;background:rgba(32,163,74,.78);color:#fff;
+  border-radius:9px;padding:7px 9px;font-size:10px;font-weight:800;cursor:pointer
+}
+.admin-submissions-btn:hover{background:rgba(32,163,74,.95)}
+#submissionsOverlay{
+  display:none !important;position:fixed !important;inset:0 !important;
+  width:100vw !important;height:100vh !important;z-index:55000 !important;
+  align-items:center !important;justify-content:center !important;padding:16px !important;
+  background:rgba(0,18,60,.70) !important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)
+}
+#submissionsOverlay.show{display:flex !important}
+#submissionsCard{
+  width:min(900px,95vw);max-height:88vh;overflow:auto;margin:auto;
+  background:rgba(255,255,255,.98);color:#173a86;border-radius:26px;
+  padding:22px;box-shadow:0 28px 90px rgba(0,0,0,.42)
+}
+#submissionsCard h3{font-size:20px;color:#00296B;margin-bottom:4px}
+#submissionsSubtitle{font-size:10px;color:#71809a;margin-bottom:14px}
+.submission-admin-list{display:grid;gap:10px}
+.submission-admin-row{
+  background:#f7faff;border:1px solid #e0e8f6;border-radius:14px;padding:12px
+}
+.submission-admin-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.submission-admin-name{font-size:12px;font-weight:800;color:#173a86}
+.submission-admin-meta{font-size:9px;color:#75819a;margin-top:2px}
+.submission-admin-details{margin-top:8px;font-size:10px;color:#344568;line-height:1.5;white-space:pre-line}
+.submission-status{
+  border:none;border-radius:999px;padding:5px 8px;font-size:8px;font-weight:800;
+  background:#fff4cf;color:#7a5b00
+}
+.submission-status.reviewed{background:#e5f7eb;color:#1d7a43}
+.submission-status.rejected{background:#ffe6e6;color:#b42323}
+.submission-admin-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.submission-admin-action{
+  border:none;border-radius:9px;padding:7px 9px;font-size:9px;font-weight:800;cursor:pointer
+}
+.submission-admin-action.review{background:#003DA5;color:#fff}
+.submission-admin-action.reject{background:#c62828;color:#fff}
+.submission-empty{
+  padding:28px 18px;text-align:center;color:#74809a;background:#f7faff;border-radius:15px
+}
+@media(max-width:768px){
+  #submissionsCard{width:min(350px,94vw);padding:17px;border-radius:22px}
+  .submission-admin-top{flex-direction:column}
+  .submission-status{align-self:flex-start}
+}
+
 </style>
 </head>
 <body>
@@ -801,6 +851,16 @@ body{padding-bottom:82px;overflow-x:hidden}
   </div>
 </div>
 
+
+<div id="submissionsOverlay" aria-hidden="true">
+  <div id="submissionsCard" role="dialog" aria-modal="true">
+    <button class="close-btn" id="closeSubmissions" type="button">✕</button>
+    <h3>📥 Student Submissions</h3>
+    <div id="submissionsSubtitle">Admin-only view</div>
+    <div id="submissionsList" class="submission-admin-list"></div>
+  </div>
+</div>
+
 <script>
 const NEWS=[];
 let currentFilter='all';
@@ -819,7 +879,7 @@ function renderNews(){
  const term=$('searchInput').value.trim().toLowerCase();
  const list=sortNews(mergedNews.filter(item=>!item.deleted && !item.hidden && (item.visibility==='public'||adminMode) && (currentFilter==='all'||item.type===currentFilter) && (!term||`${item.title} ${item.excerpt} ${item.tag} ${item.date}`.toLowerCase().includes(term))));
  if(!list.length){$('newsGrid').innerHTML='<div class="empty" style="grid-column:1/-1"><div>📰</div><p>No news or announcements yet.</p><small style="display:block;margin-top:6px;opacity:.65">Authorized admins can publish the first update using <b>Post News</b>.</small></div>';return;}
- $('newsGrid').innerHTML=list.map(item=>`<article class="news-card"><div class="news-banner"><div class="news-icon">${escapeHtml(item.icon)}</div><div class="tag">${escapeHtml(item.tag)}</div></div><div class="news-body">${item.authorPhotoURL?`<div class="post-author" style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><img src="${escapeHtml(item.authorPhotoURL)}" alt="Admin" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.35)"><div style="min-width:0"><div style="font-size:10px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(item.authorName||'SSLG Admin')}</div><div style="font-size:8px;opacity:.68;margin-top:2px">SSLG Administrator</div></div></div>`:''}<div class="news-meta">${escapeHtml(item.date)}</div><div class="news-title">${escapeHtml(item.title)}</div><div class="news-excerpt">${escapeHtml(item.excerpt)}</div><div class="card-flags">${item.official?'<span class="card-flag">✅ OFFICIAL</span>':''}${item.pinned?'<span class="card-flag">📌 PINNED</span>':''}</div><div class="card-buttons"><button class="read-btn" onclick="openNews('${escapeHtml(item.id)}')">Read More</button>${item.allowSubmissions?`<button class="submit-entry-btn" onclick="openSubmissionForm('${escapeHtml(item.id)}')">📝 Submit Entry</button>`:''}</div>${adminMode?`<div class="card-admin-actions"><button onclick="editPost('${escapeHtml(item.id)}')">✏️ Edit</button><button onclick="togglePinned('${escapeHtml(item.id)}')">${item.pinned?'📍 Unpin':'📌 Pin'}</button><button onclick="toggleOfficial('${escapeHtml(item.id)}')">${item.official?'✅ Unmark':'🏷️ Official'}</button><button onclick="toggleHidden('${escapeHtml(item.id)}')">${item.hidden?'👁️ Unhide':'🙈 Hide'}</button><button onclick="changeVisibility('${escapeHtml(item.id)}')">🔐 Visibility</button><button class="danger" onclick="deletePost('${escapeHtml(item.id)}')">🗑️ Delete</button></div>`:''}</div></article>`).join('');
+ $('newsGrid').innerHTML=list.map(item=>`<article class="news-card"><div class="news-banner"><div class="news-icon">${escapeHtml(item.icon)}</div><div class="tag">${escapeHtml(item.tag)}</div></div><div class="news-body">${item.authorPhotoURL?`<div class="post-author" style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><img src="${escapeHtml(item.authorPhotoURL)}" alt="Admin" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.35)"><div style="min-width:0"><div style="font-size:10px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(item.authorName||'SSLG Admin')}</div><div style="font-size:8px;opacity:.68;margin-top:2px">SSLG Administrator</div></div></div>`:''}<div class="news-meta">${escapeHtml(item.date)}</div><div class="news-title">${escapeHtml(item.title)}</div><div class="news-excerpt">${escapeHtml(item.excerpt)}</div><div class="card-flags">${item.official?'<span class="card-flag">✅ OFFICIAL</span>':''}${item.pinned?'<span class="card-flag">📌 PINNED</span>':''}</div><div class="card-buttons"><button class="read-btn" onclick="openNews('${escapeHtml(item.id)}')">Read More</button>${item.allowSubmissions?`<button class="submit-entry-btn" onclick="openSubmissionForm('${escapeHtml(item.id)}')">📝 Submit Entry</button>`:''}</div>${adminMode?`<div class="card-admin-actions"><button onclick="editPost('${escapeHtml(item.id)}')">✏️ Edit</button>${item.allowSubmissions?`<button class="admin-submissions-btn" onclick="openSubmissions('${escapeHtml(item.id)}')">📥 Submissions</button>`:''}<button onclick="togglePinned('${escapeHtml(item.id)}')">${item.pinned?'📍 Unpin':'📌 Pin'}</button><button onclick="toggleOfficial('${escapeHtml(item.id)}')">${item.official?'✅ Unmark':'🏷️ Official'}</button><button onclick="toggleHidden('${escapeHtml(item.id)}')">${item.hidden?'👁️ Unhide':'🙈 Hide'}</button><button onclick="changeVisibility('${escapeHtml(item.id)}')">🔐 Visibility</button><button class="danger" onclick="deletePost('${escapeHtml(item.id)}')">🗑️ Delete</button></div>`:''}</div></article>`).join('');
 }
 window.openNews=function(id){const item=mergedNews.find(x=>String(x.id)===String(id)&&!x.deleted);if(!item)return;$('modalTitle').textContent=item.title;$('modalDate').textContent=item.date;$('modalBody').textContent=item.body;const flags=[];if(item.official)flags.push('✅ OFFICIAL ANNOUNCEMENT');if(item.pinned)flags.push('📌 PINNED');if(item.hidden)flags.push('🙈 HIDDEN');if(item.allowSubmissions)flags.push('📝 SUBMISSIONS OPEN');if(item.visibility!=='public')flags.push('🔒 '+item.visibility.toUpperCase());$('modalFlags').innerHTML=flags.map(x=>`<span class="card-flag">${escapeHtml(x)}</span>`).join('');$('newsModal').classList.add('show')};
 $('closeNews').onclick=()=>$('newsModal').classList.remove('show');
@@ -848,7 +908,7 @@ function renderAdmin(){
  if(!adminMode){$('adminPostBar').classList.remove('show');$('adminPanel').style.display='none';$('adminPanel').classList.add('admin-panel-collapsed');return;}
  $('adminPostBar').classList.add('show');
  $('adminPanel').style.display='block';
- const html=sortNews(mergedNews.filter(x=>!x.deleted)).map(item=>`<div class="admin-row"><div class="admin-row-info"><div class="admin-row-title">${escapeHtml(item.title)}</div><div class="admin-row-meta">${escapeHtml(item.tag)} • ${escapeHtml(item.visibility)} ${item.allowSubmissions?'• submissions open':''} ${item.hidden?'• hidden':''} ${item.pinned?'• pinned':''} ${item.official?'• official':''}</div></div><div class="admin-row-actions"><button class="admin-action" onclick="editPost('${escapeHtml(item.id)}')">✏️ Edit</button><button class="admin-action" onclick="toggleHidden('${escapeHtml(item.id)}')">${item.hidden?'👁️ Unhide':'🙈 Hide'}</button><button class="admin-action" onclick="togglePinned('${escapeHtml(item.id)}')">${item.pinned?'📍 Unpin':'📌 Pin'}</button><button class="admin-action" onclick="toggleOfficial('${escapeHtml(item.id)}')">${item.official?'✅ Unmark':'🏷️ Official'}</button><button class="admin-action" onclick="changeVisibility('${escapeHtml(item.id)}')">🔐 Visibility</button><button class="admin-action danger" onclick="deletePost('${escapeHtml(item.id)}')">🗑️ Delete</button></div></div>`).join('');
+ const html=sortNews(mergedNews.filter(x=>!x.deleted)).map(item=>`<div class="admin-row"><div class="admin-row-info"><div class="admin-row-title">${escapeHtml(item.title)}</div><div class="admin-row-meta">${escapeHtml(item.tag)} • ${escapeHtml(item.visibility)} ${item.allowSubmissions?'• submissions open':''} ${item.hidden?'• hidden':''} ${item.pinned?'• pinned':''} ${item.official?'• official':''}</div></div><div class="admin-row-actions"><button class="admin-action" onclick="editPost('${escapeHtml(item.id)}')">✏️ Edit</button>${item.allowSubmissions?`<button class="admin-submissions-btn" onclick="openSubmissions('${escapeHtml(item.id)}')">📥 Submissions</button>`:''}<button class="admin-action" onclick="toggleHidden('${escapeHtml(item.id)}')">${item.hidden?'👁️ Unhide':'🙈 Hide'}</button><button class="admin-action" onclick="togglePinned('${escapeHtml(item.id)}')">${item.pinned?'📍 Unpin':'📌 Pin'}</button><button class="admin-action" onclick="toggleOfficial('${escapeHtml(item.id)}')">${item.official?'✅ Unmark':'🏷️ Official'}</button><button class="admin-action" onclick="changeVisibility('${escapeHtml(item.id)}')">🔐 Visibility</button><button class="admin-action danger" onclick="deletePost('${escapeHtml(item.id)}')">🗑️ Delete</button></div></div>`).join('');
  $('adminList').innerHTML=html||'<div class="empty"><div>🗂️</div><p>No posts to manage.</p></div>';
 }
 $('managePostsBtn').addEventListener('click',()=>{
@@ -1086,6 +1146,111 @@ $('submitEntryBtn').addEventListener('click',async()=>{
   }finally{
     btn.disabled=false;
     btn.textContent='✅ Submit Entry';
+  }
+});
+
+
+function formatSubmissionDate(value){
+  try{
+    if(value?.toDate)return value.toDate().toLocaleString();
+    if(value instanceof Date)return value.toLocaleString();
+    return value?new Date(value).toLocaleString():'';
+  }catch{return '';}
+}
+
+async function loadSubmissionsForPost(postId){
+  if(!adminMode || !window.loggedUser){
+    showAppNotice('Admin access required','Only authorized admins can view student submissions.','error');
+    return [];
+  }
+  const q=query(collection(db,'submissions'),where('postId','==',String(postId)));
+  const snap=await getDocs(q);
+  const rows=[];
+  snap.forEach(docSnap=>rows.push({id:docSnap.id,...docSnap.data()}));
+  rows.sort((a,b)=>{
+    const at=a.createdAt?.toMillis?a.createdAt.toMillis():0;
+    const bt=b.createdAt?.toMillis?b.createdAt.toMillis():0;
+    return bt-at;
+  });
+  return rows;
+}
+
+window.openSubmissions=async function(postId){
+  if(!adminMode || !window.loggedUser){
+    showAppNotice('Admin access required','Only authorized admins can view student submissions.','error');
+    return;
+  }
+  const post=postById(postId);
+  if(!post || !post.allowSubmissions){
+    showAppNotice('Submissions are closed','This news post does not currently accept student submissions.','warning');
+    return;
+  }
+
+  $('submissionsSubtitle').textContent='Submissions for: '+(post.title||'Selected news post');
+  $('submissionsList').innerHTML='<div class="submission-empty">Loading submissions...</div>';
+  $('submissionsOverlay').classList.add('show');
+  $('submissionsOverlay').setAttribute('aria-hidden','false');
+
+  try{
+    const rows=await loadSubmissionsForPost(postId);
+
+    if(!rows.length){
+      $('submissionsList').innerHTML='<div class="submission-empty">📭<br><br>No student submissions yet.</div>';
+      return;
+    }
+
+    $('submissionsList').innerHTML=rows.map(row=>`
+      <div class="submission-admin-row">
+        <div class="submission-admin-top">
+          <div>
+            <div class="submission-admin-name">${escapeHtml(row.submitterName||'Student')}</div>
+            <div class="submission-admin-meta">${escapeHtml(row.submitterEmail||'')} • ${escapeHtml(row.gradeSection||'')}</div>
+            <div class="submission-admin-meta">${escapeHtml(row.contactNumber||'No contact number')} • ${escapeHtml(formatSubmissionDate(row.createdAt))}</div>
+          </div>
+          <span class="submission-status ${row.status==='reviewed'?'reviewed':row.status==='rejected'?'rejected':''}">${escapeHtml((row.status||'pending').toUpperCase())}</span>
+        </div>
+        <div class="submission-admin-details">${escapeHtml(row.details||'No details provided.')}</div>
+        <div class="submission-admin-actions">
+          <button class="submission-admin-action review" onclick="updateSubmissionStatus('${escapeHtml(row.id)}','reviewed','${escapeHtml(postId)}')">✅ Mark Reviewed</button>
+          <button class="submission-admin-action reject" onclick="updateSubmissionStatus('${escapeHtml(row.id)}','rejected','${escapeHtml(postId)}')">✕ Reject</button>
+        </div>
+      </div>
+    `).join('');
+  }catch(err){
+    console.error('Submissions load failed:',err);
+    $('submissionsList').innerHTML='<div class="submission-empty">Unable to load submissions right now.</div>';
+    showAppNotice('Could not load submissions',err?.message||'Please try again.','error');
+  }
+};
+
+window.updateSubmissionStatus=async function(submissionId,status,postId){
+  if(!adminMode || !window.loggedUser){
+    showAppNotice('Admin access required','Only authorized admins can manage submissions.','error');
+    return;
+  }
+  try{
+    await setDoc(doc(db,'submissions',String(submissionId)),{
+      status:status,
+      reviewedBy:window.loggedUser.uid,
+      reviewedAt:serverTimestamp(),
+      updatedAt:serverTimestamp()
+    },{merge:true});
+    showAppNotice('Submission updated',`The submission is now ${status}.`,'success');
+    await window.openSubmissions(postId);
+  }catch(err){
+    console.error('Submission status update failed:',err);
+    showAppNotice('Update failed',err?.message||'Could not update the submission.','error');
+  }
+};
+
+$('closeSubmissions').onclick=()=>{
+  $('submissionsOverlay').classList.remove('show');
+  $('submissionsOverlay').setAttribute('aria-hidden','true');
+};
+$('submissionsOverlay').addEventListener('click',e=>{
+  if(e.target===$('submissionsOverlay')){
+    $('submissionsOverlay').classList.remove('show');
+    $('submissionsOverlay').setAttribute('aria-hidden','true');
   }
 });
 
@@ -1340,7 +1505,7 @@ $('adminSave').addEventListener('click',async()=>{
 <script type="module">
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js';
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserLocalPersistence} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js';
-import {getFirestore,collection,doc,getDoc,getDocs,setDoc,deleteDoc,serverTimestamp,query,orderBy} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js';
+import {getFirestore,collection,doc,getDoc,getDocs,setDoc,deleteDoc,serverTimestamp,query,orderBy,where} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js';
 const firebaseConfig={apiKey:'AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc',authDomain:'caths-page.firebaseapp.com',projectId:'caths-page',storageBucket:'caths-page.firebasestorage.app',messagingSenderId:'945498022620',appId:'1:945498022620:web:71aeb4cd2472e061aeca19',measurementId:'G-CBG1YSK13G'};
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);const provider=new GoogleAuthProvider();
 setPersistence(auth,browserLocalPersistence).catch(err=>{console.error('Auth persistence setup failed:',err);});
