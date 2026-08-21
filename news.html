@@ -289,6 +289,38 @@ body{padding-bottom:82px;overflow-x:hidden}
   .publish-rocket{font-size:52px !important}
 }
 
+
+/* Delete confirmation popup */
+#deleteOverlay{
+  display:none !important;position:fixed !important;inset:0 !important;
+  width:100vw !important;height:100vh !important;z-index:31000 !important;
+  align-items:center !important;justify-content:center !important;padding:20px !important;
+  background:rgba(18,0,20,.66) !important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)
+}
+#deleteOverlay.show{display:flex !important}
+#deleteCard{
+  width:min(390px,92vw) !important;margin:auto !important;
+  background:rgba(255,255,255,.98) !important;color:#243a76 !important;
+  border-radius:26px !important;padding:24px 22px !important;text-align:center !important;
+  box-shadow:0 28px 90px rgba(0,0,0,.38) !important;
+  border:1px solid rgba(255,255,255,.85) !important;animation:deletePop .25s cubic-bezier(.16,1,.3,1)
+}
+.delete-icon{width:70px;height:70px;margin:0 auto 12px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#ffe6e6;color:#c62828;font-size:34px;box-shadow:0 10px 24px rgba(198,40,40,.14)}
+#deleteCard h3{font-size:19px;color:#00296B;margin-bottom:6px}
+#deleteCard p{font-size:11px;color:#6c7894;line-height:1.55}
+.delete-title{display:block;font-size:12px;font-weight:800;color:#173a86;margin:10px 0 0;word-break:break-word}
+.delete-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+.delete-action{border:none;border-radius:12px;padding:11px 12px;font-size:11px;font-weight:800;cursor:pointer}
+.delete-cancel{background:#eef4ff;color:#173a86}
+.delete-confirm{background:#c62828;color:#fff}
+.delete-confirm:hover{filter:brightness(1.05)}
+#deleteBusyState,#deleteSuccessState{display:none}
+.delete-spinner{width:38px;height:38px;margin:4px auto 14px;border-radius:50%;border:4px solid #f2d7d7;border-top-color:#c62828;animation:deleteSpin .8s linear infinite}
+.delete-success-check{width:64px;height:64px;margin:0 auto 12px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#e6f6eb;color:#1f7a43;font-size:34px;font-weight:900}
+@keyframes deletePop{from{opacity:0;transform:scale(.94) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes deleteSpin{to{transform:rotate(360deg)}}
+@media(max-width:768px){#deleteCard{width:min(340px,94vw) !important;padding:21px 17px !important;border-radius:22px}.delete-actions{grid-template-columns:1fr}.delete-action{min-height:44px}}
+
 </style>
 </head>
 <body>
@@ -444,6 +476,32 @@ body{padding-bottom:82px;overflow-x:hidden}
   </div>
 </div>
 
+
+<div id="deleteOverlay" aria-hidden="true">
+  <div id="deleteCard" role="dialog" aria-modal="true">
+    <div id="deleteConfirmState">
+      <div class="delete-icon">🗑️</div>
+      <h3>Delete this news post?</h3>
+      <p>This action will remove the post from the news page.</p>
+      <span id="deleteTitle" class="delete-title"></span>
+      <div class="delete-actions">
+        <button id="deleteCancel" class="delete-action delete-cancel" type="button">Cancel</button>
+        <button id="deleteConfirm" class="delete-action delete-confirm" type="button">🗑️ Delete Post</button>
+      </div>
+    </div>
+    <div id="deleteBusyState">
+      <div class="delete-spinner"></div>
+      <h3>Deleting your post...</h3>
+      <p>Please wait while the post is being removed.</p>
+    </div>
+    <div id="deleteSuccessState">
+      <div class="delete-success-check">✓</div>
+      <h3>Post deleted successfully</h3>
+      <p>The news post has been removed from CATHS-MAIN News.</p>
+    </div>
+  </div>
+</div>
+
 <script>
 const NEWS=[];
 let currentFilter='all';
@@ -507,7 +565,19 @@ window.toggleHidden=async function(id){const p=postById(id);if(!p)return;await w
 window.togglePinned=async function(id){const p=postById(id);if(!p)return;await window.savePostOverride(id,{pinned:!p.pinned});};
 window.toggleOfficial=async function(id){const p=postById(id);if(!p)return;await window.savePostOverride(id,{official:!p.official});};
 window.changeVisibility=async function(id){const p=postById(id);if(!p)return;const next=prompt('Enter visibility: public, friends, or onlyMe',p.visibility||'public');if(next===null)return;if(!['public','friends','onlyMe'].includes(next)){alert('Invalid visibility. Use public, friends, or onlyMe.');return;}await window.savePostOverride(id,{visibility:next});};
-window.deletePost=async function(id){const p=postById(id);if(!p)return;if(!confirm(`Delete "${p.title}"? This removes it from the news page.`))return;await window.savePostOverride(id,{deleted:true,hidden:true});};
+let pendingDeleteId=null;
+
+window.deletePost=function(id){
+  const p=postById(id);
+  if(!p || !adminMode) return;
+  pendingDeleteId=String(id);
+  $('deleteTitle').textContent=p.title ? '“'+p.title+'”' : '';
+  $('deleteConfirmState').style.display='block';
+  $('deleteBusyState').style.display='none';
+  $('deleteSuccessState').style.display='none';
+  $('deleteOverlay').classList.add('show');
+  $('deleteOverlay').setAttribute('aria-hidden','false');
+};
 $('publishPostNews').addEventListener('click',async()=>{
   if(!window.loggedUser||!adminMode){
     alert('Admin access required.');
@@ -605,6 +675,63 @@ $('publishPostNews').addEventListener('click',async()=>{
     btn.disabled=false;
     btn.textContent='🚀 Publish News';
     alert('Publish failed: '+(e?.message||String(e)));
+  }
+});
+
+
+$('deleteCancel').onclick=()=>{
+  pendingDeleteId=null;
+  $('deleteOverlay').classList.remove('show');
+  $('deleteOverlay').setAttribute('aria-hidden','true');
+};
+
+$('deleteOverlay').addEventListener('click',e=>{
+  if(e.target===$('deleteOverlay')){
+    pendingDeleteId=null;
+    $('deleteOverlay').classList.remove('show');
+    $('deleteOverlay').setAttribute('aria-hidden','true');
+  }
+});
+
+$('deleteConfirm').addEventListener('click',async()=>{
+  if(!pendingDeleteId || !adminMode || !window.loggedUser) return;
+
+  const id=pendingDeleteId;
+  const confirmState=$('deleteConfirmState');
+  const busyState=$('deleteBusyState');
+  const successState=$('deleteSuccessState');
+  const confirmBtn=$('deleteConfirm');
+
+  confirmBtn.disabled=true;
+  confirmState.style.display='none';
+  busyState.style.display='block';
+
+  try{
+    const ok=await window.savePostOverride(id,{deleted:true,hidden:true});
+
+    if(ok){
+      busyState.style.display='none';
+      successState.style.display='block';
+
+      setTimeout(()=>{
+        $('deleteOverlay').classList.remove('show');
+        $('deleteOverlay').setAttribute('aria-hidden','true');
+        successState.style.display='none';
+        confirmState.style.display='block';
+        confirmBtn.disabled=false;
+        pendingDeleteId=null;
+      },2200);
+    }else{
+      busyState.style.display='none';
+      confirmState.style.display='block';
+      confirmBtn.disabled=false;
+    }
+  }catch(err){
+    console.error('Delete flow failed:',err);
+    busyState.style.display='none';
+    confirmState.style.display='block';
+    confirmBtn.disabled=false;
+    alert('Delete failed: '+(err?.message||String(err)));
   }
 });
 
