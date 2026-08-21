@@ -116,33 +116,7 @@ body{padding-bottom:82px;overflow-x:hidden}
 .nav-item.active div{font-size:22px}
 }.nav-item div{font-size:19px}.nav-item.active div{font-size:22px}.hero h2{font-size:20px}.news-title{font-size:15px}}
 
-/* Publishing animation */
-.publish-overlay{display:none;position:fixed;inset:0;z-index:20000;background:rgba(0,18,60,.64);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px;text-align:center;flex-direction:column}
-.publish-overlay.show{display:flex!important}
-.publish-card{position:relative;margin:auto;display:block;width:min(360px,92vw);background:rgba(255,255,255,.97);color:#173a86;border-radius:26px;padding:28px 24px;text-align:center;box-shadow:0 28px 90px rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.7)}
-.rocket-stage{height:108px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;margin-bottom:8px}
-.rocket{position:relative;z-index:2;display:block;width:max-content;margin:0 auto;font-size:58px;filter:drop-shadow(0 10px 12px rgba(0,0,0,.14));animation:rocketFly 1.4s cubic-bezier(.2,.75,.25,1) infinite}
-.rocket-glow{position:absolute;width:72px;height:72px;border-radius:50%;background:rgba(255,217,61,.28);filter:blur(10px);animation:rocketGlow 1.25s ease-in-out infinite}
-.publish-card h3{font-size:20px;margin-bottom:6px;color:#00296B}
-.publish-card p{font-size:12px;color:#66779f;line-height:1.55}
-.publish-dots{display:flex;justify-content:center;gap:6px;margin-top:13px}
-.publish-dot{width:7px;height:7px;border-radius:50%;background:#003DA5;animation:dotPulse 1s ease-in-out infinite}
-.publish-dot:nth-child(2){animation-delay:.16s}.publish-dot:nth-child(3){animation-delay:.32s}
-.success-toast{position:fixed;top:22px;left:50%;transform:translate(-50%,-24px);z-index:21000;display:flex;align-items:center;gap:10px;min-width:min(420px,92vw);max-width:92vw;padding:14px 18px;border-radius:16px;background:rgba(255,255,255,.97);color:#173a86;box-shadow:0 20px 55px rgba(0,0,0,.28);opacity:0;pointer-events:none}
-.success-toast.show{animation:toastIn .28s ease forwards}
-.success-icon{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#e4f8ea;color:#1d7b42;font-weight:900;font-size:18px;flex:0 0 34px}
-.success-copy{min-width:0}.success-copy strong{display:block;font-size:13px;color:#00306f}.success-copy span{display:block;font-size:10px;color:#6b7897;margin-top:2px}
-.publish-btn-loading{opacity:.75;cursor:wait!important}
-@keyframes rocketFly{0%{transform:translateY(26px) rotate(-10deg) scale(.92);opacity:.45}35%{transform:translateY(-2px) rotate(-6deg) scale(1)}70%{transform:translate(10px,-34px) rotate(-2deg) scale(1.02);opacity:1}100%{transform:translate(22px,-92px) rotate(3deg) scale(.82);opacity:0}}
-@keyframes rocketGlow{0%,100%{transform:scale(.72);opacity:.35}50%{transform:scale(1.05);opacity:.75}}
-@keyframes dotPulse{0%,100%{transform:scale(.7);opacity:.35}50%{transform:scale(1);opacity:1}}
-@keyframes toastIn{from{opacity:0;transform:translate(-50%,-24px)}to{opacity:1;transform:translate(-50%,0)}}
-@media(max-width:768px){
-  .publish-card{position:relative;margin:auto;width:min(340px,94vw);padding:24px 19px;border-radius:22px}
-  .rocket-stage{height:96px}.rocket{font-size:50px}
-  .publish-card h3{font-size:18px}.publish-card p{font-size:11px}
-  .success-toast{top:12px;padding:12px 14px;border-radius:14px}
-}
+
 
 </style>
 </head>
@@ -249,17 +223,6 @@ body{padding-bottom:82px;overflow-x:hidden}
 </div></div>
 
 
-<div id="publishOverlay" class="publish-overlay" aria-hidden="true">
-  <div class="publish-card" role="status" aria-live="polite">
-    <div class="rocket-stage">
-      <div class="rocket-glow"></div>
-      <div class="rocket">🚀</div>
-    </div>
-    <h3>Publishing your news...</h3>
-    <p>Your announcement is being saved securely. Please wait a moment.</p>
-    <div class="publish-dots"><span class="publish-dot"></span><span class="publish-dot"></span><span class="publish-dot"></span></div>
-  </div>
-</div>
 <div id="successToast" class="success-toast" role="status" aria-live="polite">
   <div class="success-icon">✓</div>
   <div class="success-copy">
@@ -359,14 +322,11 @@ $('publishPostNews').addEventListener('click',async()=>{
   }
 
   const publishBtn=$('publishPostNews');
-  const overlay=$('publishOverlay');
   const toast=$('successToast');
 
   publishBtn.disabled=true;
   publishBtn.classList.add('publish-btn-loading');
   publishBtn.textContent='Publishing...';
-  overlay.classList.add('show');
-  overlay.setAttribute('aria-hidden','false');
 
   const id='custom_'+window.loggedUser.uid+'_'+Date.now();
 
@@ -374,8 +334,6 @@ $('publishPostNews').addEventListener('click',async()=>{
 
   if(ok){
     $('postNewsModal').classList.remove('show');
-    overlay.classList.remove('show');
-    overlay.setAttribute('aria-hidden','true');
 
     publishBtn.disabled=false;
     publishBtn.classList.remove('publish-btn-loading');
@@ -389,8 +347,6 @@ $('publishPostNews').addEventListener('click',async()=>{
     $('newExcerpt').value='';
     $('newBody').value='';
   }else{
-    overlay.classList.remove('show');
-    overlay.setAttribute('aria-hidden','true');
 
     publishBtn.disabled=false;
     publishBtn.classList.remove('publish-btn-loading');
