@@ -290,69 +290,85 @@ body{padding-bottom:82px;overflow-x:hidden}
 }
 
 
-/* Delete confirmation popup */
-#deleteOverlay{
+/* ===== SAFE ADMIN CODE POPUP ===== */
+#codeGateOverlay{
+  display:none !important;
+  position:fixed !important;
+  inset:0 !important;
+  width:100vw !important;
+  height:100vh !important;
+  z-index:40000 !important;
+  align-items:center !important;
+  justify-content:center !important;
+  background:rgba(0,18,60,.66) !important;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  padding:20px !important;
+}
+#codeGateOverlay.show{display:flex !important}
+#codeGateCard{
+  width:min(360px,92vw);
+  margin:auto;
+  background:rgba(255,255,255,.98);
+  color:#173a86;
+  border-radius:24px;
+  padding:24px 20px;
+  text-align:center;
+  box-shadow:0 28px 90px rgba(0,0,0,.36);
+}
+.code-gate-icon{
+  width:64px;height:64px;margin:0 auto 12px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:#eef4ff;color:#173a86;font-size:29px;
+}
+#codeGateCard h3{font-size:19px;color:#00296B;margin-bottom:6px}
+#codeGateCard p{font-size:11px;color:#6b7897;line-height:1.5}
+#publishCode{
+  width:100%;margin-top:13px;padding:12px 13px;border-radius:12px;
+  border:1px solid #d9e4f7;background:#f8fbff;color:#173a86;
+  outline:none;text-align:center;letter-spacing:2px;font-weight:800;
+  font-family:inherit;font-size:13px;
+}
+#publishCode.invalid{border-color:#df5a5a;background:#fff7f7;box-shadow:0 0 0 3px rgba(223,90,90,.08)}
+#publishCodeError{display:none;color:#c62828;font-size:9px;font-weight:700;margin-top:7px}
+#publishCodeError.show{display:block}
+.code-gate-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.code-gate-btn{border:none;border-radius:11px;padding:11px;font-weight:800;font-size:11px;cursor:pointer}
+.code-gate-cancel{background:#eef4ff;color:#173a86}
+.code-gate-continue{background:#003DA5;color:#fff}
+@media(max-width:768px){
+  #codeGateCard{width:min(340px,94vw);padding:21px 17px;border-radius:22px}
+  .code-gate-actions{grid-template-columns:1fr}
+}
+
+
+#appNoticeOverlay{
   display:none !important;position:fixed !important;inset:0 !important;
-  width:100vw !important;height:100vh !important;z-index:31000 !important;
+  width:100vw !important;height:100vh !important;z-index:50000 !important;
   align-items:center !important;justify-content:center !important;padding:20px !important;
-  background:rgba(18,0,20,.66) !important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)
+  background:rgba(0,18,60,.66) !important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)
 }
-#deleteOverlay.show{display:flex !important}
-#deleteCard{
-  width:min(390px,92vw) !important;margin:auto !important;
-  background:rgba(255,255,255,.98) !important;color:#243a76 !important;
-  border-radius:26px !important;padding:24px 22px !important;text-align:center !important;
-  box-shadow:0 28px 90px rgba(0,0,0,.38) !important;
-  border:1px solid rgba(255,255,255,.85) !important;animation:deletePop .25s cubic-bezier(.16,1,.3,1)
+#appNoticeOverlay.show{display:flex !important}
+#appNoticeCard{
+  width:min(390px,92vw);margin:auto;background:rgba(255,255,255,.98);
+  color:#173a86;border-radius:25px;padding:24px 20px;text-align:center;
+  box-shadow:0 28px 90px rgba(0,0,0,.38);border:1px solid rgba(255,255,255,.82);
+  animation:noticePop .25s cubic-bezier(.16,1,.3,1)
 }
-.delete-icon{width:70px;height:70px;margin:0 auto 12px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#ffe6e6;color:#c62828;font-size:34px;box-shadow:0 10px 24px rgba(198,40,40,.14)}
-#deleteCard h3{font-size:19px;color:#00296B;margin-bottom:6px}
-#deleteCard p{font-size:11px;color:#6c7894;line-height:1.55}
-.delete-title{display:block;font-size:12px;font-weight:800;color:#173a86;margin:10px 0 0;word-break:break-word}
-.delete-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
-.delete-action{border:none;border-radius:12px;padding:11px 12px;font-size:11px;font-weight:800;cursor:pointer}
-.delete-cancel{background:#eef4ff;color:#173a86}
-.delete-confirm{background:#c62828;color:#fff}
-.delete-confirm:hover{filter:brightness(1.05)}
-#deleteBusyState,#deleteSuccessState{display:none}
-.delete-spinner{width:38px;height:38px;margin:4px auto 14px;border-radius:50%;border:4px solid #f2d7d7;border-top-color:#c62828;animation:deleteSpin .8s linear infinite}
-.delete-success-check{width:64px;height:64px;margin:0 auto 12px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#e6f6eb;color:#1f7a43;font-size:34px;font-weight:900}
-@keyframes deletePop{from{opacity:0;transform:scale(.94) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
-@keyframes deleteSpin{to{transform:rotate(360deg)}}
-@media(max-width:768px){#deleteCard{width:min(340px,94vw) !important;padding:21px 17px !important;border-radius:22px}.delete-actions{grid-template-columns:1fr}.delete-action{min-height:44px}}
+.notice-icon{width:66px;height:66px;margin:0 auto 12px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px}
+.notice-icon.info{background:#eaf1ff;color:#235ec3}.notice-icon.success{background:#e5f7eb;color:#1d7a43}
+.notice-icon.error{background:#ffe6e6;color:#c62828}.notice-icon.warning{background:#fff2cf;color:#8a6400}
+#appNoticeCard h3{font-size:19px;color:#00296B;margin-bottom:6px}
+#appNoticeCard p{font-size:11px;color:#6a7894;line-height:1.55}
+.notice-actions{display:flex;justify-content:center;margin-top:16px}
+.notice-btn{min-width:115px;border:none;border-radius:11px;padding:11px 13px;font-size:11px;font-weight:800;cursor:pointer;background:#003DA5;color:#fff}
+@keyframes noticePop{from{opacity:0;transform:scale(.94) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@media(max-width:768px){#appNoticeCard{width:min(340px,94vw);padding:21px 17px;border-radius:22px}.notice-btn{min-height:44px}}
 
 
-/* Post form validation */
-.field.invalid input,
-.field.invalid textarea{
-  border-color:#e05252 !important;
-  background:#fff7f7 !important;
-  box-shadow:0 0 0 3px rgba(224,82,82,.10) !important;
-}
-.field.invalid label{color:#c62828 !important}
-.field-error{
-  display:none;
-  color:#c62828;
-  font-size:9px;
-  font-weight:700;
-  line-height:1.35;
-  margin-top:1px;
-}
-.field.invalid .field-error{display:block}
-.form-alert{
-  display:none;
-  margin:0 0 12px;
-  padding:11px 12px;
-  border-radius:12px;
-  background:#fff0f0;
-  border:1px solid #f2baba;
-  color:#b42323;
-  font-size:10px;
-  font-weight:700;
-  line-height:1.45;
-  text-align:left;
-}
-.form-alert.show{display:block}
+.post-author{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.post-author-photo{width:34px;height:34px;border-radius:50%;object-fit:cover;background:#eef4ff;border:2px solid rgba(255,255,255,.35);box-shadow:0 5px 14px rgba(0,0,0,.12)}
+.post-author-info{min-width:0}.post-author-name{font-size:10px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.post-author-role{font-size:8px;opacity:.68;margin-top:2px}
 
 </style>
 </head>
@@ -425,15 +441,14 @@ body{padding-bottom:82px;overflow-x:hidden}
   <button class="close-btn" id="closePostNews">✕</button>
   <h3>📰 Post News</h3>
   <div class="modal-date">Only authorized admin accounts can publish news.</div>
-  <div id="postFormAlert" class="form-alert" role="alert">Please complete the title, excerpt, and full body.</div>
   <div class="form-grid">
-    <div id="titleField" class="field full"><label>Title</label><input id="newTitle" maxlength="120" placeholder="Enter the news title"><div class="field-error">Title is required.</div></div>
+    <div class="field full"><label>Title</label><input id="newTitle" maxlength="120" placeholder="Enter the news title"></div>
     <div class="field"><label>Category</label><select id="newType"><option value="announcement">Announcement</option><option value="events">Events</option><option value="student">Student Life</option></select></div>
     <div class="field"><label>Icon</label><input id="newIcon" maxlength="4" value="📰"></div>
     <div class="field"><label>Tag</label><input id="newTag" maxlength="40" value="Announcement"></div>
     <div class="field"><label>Date / Meta</label><input id="newDate" maxlength="80" placeholder="School Update"></div>
-    <div id="excerptField" class="field full"><label>Excerpt</label><textarea id="newExcerpt" maxlength="500" placeholder="Short preview shown on the card"></textarea><div class="field-error">Excerpt is required.</div></div>
-    <div id="bodyField" class="field full"><label>Full Body</label><textarea id="newBody" maxlength="10000" placeholder="Full news content..."></textarea><div class="field-error">Full body is required.</div></div>
+    <div class="field full"><label>Excerpt</label><textarea id="newExcerpt" maxlength="500" placeholder="Short preview shown on the card"></textarea></div>
+    <div class="field full"><label>Full Body</label><textarea id="newBody" maxlength="10000" placeholder="Full news content..."></textarea></div>
     <div class="field"><label>Visibility</label><select id="newVisibility"><option value="public">Public</option><option value="friends">Friends</option><option value="onlyMe">Only Me</option></select></div>
     <div class="field"><label>Status</label><div class="status-chips"><span class="status-chip success">New post</span><span class="status-chip">Visible</span></div></div>
   </div>
@@ -489,50 +504,30 @@ body{padding-bottom:82px;overflow-x:hidden}
 
 
 
-<div id="publishOverlay" aria-hidden="true">
-  <div id="publishCard" role="status" aria-live="polite">
-    <div id="publishLoadingState">
-      <div class="publish-stage">
-        <div class="publish-glow"></div>
-        <div id="publishRocket" class="publish-rocket">🚀</div>
-      </div>
-      <h3 style="font-size:20px;color:#00296B;margin-bottom:6px">Publishing your news...</h3>
-      <p style="font-size:12px;color:#67779b;line-height:1.55">Saving your announcement securely. Please wait a moment.</p>
-      <div class="publish-dots" aria-hidden="true">
-        <span class="publish-dot"></span><span class="publish-dot"></span><span class="publish-dot"></span>
-      </div>
-    </div>
-    <div id="publishSuccessState" style="display:none">
-      <div class="publish-success-check">✓</div>
-      <h3>The post has been published!</h3>
-      <p>Your news is now live on CATHS-MAIN News.</p>
+
+
+
+<div id="codeGateOverlay" aria-hidden="true">
+  <div id="codeGateCard" role="dialog" aria-modal="true">
+    <div class="code-gate-icon">🔐</div>
+    <h3>Admin Verification</h3>
+    <p>Enter the publishing code to continue.</p>
+    <input id="publishCode" type="password" maxlength="30" autocomplete="off" inputmode="text" placeholder="Publishing code">
+    <div id="publishCodeError">Incorrect publishing code.</div>
+    <div class="code-gate-actions">
+      <button id="codeGateCancel" class="code-gate-btn code-gate-cancel" type="button">Cancel</button>
+      <button id="codeGateContinue" class="code-gate-btn code-gate-continue" type="button">Continue</button>
     </div>
   </div>
 </div>
 
 
-<div id="deleteOverlay" aria-hidden="true">
-  <div id="deleteCard" role="dialog" aria-modal="true">
-    <div id="deleteConfirmState">
-      <div class="delete-icon">🗑️</div>
-      <h3>Delete this news post?</h3>
-      <p>This action will remove the post from the news page.</p>
-      <span id="deleteTitle" class="delete-title"></span>
-      <div class="delete-actions">
-        <button id="deleteCancel" class="delete-action delete-cancel" type="button">Cancel</button>
-        <button id="deleteConfirm" class="delete-action delete-confirm" type="button">🗑️ Delete Post</button>
-      </div>
-    </div>
-    <div id="deleteBusyState">
-      <div class="delete-spinner"></div>
-      <h3>Deleting your post...</h3>
-      <p>Please wait while the post is being removed.</p>
-    </div>
-    <div id="deleteSuccessState">
-      <div class="delete-success-check">✓</div>
-      <h3>Post deleted successfully</h3>
-      <p>The news post has been removed from CATHS-MAIN News.</p>
-    </div>
+<div id="appNoticeOverlay" aria-hidden="true">
+  <div id="appNoticeCard" role="dialog" aria-modal="true">
+    <div id="noticeIcon" class="notice-icon info">ℹ️</div>
+    <h3 id="noticeTitle">Notice</h3>
+    <p id="noticeMessage"></p>
+    <div class="notice-actions"><button id="noticeClose" class="notice-btn" type="button">OK</button></div>
   </div>
 </div>
 
@@ -546,7 +541,7 @@ const $=id=>document.getElementById(id);
 function escapeHtml(text){return String(text??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
 function decoratePost(base,override){
   const x={...base,...(override||{})};
-  return {id:String(x.id||base.id),type:x.type||base.type,icon:x.icon||base.icon,tag:x.tag||base.tag,date:x.date||base.date,title:x.title??base.title,excerpt:x.excerpt??base.excerpt,body:x.body??base.body,visibility:x.visibility||'public',hidden:Boolean(x.hidden),pinned:Boolean(x.pinned),official:Boolean(x.official),deleted:Boolean(x.deleted)};
+  return {id:String(x.id||base.id),type:x.type||base.type,icon:x.icon||base.icon,tag:x.tag||base.tag,date:x.date||base.date,title:x.title??base.title,excerpt:x.excerpt??base.excerpt,body:x.body??base.body,visibility:x.visibility||'public',hidden:Boolean(x.hidden),pinned:Boolean(x.pinned),official:Boolean(x.official),deleted:Boolean(x.deleted),authorUid:x.authorUid||'',authorName:x.authorName||'',authorPhotoURL:x.authorPhotoURL||''};
 }
 function sortNews(list){return [...list].sort((a,b)=>Number(b.pinned)-Number(a.pinned)||Number(b.official)-Number(a.official)||String(a.date).localeCompare(String(b.date)));
 }
@@ -554,7 +549,7 @@ function renderNews(){
  const term=$('searchInput').value.trim().toLowerCase();
  const list=sortNews(mergedNews.filter(item=>!item.deleted && !item.hidden && (item.visibility==='public'||adminMode) && (currentFilter==='all'||item.type===currentFilter) && (!term||`${item.title} ${item.excerpt} ${item.tag} ${item.date}`.toLowerCase().includes(term))));
  if(!list.length){$('newsGrid').innerHTML='<div class="empty" style="grid-column:1/-1"><div>📰</div><p>No news or announcements yet.</p><small style="display:block;margin-top:6px;opacity:.65">Authorized admins can publish the first update using <b>Post News</b>.</small></div>';return;}
- $('newsGrid').innerHTML=list.map(item=>`<article class="news-card"><div class="news-banner"><div class="news-icon">${escapeHtml(item.icon)}</div><div class="tag">${escapeHtml(item.tag)}</div></div><div class="news-body"><div class="news-meta">${escapeHtml(item.date)}</div><div class="news-title">${escapeHtml(item.title)}</div><div class="news-excerpt">${escapeHtml(item.excerpt)}</div><div class="card-flags">${item.official?'<span class="card-flag">✅ OFFICIAL</span>':''}${item.pinned?'<span class="card-flag">📌 PINNED</span>':''}</div><button class="read-btn" onclick="openNews('${escapeHtml(item.id)}')">Read More</button>${adminMode?`<div class="card-admin-actions"><button onclick="editPost('${escapeHtml(item.id)}')">✏️ Edit</button><button onclick="togglePinned('${escapeHtml(item.id)}')">${item.pinned?'📍 Unpin':'📌 Pin'}</button><button onclick="toggleOfficial('${escapeHtml(item.id)}')">${item.official?'✅ Unmark':'🏷️ Official'}</button><button onclick="toggleHidden('${escapeHtml(item.id)}')">${item.hidden?'👁️ Unhide':'🙈 Hide'}</button><button onclick="changeVisibility('${escapeHtml(item.id)}')">🔐 Visibility</button><button class="danger" onclick="deletePost('${escapeHtml(item.id)}')">🗑️ Delete</button></div>`:''}</div></article>`).join('');
+ $('newsGrid').innerHTML=list.map(item=>`<article class="news-card"><div class="news-banner"><div class="news-icon">${escapeHtml(item.icon)}</div><div class="tag">${escapeHtml(item.tag)}</div></div><div class="news-body">${item.authorPhotoURL?`<div class="post-author" style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><img src="${escapeHtml(item.authorPhotoURL)}" alt="Admin" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.35)"><div style="min-width:0"><div style="font-size:10px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(item.authorName||'SSLG Admin')}</div><div style="font-size:8px;opacity:.68;margin-top:2px">SSLG Administrator</div></div></div>`:''}<div class="news-meta">${escapeHtml(item.date)}</div><div class="news-title">${escapeHtml(item.title)}</div><div class="news-excerpt">${escapeHtml(item.excerpt)}</div><div class="card-flags">${item.official?'<span class="card-flag">✅ OFFICIAL</span>':''}${item.pinned?'<span class="card-flag">📌 PINNED</span>':''}</div><button class="read-btn" onclick="openNews('${escapeHtml(item.id)}')">Read More</button>${adminMode?`<div class="card-admin-actions"><button onclick="editPost('${escapeHtml(item.id)}')">✏️ Edit</button><button onclick="togglePinned('${escapeHtml(item.id)}')">${item.pinned?'📍 Unpin':'📌 Pin'}</button><button onclick="toggleOfficial('${escapeHtml(item.id)}')">${item.official?'✅ Unmark':'🏷️ Official'}</button><button onclick="toggleHidden('${escapeHtml(item.id)}')">${item.hidden?'👁️ Unhide':'🙈 Hide'}</button><button onclick="changeVisibility('${escapeHtml(item.id)}')">🔐 Visibility</button><button class="danger" onclick="deletePost('${escapeHtml(item.id)}')">🗑️ Delete</button></div>`:''}</div></article>`).join('');
 }
 window.openNews=function(id){const item=mergedNews.find(x=>String(x.id)===String(id)&&!x.deleted);if(!item)return;$('modalTitle').textContent=item.title;$('modalDate').textContent=item.date;$('modalBody').textContent=item.body;const flags=[];if(item.official)flags.push('✅ OFFICIAL ANNOUNCEMENT');if(item.pinned)flags.push('📌 PINNED');if(item.hidden)flags.push('🙈 HIDDEN');if(item.visibility!=='public')flags.push('🔒 '+item.visibility.toUpperCase());$('modalFlags').innerHTML=flags.map(x=>`<span class="card-flag">${escapeHtml(x)}</span>`).join('');$('newsModal').classList.add('show')};
 $('closeNews').onclick=()=>$('newsModal').classList.remove('show');
@@ -562,7 +557,7 @@ $('newsModal').addEventListener('click',e=>{if(e.target===$('newsModal'))$('news
 $('searchInput').addEventListener('input',renderNews);
 document.querySelectorAll('.filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(b=>b.classList.remove('active'));btn.classList.add('active');currentFilter=btn.dataset.filter;renderNews()}));
 function openPostNewsModal(){
- if(!adminMode){alert('Admin access required.');return;}
+ if(!adminMode){showAppNotice('Admin access required','Only authorized SSLG administrators can publish news.','error');return;}
  $('newTitle').value='';
  $('newType').value='announcement';
  $('newIcon').value='📰';
@@ -571,13 +566,12 @@ function openPostNewsModal(){
  $('newExcerpt').value='';
  $('newBody').value='';
  $('newVisibility').value='public';
- clearPostValidation();
  $('postNewsModal').classList.add('show');
 }
 window.openPostNewsModal=openPostNewsModal;
 $('postNewsBtn').addEventListener('click',openPostNewsModal);
-$('closePostNews').onclick=()=>{clearPostValidation();$('postNewsModal').classList.remove('show')};
-$('cancelPostNews').onclick=()=>{clearPostValidation();$('postNewsModal').classList.remove('show')};
+$('closePostNews').onclick=()=>$('postNewsModal').classList.remove('show');
+$('cancelPostNews').onclick=()=>$('postNewsModal').classList.remove('show');
 $('postNewsModal').addEventListener('click',e=>{if(e.target===$('postNewsModal'))$('postNewsModal').classList.remove('show')});
 function renderAdmin(){
  if(!adminMode){$('adminPostBar').classList.remove('show');$('adminPanel').style.display='none';$('adminPanel').classList.add('admin-panel-collapsed');return;}
@@ -599,75 +593,88 @@ window.editPost=function(id){const p=postById(id);if(!p)return;editingPostId=Str
 window.toggleHidden=async function(id){const p=postById(id);if(!p)return;await window.savePostOverride(id,{hidden:!p.hidden});};
 window.togglePinned=async function(id){const p=postById(id);if(!p)return;await window.savePostOverride(id,{pinned:!p.pinned});};
 window.toggleOfficial=async function(id){const p=postById(id);if(!p)return;await window.savePostOverride(id,{official:!p.official});};
-window.changeVisibility=async function(id){const p=postById(id);if(!p)return;const next=prompt('Enter visibility: public, friends, or onlyMe',p.visibility||'public');if(next===null)return;if(!['public','friends','onlyMe'].includes(next)){alert('Invalid visibility. Use public, friends, or onlyMe.');return;}await window.savePostOverride(id,{visibility:next});};
-let pendingDeleteId=null;
+window.changeVisibility=async function(id){const p=postById(id);if(!p)return;const next=prompt('Enter visibility: public, friends, or onlyMe',p.visibility||'public');if(next===null)return;if(!['public','friends','onlyMe'].includes(next)){showAppNotice('Invalid visibility','Use public, friends, or onlyMe.','warning');return;}await window.savePostOverride(id,{visibility:next});};
+window.deletePost=async function(id){const p=postById(id);if(!p)return;if(!confirm(`Delete "${p.title}"? This removes it from the news page.`))return;await window.savePostOverride(id,{deleted:true,hidden:true});};
 
-window.deletePost=function(id){
-  const p=postById(id);
-  if(!p || !adminMode) return;
-  pendingDeleteId=String(id);
-  $('deleteTitle').textContent=p.title ? '“'+p.title+'”' : '';
-  $('deleteConfirmState').style.display='block';
-  $('deleteBusyState').style.display='none';
-  $('deleteSuccessState').style.display='none';
-  $('deleteOverlay').classList.add('show');
-  $('deleteOverlay').setAttribute('aria-hidden','false');
-};
-
-function clearPostValidation(){
-  ['titleField','excerptField','bodyField'].forEach(id=>$(id)?.classList.remove('invalid'));
-  $('postFormAlert')?.classList.remove('show');
-}
-
-function validatePostForm(){
-  const title=$('newTitle').value.trim();
-  const excerpt=$('newExcerpt').value.trim();
-  const body=$('newBody').value.trim();
-
-  const missing=[];
-  $('titleField').classList.toggle('invalid',!title);
-  $('excerptField').classList.toggle('invalid',!excerpt);
-  $('bodyField').classList.toggle('invalid',!body);
-
-  if(!title) missing.push('title');
-  if(!excerpt) missing.push('excerpt');
-  if(!body) missing.push('full body');
-
-  const alertBox=$('postFormAlert');
-  if(missing.length){
-    alertBox.textContent='Please complete the title, excerpt, and full body.';
-    alertBox.classList.add('show');
-
-    const firstMissing = !title ? $('newTitle') : (!excerpt ? $('newExcerpt') : $('newBody'));
-    firstMissing.focus({preventScroll:true});
-    return false;
+function openCodeGate(){
+  if(!adminMode || !window.loggedUser){
+    showAppNotice('Admin access required','Only authorized SSLG administrators can publish news.','error');
+    return;
   }
-
-  alertBox.classList.remove('show');
-  return true;
+  $('publishCode').value='';
+  $('publishCode').classList.remove('invalid');
+  $('publishCodeError').classList.remove('show');
+  $('codeGateOverlay').classList.add('show');
+  $('codeGateOverlay').setAttribute('aria-hidden','false');
+  setTimeout(()=>$('publishCode').focus(),80);
 }
 
-// Remove the red state immediately when the admin starts filling a field.
-['newTitle','newExcerpt','newBody'].forEach(id=>{
-  $(id).addEventListener('input',()=>{
-    const fieldMap={newTitle:'titleField',newExcerpt:'excerptField',newBody:'bodyField'};
-    const field=$(fieldMap[id]);
-    if($(id).value.trim()){
-      field.classList.remove('invalid');
-    }
-    if($('newTitle').value.trim()&&$('newExcerpt').value.trim()&&$('newBody').value.trim()){
-      $('postFormAlert').classList.remove('show');
-    }
-  });
+function closeCodeGate(){
+  $('codeGateOverlay').classList.remove('show');
+  $('codeGateOverlay').setAttribute('aria-hidden','true');
+}
+
+function unlockPublish(){
+  if($('publishCode').value.trim()!=='SSLGFam143'){
+    $('publishCode').classList.add('invalid');
+    $('publishCodeError').textContent='Incorrect publishing code.';
+    $('publishCodeError').classList.add('show');
+    $('publishCode').focus();
+    return;
+  }
+  closeCodeGate();
+
+  // Trigger the original working publish flow without replacing it.
+  window._publishUnlocked = true;
+  $('publishPostNews').click();
+}
+
+$('codeGateCancel').addEventListener('click',closeCodeGate);
+$('codeGateContinue').addEventListener('click',unlockPublish);
+$('publishCode').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){
+    e.preventDefault();
+    unlockPublish();
+  }
+});
+$('codeGateOverlay').addEventListener('click',e=>{
+  if(e.target===$('codeGateOverlay')) closeCodeGate();
+});
+
+
+function showAppNotice(title,message,type='info'){
+  const overlay=$('appNoticeOverlay');
+  const icon=$('noticeIcon');
+  icon.className='notice-icon '+type;
+  icon.textContent=type==='success'?'✓':type==='error'?'!':type==='warning'?'⚠️':'ℹ️';
+  $('noticeTitle').textContent=title;
+  $('noticeMessage').textContent=message;
+  overlay.classList.add('show');
+  overlay.setAttribute('aria-hidden','false');
+}
+$('noticeClose').onclick=()=>{
+  $('appNoticeOverlay').classList.remove('show');
+  $('appNoticeOverlay').setAttribute('aria-hidden','true');
+};
+$('appNoticeOverlay').addEventListener('click',e=>{
+  if(e.target===$('appNoticeOverlay')){
+    $('appNoticeOverlay').classList.remove('show');
+    $('appNoticeOverlay').setAttribute('aria-hidden','true');
+  }
 });
 
 $('publishPostNews').addEventListener('click',async()=>{
+  if(!window._publishUnlocked){openCodeGate();return;}
+  window._publishUnlocked=false;
   if(!window.loggedUser||!adminMode){
-    alert('Admin access required.');
+    showAppNotice('Admin access required','Only authorized SSLG administrators can publish news.','error');
     return;
   }
 
   const payload={
+    authorUid:window.loggedUser.uid,
+    authorName:window.loggedUser.displayName||'SSLG Admin',
+    authorPhotoURL:window.loggedUser.photoURL||'',
     title:$('newTitle').value.trim(),
     type:$('newType').value,
     icon:$('newIcon').value.trim()||'📰',
@@ -682,7 +689,8 @@ $('publishPostNews').addEventListener('click',async()=>{
     deleted:false
   };
 
-  if(!validatePostForm()){
+  if(!payload.title||!payload.excerpt||!payload.body){
+    showAppNotice('Missing information','Please complete the title, excerpt, and full body.','warning');
     return;
   }
 
@@ -750,7 +758,6 @@ $('publishPostNews').addEventListener('click',async()=>{
     $('newTitle').value='';
     $('newExcerpt').value='';
     $('newBody').value='';
-    clearPostValidation();
   }catch(e){
     console.error(e);
     overlay.classList.remove('show');
@@ -761,65 +768,8 @@ $('publishPostNews').addEventListener('click',async()=>{
   }
 });
 
-
-$('deleteCancel').onclick=()=>{
-  pendingDeleteId=null;
-  $('deleteOverlay').classList.remove('show');
-  $('deleteOverlay').setAttribute('aria-hidden','true');
-};
-
-$('deleteOverlay').addEventListener('click',e=>{
-  if(e.target===$('deleteOverlay')){
-    pendingDeleteId=null;
-    $('deleteOverlay').classList.remove('show');
-    $('deleteOverlay').setAttribute('aria-hidden','true');
-  }
-});
-
-$('deleteConfirm').addEventListener('click',async()=>{
-  if(!pendingDeleteId || !adminMode || !window.loggedUser) return;
-
-  const id=pendingDeleteId;
-  const confirmState=$('deleteConfirmState');
-  const busyState=$('deleteBusyState');
-  const successState=$('deleteSuccessState');
-  const confirmBtn=$('deleteConfirm');
-
-  confirmBtn.disabled=true;
-  confirmState.style.display='none';
-  busyState.style.display='block';
-
-  try{
-    const ok=await window.savePostOverride(id,{deleted:true,hidden:true});
-
-    if(ok){
-      busyState.style.display='none';
-      successState.style.display='block';
-
-      setTimeout(()=>{
-        $('deleteOverlay').classList.remove('show');
-        $('deleteOverlay').setAttribute('aria-hidden','true');
-        successState.style.display='none';
-        confirmState.style.display='block';
-        confirmBtn.disabled=false;
-        pendingDeleteId=null;
-      },2200);
-    }else{
-      busyState.style.display='none';
-      confirmState.style.display='block';
-      confirmBtn.disabled=false;
-    }
-  }catch(err){
-    console.error('Delete flow failed:',err);
-    busyState.style.display='none';
-    confirmState.style.display='block';
-    confirmBtn.disabled=false;
-    alert('Delete failed: '+(err?.message||String(err)));
-  }
-});
-
 $('closeAdmin').onclick=()=>$('adminModal').classList.remove('show');$('adminCancel').onclick=()=>$('adminModal').classList.remove('show');$('adminModal').addEventListener('click',e=>{if(e.target===$('adminModal'))$('adminModal').classList.remove('show')});
-$('adminSave').addEventListener('click',async()=>{if(!editingPostId)return;const payload={title:$('adminTitle').value.trim(),type:$('adminType').value,icon:$('adminIcon').value.trim()||'📰',tag:$('adminTag').value.trim()||'News',date:$('adminDate').value.trim()||'School Update',excerpt:$('adminExcerpt').value.trim(),body:$('adminBody').value.trim(),visibility:$('adminVisibility').value};if(!payload.title||!payload.excerpt||!payload.body){alert('Please complete the title, excerpt, and full body.');return;}await window.savePostOverride(editingPostId,payload);$('adminModal').classList.remove('show');});
+$('adminSave').addEventListener('click',async()=>{if(!editingPostId)return;const payload={title:$('adminTitle').value.trim(),type:$('adminType').value,icon:$('adminIcon').value.trim()||'📰',tag:$('adminTag').value.trim()||'News',date:$('adminDate').value.trim()||'School Update',excerpt:$('adminExcerpt').value.trim(),body:$('adminBody').value.trim(),visibility:$('adminVisibility').value};if(!payload.title||!payload.excerpt||!payload.body){showAppNotice('Missing information','Please complete the title, excerpt, and full body.','warning');return;}await window.savePostOverride(editingPostId,payload);$('adminModal').classList.remove('show');});
 </script>
 
 <script type="module">
@@ -829,7 +779,7 @@ import {getFirestore,collection,doc,getDoc,getDocs,setDoc,deleteDoc,serverTimest
 const firebaseConfig={apiKey:'AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc',authDomain:'caths-page.firebaseapp.com',projectId:'caths-page',storageBucket:'caths-page.firebasestorage.app',messagingSenderId:'945498022620',appId:'1:945498022620:web:71aeb4cd2472e061aeca19',measurementId:'G-CBG1YSK13G'};
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);const provider=new GoogleAuthProvider();
 setPersistence(auth,browserLocalPersistence).catch(err=>{console.error('Auth persistence setup failed:',err);});
-const btn=$('headerLoginBtn'),menu=$('profileMenu');window.window.loggedUser=null;
+const btn=$('headerLoginBtn'),menu=$('profileMenu');window.loggedUser=null;
 const VERIFIED_ADMIN_EMAILS=new Set([
   'reyvengarcia15@gmail.com',
   'reyvenbermudo091@gmail.com',
@@ -854,8 +804,8 @@ function isVerifiedAdminEmail(email){return VERIFIED_ADMIN_EMAILS.has(String(ema
 
 function closeMenu(){if(!menu.classList.contains('open'))return;menu.classList.remove('open');menu.classList.add('closing');menu.addEventListener('animationend',function h(e){if(e.animationName!=='profileOut')return;menu.style.display='none';menu.classList.remove('closing');menu.removeEventListener('animationend',h)})}
 btn.addEventListener('click',()=>{if(!window.loggedUser){googleLogin();return}if(menu.classList.contains('open'))closeMenu();else{menu.style.display='block';requestAnimationFrame(()=>menu.classList.add('open'))}});
-window.googleLogin=async function(){try{await signInWithPopup(auth,provider)}catch(e){console.error(e);alert('Google login failed: '+e.message)}};
-$('logoutBtn').addEventListener('click',async()=>{try{await signOut(auth);location.reload()}catch(e){alert('Logout failed: '+e.message)}});
+window.googleLogin=async function(){try{await signInWithPopup(auth,provider)}catch(e){console.error(e);showAppNotice('Google login failed',e.message||'Unable to sign in with Google.','error')}};
+$('logoutBtn').addEventListener('click',async()=>{try{await signOut(auth);location.reload()}catch(e){showAppNotice('Logout failed',e.message||'Unable to log out.','error')}});
 document.addEventListener('click',e=>{if(menu.classList.contains('open')&&!document.querySelector('.header-right').contains(e.target))closeMenu()});
 
 async function getUserProfile(user){
@@ -871,7 +821,7 @@ async function loadNewsOverrides(){
   }catch(e){console.error('News overrides load failed:',e);mergedNews=NEWS.map(base=>decoratePost(base,{}));renderNews();renderAdmin();}
 }
 window.savePostOverride=async function(id,changes){
-  if(!window.loggedUser||!adminMode){alert('Admin access required.');return false;}
+  if(!window.loggedUser||!adminMode){showAppNotice('Admin access required','Only authorized SSLG administrators can publish news.','error');return false;}
   try{
     const clean={...changes,updatedAt:serverTimestamp(),updatedBy:window.loggedUser.uid};
     await setDoc(doc(db,'newsPosts',String(id)),clean,{merge:true});
@@ -881,16 +831,16 @@ window.savePostOverride=async function(id,changes){
     if(index>=0)mergedNews[index]=next;else mergedNews.push(next);
     renderNews();renderAdmin();
     return true;
-  }catch(e){console.error('Admin save failed:',e);alert('Save failed: '+e.message);return false;}
+  }catch(e){console.error('Admin save failed:',e);showAppNotice('Save failed',e.message||'Unable to save the changes right now.','error');return false;}
 };
 window.createNewsPost=async function(id,payload){
- if(!window.loggedUser||!adminMode){alert('Admin access required.');return false;}
+ if(!window.loggedUser||!adminMode){showAppNotice('Admin access required','Only authorized SSLG administrators can publish news.','error');return false;}
  try{
-   await setDoc(doc(db,'newsPosts',String(id)),{id:String(id),...payload,authorUid:window.loggedUser.uid,createdAt:serverTimestamp(),createdBy:window.loggedUser.uid,updatedAt:serverTimestamp(),updatedBy:window.loggedUser.uid},{merge:true});
+   await setDoc(doc(db,'newsPosts',String(id)),{id:String(id),...payload,authorUid:window.loggedUser.uid,authorName:window.loggedUser.displayName||'SSLG Admin',authorPhotoURL:window.loggedUser.photoURL||'',createdAt:serverTimestamp(),createdBy:window.loggedUser.uid,updatedAt:serverTimestamp(),updatedBy:window.loggedUser.uid},{merge:true});
    mergedNews.push(decoratePost({id:String(id),type:'announcement',icon:'📰',tag:'News',date:'School Update',title:'Untitled News',excerpt:'',body:''},payload));
    renderNews();renderAdmin();
    return true;
- }catch(e){console.error('Create news failed:',e);alert('Publish failed: '+e.message);return false;}
+ }catch(e){console.error('Create news failed:',e);showAppNotice('Publish failed',e.message||'Unable to publish this news right now.','error');return false;}
 };
 
 async function setupAdmin(user){
