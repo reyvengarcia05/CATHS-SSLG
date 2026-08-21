@@ -403,6 +403,178 @@ body{padding-bottom:82px;overflow-x:hidden}
 .post-author{display:flex;align-items:center;gap:8px;margin-bottom:10px}.post-author-photo{width:34px;height:34px;border-radius:50%;object-fit:cover;background:#eef4ff;border:2px solid rgba(255,255,255,.35);box-shadow:0 5px 14px rgba(0,0,0,.12)}.post-author-info{min-width:0}.post-author-name{font-size:10px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.post-author-role{font-size:8px;opacity:.68;margin-top:2px}
 @media(max-width:768px){#actionCard{width:min(340px,94vw);padding:21px 17px}.action-buttons{grid-template-columns:1fr}.action-btn{min-height:44px}}
 
+
+/* ===== Student submission button + popup ===== */
+.card-buttons{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+.card-buttons .read-btn{
+  margin-top:0;
+}
+.submit-entry-btn{
+  margin-top:0;
+  border:none;
+  background:#20a34a;
+  color:#fff;
+  padding:10px 14px;
+  border-radius:11px;
+  font-weight:800;
+  cursor:pointer;
+  font-size:12px;
+  transition:.2s;
+  box-shadow:0 8px 18px rgba(32,163,74,.18);
+}
+.submit-entry-btn:hover{
+  background:#178a3c;
+  transform:translateY(-1px);
+}
+#submissionOverlay{
+  display:none !important;
+  position:fixed !important;
+  inset:0 !important;
+  width:100vw !important;
+  height:100vh !important;
+  z-index:54000 !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:18px !important;
+  background:rgba(0,18,60,.68) !important;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+}
+#submissionOverlay.show{display:flex !important}
+#submissionCard{
+  width:min(650px,94vw);
+  max-height:88vh;
+  overflow:auto;
+  margin:auto;
+  background:rgba(255,255,255,.98);
+  color:#173a86;
+  border-radius:26px;
+  padding:22px;
+  box-shadow:0 28px 90px rgba(0,0,0,.4);
+  border:1px solid rgba(255,255,255,.84);
+  animation:submissionPop .25s cubic-bezier(.16,1,.3,1);
+}
+#submissionCard h3{
+  font-size:20px;
+  color:#00296B;
+  margin-bottom:5px;
+  padding-right:42px;
+}
+.submission-subtitle{
+  font-size:11px;
+  color:#6b7894;
+  line-height:1.5;
+  margin-bottom:14px;
+}
+.submission-post-name{
+  display:block;
+  background:#eef4ff;
+  color:#173a86;
+  border-radius:12px;
+  padding:9px 10px;
+  font-size:10px;
+  font-weight:800;
+  margin-bottom:12px;
+}
+.submission-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.submission-field{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+.submission-field.full{grid-column:1/-1}
+.submission-field label{
+  font-size:10px;
+  font-weight:700;
+  color:#567;
+}
+.submission-field input,
+.submission-field select,
+.submission-field textarea{
+  width:100%;
+  border:1px solid #dce6fa;
+  background:#f8fbff;
+  color:#173a86;
+  border-radius:11px;
+  padding:10px 11px;
+  outline:none;
+  font-family:inherit;
+  font-size:12px;
+}
+.submission-field textarea{
+  min-height:120px;
+  resize:vertical;
+}
+.submission-field.invalid input,
+.submission-field.invalid select,
+.submission-field.invalid textarea{
+  border-color:#e05252;
+  background:#fff7f7;
+  box-shadow:0 0 0 3px rgba(224,82,82,.10);
+}
+.submission-field.invalid label{color:#c62828}
+.submission-field-error{
+  display:none;
+  color:#c62828;
+  font-size:9px;
+  font-weight:700;
+}
+.submission-field.invalid .submission-field-error{display:block}
+.submission-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+  margin-top:14px;
+}
+.submission-btn{
+  border:none;
+  border-radius:11px;
+  padding:11px 14px;
+  font-size:11px;
+  font-weight:800;
+  cursor:pointer;
+}
+.submission-cancel{background:#eef4ff;color:#173a86}
+.submission-submit{background:#20a34a;color:#fff}
+.submission-submit:disabled{opacity:.65;cursor:wait}
+.submission-note{
+  margin-top:10px;
+  font-size:9px;
+  color:#7a879f;
+  line-height:1.45;
+}
+@keyframes submissionPop{
+  from{opacity:0;transform:scale(.95) translateY(8px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+@media(max-width:768px){
+  .card-buttons{gap:7px}
+  .card-buttons .read-btn,
+  .card-buttons .submit-entry-btn{
+    flex:1;
+    min-width:0;
+    text-align:center;
+  }
+  #submissionCard{
+    width:min(350px,94vw);
+    padding:18px;
+    border-radius:22px;
+  }
+  .submission-grid{grid-template-columns:1fr}
+  .submission-field.full{grid-column:auto}
+  .submission-actions{display:grid;grid-template-columns:1fr 1fr}
+  .submission-btn{min-height:44px}
+}
+
 </style>
 </head>
 <body>
@@ -483,6 +655,8 @@ body{padding-bottom:82px;overflow-x:hidden}
     <div class="field full"><label>Excerpt</label><textarea id="newExcerpt" maxlength="500" placeholder="Short preview shown on the card"></textarea></div>
     <div class="field full"><label>Full Body</label><textarea id="newBody" maxlength="10000" placeholder="Full news content..."></textarea></div>
     <div class="field"><label>Visibility</label><select id="newVisibility"><option value="public">Public</option><option value="friends">Friends</option><option value="onlyMe">Only Me</option></select></div>
+    <div class="field"><label>Student Submission</label><select id="newAllowSubmissions"><option value="false">No — normal news post</option><option value="true">Yes — show Join / Submit Entry</option></select></div>
+    <div class="field full"><div style="font-size:10px;color:#6d7b95;background:#f5f8ff;border:1px solid #e4ebf8;padding:9px 10px;border-radius:10px;line-height:1.45">Enable this only when students should be able to submit an entry for this announcement, contest, recruitment, activity, or event.</div></div>
     <div class="field"><label>Status</label><div class="status-chips"><span class="status-chip success">New post</span><span class="status-chip">Visible</span></div></div>
   </div>
   <div class="admin-form-actions"><button id="cancelPostNews" class="admin-action" type="button">Cancel</button><button id="publishPostNews" class="admin-action primary" type="button">🚀 Publish News</button></div>
@@ -501,6 +675,7 @@ body{padding-bottom:82px;overflow-x:hidden}
     <div class="field full"><label>Excerpt</label><textarea id="adminExcerpt" maxlength="500"></textarea></div>
     <div class="field full"><label>Full Body</label><textarea id="adminBody" maxlength="10000"></textarea></div>
     <div class="field"><label>Visibility</label><select id="adminVisibility"><option value="public">Public</option><option value="friends">Friends</option><option value="onlyMe">Only Me</option></select></div>
+    <div class="field"><label>Student Submission</label><select id="adminAllowSubmissions"><option value="false">No — normal news post</option><option value="true">Yes — show Join / Submit Entry</option></select></div>
     <div class="field"><label>Status</label><div class="status-chips"><span id="adminStatusHidden" class="status-chip">Visible</span><span id="adminStatusPinned" class="status-chip">Not pinned</span><span id="adminStatusOfficial" class="status-chip">Regular post</span></div></div>
   </div>
   <div class="admin-form-actions"><button id="adminCancel" class="admin-action" type="button">Cancel</button><button id="adminSave" class="admin-action primary" type="button">Save Changes</button></div>
@@ -578,6 +753,54 @@ body{padding-bottom:82px;overflow-x:hidden}
   </div>
 </div>
 
+
+<div id="submissionOverlay" aria-hidden="true">
+  <div id="submissionCard" role="dialog" aria-modal="true">
+    <button class="close-btn" id="closeSubmission" type="button" aria-label="Close">✕</button>
+    <h3>📝 Submit Your Entry</h3>
+    <div class="submission-subtitle">Complete the form below to submit your entry for this activity, contest, recruitment, or school opportunity.</div>
+    <span id="submissionPostName" class="submission-post-name">Selected news post</span>
+
+    <div class="submission-grid">
+      <div id="submitNameField" class="submission-field">
+        <label>Full Name</label>
+        <input id="submitName" type="text" maxlength="120" placeholder="Enter your full name">
+        <div class="submission-field-error">Full name is required.</div>
+      </div>
+
+      <div id="submitGradeField" class="submission-field">
+        <label>Grade & Section</label>
+        <input id="submitGrade" type="text" maxlength="80" placeholder="e.g. 12-Shakespeare">
+        <div class="submission-field-error">Grade & Section is required.</div>
+      </div>
+
+      <div id="submitEmailField" class="submission-field">
+        <label>Email</label>
+        <input id="submitEmail" type="email" maxlength="160" placeholder="Your Google account email">
+        <div class="submission-field-error">Email is required.</div>
+      </div>
+
+      <div id="submitContactField" class="submission-field">
+        <label>Contact Number <span style="font-weight:500;color:#8a96ad">(optional)</span></label>
+        <input id="submitContact" type="text" maxlength="40" placeholder="Optional contact number">
+      </div>
+
+      <div id="submitDetailsField" class="submission-field full">
+        <label>Submission Details</label>
+        <textarea id="submitDetails" maxlength="5000" placeholder="Tell us why you want to join or provide the details requested by the announcement..."></textarea>
+        <div class="submission-field-error">Submission details are required.</div>
+      </div>
+    </div>
+
+    <div class="submission-note">Your submission will be saved securely and can be reviewed by authorized admins.</div>
+
+    <div class="submission-actions">
+      <button id="cancelSubmission" class="submission-btn submission-cancel" type="button">Cancel</button>
+      <button id="submitEntryBtn" class="submission-btn submission-submit" type="button">✅ Submit Entry</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const NEWS=[];
 let currentFilter='all';
@@ -588,7 +811,7 @@ const $=id=>document.getElementById(id);
 function escapeHtml(text){return String(text??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
 function decoratePost(base,override){
   const x={...base,...(override||{})};
-  return {id:String(x.id||base.id),type:x.type||base.type,icon:x.icon||base.icon,tag:x.tag||base.tag,date:x.date||base.date,title:x.title??base.title,excerpt:x.excerpt??base.excerpt,body:x.body??base.body,visibility:x.visibility||'public',hidden:Boolean(x.hidden),pinned:Boolean(x.pinned),official:Boolean(x.official),deleted:Boolean(x.deleted),authorUid:x.authorUid||'',authorName:x.authorName||'',authorPhotoURL:x.authorPhotoURL||''};
+  return {id:String(x.id||base.id),type:x.type||base.type,icon:x.icon||base.icon,tag:x.tag||base.tag,date:x.date||base.date,title:x.title??base.title,excerpt:x.excerpt??base.excerpt,body:x.body??base.body,visibility:x.visibility||'public',hidden:Boolean(x.hidden),pinned:Boolean(x.pinned),official:Boolean(x.official),deleted:Boolean(x.deleted),authorUid:x.authorUid||'',authorName:x.authorName||'',authorPhotoURL:x.authorPhotoURL||'',allowSubmissions:Boolean(x.allowSubmissions)};
 }
 function sortNews(list){return [...list].sort((a,b)=>Number(b.pinned)-Number(a.pinned)||Number(b.official)-Number(a.official)||String(a.date).localeCompare(String(b.date)));
 }
@@ -596,9 +819,9 @@ function renderNews(){
  const term=$('searchInput').value.trim().toLowerCase();
  const list=sortNews(mergedNews.filter(item=>!item.deleted && !item.hidden && (item.visibility==='public'||adminMode) && (currentFilter==='all'||item.type===currentFilter) && (!term||`${item.title} ${item.excerpt} ${item.tag} ${item.date}`.toLowerCase().includes(term))));
  if(!list.length){$('newsGrid').innerHTML='<div class="empty" style="grid-column:1/-1"><div>📰</div><p>No news or announcements yet.</p><small style="display:block;margin-top:6px;opacity:.65">Authorized admins can publish the first update using <b>Post News</b>.</small></div>';return;}
- $('newsGrid').innerHTML=list.map(item=>`<article class="news-card"><div class="news-banner"><div class="news-icon">${escapeHtml(item.icon)}</div><div class="tag">${escapeHtml(item.tag)}</div></div><div class="news-body">${item.authorPhotoURL?`<div class="post-author" style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><img src="${escapeHtml(item.authorPhotoURL)}" alt="Admin" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.35)"><div style="min-width:0"><div style="font-size:10px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(item.authorName||'SSLG Admin')}</div><div style="font-size:8px;opacity:.68;margin-top:2px">SSLG Administrator</div></div></div>`:''}<div class="news-meta">${escapeHtml(item.date)}</div><div class="news-title">${escapeHtml(item.title)}</div><div class="news-excerpt">${escapeHtml(item.excerpt)}</div><div class="card-flags">${item.official?'<span class="card-flag">✅ OFFICIAL</span>':''}${item.pinned?'<span class="card-flag">📌 PINNED</span>':''}</div><button class="read-btn" onclick="openNews('${escapeHtml(item.id)}')">Read More</button>${adminMode?`<div class="card-admin-actions"><button onclick="editPost('${escapeHtml(item.id)}')">✏️ Edit</button><button onclick="togglePinned('${escapeHtml(item.id)}')">${item.pinned?'📍 Unpin':'📌 Pin'}</button><button onclick="toggleOfficial('${escapeHtml(item.id)}')">${item.official?'✅ Unmark':'🏷️ Official'}</button><button onclick="toggleHidden('${escapeHtml(item.id)}')">${item.hidden?'👁️ Unhide':'🙈 Hide'}</button><button onclick="changeVisibility('${escapeHtml(item.id)}')">🔐 Visibility</button><button class="danger" onclick="deletePost('${escapeHtml(item.id)}')">🗑️ Delete</button></div>`:''}</div></article>`).join('');
+ $('newsGrid').innerHTML=list.map(item=>`<article class="news-card"><div class="news-banner"><div class="news-icon">${escapeHtml(item.icon)}</div><div class="tag">${escapeHtml(item.tag)}</div></div><div class="news-body">${item.authorPhotoURL?`<div class="post-author" style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><img src="${escapeHtml(item.authorPhotoURL)}" alt="Admin" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.35)"><div style="min-width:0"><div style="font-size:10px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(item.authorName||'SSLG Admin')}</div><div style="font-size:8px;opacity:.68;margin-top:2px">SSLG Administrator</div></div></div>`:''}<div class="news-meta">${escapeHtml(item.date)}</div><div class="news-title">${escapeHtml(item.title)}</div><div class="news-excerpt">${escapeHtml(item.excerpt)}</div><div class="card-flags">${item.official?'<span class="card-flag">✅ OFFICIAL</span>':''}${item.pinned?'<span class="card-flag">📌 PINNED</span>':''}</div><div class="card-buttons"><button class="read-btn" onclick="openNews('${escapeHtml(item.id)}')">Read More</button>${item.allowSubmissions?`<button class="submit-entry-btn" onclick="openSubmissionForm('${escapeHtml(item.id)}')">📝 Submit Entry</button>`:''}</div>${adminMode?`<div class="card-admin-actions"><button onclick="editPost('${escapeHtml(item.id)}')">✏️ Edit</button><button onclick="togglePinned('${escapeHtml(item.id)}')">${item.pinned?'📍 Unpin':'📌 Pin'}</button><button onclick="toggleOfficial('${escapeHtml(item.id)}')">${item.official?'✅ Unmark':'🏷️ Official'}</button><button onclick="toggleHidden('${escapeHtml(item.id)}')">${item.hidden?'👁️ Unhide':'🙈 Hide'}</button><button onclick="changeVisibility('${escapeHtml(item.id)}')">🔐 Visibility</button><button class="danger" onclick="deletePost('${escapeHtml(item.id)}')">🗑️ Delete</button></div>`:''}</div></article>`).join('');
 }
-window.openNews=function(id){const item=mergedNews.find(x=>String(x.id)===String(id)&&!x.deleted);if(!item)return;$('modalTitle').textContent=item.title;$('modalDate').textContent=item.date;$('modalBody').textContent=item.body;const flags=[];if(item.official)flags.push('✅ OFFICIAL ANNOUNCEMENT');if(item.pinned)flags.push('📌 PINNED');if(item.hidden)flags.push('🙈 HIDDEN');if(item.visibility!=='public')flags.push('🔒 '+item.visibility.toUpperCase());$('modalFlags').innerHTML=flags.map(x=>`<span class="card-flag">${escapeHtml(x)}</span>`).join('');$('newsModal').classList.add('show')};
+window.openNews=function(id){const item=mergedNews.find(x=>String(x.id)===String(id)&&!x.deleted);if(!item)return;$('modalTitle').textContent=item.title;$('modalDate').textContent=item.date;$('modalBody').textContent=item.body;const flags=[];if(item.official)flags.push('✅ OFFICIAL ANNOUNCEMENT');if(item.pinned)flags.push('📌 PINNED');if(item.hidden)flags.push('🙈 HIDDEN');if(item.allowSubmissions)flags.push('📝 SUBMISSIONS OPEN');if(item.visibility!=='public')flags.push('🔒 '+item.visibility.toUpperCase());$('modalFlags').innerHTML=flags.map(x=>`<span class="card-flag">${escapeHtml(x)}</span>`).join('');$('newsModal').classList.add('show')};
 $('closeNews').onclick=()=>$('newsModal').classList.remove('show');
 $('newsModal').addEventListener('click',e=>{if(e.target===$('newsModal'))$('newsModal').classList.remove('show')});
 $('searchInput').addEventListener('input',renderNews);
@@ -613,6 +836,7 @@ function openPostNewsModal(){
  $('newExcerpt').value='';
  $('newBody').value='';
  $('newVisibility').value='public';
+ $('newAllowSubmissions').value='false';
  $('postNewsModal').classList.add('show');
 }
 window.openPostNewsModal=openPostNewsModal;
@@ -624,7 +848,7 @@ function renderAdmin(){
  if(!adminMode){$('adminPostBar').classList.remove('show');$('adminPanel').style.display='none';$('adminPanel').classList.add('admin-panel-collapsed');return;}
  $('adminPostBar').classList.add('show');
  $('adminPanel').style.display='block';
- const html=sortNews(mergedNews.filter(x=>!x.deleted)).map(item=>`<div class="admin-row"><div class="admin-row-info"><div class="admin-row-title">${escapeHtml(item.title)}</div><div class="admin-row-meta">${escapeHtml(item.tag)} • ${escapeHtml(item.visibility)} ${item.hidden?'• hidden':''} ${item.pinned?'• pinned':''} ${item.official?'• official':''}</div></div><div class="admin-row-actions"><button class="admin-action" onclick="editPost('${escapeHtml(item.id)}')">✏️ Edit</button><button class="admin-action" onclick="toggleHidden('${escapeHtml(item.id)}')">${item.hidden?'👁️ Unhide':'🙈 Hide'}</button><button class="admin-action" onclick="togglePinned('${escapeHtml(item.id)}')">${item.pinned?'📍 Unpin':'📌 Pin'}</button><button class="admin-action" onclick="toggleOfficial('${escapeHtml(item.id)}')">${item.official?'✅ Unmark':'🏷️ Official'}</button><button class="admin-action" onclick="changeVisibility('${escapeHtml(item.id)}')">🔐 Visibility</button><button class="admin-action danger" onclick="deletePost('${escapeHtml(item.id)}')">🗑️ Delete</button></div></div>`).join('');
+ const html=sortNews(mergedNews.filter(x=>!x.deleted)).map(item=>`<div class="admin-row"><div class="admin-row-info"><div class="admin-row-title">${escapeHtml(item.title)}</div><div class="admin-row-meta">${escapeHtml(item.tag)} • ${escapeHtml(item.visibility)} ${item.allowSubmissions?'• submissions open':''} ${item.hidden?'• hidden':''} ${item.pinned?'• pinned':''} ${item.official?'• official':''}</div></div><div class="admin-row-actions"><button class="admin-action" onclick="editPost('${escapeHtml(item.id)}')">✏️ Edit</button><button class="admin-action" onclick="toggleHidden('${escapeHtml(item.id)}')">${item.hidden?'👁️ Unhide':'🙈 Hide'}</button><button class="admin-action" onclick="togglePinned('${escapeHtml(item.id)}')">${item.pinned?'📍 Unpin':'📌 Pin'}</button><button class="admin-action" onclick="toggleOfficial('${escapeHtml(item.id)}')">${item.official?'✅ Unmark':'🏷️ Official'}</button><button class="admin-action" onclick="changeVisibility('${escapeHtml(item.id)}')">🔐 Visibility</button><button class="admin-action danger" onclick="deletePost('${escapeHtml(item.id)}')">🗑️ Delete</button></div></div>`).join('');
  $('adminList').innerHTML=html||'<div class="empty"><div>🗂️</div><p>No posts to manage.</p></div>';
 }
 $('managePostsBtn').addEventListener('click',()=>{
@@ -721,12 +945,156 @@ function validatePublishFields(){
   });
 });
 
+
+let submissionPostId=null;
+
+function clearSubmissionValidation(){
+  ['submitNameField','submitGradeField','submitEmailField','submitDetailsField'].forEach(id=>{
+    $(id)?.classList.remove('invalid');
+  });
+}
+
+function validateSubmissionForm(){
+  const name=$('submitName').value.trim();
+  const grade=$('submitGrade').value.trim();
+  const email=$('submitEmail').value.trim();
+  const details=$('submitDetails').value.trim();
+
+  $('submitNameField').classList.toggle('invalid',!name);
+  $('submitGradeField').classList.toggle('invalid',!grade);
+  $('submitEmailField').classList.toggle('invalid',!email);
+  $('submitDetailsField').classList.toggle('invalid',!details);
+
+  if(!name||!grade||!email||!details){
+    showAppNotice('Missing information','Please complete all required submission fields.','warning');
+    const first=!name?$('submitName'):(!grade?$('submitGrade'):(!email?$('submitEmail'):$('submitDetails')));
+    first?.focus();
+    return false;
+  }
+
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    $('submitEmailField').classList.add('invalid');
+    showAppNotice('Invalid email','Please enter a valid email address.','warning');
+    $('submitEmail').focus();
+    return false;
+  }
+
+  return true;
+}
+
+window.openSubmissionForm=function(postId){
+  const post=postById(postId);
+  if(!post)return;
+
+  if(!window.loggedUser){
+    showAppNotice('Login required','Please log in with your Google account before submitting an entry.','warning');
+    return;
+  }
+
+  submissionPostId=String(postId);
+  $('submissionPostName').textContent=post.title||'Selected news post';
+
+  const user=window.loggedUser;
+  $('submitName').value=user.displayName||'';
+  $('submitEmail').value=user.email||'';
+  $('submitGrade').value='';
+  $('submitContact').value='';
+  $('submitDetails').value='';
+  clearSubmissionValidation();
+
+  $('submissionOverlay').classList.add('show');
+  $('submissionOverlay').setAttribute('aria-hidden','false');
+
+  setTimeout(()=>$('submitGrade').focus(),70);
+};
+
+function closeSubmissionForm(){
+  submissionPostId=null;
+  $('submissionOverlay').classList.remove('show');
+  $('submissionOverlay').setAttribute('aria-hidden','true');
+  clearSubmissionValidation();
+}
+
+$('closeSubmission').addEventListener('click',closeSubmissionForm);
+$('cancelSubmission').addEventListener('click',closeSubmissionForm);
+$('submissionOverlay').addEventListener('click',e=>{
+  if(e.target===$('submissionOverlay'))closeSubmissionForm();
+});
+
+['submitName','submitGrade','submitEmail','submitDetails'].forEach(id=>{
+  $(id)?.addEventListener('input',()=>{
+    const map={
+      submitName:'submitNameField',
+      submitGrade:'submitGradeField',
+      submitEmail:'submitEmailField',
+      submitDetails:'submitDetailsField'
+    };
+    $(map[id])?.classList.remove('invalid');
+  });
+});
+
+$('submitEntryBtn').addEventListener('click',async()=>{
+  if(!submissionPostId){
+    closeSubmissionForm();
+    return;
+  }
+  if(!window.loggedUser){
+    closeSubmissionForm();
+    showAppNotice('Login required','Please log in before submitting an entry.','warning');
+    return;
+  }
+  if(!validateSubmissionForm())return;
+
+  const postId=submissionPostId;
+  const post=postById(postId);
+  const btn=$('submitEntryBtn');
+
+  btn.disabled=true;
+  btn.textContent='Submitting...';
+
+  const payload={
+    postId:postId,
+    postTitle:post?.title||'',
+    submitterUid:window.loggedUser.uid,
+    submitterName:$('submitName').value.trim(),
+    submitterEmail:$('submitEmail').value.trim(),
+    gradeSection:$('submitGrade').value.trim(),
+    contactNumber:$('submitContact').value.trim(),
+    details:$('submitDetails').value.trim(),
+    status:'pending',
+    createdAt:serverTimestamp(),
+    updatedAt:serverTimestamp()
+  };
+
+  try{
+    const submissionId=`${window.loggedUser.uid}_${postId}`;
+    await window.saveStudentSubmission(submissionId,payload);
+
+    closeSubmissionForm();
+    showAppNotice(
+      'Submission received!',
+      'Your entry has been sent successfully. An authorized admin can review your submission.',
+      'success'
+    );
+  }catch(err){
+    console.error('Submission failed:',err);
+    showAppNotice(
+      'Submission failed',
+      err?.message||'We could not save your submission right now. Please try again.',
+      'error'
+    );
+  }finally{
+    btn.disabled=false;
+    btn.textContent='✅ Submit Entry';
+  }
+});
+
 function postById(id){return mergedNews.find(x=>String(x.id)===String(id));}
 window.editPost=async function(id){
   const p=postById(id);if(!p)return;
   if(!(await verifySensitiveCode('Admin Verification','Enter the code to edit this news.')))return;
   editingPostId=String(id);
-  $('adminTitle').value=p.title;$('adminType').value=p.type;$('adminIcon').value=p.icon;$('adminTag').value=p.tag;$('adminDate').value=p.date;$('adminExcerpt').value=p.excerpt;$('adminBody').value=p.body;$('adminVisibility').value=p.visibility||'public';
+  $('adminTitle').value=p.title;$('adminType').value=p.type;$('adminIcon').value=p.icon;$('adminTag').value=p.tag;$('adminDate').value=p.date;$('adminExcerpt').value=p.excerpt;$('adminBody').value=p.body;$('adminVisibility').value=p.visibility||'public';$('adminAllowSubmissions').value=p.allowSubmissions?'true':'false';
   $('adminTitleField')?.classList.remove('invalid');$('adminExcerptField')?.classList.remove('invalid');$('adminBodyField')?.classList.remove('invalid');
   $('adminStatusHidden').textContent=p.hidden?'Hidden':'Visible';$('adminStatusPinned').textContent=p.pinned?'Pinned':'Not pinned';$('adminStatusOfficial').textContent=p.official?'Official announcement':'Regular post';
   $('adminModal').classList.add('show');
@@ -857,6 +1225,7 @@ $('publishPostNews').addEventListener('click',async()=>{
     excerpt:$('newExcerpt').value.trim(),
     body:$('newBody').value.trim(),
     visibility:$('newVisibility').value,
+    allowSubmissions:$('newAllowSubmissions').value==='true',
     hidden:false,
     pinned:false,
     official:false,
@@ -956,7 +1325,8 @@ $('adminSave').addEventListener('click',async()=>{
     date:$('adminDate').value.trim()||'School Update',
     excerpt:$('adminExcerpt').value.trim(),
     body:$('adminBody').value.trim(),
-    visibility:$('adminVisibility').value
+    visibility:$('adminVisibility').value,
+    allowSubmissions:$('adminAllowSubmissions').value==='true'
   };
 
   const saved=await window.savePostOverride(editingPostId,payload);
@@ -1028,6 +1398,31 @@ window.savePostOverride=async function(id,changes){
     return true;
   }catch(e){console.error('Admin save failed:',e);showAppNotice('Save failed',e.message||'Unable to save the changes right now.','error');return false;}
 };
+
+window.saveStudentSubmission=async function(id,payload){
+  if(!window.loggedUser){
+    throw new Error('You must be logged in to submit an entry.');
+  }
+
+  try{
+    await setDoc(
+      doc(db,'submissions',String(id)),
+      {
+        ...payload,
+        submitterUid:window.loggedUser.uid,
+        submitterName:payload.submitterName||window.loggedUser.displayName||'Student',
+        submitterEmail:payload.submitterEmail||window.loggedUser.email||'',
+        updatedAt:serverTimestamp()
+      },
+      {merge:true}
+    );
+    return true;
+  }catch(e){
+    console.error('Student submission save failed:',e);
+    throw e;
+  }
+};
+
 window.createNewsPost=async function(id,payload){
  if(!window.loggedUser||!adminMode){showAppNotice('Admin access required','Only authorized SSLG administrators can publish news.','error');return false;}
  try{
