@@ -44,11 +44,46 @@ body{min-height:100vh;color:white;background:linear-gradient(135deg,#00296B,#003
 .admin-modal-box{max-width:760px}.status-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:7px}.status-chip{font-size:9px;font-weight:800;padding:5px 8px;border-radius:999px;background:#eef4ff;color:#183c8c}.status-chip.warning{background:#fff5cf;color:#795900}.status-chip.danger{background:#ffe3e3;color:#9b2424}.status-chip.success{background:#e1f7e8;color:#21733c}
 .card-flags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.card-flag{font-size:8px;font-weight:800;padding:4px 6px;border-radius:999px;background:rgba(255,255,255,.15)}
 
+
+/* Publishing animation + success toast */
+.publish-overlay{display:none;position:fixed;inset:0;z-index:20000;background:rgba(0,18,60,.64);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px}
+.publish-overlay.show{display:flex}
+.publish-card{width:min(360px,92vw);background:rgba(255,255,255,.96);color:#173a86;border-radius:26px;padding:28px 24px;text-align:center;box-shadow:0 28px 90px rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.7);animation:publishPop .28s ease}
+.rocket-stage{height:112px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;margin-bottom:8px}
+.rocket{font-size:58px;display:inline-block;filter:drop-shadow(0 10px 12px rgba(0,0,0,.14));animation:rocketFly 1.45s cubic-bezier(.2,.75,.25,1) infinite}
+.rocket-glow{position:absolute;width:72px;height:72px;border-radius:50%;background:rgba(255,217,61,.28);filter:blur(10px);animation:rocketGlow 1.3s ease-in-out infinite}
+.publish-card h3{font-size:20px;margin-bottom:6px;color:#00296B}
+.publish-card p{font-size:12px;color:#66779f;line-height:1.55}
+.publish-dots{display:flex;justify-content:center;gap:6px;margin-top:13px}
+.publish-dot{width:7px;height:7px;border-radius:50%;background:#003DA5;animation:dotPulse 1s ease-in-out infinite}
+.publish-dot:nth-child(2){animation-delay:.16s}.publish-dot:nth-child(3){animation-delay:.32s}
+.success-toast{position:fixed;top:22px;left:50%;transform:translate(-50%,-24px);z-index:21000;display:flex;align-items:center;gap:10px;min-width:min(420px,92vw);max-width:92vw;padding:14px 18px;border-radius:16px;background:rgba(255,255,255,.96);color:#173a86;box-shadow:0 20px 55px rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.75);opacity:0;pointer-events:none}
+.success-toast.show{animation:toastIn .28s ease forwards}
+.success-icon{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#e4f8ea;color:#1d7b42;font-weight:900;font-size:18px;flex:0 0 34px}
+.success-copy{min-width:0}.success-copy strong{display:block;font-size:13px;color:#00306f}.success-copy span{display:block;font-size:10px;color:#6b7897;margin-top:2px}
+.publish-btn-loading{opacity:.78;cursor:wait!important}
+.publish-btn-loading::after{content:'  •••';letter-spacing:2px}
+@keyframes publishPop{from{opacity:0;transform:scale(.95) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes rocketFly{0%{transform:translate(0,26px) rotate(-10deg) scale(.92);opacity:.55}35%{transform:translate(0,-4px) rotate(-6deg) scale(1)}70%{transform:translate(10px,-34px) rotate(-2deg) scale(1.02);opacity:1}100%{transform:translate(22px,-92px) rotate(3deg) scale(.82);opacity:0}}
+@keyframes rocketGlow{0%,100%{transform:scale(.72);opacity:.35}50%{transform:scale(1.05);opacity:.75}}
+@keyframes dotPulse{0%,100%{transform:scale(.7);opacity:.35}50%{transform:scale(1);opacity:1}}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,-24px)}to{opacity:1;transform:translate(-50%,0)}}
+
 @media(max-width:768px){
   .admin-post-bar{align-items:flex-start;padding:12px;border-radius:16px}
   .admin-post-bar>div:first-child{width:100%}
   .admin-post-bar>div:last-child{width:100%;display:grid!important;grid-template-columns:1fr 1fr;gap:8px}
   .post-news-btn,.manage-posts-btn{width:100%;min-height:44px;padding:10px 11px;font-size:11px}
+}
+
+
+@media(max-width:768px){
+  .publish-card{width:min(340px,94vw);padding:24px 19px;border-radius:22px}
+  .rocket-stage{height:98px}
+  .rocket{font-size:50px}
+  .publish-card h3{font-size:18px}
+  .publish-card p{font-size:11px}
+  .success-toast{top:12px;padding:12px 14px;border-radius:14px}
 }
 
 @media(max-width:768px){.admin-row{align-items:flex-start;flex-direction:column}.admin-row-actions{width:100%;justify-content:flex-start}.admin-action{font-size:9px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.admin-card{padding:14px}}
@@ -219,6 +254,27 @@ body{padding-bottom:82px;overflow-x:hidden}
   <div class="admin-small">Delete is separate and permanently removes the Firestore override for this post.</div>
 </div></div>
 
+
+<div id="publishOverlay" class="publish-overlay" aria-hidden="true">
+  <div class="publish-card" role="status" aria-live="polite">
+    <div class="rocket-stage">
+      <div class="rocket-glow"></div>
+      <div class="rocket">🚀</div>
+    </div>
+    <h3>Publishing your news...</h3>
+    <p>Your announcement is being saved securely. Please wait a moment.</p>
+    <div class="publish-dots" aria-hidden="true"><span class="publish-dot"></span><span class="publish-dot"></span><span class="publish-dot"></span></div>
+  </div>
+</div>
+
+<div id="successToast" class="success-toast" role="status" aria-live="polite">
+  <div class="success-icon">✓</div>
+  <div class="success-copy">
+    <strong>The post has been published!</strong>
+    <span>Your news is now live on CATHS-MAIN News.</span>
+  </div>
+</div>
+
 <script>
 const NEWS=[];
 let currentFilter='all';
@@ -284,25 +340,79 @@ window.toggleOfficial=async function(id){const p=postById(id);if(!p)return;await
 window.changeVisibility=async function(id){const p=postById(id);if(!p)return;const next=prompt('Enter visibility: public, friends, or onlyMe',p.visibility||'public');if(next===null)return;if(!['public','friends','onlyMe'].includes(next)){alert('Invalid visibility. Use public, friends, or onlyMe.');return;}await window.savePostOverride(id,{visibility:next});};
 window.deletePost=async function(id){const p=postById(id);if(!p)return;if(!confirm(`Delete "${p.title}"? This removes it from the news page.`))return;await window.savePostOverride(id,{deleted:true,hidden:true});};
 $('publishPostNews').addEventListener('click',async()=>{
- if(!loggedUser||!adminMode){alert('Admin access required.');return;}
- const payload={
-   title:$('newTitle').value.trim(),
-   type:$('newType').value,
-   icon:$('newIcon').value.trim()||'📰',
-   tag:$('newTag').value.trim()||'News',
-   date:$('newDate').value.trim()||'School Update',
-   excerpt:$('newExcerpt').value.trim(),
-   body:$('newBody').value.trim(),
-   visibility:$('newVisibility').value,
-   hidden:false,
-   pinned:false,
-   official:false,
-   deleted:false
- };
- if(!payload.title||!payload.excerpt||!payload.body){alert('Please complete the title, excerpt, and full body.');return;}
- const id='custom_'+loggedUser.uid+'_'+Date.now();
- const ok=await window.createNewsPost(id,payload);
- if(ok){$('postNewsModal').classList.remove('show');} 
+  if(!loggedUser||!adminMode){alert('Admin access required.');return;}
+
+  const payload={
+    title:$('newTitle').value.trim(),
+    type:$('newType').value,
+    icon:$('newIcon').value.trim()||'📰',
+    tag:$('newTag').value.trim()||'News',
+    date:$('newDate').value.trim()||'School Update',
+    excerpt:$('newExcerpt').value.trim(),
+    body:$('newBody').value.trim(),
+    visibility:$('newVisibility').value,
+    hidden:false,
+    pinned:false,
+    official:false,
+    deleted:false
+  };
+
+  if(!payload.title||!payload.excerpt||!payload.body){
+    alert('Please complete the title, excerpt, and full body.');
+    return;
+  }
+
+  const publishBtn=$('publishPostNews');
+  const overlay=$('publishOverlay');
+  const toast=$('successToast');
+
+  publishBtn.disabled=true;
+  publishBtn.classList.add('publish-btn-loading');
+  publishBtn.textContent='Publishing';
+  overlay.classList.add('show');
+  overlay.setAttribute('aria-hidden','false');
+
+  const id='custom_'+loggedUser.uid+'_'+Date.now();
+
+  try{
+    const ok=await window.createNewsPost(id,payload);
+
+    if(ok){
+      // Close the posting modal automatically after the save succeeds.
+      $('postNewsModal').classList.remove('show');
+
+      publishBtn.disabled=false;
+      publishBtn.classList.remove('publish-btn-loading');
+      publishBtn.textContent='🚀 Publish News';
+
+      // Close publishing animation and show success.
+      overlay.classList.remove('show');
+      overlay.setAttribute('aria-hidden','true');
+
+      toast.classList.remove('show');
+      requestAnimationFrame(()=>toast.classList.add('show'));
+      setTimeout(()=>toast.classList.remove('show'),3200);
+
+      // Clear the form for the next announcement.
+      $('newTitle').value='';
+      $('newExcerpt').value='';
+      $('newBody').value='';
+    }else{
+      overlay.classList.remove('show');
+      overlay.setAttribute('aria-hidden','true');
+      publishBtn.disabled=false;
+      publishBtn.classList.remove('publish-btn-loading');
+      publishBtn.textContent='🚀 Publish News';
+    }
+  }catch(err){
+    console.error('Publish flow failed:',err);
+    overlay.classList.remove('show');
+    overlay.setAttribute('aria-hidden','true');
+    publishBtn.disabled=false;
+    publishBtn.classList.remove('publish-btn-loading');
+    publishBtn.textContent='🚀 Publish News';
+    alert('Publish failed: '+(err?.message||err));
+  }
 });
 
 $('closeAdmin').onclick=()=>$('adminModal').classList.remove('show');$('adminCancel').onclick=()=>$('adminModal').classList.remove('show');$('adminModal').addEventListener('click',e=>{if(e.target===$('adminModal'))$('adminModal').classList.remove('show')});
