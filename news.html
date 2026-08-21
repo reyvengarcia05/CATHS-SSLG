@@ -1179,6 +1179,7 @@ $('submitEntryBtn').addEventListener('click',async()=>{
     submitterName:$('submitName').value.trim(),
     submitterEmail:$('submitEmail').value.trim(),
     gradeSection:$('submitGrade').value.trim(),
+    sectionVerificationCode:$('submitSectionCode').value.trim(),
     sectionVerified:true,
     applyingFor:$('submitApplyingFor').value.trim(),
     contactNumber:$('submitContact').value.trim(),
@@ -1207,7 +1208,7 @@ $('submitEntryBtn').addEventListener('click',async()=>{
     showAppNotice(
       isPermission?'Submission not allowed':(isTimeout?'Submission timed out':'Submission failed'),
       isPermission
-        ?'The news post may not have submissions enabled, or the Firestore submission rule is blocking this entry.'
+        ?'The submission was rejected by Firestore. Check that submissions are enabled for this news post and that your selected section/code is correct.'
         : (msg||'We could not save your submission right now. Please try again.'),
       isPermission?'warning':'error'
     );
@@ -1645,6 +1646,7 @@ window.saveStudentSubmission=async function(id,payload){
       submitterUid:window.loggedUser.uid,
       submitterName:payload.submitterName||window.loggedUser.displayName||'Student',
       submitterEmail:payload.submitterEmail||window.loggedUser.email||'',
+      sectionVerificationCode:payload.sectionVerificationCode||'',
       updatedAt:serverTimestamp()
     },
     {merge:true}
