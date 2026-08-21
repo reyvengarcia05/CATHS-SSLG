@@ -164,16 +164,16 @@ renderNews();
 
 <script type="module">
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js';
-import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js';
+import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserLocalPersistence} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js';
 const firebaseConfig={apiKey:'AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc',authDomain:'caths-page.firebaseapp.com',projectId:'caths-page',storageBucket:'caths-page.firebasestorage.app',messagingSenderId:'945498022620',appId:'1:945498022620:web:71aeb4cd2472e061aeca19',measurementId:'G-CBG1YSK13G'};
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);const provider=new GoogleAuthProvider();
+setPersistence(auth,browserLocalPersistence).catch(err=>{console.error('Auth persistence setup failed:',err);});
 const btn=$('headerLoginBtn'),menu=$('profileMenu');let loggedUser=null;
 function closeMenu(){if(!menu.classList.contains('open'))return;menu.classList.remove('open');menu.classList.add('closing');menu.addEventListener('animationend',function h(e){if(e.animationName!=='profileOut')return;menu.style.display='none';menu.classList.remove('closing');menu.removeEventListener('animationend',h)})}
 btn.addEventListener('click',()=>{if(!loggedUser){googleLogin();return}if(menu.classList.contains('open'))closeMenu();else{menu.style.display='block';requestAnimationFrame(()=>menu.classList.add('open'))}});
 window.googleLogin=async function(){try{await signInWithPopup(auth,provider)}catch(e){console.error(e);alert('Google login failed: '+e.message)}};
 $('logoutBtn').addEventListener('click',async()=>{try{await signOut(auth);location.reload()}catch(e){alert('Logout failed: '+e.message)}});
 document.addEventListener('click',e=>{if(menu.classList.contains('open')&&!document.querySelector('.header-right').contains(e.target))closeMenu()});
-$('profileNav').addEventListener('click',e=>{if(!loggedUser){e.preventDefault();googleLogin()}});
 onAuthStateChanged(auth,user=>{loggedUser=user;if(user){btn.innerHTML=`${user.photoURL?`<img src="${user.photoURL}" style="width:24px;height:24px;border-radius:50%;object-fit:cover">`:'👤'} <span>${escapeHtml(user.displayName||'User')}</span> ▼`;if(user.photoURL){$('profilePhoto').src=user.photoURL;$('profileNavPhoto').innerHTML=`<img src="${user.photoURL}" alt="Profile">`}else{$('profilePhoto').src='';$('profileNavPhoto').textContent='👤'}$('profileName').textContent=user.displayName||'User';$('profileEmail').textContent=user.email||''}else{btn.innerHTML='👤 <span>Login</span>'; $('profileNavPhoto').textContent='👤'}});
 </script>
 </body>
