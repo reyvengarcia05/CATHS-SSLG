@@ -226,6 +226,7 @@ let currentFilter='all';
 let mergedNews=[...NEWS];
 let adminMode=false;
 let editingPostId=null;
+let loggedUser=null;
 const $=id=>document.getElementById(id);
 function escapeHtml(text){return String(text??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
 function decoratePost(base,override){
@@ -284,7 +285,7 @@ window.togglePinned=async function(id){const p=postById(id);if(!p)return;await w
 window.toggleOfficial=async function(id){const p=postById(id);if(!p)return;await window.savePostOverride(id,{official:!p.official});};
 window.changeVisibility=async function(id){const p=postById(id);if(!p)return;const next=prompt('Enter visibility: public, friends, or onlyMe',p.visibility||'public');if(next===null)return;if(!['public','friends','onlyMe'].includes(next)){alert('Invalid visibility. Use public, friends, or onlyMe.');return;}await window.savePostOverride(id,{visibility:next});};
 window.deletePost=async function(id){const p=postById(id);if(!p)return;if(!confirm(`Delete "${p.title}"? This removes it from the news page.`))return;await window.savePostOverride(id,{deleted:true,hidden:true});};
-$('publishPostNews').addEventListener('click',async()=>{
+$('publishPostNews').addEventListener('click',async()=>{try{
  if(!loggedUser||!adminMode){alert('Admin access required.');return;}
  const payload={
    title:$('newTitle').value.trim(),
@@ -304,7 +305,14 @@ $('publishPostNews').addEventListener('click',async()=>{
  const id='custom_'+loggedUser.uid+'_'+Date.now();
  const ok=await window.createNewsPost(id,payload);
  if(ok){$('postNewsModal').classList.remove('show');} 
-});
+}}catch(err){
+  console.error('Publish click handler crashed:',err);
+  const overlay=$('publishOverlay');
+  if(overlay){overlay.classList.remove('show');overlay.setAttribute('aria-hidden','true');}
+  const publishBtn=$('publishPostNews');
+  if(publishBtn){publishBtn.disabled=false;publishBtn.classList.remove('publish-btn-loading');publishBtn.textContent='🚀 Publish News';}
+  alert('Publish button error:\n\n'+(err?.message||String(err)));
+}});
 
 $('closeAdmin').onclick=()=>$('adminModal').classList.remove('show');$('adminCancel').onclick=()=>$('adminModal').classList.remove('show');$('adminModal').addEventListener('click',e=>{if(e.target===$('adminModal'))$('adminModal').classList.remove('show')});
 $('adminSave').addEventListener('click',async()=>{if(!editingPostId)return;const payload={title:$('adminTitle').value.trim(),type:$('adminType').value,icon:$('adminIcon').value.trim()||'📰',tag:$('adminTag').value.trim()||'News',date:$('adminDate').value.trim()||'School Update',excerpt:$('adminExcerpt').value.trim(),body:$('adminBody').value.trim(),visibility:$('adminVisibility').value};if(!payload.title||!payload.excerpt||!payload.body){alert('Please complete the title, excerpt, and full body.');return;}await window.savePostOverride(editingPostId,payload);$('adminModal').classList.remove('show');});
@@ -317,7 +325,7 @@ import {getFirestore,collection,doc,getDoc,getDocs,setDoc,deleteDoc,serverTimest
 const firebaseConfig={apiKey:'AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc',authDomain:'caths-page.firebaseapp.com',projectId:'caths-page',storageBucket:'caths-page.firebasestorage.app',messagingSenderId:'945498022620',appId:'1:945498022620:web:71aeb4cd2472e061aeca19',measurementId:'G-CBG1YSK13G'};
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);const provider=new GoogleAuthProvider();
 setPersistence(auth,browserLocalPersistence).catch(err=>{console.error('Auth persistence setup failed:',err);});
-const btn=$('headerLoginBtn'),menu=$('profileMenu');let loggedUser=null;
+const btn=$('headerLoginBtn'),menu=$('profileMenu');
 const VERIFIED_ADMIN_EMAILS=new Set([
   'reyvengarcia15@gmail.com',
   'reyvenbermudo091@gmail.com',
