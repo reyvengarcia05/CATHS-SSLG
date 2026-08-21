@@ -1190,8 +1190,7 @@ $('submitEntryBtn').addEventListener('click',async()=>{
   };
 
   try{
-    const submissionId=`${window.loggedUser.uid}_${postId}_${Date.now()}`;
-    await window.saveStudentSubmission(submissionId,payload);
+    await window.saveStudentSubmission(null,payload);
 
     closeSubmissionForm();
     showAppNotice(
@@ -1573,7 +1572,7 @@ $('adminSave').addEventListener('click',async()=>{
 <script type="module">
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js';
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserLocalPersistence} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js';
-import {getFirestore,collection,doc,getDoc,getDocs,setDoc,deleteDoc,serverTimestamp,query,orderBy,where} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js';
+import {getFirestore,collection,doc,getDoc,getDocs,setDoc,addDoc,deleteDoc,serverTimestamp,query,orderBy,where} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js';
 const firebaseConfig={apiKey:'AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc',authDomain:'caths-page.firebaseapp.com',projectId:'caths-page',storageBucket:'caths-page.firebasestorage.app',messagingSenderId:'945498022620',appId:'1:945498022620:web:71aeb4cd2472e061aeca19',measurementId:'G-CBG1YSK13G'};
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);const provider=new GoogleAuthProvider();
 setPersistence(auth,browserLocalPersistence).catch(err=>{console.error('Auth persistence setup failed:',err);});
@@ -1632,7 +1631,7 @@ window.savePostOverride=async function(id,changes){
   }catch(e){console.error('Admin save failed:',e);showAppNotice('Save failed',e.message||'Unable to save the changes right now.','error');return false;}
 };
 
-window.saveStudentSubmission=async function(id,payload){
+window.saveStudentSubmission=async function(_id,payload){
   if(!window.loggedUser){
     throw new Error('You must be logged in to submit an entry.');
   }
@@ -1641,8 +1640,6 @@ window.saveStudentSubmission=async function(id,payload){
     throw new Error('You appear to be offline. Please reconnect to the internet and try again.');
   }
 
-  // Preflight: make sure the target news post exists and has submissions enabled.
-  // This gives a fast, useful error instead of leaving the button spinning.
   const targetPostId=String(payload.postId||'');
   if(!targetPostId){
     throw new Error('The selected news post could not be identified.');
@@ -1675,27 +1672,26 @@ window.saveStudentSubmission=async function(id,payload){
 
   const submissionData={
     ...payload,
+    postId:targetPostId,
     submitterUid:window.loggedUser.uid,
     submitterName:payload.submitterName||window.loggedUser.displayName||'Student',
     submitterEmail:payload.submitterEmail||window.loggedUser.email||'',
     sectionVerificationCode:payload.sectionVerificationCode||'',
     sectionVerified:payload.sectionVerified===true,
+    status:'pending',
+    createdAt:payload.createdAt||serverTimestamp(),
     updatedAt:serverTimestamp()
   };
 
   try{
-    await Promise.race([
-      setDoc(
-        doc(db,'submissions',String(id)),
-        submissionData,
-        {merge:false}
-      ),
+    const result=await Promise.race([
+      addDoc(collection(db,'submissions'),submissionData),
       new Promise((_,reject)=>setTimeout(
         ()=>reject(new Error('Firestore is taking too long to respond. Please try again.')),
         7000
       ))
     ]);
-    return true;
+    return result.id;
   }catch(err){
     const msg=String(err?.message||'');
     if(/permission|missing or insufficient permissions/i.test(msg)){
