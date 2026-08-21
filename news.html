@@ -820,8 +820,23 @@ body{padding-bottom:82px;overflow-x:hidden}
 
       <div id="submitGradeField" class="submission-field">
         <label>Grade & Section</label>
-        <input id="submitGrade" type="text" maxlength="80" placeholder="e.g. 12-Shakespeare">
+        <select id="submitGrade">
+          <option value="">Select your Grade & Section</option>
+        </select>
         <div class="submission-field-error">Grade & Section is required.</div>
+      </div>
+
+      <div id="submitSectionCodeField" class="submission-field">
+        <label>Section Verification Code</label>
+        <input id="submitSectionCode" type="password" maxlength="30" autocomplete="off" placeholder="Enter your section verification code">
+        <div class="submission-field-error">A valid section verification code is required.</div>
+        <div id="submitSectionVerifyMsg" style="display:none;font-size:9px;font-weight:700;margin-top:2px"></div>
+      </div>
+
+      <div id="submitApplyingField" class="submission-field full">
+        <label>Applying for?</label>
+        <input id="submitApplyingFor" type="text" maxlength="160" placeholder="What are you applying for?">
+        <div class="submission-field-error">Please enter what you are applying for.</div>
       </div>
 
       <div id="submitEmailField" class="submission-field">
@@ -1009,7 +1024,7 @@ function validatePublishFields(){
 let submissionPostId=null;
 
 function clearSubmissionValidation(){
-  ['submitNameField','submitGradeField','submitEmailField','submitDetailsField'].forEach(id=>{
+  ['submitNameField','submitGradeField','submitSectionCodeField','submitApplyingField','submitEmailField','submitDetailsField'].forEach(id=>{
     $(id)?.classList.remove('invalid');
   });
 }
@@ -1017,20 +1032,43 @@ function clearSubmissionValidation(){
 function validateSubmissionForm(){
   const name=$('submitName').value.trim();
   const grade=$('submitGrade').value.trim();
+  const sectionCode=$('submitSectionCode').value.trim();
+  const applyingFor=$('submitApplyingFor').value.trim();
   const email=$('submitEmail').value.trim();
   const details=$('submitDetails').value.trim();
 
   $('submitNameField').classList.toggle('invalid',!name);
   $('submitGradeField').classList.toggle('invalid',!grade);
+  $('submitSectionCodeField').classList.toggle('invalid',!sectionCode);
+  $('submitApplyingField').classList.toggle('invalid',!applyingFor);
   $('submitEmailField').classList.toggle('invalid',!email);
   $('submitDetailsField').classList.toggle('invalid',!details);
 
-  if(!name||!grade||!email||!details){
+  if(!name||!grade||!sectionCode||!applyingFor||!email||!details){
     showAppNotice('Missing information','Please complete all required submission fields.','warning');
-    const first=!name?$('submitName'):(!grade?$('submitGrade'):(!email?$('submitEmail'):$('submitDetails')));
+    const first=!name?$('submitName'):
+      (!grade?$('submitGrade'):
+      (!sectionCode?$('submitSectionCode'):
+      (!applyingFor?$('submitApplyingFor'):
+      (!email?$('submitEmail'):$('submitDetails')))));
     first?.focus();
     return false;
   }
+
+  if(codesForNewsSection[grade] !== sectionCode){
+    $('submitSectionCodeField').classList.add('invalid');
+    $('submitSectionVerifyMsg').style.display='block';
+    $('submitSectionVerifyMsg').style.color='#c62828';
+    $('submitSectionVerifyMsg').textContent='Incorrect verification code for the selected section.';
+    showAppNotice('Section not verified','The verification code does not match the selected section.','error');
+    $('submitSectionCode').focus();
+    return false;
+  }
+
+  $('submitSectionVerifyMsg').style.display='block';
+  $('submitSectionVerifyMsg').style.color='#1d7a43';
+  $('submitSectionVerifyMsg').textContent='✓ Section verified.';
+  $('submitSectionCodeField').classList.remove('invalid');
 
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
     $('submitEmailField').classList.add('invalid');
@@ -1040,6 +1078,17 @@ function validateSubmissionForm(){
   }
 
   return true;
+}
+
+
+const submissionSections=["7-Agoncillo", "7-Constantino", "7-Delos Santos", "7-Guillermo", "7-Nacpil", "7-Ocampo", "7-Tolentino", "7-Zaide", "8-Archimedes", "8-Bernoulli", "8-Pythagoras", "8-Hypatia", "8-Pascal", "8-Euler", "8-Euclid", "8-Ptolemy", "8-Descartes", "9-Aristotle", "9-Galilei", "9-Copernicus", "9-Pasteur", "9-Mendel", "9-Faraday", "9-Newton", "9-Edison", "9-Einstein", "10-Aquino", "10-Bonifacio", "10-Del Pilar", "10-Jacinto", "10-Luna", "10-Quezon", "10-Rizal", "11-Twain", "11-Farmer", "11-Lovelace", "11-Guerrero", "11-Morgan", "11-Silverton", "11-Westinghouse", "12-Ansel", "12-Babbage", "12-Javier", "12-Pacioli", "12-Shakespeare", "12-Mendeleev"];
+const codesForNewsSection={"7-Agoncillo": "483721#", "7-Constantino": "C615904", "7-Delos Santos": "827316D", "7-Guillermo": "274856S", "7-Nacpil": "N731492", "7-Ocampo": "958214O", "7-Tolentino": "T346781", "7-Zaide": "Z820563E", "8-Archimedes": "514827S", "8-Bernoulli": "693152I", "8-Pythagoras": "PY428715", "8-Hypatia": "761304IA", "8-Pascal": "235896", "8-Euler": "E847231R", "8-Euclid": "391625D", "8-Ptolemy": "672418MY", "8-Descartes": "CART159734", "9-Aristotle": "RIS583216", "9-Galilei": "724951LEI", "9-Copernicus": "COP316847", "9-Pasteur": "865203TEUR", "9-Mendel": "ME492731L", "9-Faraday": "137568DAY", "9-Newton": "651824TON", "9-Edison": "308475SON", "9-Einstein": "976312TEIN", "10-Aquino": "AQ428163", "10-Bonifacio": "715294CIO", "10-Del Pilar": "PILAR863517", "10-Jacinto": "TO249681", "10-Luna": "LUNA531728", "10-Quezon": "QUE694315", "10-Rizal": "182957AL", "11-Twain": "736481IN", "11-Farmer": "FARM295714", "11-Lovelace": "814326LOVE", "11-Guerrero": "GUER463859", "11-Morgan": "927145MOR", "11-Silverton": "TON351682", "11-Westinghouse": "67823HOUSE4", "12-Ansel": "542813SEL", "12-Babbage": "BAB819365", "12-Javier": "JAV274631", "12-Pacioli": "635927CIOLI", "12-Shakespeare": "391847PEARE", "12-Mendeleev": "758216LEEV"};
+
+function populateSubmissionSections(){
+  const select=$('submitGrade');
+  if(!select)return;
+  select.innerHTML='<option value="">Select your Grade & Section</option>'+
+    submissionSections.map(section=>`<option value="${escapeHtml(section)}">${escapeHtml(section)}</option>`).join('');
 }
 
 window.openSubmissionForm=function(postId){
@@ -1055,11 +1104,15 @@ window.openSubmissionForm=function(postId){
   $('submissionPostName').textContent=post.title||'Selected news post';
 
   const user=window.loggedUser;
+  populateSubmissionSections();
   $('submitName').value=user.displayName||'';
   $('submitEmail').value=user.email||'';
   $('submitGrade').value='';
+  $('submitSectionCode').value='';
+  $('submitApplyingFor').value='';
   $('submitContact').value='';
   $('submitDetails').value='';
+  $('submitSectionVerifyMsg').style.display='none';
   clearSubmissionValidation();
 
   $('submissionOverlay').classList.add('show');
@@ -1081,17 +1134,23 @@ $('submissionOverlay').addEventListener('click',e=>{
   if(e.target===$('submissionOverlay'))closeSubmissionForm();
 });
 
-['submitName','submitGrade','submitEmail','submitDetails'].forEach(id=>{
+['submitName','submitGrade','submitSectionCode','submitApplyingFor','submitEmail','submitDetails'].forEach(id=>{
   $(id)?.addEventListener('input',()=>{
     const map={
       submitName:'submitNameField',
       submitGrade:'submitGradeField',
+      submitSectionCode:'submitSectionCodeField',
+      submitApplyingFor:'submitApplyingField',
       submitEmail:'submitEmailField',
       submitDetails:'submitDetailsField'
     };
     $(map[id])?.classList.remove('invalid');
+    if(id==='submitSectionCode'){
+      $('submitSectionVerifyMsg').style.display='none';
+    }
   });
 });
+
 
 $('submitEntryBtn').addEventListener('click',async()=>{
   if(!submissionPostId){
@@ -1119,6 +1178,8 @@ $('submitEntryBtn').addEventListener('click',async()=>{
     submitterName:$('submitName').value.trim(),
     submitterEmail:$('submitEmail').value.trim(),
     gradeSection:$('submitGrade').value.trim(),
+    sectionVerified:true,
+    applyingFor:$('submitApplyingFor').value.trim(),
     contactNumber:$('submitContact').value.trim(),
     details:$('submitDetails').value.trim(),
     status:'pending',
@@ -1205,11 +1266,12 @@ window.openSubmissions=async function(postId){
           <div>
             <div class="submission-admin-name">${escapeHtml(row.submitterName||'Student')}</div>
             <div class="submission-admin-meta">${escapeHtml(row.submitterEmail||'')} • ${escapeHtml(row.gradeSection||'')}</div>
+            <div class="submission-admin-meta"><b>Applying for:</b> ${escapeHtml(row.applyingFor||'Not specified')}</div>
             <div class="submission-admin-meta">${escapeHtml(row.contactNumber||'No contact number')} • ${escapeHtml(formatSubmissionDate(row.createdAt))}</div>
           </div>
           <span class="submission-status ${row.status==='reviewed'?'reviewed':row.status==='rejected'?'rejected':''}">${escapeHtml((row.status||'pending').toUpperCase())}</span>
         </div>
-        <div class="submission-admin-details">${escapeHtml(row.details||'No details provided.')}</div>
+        <div class="submission-admin-details"><b>Section verification:</b> ${row.sectionVerified?'✅ Verified':'⚠️ Not verified'}<br><br>${escapeHtml(row.details||'No details provided.')}</div>
         <div class="submission-admin-actions">
           <button class="submission-admin-action review" onclick="updateSubmissionStatus('${escapeHtml(row.id)}','reviewed','${escapeHtml(postId)}')">✅ Mark Reviewed</button>
           <button class="submission-admin-action reject" onclick="updateSubmissionStatus('${escapeHtml(row.id)}','rejected','${escapeHtml(postId)}')">✕ Reject</button>
