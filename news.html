@@ -1167,9 +1167,10 @@ $('submitEntryBtn').addEventListener('click',async()=>{
   const postId=submissionPostId;
   const post=postById(postId);
   const btn=$('submitEntryBtn');
+  const originalText=btn.textContent;
 
   btn.disabled=true;
-  btn.textContent='Submitting...';
+  btn.textContent='⏳ Submitting...';
 
   const payload={
     postId:postId,
@@ -1188,7 +1189,7 @@ $('submitEntryBtn').addEventListener('click',async()=>{
   };
 
   try{
-    const submissionId=`${window.loggedUser.uid}_${postId}`;
+    const submissionId=`${window.loggedUser.uid}_${postId}_${Date.now()}`;
     await window.saveStudentSubmission(submissionId,payload);
 
     closeSubmissionForm();
@@ -1199,14 +1200,20 @@ $('submitEntryBtn').addEventListener('click',async()=>{
     );
   }catch(err){
     console.error('Submission failed:',err);
+    const msg=String(err?.message||'');
+    const isTimeout=/taking too long/i.test(msg);
+    const isPermission=/permission|missing or insufficient permissions/i.test(msg);
+
     showAppNotice(
-      'Submission failed',
-      err?.message||'We could not save your submission right now. Please try again.',
-      'error'
+      isPermission?'Submission not allowed':(isTimeout?'Submission timed out':'Submission failed'),
+      isPermission
+        ?'The news post may not have submissions enabled, or the Firestore submission rule is blocking this entry.'
+        : (msg||'We could not save your submission right now. Please try again.'),
+      isPermission?'warning':'error'
     );
   }finally{
     btn.disabled=false;
-    btn.textContent='✅ Submit Entry';
+    btn.textContent=originalText||'✅ Submit Entry';
   }
 });
 
@@ -1631,23 +1638,23 @@ window.saveStudentSubmission=async function(id,payload){
     throw new Error('You must be logged in to submit an entry.');
   }
 
-  try{
-    await setDoc(
-      doc(db,'submissions',String(id)),
-      {
-        ...payload,
-        submitterUid:window.loggedUser.uid,
-        submitterName:payload.submitterName||window.loggedUser.displayName||'Student',
-        submitterEmail:payload.submitterEmail||window.loggedUser.email||'',
-        updatedAt:serverTimestamp()
-      },
-      {merge:true}
-    );
-    return true;
-  }catch(e){
-    console.error('Student submission save failed:',e);
-    throw e;
-  }
+  const writePromise=setDoc(
+    doc(db,'submissions',String(id)),
+    {
+      ...payload,
+      submitterUid:window.loggedUser.uid,
+      submitterName:payload.submitterName||window.loggedUser.displayName||'Student',
+      submitterEmail:payload.submitterEmail||window.loggedUser.email||'',
+      updatedAt:serverTimestamp()
+    },
+    {merge:true}
+  );
+
+  const timeoutPromise=new Promise((_,reject)=>{
+    setTimeout(()=>reject(new Error('The submission is taking too long. Please check your internet connection and try again.')),10000);
+  });
+
+  return await Promise.race([writePromise,timeoutPromise]);
 };
 
 window.createNewsPost=async function(id,payload){
