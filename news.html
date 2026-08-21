@@ -1202,14 +1202,12 @@ $('submitEntryBtn').addEventListener('click',async()=>{
   }catch(err){
     console.error('Submission failed:',err);
     const msg=String(err?.message||'');
-    const isTimeout=/taking too long/i.test(msg);
-    const isPermission=/permission|missing or insufficient permissions/i.test(msg);
+    const isTimeout=/taking too long|too long to respond|in time/i.test(msg);
+    const isPermission=/permission|missing or insufficient permissions|firestore denied/i.test(msg);
 
     showAppNotice(
       isPermission?'Submission not allowed':(isTimeout?'Submission timed out':'Submission failed'),
-      isPermission
-        ?'The submission was rejected by Firestore. Check that submissions are enabled for this news post and that your selected section/code is correct.'
-        : (msg||'We could not save your submission right now. Please try again.'),
+      msg||'We could not save your submission right now. Please try again.',
       isPermission?'warning':'error'
     );
   }finally{
@@ -1639,24 +1637,75 @@ window.saveStudentSubmission=async function(id,payload){
     throw new Error('You must be logged in to submit an entry.');
   }
 
-  const writePromise=setDoc(
-    doc(db,'submissions',String(id)),
-    {
-      ...payload,
-      submitterUid:window.loggedUser.uid,
-      submitterName:payload.submitterName||window.loggedUser.displayName||'Student',
-      submitterEmail:payload.submitterEmail||window.loggedUser.email||'',
-      sectionVerificationCode:payload.sectionVerificationCode||'',
-      updatedAt:serverTimestamp()
-    },
-    {merge:true}
-  );
+  if(!navigator.onLine){
+    throw new Error('You appear to be offline. Please reconnect to the internet and try again.');
+  }
 
-  const timeoutPromise=new Promise((_,reject)=>{
-    setTimeout(()=>reject(new Error('The submission is taking too long. Please check your internet connection and try again.')),10000);
-  });
+  // Preflight: make sure the target news post exists and has submissions enabled.
+  // This gives a fast, useful error instead of leaving the button spinning.
+  const targetPostId=String(payload.postId||'');
+  if(!targetPostId){
+    throw new Error('The selected news post could not be identified.');
+  }
 
-  return await Promise.race([writePromise,timeoutPromise]);
+  let targetSnap;
+  try{
+    targetSnap=await Promise.race([
+      getDoc(doc(db,'newsPosts',targetPostId)),
+      new Promise((_,reject)=>setTimeout(
+        ()=>reject(new Error('Could not verify the news post in time. Please try again.')),
+        5000
+      ))
+    ]);
+  }catch(err){
+    throw new Error(
+      String(err?.message||'').toLowerCase().includes('permission')
+        ? 'The news post cannot be verified right now. Please refresh the page and try again.'
+        : (err?.message||'Could not verify the selected news post.')
+    );
+  }
+
+  if(!targetSnap.exists()){
+    throw new Error('This news post no longer exists.');
+  }
+
+  if(targetSnap.data()?.allowSubmissions!==true){
+    throw new Error('Submissions are not enabled for this news post.');
+  }
+
+  const submissionData={
+    ...payload,
+    submitterUid:window.loggedUser.uid,
+    submitterName:payload.submitterName||window.loggedUser.displayName||'Student',
+    submitterEmail:payload.submitterEmail||window.loggedUser.email||'',
+    sectionVerificationCode:payload.sectionVerificationCode||'',
+    sectionVerified:payload.sectionVerified===true,
+    updatedAt:serverTimestamp()
+  };
+
+  try{
+    await Promise.race([
+      setDoc(
+        doc(db,'submissions',String(id)),
+        submissionData,
+        {merge:false}
+      ),
+      new Promise((_,reject)=>setTimeout(
+        ()=>reject(new Error('Firestore is taking too long to respond. Please try again.')),
+        7000
+      ))
+    ]);
+    return true;
+  }catch(err){
+    const msg=String(err?.message||'');
+    if(/permission|missing or insufficient permissions/i.test(msg)){
+      throw new Error('Firestore denied this submission. Make sure the latest submissions rule is published and the selected section verification code is correct.');
+    }
+    if(/network|offline|client is offline|failed to get document/i.test(msg)){
+      throw new Error('The connection to Firestore was interrupted. Please check your internet connection and try again.');
+    }
+    throw err;
+  }
 };
 
 window.createNewsPost=async function(id,payload){
