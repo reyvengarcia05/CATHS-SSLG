@@ -1247,8 +1247,6 @@ window.openSubmissions=function(postId){
     return;
   }
 
-  // Use the Apps Script web app directly inside an iframe.
-  // This avoids browser CORS/JSONP issues while keeping the existing admin modal.
   const frameUrl=GOOGLE_SHEET_WEB_APP_URL+
     '?action=admin&postTitle='+encodeURIComponent(post.title||'Student Submissions')+
     '&_='+Date.now();
