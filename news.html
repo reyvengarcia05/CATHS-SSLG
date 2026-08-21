@@ -1229,16 +1229,8 @@ async function loadSubmissionsForPost(postId){
     showAppNotice('Admin access required','Only authorized admins can view student submissions.','error');
     return [];
   }
-  const q=query(collection(db,'submissions'),where('postId','==',String(postId)));
-  const snap=await getDocs(q);
-  const rows=[];
-  snap.forEach(docSnap=>rows.push({id:docSnap.id,...docSnap.data()}));
-  rows.sort((a,b)=>{
-    const at=a.createdAt?.toMillis?a.createdAt.toMillis():0;
-    const bt=b.createdAt?.toMillis?b.createdAt.toMillis():0;
-    return bt-at;
-  });
-  return rows;
+
+  return await loadGoogleSheetSubmissions();
 }
 
 window.openSubmissions=async function(postId){
@@ -1246,13 +1238,14 @@ window.openSubmissions=async function(postId){
     showAppNotice('Admin access required','Only authorized admins can view student submissions.','error');
     return;
   }
+
   const post=postById(postId);
   if(!post || !post.allowSubmissions){
     showAppNotice('Submissions are closed','This news post does not currently accept student submissions.','warning');
     return;
   }
 
-  $('submissionsSubtitle').textContent='Submissions for: '+(post.title||'Selected news post');
+  $('submissionsSubtitle').textContent='Student entries saved in the Google Spreadsheet';
   $('submissionsList').innerHTML='<div class="submission-empty">Loading submissions...</div>';
   $('submissionsOverlay').classList.add('show');
   $('submissionsOverlay').setAttribute('aria-hidden','false');
@@ -1265,49 +1258,29 @@ window.openSubmissions=async function(postId){
       return;
     }
 
-    $('submissionsList').innerHTML=rows.map(row=>`
+    $('submissionsList').innerHTML=rows.map((row,index)=>`
       <div class="submission-admin-row">
         <div class="submission-admin-top">
           <div>
-            <div class="submission-admin-name">${escapeHtml(row.submitterName||'Student')}</div>
-            <div class="submission-admin-meta">${escapeHtml(row.submitterEmail||'')} • ${escapeHtml(row.gradeSection||'')}</div>
+            <div class="submission-admin-name">${escapeHtml(row.studentName||'Student')}</div>
+            <div class="submission-admin-meta">${escapeHtml(row.studentEmail||'')} • ${escapeHtml(row.gradeSection||'')}</div>
             <div class="submission-admin-meta"><b>Applying for:</b> ${escapeHtml(row.applyingFor||'Not specified')}</div>
-            <div class="submission-admin-meta">${escapeHtml(row.contactNumber||'No contact number')} • ${escapeHtml(formatSubmissionDate(row.createdAt))}</div>
+            <div class="submission-admin-meta">${escapeHtml(row.contactNumber||'No contact number')} • ${escapeHtml(row.timestamp||'')}</div>
           </div>
           <span class="submission-status ${row.status==='reviewed'?'reviewed':row.status==='rejected'?'rejected':''}">${escapeHtml((row.status||'pending').toUpperCase())}</span>
         </div>
-        <div class="submission-admin-details"><b>Section verification:</b> ${row.sectionVerified?'✅ Verified':'⚠️ Not verified'}<br><br>${escapeHtml(row.details||'No details provided.')}</div>
-        <div class="submission-admin-actions">
-          <button class="submission-admin-action review" onclick="updateSubmissionStatus('${escapeHtml(row.id)}','reviewed','${escapeHtml(postId)}')">✅ Mark Reviewed</button>
-          <button class="submission-admin-action reject" onclick="updateSubmissionStatus('${escapeHtml(row.id)}','rejected','${escapeHtml(postId)}')">✕ Reject</button>
-        </div>
+        <div class="submission-admin-details">${escapeHtml(row.details||'No details provided.')}</div>
       </div>
     `).join('');
   }catch(err){
-    console.error('Submissions load failed:',err);
-    $('submissionsList').innerHTML='<div class="submission-empty">Unable to load submissions right now.</div>';
-    showAppNotice('Could not load submissions',err?.message||'Please try again.','error');
+    console.error('Spreadsheet submissions load failed:',err);
+    $('submissionsList').innerHTML='<div class="submission-empty">Unable to load spreadsheet submissions right now.</div>';
+    showAppNotice('Could not load submissions',err?.message||'Please check your Google Apps Script deployment.','error');
   }
 };
 
-window.updateSubmissionStatus=async function(submissionId,status,postId){
-  if(!adminMode || !window.loggedUser){
-    showAppNotice('Admin access required','Only authorized admins can manage submissions.','error');
-    return;
-  }
-  try{
-    await setDoc(doc(db,'submissions',String(submissionId)),{
-      status:status,
-      reviewedBy:window.loggedUser.uid,
-      reviewedAt:serverTimestamp(),
-      updatedAt:serverTimestamp()
-    },{merge:true});
-    showAppNotice('Submission updated',`The submission is now ${status}.`,'success');
-    await window.openSubmissions(postId);
-  }catch(err){
-    console.error('Submission status update failed:',err);
-    showAppNotice('Update failed',err?.message||'Could not update the submission.','error');
-  }
+window.updateSubmissionStatus=async function(){
+  showAppNotice('Update in Google Sheets','Change the Status cell in the Google Spreadsheet to reviewed or rejected.','warning');
 };
 
 $('closeSubmissions').onclick=()=>{
@@ -1631,11 +1604,87 @@ window.savePostOverride=async function(id,changes){
   }catch(e){console.error('Admin save failed:',e);showAppNotice('Save failed',e.message||'Unable to save the changes right now.','error');return false;}
 };
 
+const GOOGLE_SHEET_WEB_APP_URL='https://script.google.com/macros/s/AKfycbxWip-0Ybgszyvz89nMtfdLWU52aXCD7mrX5jTiNhjALgW1x1p-_d1QqT2lgG0bMMfu4w/exec';
+
+function submitToGoogleSheet(params){
+  return new Promise((resolve,reject)=>{
+    try{
+      const iframe=document.createElement('iframe');
+      iframe.name='caths_sheet_submit_'+Date.now();
+      iframe.style.display='none';
+      document.body.appendChild(iframe);
+
+      const form=document.createElement('form');
+      form.method='POST';
+      form.action=GOOGLE_SHEET_WEB_APP_URL;
+      form.target=iframe.name;
+      form.style.display='none';
+
+      Object.entries(params||{}).forEach(([key,value])=>{
+        const input=document.createElement('input');
+        input.type='hidden';
+        input.name=key;
+        input.value=String(value??'');
+        form.appendChild(input);
+      });
+
+      document.body.appendChild(form);
+      form.submit();
+
+      setTimeout(()=>{
+        form.remove();
+        iframe.remove();
+        resolve(true);
+      },1200);
+    }catch(err){reject(err);}
+  });
+}
+
+function loadGoogleSheetSubmissions(){
+  return new Promise((resolve,reject)=>{
+    const callbackName='__cathsSheetCallback_'+Date.now()+'_'+Math.floor(Math.random()*100000);
+    const script=document.createElement('script');
+    let settled=false;
+
+    const cleanup=()=>{
+      try{delete window[callbackName]}catch{}
+      script.remove();
+    };
+
+    window[callbackName]=(data)=>{
+      if(settled)return;
+      settled=true;
+      cleanup();
+      if(!data || data.success!==true){
+        reject(new Error(data?.error||'Google Spreadsheet could not be read.'));
+        return;
+      }
+      resolve(Array.isArray(data.rows)?data.rows:[]);
+    };
+
+    script.onerror=()=>{
+      if(settled)return;
+      settled=true;
+      cleanup();
+      reject(new Error('Unable to connect to the Google Spreadsheet. Make sure the Apps Script deployment is active.'));
+    };
+
+    script.src=GOOGLE_SHEET_WEB_APP_URL+'?action=list&callback='+encodeURIComponent(callbackName);
+    document.head.appendChild(script);
+
+    setTimeout(()=>{
+      if(settled)return;
+      settled=true;
+      cleanup();
+      reject(new Error('Google Spreadsheet took too long to respond.'));
+    },10000);
+  });
+}
+
 window.saveStudentSubmission=async function(_id,payload){
   if(!window.loggedUser){
     throw new Error('You must be logged in to submit an entry.');
   }
-
   if(!navigator.onLine){
     throw new Error('You appear to be offline. Please reconnect to the internet and try again.');
   }
@@ -1645,63 +1694,24 @@ window.saveStudentSubmission=async function(_id,payload){
     throw new Error('The selected news post could not be identified.');
   }
 
-  let targetSnap;
-  try{
-    targetSnap=await Promise.race([
-      getDoc(doc(db,'newsPosts',targetPostId)),
-      new Promise((_,reject)=>setTimeout(
-        ()=>reject(new Error('Could not verify the news post in time. Please try again.')),
-        5000
-      ))
-    ]);
-  }catch(err){
-    throw new Error(
-      String(err?.message||'').toLowerCase().includes('permission')
-        ? 'The news post cannot be verified right now. Please refresh the page and try again.'
-        : (err?.message||'Could not verify the selected news post.')
-    );
-  }
-
-  if(!targetSnap.exists()){
-    throw new Error('This news post no longer exists.');
-  }
-
-  if(targetSnap.data()?.allowSubmissions!==true){
+  const post=postById(targetPostId);
+  if(!post || post.allowSubmissions!==true){
     throw new Error('Submissions are not enabled for this news post.');
   }
 
-  const submissionData={
-    ...payload,
-    postId:targetPostId,
-    submitterUid:window.loggedUser.uid,
-    submitterName:payload.submitterName||window.loggedUser.displayName||'Student',
-    submitterEmail:payload.submitterEmail||window.loggedUser.email||'',
-    sectionVerificationCode:payload.sectionVerificationCode||'',
-    sectionVerified:payload.sectionVerified===true,
-    status:'pending',
-    createdAt:payload.createdAt||serverTimestamp(),
-    updatedAt:serverTimestamp()
-  };
+  await submitToGoogleSheet({
+    action:'submit',
+    timestamp:new Date().toISOString(),
+    studentName:payload.submitterName||window.loggedUser.displayName||'Student',
+    studentEmail:payload.submitterEmail||window.loggedUser.email||'',
+    gradeSection:payload.gradeSection||'',
+    applyingFor:payload.applyingFor||'',
+    contactNumber:payload.contactNumber||'',
+    details:payload.details||'',
+    status:'pending'
+  });
 
-  try{
-    const result=await Promise.race([
-      addDoc(collection(db,'submissions'),submissionData),
-      new Promise((_,reject)=>setTimeout(
-        ()=>reject(new Error('Firestore is taking too long to respond. Please try again.')),
-        7000
-      ))
-    ]);
-    return result.id;
-  }catch(err){
-    const msg=String(err?.message||'');
-    if(/permission|missing or insufficient permissions/i.test(msg)){
-      throw new Error('Firestore denied this submission. Make sure the latest submissions rule is published and the selected section verification code is correct.');
-    }
-    if(/network|offline|client is offline|failed to get document/i.test(msg)){
-      throw new Error('The connection to Firestore was interrupted. Please check your internet connection and try again.');
-    }
-    throw err;
-  }
+  return true;
 };
 
 window.createNewsPost=async function(id,payload){
