@@ -670,6 +670,7 @@ body{padding-bottom:82px;overflow-x:hidden}
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button id="postNewsBtn" class="post-news-btn" type="button">➕ Post News</button>
       <button id="managePostsBtn" class="manage-posts-btn" type="button">🛠️ Manage</button>
+      <button id="viewAllSubmissionsBtn" class="manage-posts-btn" type="button">📥 Submissions</button>
     </div>
   </div>
 
@@ -896,7 +897,7 @@ function renderNews(){
  const term=$('searchInput').value.trim().toLowerCase();
  const list=sortNews(mergedNews.filter(item=>!item.deleted && !item.hidden && (item.visibility==='public'||adminMode) && (currentFilter==='all'||item.type===currentFilter) && (!term||`${item.title} ${item.excerpt} ${item.tag} ${item.date}`.toLowerCase().includes(term))));
  if(!list.length){$('newsGrid').innerHTML='<div class="empty" style="grid-column:1/-1"><div>📰</div><p>No news or announcements yet.</p><small style="display:block;margin-top:6px;opacity:.65">Authorized admins can publish the first update using <b>Post News</b>.</small></div>';return;}
- $('newsGrid').innerHTML=list.map(item=>`<article class="news-card"><div class="news-banner"><div class="news-icon">${escapeHtml(item.icon)}</div><div class="tag">${escapeHtml(item.tag)}</div></div><div class="news-body">${item.authorPhotoURL?`<div class="post-author" style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><img src="${escapeHtml(item.authorPhotoURL)}" alt="Admin" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.35)"><div style="min-width:0"><div style="font-size:10px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(item.authorName||'SSLG Admin')}</div><div style="font-size:8px;opacity:.68;margin-top:2px">SSLG Administrator</div></div></div>`:''}<div class="news-meta">${escapeHtml(item.date)}</div><div class="news-title">${escapeHtml(item.title)}</div><div class="news-excerpt">${escapeHtml(item.excerpt)}</div><div class="card-flags">${item.official?'<span class="card-flag">✅ OFFICIAL</span>':''}${item.pinned?'<span class="card-flag">📌 PINNED</span>':''}</div><div class="card-buttons"><button class="read-btn" onclick="openNews('${escapeHtml(item.id)}')">Read More</button>${item.allowSubmissions?`<button class="submit-entry-btn" onclick="openSubmissionForm('${escapeHtml(item.id)}')">📝 Submit Entry</button>`:''}</div>${adminMode?`<div class="card-admin-actions"><button onclick="editPost('${escapeHtml(item.id)}')">✏️ Edit</button>${item.allowSubmissions?`<button class="admin-submissions-btn" onclick="openSubmissions('${escapeHtml(item.id)}')">📥 Submissions</button>`:''}<button onclick="togglePinned('${escapeHtml(item.id)}')">${item.pinned?'📍 Unpin':'📌 Pin'}</button><button onclick="toggleOfficial('${escapeHtml(item.id)}')">${item.official?'✅ Unmark':'🏷️ Official'}</button><button onclick="toggleHidden('${escapeHtml(item.id)}')">${item.hidden?'👁️ Unhide':'🙈 Hide'}</button><button onclick="changeVisibility('${escapeHtml(item.id)}')">🔐 Visibility</button><button class="danger" onclick="deletePost('${escapeHtml(item.id)}')">🗑️ Delete</button></div>`:''}</div></article>`).join('');
+ $('newsGrid').innerHTML=list.map(item=>`<article class="news-card"><div class="news-banner"><div class="news-icon">${escapeHtml(item.icon)}</div><div class="tag">${escapeHtml(item.tag)}</div></div><div class="news-body">${item.authorPhotoURL?`<div class="post-author" style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><img src="${escapeHtml(item.authorPhotoURL)}" alt="Admin" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.35)"><div style="min-width:0"><div style="font-size:10px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(item.authorName||'SSLG Admin')}</div><div style="font-size:8px;opacity:.68;margin-top:2px">SSLG Administrator</div></div></div>`:''}<div class="news-meta">${escapeHtml(item.date)}</div><div class="news-title">${escapeHtml(item.title)}</div><div class="news-excerpt">${escapeHtml(item.excerpt)}</div><div class="card-flags">${item.official?'<span class="card-flag">✅ OFFICIAL</span>':''}${item.pinned?'<span class="card-flag">📌 PINNED</span>':''}</div><div class="card-buttons"><button class="read-btn" onclick="openNews('${escapeHtml(item.id)}')">Read More</button>${item.allowSubmissions?`<button class="submit-entry-btn" onclick="openSubmissionForm('${escapeHtml(item.id)}')">📝 Submit Entry</button>`:''}</div>${adminMode?`<div class="card-admin-actions"><button onclick="editPost('${escapeHtml(item.id)}')">✏️ Edit</button><button class="admin-submissions-btn" onclick="openSubmissions('${escapeHtml(item.id)}')">📥 Submissions</button><button onclick="togglePinned('${escapeHtml(item.id)}')">${item.pinned?'📍 Unpin':'📌 Pin'}</button><button onclick="toggleOfficial('${escapeHtml(item.id)}')">${item.official?'✅ Unmark':'🏷️ Official'}</button><button onclick="toggleHidden('${escapeHtml(item.id)}')">${item.hidden?'👁️ Unhide':'🙈 Hide'}</button><button onclick="changeVisibility('${escapeHtml(item.id)}')">🔐 Visibility</button><button class="danger" onclick="deletePost('${escapeHtml(item.id)}')">🗑️ Delete</button></div>`:''}</div></article>`).join('');
 }
 window.openNews=function(id){const item=mergedNews.find(x=>String(x.id)===String(id)&&!x.deleted);if(!item)return;$('modalTitle').textContent=item.title;$('modalDate').textContent=item.date;$('modalBody').textContent=item.body;const flags=[];if(item.official)flags.push('✅ OFFICIAL ANNOUNCEMENT');if(item.pinned)flags.push('📌 PINNED');if(item.hidden)flags.push('🙈 HIDDEN');if(item.allowSubmissions)flags.push('📝 SUBMISSIONS OPEN');if(item.visibility!=='public')flags.push('🔒 '+item.visibility.toUpperCase());$('modalFlags').innerHTML=flags.map(x=>`<span class="card-flag">${escapeHtml(x)}</span>`).join('');$('newsModal').classList.add('show')};
 $('closeNews').onclick=()=>$('newsModal').classList.remove('show');
@@ -925,7 +926,7 @@ function renderAdmin(){
  if(!adminMode){$('adminPostBar').classList.remove('show');$('adminPanel').style.display='none';$('adminPanel').classList.add('admin-panel-collapsed');return;}
  $('adminPostBar').classList.add('show');
  $('adminPanel').style.display='block';
- const html=sortNews(mergedNews.filter(x=>!x.deleted)).map(item=>`<div class="admin-row"><div class="admin-row-info"><div class="admin-row-title">${escapeHtml(item.title)}</div><div class="admin-row-meta">${escapeHtml(item.tag)} • ${escapeHtml(item.visibility)} ${item.allowSubmissions?'• submissions open':''} ${item.hidden?'• hidden':''} ${item.pinned?'• pinned':''} ${item.official?'• official':''}</div></div><div class="admin-row-actions"><button class="admin-action" onclick="editPost('${escapeHtml(item.id)}')">✏️ Edit</button>${item.allowSubmissions?`<button class="admin-submissions-btn" onclick="openSubmissions('${escapeHtml(item.id)}')">📥 Submissions</button>`:''}<button class="admin-action" onclick="toggleHidden('${escapeHtml(item.id)}')">${item.hidden?'👁️ Unhide':'🙈 Hide'}</button><button class="admin-action" onclick="togglePinned('${escapeHtml(item.id)}')">${item.pinned?'📍 Unpin':'📌 Pin'}</button><button class="admin-action" onclick="toggleOfficial('${escapeHtml(item.id)}')">${item.official?'✅ Unmark':'🏷️ Official'}</button><button class="admin-action" onclick="changeVisibility('${escapeHtml(item.id)}')">🔐 Visibility</button><button class="admin-action danger" onclick="deletePost('${escapeHtml(item.id)}')">🗑️ Delete</button></div></div>`).join('');
+ const html=sortNews(mergedNews.filter(x=>!x.deleted)).map(item=>`<div class="admin-row"><div class="admin-row-info"><div class="admin-row-title">${escapeHtml(item.title)}</div><div class="admin-row-meta">${escapeHtml(item.tag)} • ${escapeHtml(item.visibility)} ${item.allowSubmissions?'• submissions open':''} ${item.hidden?'• hidden':''} ${item.pinned?'• pinned':''} ${item.official?'• official':''}</div></div><div class="admin-row-actions"><button class="admin-action" onclick="editPost('${escapeHtml(item.id)}')">✏️ Edit</button><button class="admin-submissions-btn" onclick="openSubmissions('${escapeHtml(item.id)}')">📥 Submissions</button><button class="admin-action" onclick="toggleHidden('${escapeHtml(item.id)}')">${item.hidden?'👁️ Unhide':'🙈 Hide'}</button><button class="admin-action" onclick="togglePinned('${escapeHtml(item.id)}')">${item.pinned?'📍 Unpin':'📌 Pin'}</button><button class="admin-action" onclick="toggleOfficial('${escapeHtml(item.id)}')">${item.official?'✅ Unmark':'🏷️ Official'}</button><button class="admin-action" onclick="changeVisibility('${escapeHtml(item.id)}')">🔐 Visibility</button><button class="admin-action danger" onclick="deletePost('${escapeHtml(item.id)}')">🗑️ Delete</button></div></div>`).join('');
  $('adminList').innerHTML=html||'<div class="empty"><div>🗂️</div><p>No posts to manage.</p></div>';
 }
 $('managePostsBtn').addEventListener('click',()=>{
@@ -934,6 +935,34 @@ $('managePostsBtn').addEventListener('click',()=>{
  panel.classList.toggle('admin-panel-collapsed',!hidden);
  if(!hidden) return;
  setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'start'}),40);
+});
+$('viewAllSubmissionsBtn').addEventListener('click',()=>{
+ if(!adminMode || !window.loggedUser){
+   showAppNotice('Admin access required','Only authorized admins can view student submissions.','error');
+   return;
+ }
+
+ const frameUrl=GOOGLE_SHEET_WEB_APP_URL+'?action=admin&postTitle='+encodeURIComponent('All Student Submissions')+'&_='+Date.now();
+ const list=$('submissionsList');
+ list.innerHTML='';
+
+ const frame=document.createElement('iframe');
+ frame.src=frameUrl;
+ frame.title='All student submissions';
+ frame.loading='eager';
+ frame.referrerPolicy='no-referrer';
+ frame.style.cssText='width:100%;height:62vh;min-height:480px;border:0;border-radius:14px;background:#f7faff;display:block;';
+
+ const loading=document.createElement('div');
+ loading.className='submission-empty';
+ loading.textContent='Loading submissions...';
+ frame.addEventListener('load',()=>{try{loading.remove();}catch{}},{once:true});
+
+ list.appendChild(loading);
+ list.appendChild(frame);
+ $('submissionsSubtitle').textContent='All student entries saved in the Google Spreadsheet';
+ $('submissionsOverlay').classList.add('show');
+ $('submissionsOverlay').setAttribute('aria-hidden','false');
 });
 
 
@@ -1246,10 +1275,6 @@ window.openSubmissions=function(postId){
   }
 
   const post=postById(postId);
-  if(!post || !post.allowSubmissions){
-    showAppNotice('Submissions are closed','This news post does not currently accept student submissions.','warning');
-    return;
-  }
 
   const frameUrl=GOOGLE_SHEET_WEB_APP_URL +
     '?action=admin&postTitle=' + encodeURIComponent(post.title||'Student Submissions') +
