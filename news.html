@@ -115,6 +115,35 @@ body{padding-bottom:82px;overflow-x:hidden}
 .nav-item div{font-size:19px}
 .nav-item.active div{font-size:22px}
 }.nav-item div{font-size:19px}.nav-item.active div{font-size:22px}.hero h2{font-size:20px}.news-title{font-size:15px}}
+
+/* Publishing animation */
+.publish-overlay{display:none;position:fixed;inset:0;z-index:20000;background:rgba(0,18,60,.64);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px}
+.publish-overlay.show{display:flex}
+.publish-card{width:min(360px,92vw);background:rgba(255,255,255,.97);color:#173a86;border-radius:26px;padding:28px 24px;text-align:center;box-shadow:0 28px 90px rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.7)}
+.rocket-stage{height:108px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;margin-bottom:8px}
+.rocket{font-size:58px;filter:drop-shadow(0 10px 12px rgba(0,0,0,.14));animation:rocketFly 1.4s cubic-bezier(.2,.75,.25,1) infinite}
+.rocket-glow{position:absolute;width:72px;height:72px;border-radius:50%;background:rgba(255,217,61,.28);filter:blur(10px);animation:rocketGlow 1.25s ease-in-out infinite}
+.publish-card h3{font-size:20px;margin-bottom:6px;color:#00296B}
+.publish-card p{font-size:12px;color:#66779f;line-height:1.55}
+.publish-dots{display:flex;justify-content:center;gap:6px;margin-top:13px}
+.publish-dot{width:7px;height:7px;border-radius:50%;background:#003DA5;animation:dotPulse 1s ease-in-out infinite}
+.publish-dot:nth-child(2){animation-delay:.16s}.publish-dot:nth-child(3){animation-delay:.32s}
+.success-toast{position:fixed;top:22px;left:50%;transform:translate(-50%,-24px);z-index:21000;display:flex;align-items:center;gap:10px;min-width:min(420px,92vw);max-width:92vw;padding:14px 18px;border-radius:16px;background:rgba(255,255,255,.97);color:#173a86;box-shadow:0 20px 55px rgba(0,0,0,.28);opacity:0;pointer-events:none}
+.success-toast.show{animation:toastIn .28s ease forwards}
+.success-icon{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#e4f8ea;color:#1d7b42;font-weight:900;font-size:18px;flex:0 0 34px}
+.success-copy{min-width:0}.success-copy strong{display:block;font-size:13px;color:#00306f}.success-copy span{display:block;font-size:10px;color:#6b7897;margin-top:2px}
+.publish-btn-loading{opacity:.75;cursor:wait!important}
+@keyframes rocketFly{0%{transform:translateY(26px) rotate(-10deg) scale(.92);opacity:.45}35%{transform:translateY(-2px) rotate(-6deg) scale(1)}70%{transform:translate(10px,-34px) rotate(-2deg) scale(1.02);opacity:1}100%{transform:translate(22px,-92px) rotate(3deg) scale(.82);opacity:0}}
+@keyframes rocketGlow{0%,100%{transform:scale(.72);opacity:.35}50%{transform:scale(1.05);opacity:.75}}
+@keyframes dotPulse{0%,100%{transform:scale(.7);opacity:.35}50%{transform:scale(1);opacity:1}}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,-24px)}to{opacity:1;transform:translate(-50%,0)}}
+@media(max-width:768px){
+  .publish-card{width:min(340px,94vw);padding:24px 19px;border-radius:22px}
+  .rocket-stage{height:96px}.rocket{font-size:50px}
+  .publish-card h3{font-size:18px}.publish-card p{font-size:11px}
+  .success-toast{top:12px;padding:12px 14px;border-radius:14px}
+}
+
 </style>
 </head>
 <body>
@@ -186,7 +215,6 @@ body{padding-bottom:82px;overflow-x:hidden}
   <button class="close-btn" id="closePostNews">✕</button>
   <h3>📰 Post News</h3>
   <div class="modal-date">Only authorized admin accounts can publish news.</div>
-  <div id="publishIdentity" style="font-size:10px;color:#6b7897;background:#f5f8ff;border:1px solid #e2eaf8;padding:8px 10px;border-radius:10px;margin-bottom:12px;text-align:left">Checking admin account…</div>
   <div class="form-grid">
     <div class="field full"><label>Title</label><input id="newTitle" maxlength="120" placeholder="Enter the news title"></div>
     <div class="field"><label>Category</label><select id="newType"><option value="announcement">Announcement</option><option value="events">Events</option><option value="student">Student Life</option></select></div>
@@ -220,13 +248,32 @@ body{padding-bottom:82px;overflow-x:hidden}
   <div class="admin-small">Delete is separate and permanently removes the Firestore override for this post.</div>
 </div></div>
 
+
+<div id="publishOverlay" class="publish-overlay" aria-hidden="true">
+  <div class="publish-card" role="status" aria-live="polite">
+    <div class="rocket-stage">
+      <div class="rocket-glow"></div>
+      <div class="rocket">🚀</div>
+    </div>
+    <h3>Publishing your news...</h3>
+    <p>Your announcement is being saved securely. Please wait a moment.</p>
+    <div class="publish-dots"><span class="publish-dot"></span><span class="publish-dot"></span><span class="publish-dot"></span></div>
+  </div>
+</div>
+<div id="successToast" class="success-toast" role="status" aria-live="polite">
+  <div class="success-icon">✓</div>
+  <div class="success-copy">
+    <strong>The post has been published!</strong>
+    <span>Your news is now live on CATHS-MAIN News.</span>
+  </div>
+</div>
+
 <script>
 const NEWS=[];
 let currentFilter='all';
 let mergedNews=[...NEWS];
 let adminMode=false;
 let editingPostId=null;
-let loggedUser=null;
 const $=id=>document.getElementById(id);
 function escapeHtml(text){return String(text??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
 function decoratePost(base,override){
@@ -285,34 +332,71 @@ window.togglePinned=async function(id){const p=postById(id);if(!p)return;await w
 window.toggleOfficial=async function(id){const p=postById(id);if(!p)return;await window.savePostOverride(id,{official:!p.official});};
 window.changeVisibility=async function(id){const p=postById(id);if(!p)return;const next=prompt('Enter visibility: public, friends, or onlyMe',p.visibility||'public');if(next===null)return;if(!['public','friends','onlyMe'].includes(next)){alert('Invalid visibility. Use public, friends, or onlyMe.');return;}await window.savePostOverride(id,{visibility:next});};
 window.deletePost=async function(id){const p=postById(id);if(!p)return;if(!confirm(`Delete "${p.title}"? This removes it from the news page.`))return;await window.savePostOverride(id,{deleted:true,hidden:true});};
-$('publishPostNews').addEventListener('click',async()=>{try{
- if(!loggedUser||!adminMode){alert('Admin access required.');return;}
- const payload={
-   title:$('newTitle').value.trim(),
-   type:$('newType').value,
-   icon:$('newIcon').value.trim()||'📰',
-   tag:$('newTag').value.trim()||'News',
-   date:$('newDate').value.trim()||'School Update',
-   excerpt:$('newExcerpt').value.trim(),
-   body:$('newBody').value.trim(),
-   visibility:$('newVisibility').value,
-   hidden:false,
-   pinned:false,
-   official:false,
-   deleted:false
- };
- if(!payload.title||!payload.excerpt||!payload.body){alert('Please complete the title, excerpt, and full body.');return;}
- const id='custom_'+loggedUser.uid+'_'+Date.now();
- const ok=await window.createNewsPost(id,payload);
- if(ok){$('postNewsModal').classList.remove('show');} 
-}}catch(err){
-  console.error('Publish click handler crashed:',err);
-  const overlay=$('publishOverlay');
-  if(overlay){overlay.classList.remove('show');overlay.setAttribute('aria-hidden','true');}
+$('publishPostNews').addEventListener('click',async()=>{
+  if(!window.loggedUser||!adminMode){
+    alert('Admin access required.');
+    return;
+  }
+
+  const payload={
+    title:$('newTitle').value.trim(),
+    type:$('newType').value,
+    icon:$('newIcon').value.trim()||'📰',
+    tag:$('newTag').value.trim()||'News',
+    date:$('newDate').value.trim()||'School Update',
+    excerpt:$('newExcerpt').value.trim(),
+    body:$('newBody').value.trim(),
+    visibility:$('newVisibility').value,
+    hidden:false,
+    pinned:false,
+    official:false,
+    deleted:false
+  };
+
+  if(!payload.title||!payload.excerpt||!payload.body){
+    alert('Please complete the title, excerpt, and full body.');
+    return;
+  }
+
   const publishBtn=$('publishPostNews');
-  if(publishBtn){publishBtn.disabled=false;publishBtn.classList.remove('publish-btn-loading');publishBtn.textContent='🚀 Publish News';}
-  alert('Publish button error:\n\n'+(err?.message||String(err)));
-}});
+  const overlay=$('publishOverlay');
+  const toast=$('successToast');
+
+  publishBtn.disabled=true;
+  publishBtn.classList.add('publish-btn-loading');
+  publishBtn.textContent='Publishing...';
+  overlay.classList.add('show');
+  overlay.setAttribute('aria-hidden','false');
+
+  const id='custom_'+window.loggedUser.uid+'_'+Date.now();
+
+  const ok=await window.createNewsPost(id,payload);
+
+  if(ok){
+    $('postNewsModal').classList.remove('show');
+    overlay.classList.remove('show');
+    overlay.setAttribute('aria-hidden','true');
+
+    publishBtn.disabled=false;
+    publishBtn.classList.remove('publish-btn-loading');
+    publishBtn.textContent='🚀 Publish News';
+
+    toast.classList.remove('show');
+    requestAnimationFrame(()=>toast.classList.add('show'));
+    setTimeout(()=>toast.classList.remove('show'),3200);
+
+    $('newTitle').value='';
+    $('newExcerpt').value='';
+    $('newBody').value='';
+  }else{
+    overlay.classList.remove('show');
+    overlay.setAttribute('aria-hidden','true');
+
+    publishBtn.disabled=false;
+    publishBtn.classList.remove('publish-btn-loading');
+    publishBtn.textContent='🚀 Publish News';
+  }
+});
 
 $('closeAdmin').onclick=()=>$('adminModal').classList.remove('show');$('adminCancel').onclick=()=>$('adminModal').classList.remove('show');$('adminModal').addEventListener('click',e=>{if(e.target===$('adminModal'))$('adminModal').classList.remove('show')});
 $('adminSave').addEventListener('click',async()=>{if(!editingPostId)return;const payload={title:$('adminTitle').value.trim(),type:$('adminType').value,icon:$('adminIcon').value.trim()||'📰',tag:$('adminTag').value.trim()||'News',date:$('adminDate').value.trim()||'School Update',excerpt:$('adminExcerpt').value.trim(),body:$('adminBody').value.trim(),visibility:$('adminVisibility').value};if(!payload.title||!payload.excerpt||!payload.body){alert('Please complete the title, excerpt, and full body.');return;}await window.savePostOverride(editingPostId,payload);$('adminModal').classList.remove('show');});
@@ -325,7 +409,7 @@ import {getFirestore,collection,doc,getDoc,getDocs,setDoc,deleteDoc,serverTimest
 const firebaseConfig={apiKey:'AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc',authDomain:'caths-page.firebaseapp.com',projectId:'caths-page',storageBucket:'caths-page.firebasestorage.app',messagingSenderId:'945498022620',appId:'1:945498022620:web:71aeb4cd2472e061aeca19',measurementId:'G-CBG1YSK13G'};
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);const provider=new GoogleAuthProvider();
 setPersistence(auth,browserLocalPersistence).catch(err=>{console.error('Auth persistence setup failed:',err);});
-const btn=$('headerLoginBtn'),menu=$('profileMenu');
+const btn=$('headerLoginBtn'),menu=$('profileMenu');window.window.loggedUser=null;
 const VERIFIED_ADMIN_EMAILS=new Set([
   'reyvengarcia15@gmail.com',
   'reyvenbermudo091@gmail.com',
@@ -346,10 +430,10 @@ const VERIFIED_ADMIN_EMAILS=new Set([
   'vhergelnarciso@gmail.com',
   'sicatmadisson487@gmail.com'
 ].map(e=>e.toLowerCase()));
-function isVerifiedAdminEmail(email){return !!email && VERIFIED_ADMIN_EMAILS.has(String(email).trim().toLowerCase());}
+function isVerifiedAdminEmail(email){return VERIFIED_ADMIN_EMAILS.has(String(email||'').trim().toLowerCase());}
 
 function closeMenu(){if(!menu.classList.contains('open'))return;menu.classList.remove('open');menu.classList.add('closing');menu.addEventListener('animationend',function h(e){if(e.animationName!=='profileOut')return;menu.style.display='none';menu.classList.remove('closing');menu.removeEventListener('animationend',h)})}
-btn.addEventListener('click',()=>{if(!loggedUser){googleLogin();return}if(menu.classList.contains('open'))closeMenu();else{menu.style.display='block';requestAnimationFrame(()=>menu.classList.add('open'))}});
+btn.addEventListener('click',()=>{if(!window.loggedUser){googleLogin();return}if(menu.classList.contains('open'))closeMenu();else{menu.style.display='block';requestAnimationFrame(()=>menu.classList.add('open'))}});
 window.googleLogin=async function(){try{await signInWithPopup(auth,provider)}catch(e){console.error(e);alert('Google login failed: '+e.message)}};
 $('logoutBtn').addEventListener('click',async()=>{try{await signOut(auth);location.reload()}catch(e){alert('Logout failed: '+e.message)}});
 document.addEventListener('click',e=>{if(menu.classList.contains('open')&&!document.querySelector('.header-right').contains(e.target))closeMenu()});
@@ -367,9 +451,9 @@ async function loadNewsOverrides(){
   }catch(e){console.error('News overrides load failed:',e);mergedNews=NEWS.map(base=>decoratePost(base,{}));renderNews();renderAdmin();}
 }
 window.savePostOverride=async function(id,changes){
-  if(!loggedUser||!adminMode){alert('Admin access required.');return false;}
+  if(!window.loggedUser||!adminMode){alert('Admin access required.');return false;}
   try{
-    const clean={...changes,updatedAt:serverTimestamp(),updatedBy:loggedUser.uid};
+    const clean={...changes,updatedAt:serverTimestamp(),updatedBy:window.loggedUser.uid};
     await setDoc(doc(db,'newsPosts',String(id)),clean,{merge:true});
     const base=NEWS.find(x=>String(x.id)===String(id))||{id:String(id),type:'announcement',icon:'📰',tag:'News',date:'School Update',title:'Untitled News',excerpt:'',body:''};
     const index=mergedNews.findIndex(x=>String(x.id)===String(id));
@@ -377,28 +461,16 @@ window.savePostOverride=async function(id,changes){
     if(index>=0)mergedNews[index]=next;else mergedNews.push(next);
     renderNews();renderAdmin();
     return true;
-  }catch(e){
-    console.error('Admin save failed:',e);
-    const code=e?.code||'unknown-error';
-    const message=e?.message||String(e);
-    alert('Admin save failed.\\n\\nCode: '+code+'\\n\\n'+message);
-    return false;
-  }
+  }catch(e){console.error('Admin save failed:',e);alert('Save failed: '+e.message);return false;}
 };
 window.createNewsPost=async function(id,payload){
- if(!loggedUser||!adminMode){alert('Admin access required.');return false;}
+ if(!window.loggedUser||!adminMode){alert('Admin access required.');return false;}
  try{
-   await setDoc(doc(db,'newsPosts',String(id)),{id:String(id),...payload,authorUid:loggedUser.uid,createdAt:serverTimestamp(),createdBy:loggedUser.uid,updatedAt:serverTimestamp(),updatedBy:loggedUser.uid},{merge:true});
+   await setDoc(doc(db,'newsPosts',String(id)),{id:String(id),...payload,authorUid:window.loggedUser.uid,createdAt:serverTimestamp(),createdBy:window.loggedUser.uid,updatedAt:serverTimestamp(),updatedBy:window.loggedUser.uid},{merge:true});
    mergedNews.push(decoratePost({id:String(id),type:'announcement',icon:'📰',tag:'News',date:'School Update',title:'Untitled News',excerpt:'',body:''},payload));
    renderNews();renderAdmin();
    return true;
- }catch(e){
-   console.error('Create news failed:',e);
-   const code=e?.code||'unknown-error';
-   const message=e?.message||String(e);
-   alert('PUBLISH FAILED\\n\\nCode: '+code+'\\n\\n'+message);
-   return false;
- }
+ }catch(e){console.error('Create news failed:',e);alert('Publish failed: '+e.message);return false;}
 };
 
 async function setupAdmin(user){
@@ -406,16 +478,10 @@ async function setupAdmin(user){
   if(!user){renderAdmin();return;}
   const profile=await getUserProfile(user);
   adminMode=profile.role==='admin' || isVerifiedAdminEmail(user.email);
-  const identity=$('publishIdentity');
-  if(identity){
-    identity.textContent = adminMode
-      ? '✅ Authorized admin: '+(user.email||'unknown account')
-      : '⚠️ Not authorized for admin publishing';
-  }
   renderAdmin();
 }
 
-onAuthStateChanged(auth,async user=>{loggedUser=user;if(user){btn.innerHTML=`${user.photoURL?`<img src="${user.photoURL}" style="width:24px;height:24px;border-radius:50%;object-fit:cover">`:'👤'} <span>${escapeHtml(user.displayName||'User')}</span> ▼`;if(user.photoURL){$('profilePhoto').src=user.photoURL;$('profileNavPhoto').innerHTML=`<img src="${user.photoURL}" alt="Profile">`}else{$('profilePhoto').src='';$('profileNavPhoto').textContent='👤'}$('profileName').textContent=user.displayName||'User';$('profileEmail').textContent=user.email||''}else{btn.innerHTML='👤 <span>Login</span>'; $('profileNavPhoto').textContent='👤';}await setupAdmin(user);await loadNewsOverrides();});
+onAuthStateChanged(auth,async user=>{window.loggedUser=user;if(user){btn.innerHTML=`${user.photoURL?`<img src="${user.photoURL}" style="width:24px;height:24px;border-radius:50%;object-fit:cover">`:'👤'} <span>${escapeHtml(user.displayName||'User')}</span> ▼`;if(user.photoURL){$('profilePhoto').src=user.photoURL;$('profileNavPhoto').innerHTML=`<img src="${user.photoURL}" alt="Profile">`}else{$('profilePhoto').src='';$('profileNavPhoto').textContent='👤'}$('profileName').textContent=user.displayName||'User';$('profileEmail').textContent=user.email||''}else{btn.innerHTML='👤 <span>Login</span>'; $('profileNavPhoto').textContent='👤';}await setupAdmin(user);await loadNewsOverrides();});
 </script>
 </body>
 </html>
