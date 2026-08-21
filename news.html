@@ -37,7 +37,7 @@ body{min-height:100vh;color:white;background:linear-gradient(135deg,#00296B,#003
 .profile-info{display:flex;align-items:center;gap:12px}.profile-info img{width:50px;height:50px;border-radius:50%;object-fit:cover;background:#eef4ff}.profile-details{min-width:0;display:flex;flex-direction:column;overflow:hidden}.profile-details strong,.profile-details small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.profile-details strong{font-size:15px}.profile-details small{font-size:11px;color:#666}.divider{height:1px;background:#ddd;margin:12px 0}.profile-nav{display:flex;flex-direction:column;gap:6px}.profile-nav-item{display:flex;align-items:center;gap:12px;width:100%;padding:11px 12px;border-radius:13px;text-decoration:none;color:#00296B;font-size:13px;font-weight:600;transition:.2s}.profile-nav-item:hover{background:#eef4ff;transform:translateX(3px)}.profile-nav-icon{width:30px;height:30px;border-radius:9px;background:#f0f4ff;display:flex;align-items:center;justify-content:center;font-size:17px}.logout-button{width:100%;height:50px;border:none;border-radius:11px;background:#00296B;color:#fff;font-weight:600;cursor:pointer}.logout-button:hover{background:#003DA5}
 @keyframes pop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}@keyframes profileIn{from{opacity:0;transform:translateY(-10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes profileOut{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(-8px) scale(.98)}}
 
-.admin-card{margin-top:18px;background:rgba(255,255,255,.12);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:18px;box-shadow:0 14px 34px rgba(0,0,0,.14)}
+.admin-post-bar{display:none;align-items:center;justify-content:flex-end;gap:8px;margin:0 0 14px;flex-wrap:wrap}.admin-post-bar.show{display:flex}.post-news-btn,.manage-posts-btn{border:none;padding:11px 14px;border-radius:12px;font-weight:800;cursor:pointer;font-size:12px;transition:.2s;box-shadow:0 8px 20px rgba(0,0,0,.12)}.post-news-btn{background:var(--yellow);color:var(--dark)}.manage-posts-btn{background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.12)}.post-news-btn:hover,.manage-posts-btn:hover{transform:translateY(-1px);filter:brightness(1.03)}.admin-panel-collapsed{display:none!important}.card-admin-actions{display:flex;gap:6px;justify-content:flex-end;margin:10px 0 0;flex-wrap:wrap}.card-admin-actions button{border:none;background:rgba(0,41,107,.72);color:#fff;border-radius:9px;padding:7px 9px;font-size:10px;font-weight:800;cursor:pointer}.card-admin-actions button:hover{background:rgba(0,61,165,.88)}.card-admin-actions .danger{background:rgba(170,40,40,.78)}.admin-source{font-size:9px;opacity:.62;margin-top:5px}.post-modal-box{max-width:760px}.admin-card{margin-top:18px;background:rgba(255,255,255,.12);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:18px;box-shadow:0 14px 34px rgba(0,0,0,.14)}
 .admin-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.admin-head h3{font-size:18px}.admin-head p{font-size:11px;opacity:.78;margin-top:2px}.admin-badge{background:var(--yellow);color:var(--dark);padding:6px 10px;border-radius:999px;font-size:10px;font-weight:800}
 .admin-list{display:grid;gap:10px;margin-top:14px}.admin-row{display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.1);border-radius:15px;padding:11px}.admin-row-info{min-width:0}.admin-row-title{font-size:12px;font-weight:700}.admin-row-meta{font-size:10px;opacity:.72;margin-top:2px}.admin-row-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.admin-action{border:none;padding:7px 9px;border-radius:9px;background:rgba(255,255,255,.18);color:#fff;font-size:10px;font-weight:700;cursor:pointer}.admin-action:hover{background:rgba(255,255,255,.28)}.admin-action.danger{background:rgba(220,60,60,.28)}.admin-action.primary{background:var(--yellow);color:var(--dark)}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{display:flex;flex-direction:column;gap:5px}.field.full{grid-column:1/-1}.field label{font-size:10px;font-weight:700;color:#567}.field input,.field textarea,.field select{width:100%;border:1px solid #dce6fa;background:#f8fbff;color:#173a86;border-radius:11px;padding:10px 11px;outline:none;font-family:inherit;font-size:12px}.field textarea{min-height:110px;resize:vertical}.admin-form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}.admin-small{font-size:10px;color:#777;margin-top:7px}
@@ -135,7 +135,12 @@ body{padding-bottom:82px;overflow-x:hidden}
     </div>
   </div>
 
-  <section id="adminPanel" class="admin-card" style="display:none">
+  <div id="adminPostBar" class="admin-post-bar">
+    <button id="postNewsBtn" class="post-news-btn" type="button">➕ Post News</button>
+    <button id="managePostsBtn" class="manage-posts-btn" type="button">🛠️ Manage Posts</button>
+  </div>
+
+  <section id="adminPanel" class="admin-card admin-panel-collapsed" style="display:none">
     <div class="admin-head">
       <div><h3>🛠️ Admin Post Management</h3><p>Manage news visibility, status, content, and moderation.</p></div>
       <span class="admin-badge">ADMIN</span>
@@ -155,6 +160,24 @@ body{padding-bottom:82px;overflow-x:hidden}
 </nav>
 
 <div id="newsModal" class="modal"><div class="modal-box"><button class="close-btn" id="closeNews">✕</button><h3 id="modalTitle"></h3><div id="modalDate" class="modal-date"></div><div id="modalFlags" class="card-flags"></div><p id="modalBody"></p></div></div>
+
+<div id="postNewsModal" class="modal"><div class="modal-box post-modal-box">
+  <button class="close-btn" id="closePostNews">✕</button>
+  <h3>📰 Post News</h3>
+  <div class="modal-date">Only authorized admin accounts can publish news.</div>
+  <div class="form-grid">
+    <div class="field full"><label>Title</label><input id="newTitle" maxlength="120" placeholder="Enter the news title"></div>
+    <div class="field"><label>Category</label><select id="newType"><option value="announcement">Announcement</option><option value="events">Events</option><option value="student">Student Life</option></select></div>
+    <div class="field"><label>Icon</label><input id="newIcon" maxlength="4" value="📰"></div>
+    <div class="field"><label>Tag</label><input id="newTag" maxlength="40" value="Announcement"></div>
+    <div class="field"><label>Date / Meta</label><input id="newDate" maxlength="80" placeholder="School Update"></div>
+    <div class="field full"><label>Excerpt</label><textarea id="newExcerpt" maxlength="500" placeholder="Short preview shown on the card"></textarea></div>
+    <div class="field full"><label>Full Body</label><textarea id="newBody" maxlength="10000" placeholder="Full news content..."></textarea></div>
+    <div class="field"><label>Visibility</label><select id="newVisibility"><option value="public">Public</option><option value="friends">Friends</option><option value="onlyMe">Only Me</option></select></div>
+    <div class="field"><label>Status</label><div class="status-chips"><span class="status-chip success">New post</span><span class="status-chip">Visible</span></div></div>
+  </div>
+  <div class="admin-form-actions"><button id="cancelPostNews" class="admin-action" type="button">Cancel</button><button id="publishPostNews" class="admin-action primary" type="button">🚀 Publish News</button></div>
+</div></div>
 
 <div id="adminModal" class="modal"><div class="modal-box admin-modal-box">
   <button class="close-btn" id="closeAdmin">✕</button>
@@ -198,19 +221,45 @@ function renderNews(){
  const term=$('searchInput').value.trim().toLowerCase();
  const list=sortNews(mergedNews.filter(item=>!item.deleted && !item.hidden && (item.visibility==='public'||adminMode) && (currentFilter==='all'||item.type===currentFilter) && (!term||`${item.title} ${item.excerpt} ${item.tag} ${item.date}`.toLowerCase().includes(term))));
  if(!list.length){$('newsGrid').innerHTML='<div class="empty" style="grid-column:1/-1"><div>📰</div><p>No news found.</p></div>';return;}
- $('newsGrid').innerHTML=list.map(item=>`<article class="news-card"><div class="news-banner"><div class="news-icon">${escapeHtml(item.icon)}</div><div class="tag">${escapeHtml(item.tag)}</div></div><div class="news-body"><div class="news-meta">${escapeHtml(item.date)}</div><div class="news-title">${escapeHtml(item.title)}</div><div class="news-excerpt">${escapeHtml(item.excerpt)}</div><div class="card-flags">${item.official?'<span class="card-flag">✅ OFFICIAL</span>':''}${item.pinned?'<span class="card-flag">📌 PINNED</span>':''}</div><button class="read-btn" onclick="openNews('${escapeHtml(item.id)}')">Read More</button></div></article>`).join('');
+ $('newsGrid').innerHTML=list.map(item=>`<article class="news-card"><div class="news-banner"><div class="news-icon">${escapeHtml(item.icon)}</div><div class="tag">${escapeHtml(item.tag)}</div></div><div class="news-body"><div class="news-meta">${escapeHtml(item.date)}</div><div class="news-title">${escapeHtml(item.title)}</div><div class="news-excerpt">${escapeHtml(item.excerpt)}</div><div class="card-flags">${item.official?'<span class="card-flag">✅ OFFICIAL</span>':''}${item.pinned?'<span class="card-flag">📌 PINNED</span>':''}</div><button class="read-btn" onclick="openNews('${escapeHtml(item.id)}')">Read More</button>${adminMode?`<div class="card-admin-actions"><button onclick="editPost('${escapeHtml(item.id)}')">✏️ Edit</button><button onclick="togglePinned('${escapeHtml(item.id)}')">${item.pinned?'📍 Unpin':'📌 Pin'}</button><button onclick="toggleOfficial('${escapeHtml(item.id)}')">${item.official?'✅ Unmark':'🏷️ Official'}</button><button onclick="toggleHidden('${escapeHtml(item.id)}')">${item.hidden?'👁️ Unhide':'🙈 Hide'}</button><button onclick="changeVisibility('${escapeHtml(item.id)}')">🔐 Visibility</button><button class="danger" onclick="deletePost('${escapeHtml(item.id)}')">🗑️ Delete</button></div>`:''}</div></article>`).join('');
 }
 window.openNews=function(id){const item=mergedNews.find(x=>String(x.id)===String(id)&&!x.deleted);if(!item)return;$('modalTitle').textContent=item.title;$('modalDate').textContent=item.date;$('modalBody').textContent=item.body;const flags=[];if(item.official)flags.push('✅ OFFICIAL ANNOUNCEMENT');if(item.pinned)flags.push('📌 PINNED');if(item.hidden)flags.push('🙈 HIDDEN');if(item.visibility!=='public')flags.push('🔒 '+item.visibility.toUpperCase());$('modalFlags').innerHTML=flags.map(x=>`<span class="card-flag">${escapeHtml(x)}</span>`).join('');$('newsModal').classList.add('show')};
 $('closeNews').onclick=()=>$('newsModal').classList.remove('show');
 $('newsModal').addEventListener('click',e=>{if(e.target===$('newsModal'))$('newsModal').classList.remove('show')});
 $('searchInput').addEventListener('input',renderNews);
 document.querySelectorAll('.filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(b=>b.classList.remove('active'));btn.classList.add('active');currentFilter=btn.dataset.filter;renderNews()}));
+function openPostNewsModal(){
+ if(!adminMode){alert('Admin access required.');return;}
+ $('newTitle').value='';
+ $('newType').value='announcement';
+ $('newIcon').value='📰';
+ $('newTag').value='Announcement';
+ $('newDate').value='School Update';
+ $('newExcerpt').value='';
+ $('newBody').value='';
+ $('newVisibility').value='public';
+ $('postNewsModal').classList.add('show');
+}
+window.openPostNewsModal=openPostNewsModal;
+$('postNewsBtn').addEventListener('click',openPostNewsModal);
+$('closePostNews').onclick=()=>$('postNewsModal').classList.remove('show');
+$('cancelPostNews').onclick=()=>$('postNewsModal').classList.remove('show');
+$('postNewsModal').addEventListener('click',e=>{if(e.target===$('postNewsModal'))$('postNewsModal').classList.remove('show')});
 function renderAdmin(){
- if(!adminMode){$('adminPanel').style.display='none';return;}
+ if(!adminMode){$('adminPostBar').classList.remove('show');$('adminPanel').style.display='none';$('adminPanel').classList.add('admin-panel-collapsed');return;}
+ $('adminPostBar').classList.add('show');
  $('adminPanel').style.display='block';
  const html=sortNews(mergedNews.filter(x=>!x.deleted)).map(item=>`<div class="admin-row"><div class="admin-row-info"><div class="admin-row-title">${escapeHtml(item.title)}</div><div class="admin-row-meta">${escapeHtml(item.tag)} • ${escapeHtml(item.visibility)} ${item.hidden?'• hidden':''} ${item.pinned?'• pinned':''} ${item.official?'• official':''}</div></div><div class="admin-row-actions"><button class="admin-action" onclick="editPost('${escapeHtml(item.id)}')">✏️ Edit</button><button class="admin-action" onclick="toggleHidden('${escapeHtml(item.id)}')">${item.hidden?'👁️ Unhide':'🙈 Hide'}</button><button class="admin-action" onclick="togglePinned('${escapeHtml(item.id)}')">${item.pinned?'📍 Unpin':'📌 Pin'}</button><button class="admin-action" onclick="toggleOfficial('${escapeHtml(item.id)}')">${item.official?'✅ Unmark':'🏷️ Official'}</button><button class="admin-action" onclick="changeVisibility('${escapeHtml(item.id)}')">🔐 Visibility</button><button class="admin-action danger" onclick="deletePost('${escapeHtml(item.id)}')">🗑️ Delete</button></div></div>`).join('');
  $('adminList').innerHTML=html||'<div class="empty"><div>🗂️</div><p>No posts to manage.</p></div>';
 }
+$('managePostsBtn').addEventListener('click',()=>{
+ const panel=$('adminPanel');
+ const hidden=panel.classList.contains('admin-panel-collapsed');
+ panel.classList.toggle('admin-panel-collapsed',!hidden);
+ if(!hidden) return;
+ setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'start'}),40);
+});
+
 function postById(id){return mergedNews.find(x=>String(x.id)===String(id));}
 window.editPost=function(id){const p=postById(id);if(!p)return;editingPostId=String(id);['adminTitle','adminType','adminIcon','adminTag','adminDate','adminExcerpt','adminBody','adminVisibility'].forEach(k=>$(k).value='');$('adminTitle').value=p.title;$('adminType').value=p.type;$('adminIcon').value=p.icon;$('adminTag').value=p.tag;$('adminDate').value=p.date;$('adminExcerpt').value=p.excerpt;$('adminBody').value=p.body;$('adminVisibility').value=p.visibility||'public';$('adminStatusHidden').textContent=p.hidden?'Hidden':'Visible';$('adminStatusHidden').className='status-chip '+(p.hidden?'warning':'success');$('adminStatusPinned').textContent=p.pinned?'Pinned':'Not pinned';$('adminStatusPinned').className='status-chip '+(p.pinned?'warning':'');$('adminStatusOfficial').textContent=p.official?'Official announcement':'Regular post';$('adminStatusOfficial').className='status-chip '+(p.official?'success':'');$('adminModal').classList.add('show');};
 window.toggleHidden=async function(id){const p=postById(id);if(!p)return;await window.savePostOverride(id,{hidden:!p.hidden});};
@@ -218,6 +267,28 @@ window.togglePinned=async function(id){const p=postById(id);if(!p)return;await w
 window.toggleOfficial=async function(id){const p=postById(id);if(!p)return;await window.savePostOverride(id,{official:!p.official});};
 window.changeVisibility=async function(id){const p=postById(id);if(!p)return;const next=prompt('Enter visibility: public, friends, or onlyMe',p.visibility||'public');if(next===null)return;if(!['public','friends','onlyMe'].includes(next)){alert('Invalid visibility. Use public, friends, or onlyMe.');return;}await window.savePostOverride(id,{visibility:next});};
 window.deletePost=async function(id){const p=postById(id);if(!p)return;if(!confirm(`Delete "${p.title}"? This removes it from the news page.`))return;await window.savePostOverride(id,{deleted:true,hidden:true});};
+$('publishPostNews').addEventListener('click',async()=>{
+ if(!loggedUser||!adminMode){alert('Admin access required.');return;}
+ const payload={
+   title:$('newTitle').value.trim(),
+   type:$('newType').value,
+   icon:$('newIcon').value.trim()||'📰',
+   tag:$('newTag').value.trim()||'News',
+   date:$('newDate').value.trim()||'School Update',
+   excerpt:$('newExcerpt').value.trim(),
+   body:$('newBody').value.trim(),
+   visibility:$('newVisibility').value,
+   hidden:false,
+   pinned:false,
+   official:false,
+   deleted:false
+ };
+ if(!payload.title||!payload.excerpt||!payload.body){alert('Please complete the title, excerpt, and full body.');return;}
+ const id='custom_'+loggedUser.uid+'_'+Date.now();
+ const ok=await window.createNewsPost(id,payload);
+ if(ok){$('postNewsModal').classList.remove('show');} 
+});
+
 $('closeAdmin').onclick=()=>$('adminModal').classList.remove('show');$('adminCancel').onclick=()=>$('adminModal').classList.remove('show');$('adminModal').addEventListener('click',e=>{if(e.target===$('adminModal'))$('adminModal').classList.remove('show')});
 $('adminSave').addEventListener('click',async()=>{if(!editingPostId)return;const payload={title:$('adminTitle').value.trim(),type:$('adminType').value,icon:$('adminIcon').value.trim()||'📰',tag:$('adminTag').value.trim()||'News',date:$('adminDate').value.trim()||'School Update',excerpt:$('adminExcerpt').value.trim(),body:$('adminBody').value.trim(),visibility:$('adminVisibility').value};if(!payload.title||!payload.excerpt||!payload.body){alert('Please complete the title, excerpt, and full body.');return;}await window.savePostOverride(editingPostId,payload);$('adminModal').classList.remove('show');});
 </script>
@@ -261,6 +332,16 @@ window.savePostOverride=async function(id,changes){
     return true;
   }catch(e){console.error('Admin save failed:',e);alert('Save failed: '+e.message);return false;}
 };
+window.createNewsPost=async function(id,payload){
+ if(!loggedUser||!adminMode){alert('Admin access required.');return false;}
+ try{
+   await setDoc(doc(db,'newsPosts',String(id)),{id:String(id),...payload,authorUid:loggedUser.uid,createdAt:serverTimestamp(),createdBy:loggedUser.uid,updatedAt:serverTimestamp(),updatedBy:loggedUser.uid},{merge:true});
+   mergedNews.push(decoratePost({id:String(id),type:'announcement',icon:'📰',tag:'News',date:'School Update',title:'Untitled News',excerpt:'',body:''},payload));
+   renderNews();renderAdmin();
+   return true;
+ }catch(e){console.error('Create news failed:',e);alert('Publish failed: '+e.message);return false;}
+};
+
 async function setupAdmin(user){
   adminMode=false;
   if(!user){renderAdmin();return;}
