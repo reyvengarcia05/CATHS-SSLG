@@ -857,7 +857,7 @@ body{padding-bottom:82px;overflow-x:hidden}
       </div>
     </div>
 
-    <div class="submission-note">Your submission will be saved securely and can be reviewed by authorized admins.</div>
+    <div class="submission-note">Your submission will be sent securely to the SSLG application spreadsheet and can be reviewed by authorized admins.</div>
 
     <div class="submission-actions">
       <button id="cancelSubmission" class="submission-btn submission-cancel" type="button">Cancel</button>
@@ -1190,7 +1190,11 @@ $('submitEntryBtn').addEventListener('click',async()=>{
   };
 
   try{
-    await window.saveStudentSubmission(null,payload);
+    const submitPromise=window.saveStudentSubmission(null,payload);
+    await Promise.race([
+      submitPromise,
+      new Promise((_,reject)=>setTimeout(()=>reject(new Error('Submission request timed out. Please check your connection and try again.')),6000))
+    ]);
 
     closeSubmissionForm();
     showAppNotice(
@@ -1612,27 +1616,15 @@ window.savePostOverride=async function(id,changes){
 
 const GOOGLE_SHEET_WEB_APP_URL='https://script.google.com/macros/s/AKfycbxWip-0Ybgszyvz89nMtfdLWU52aXCD7mrX5jTiNhjALgW1x1p-_d1QqT2lgG0bMMfu4w/exec';
 
+// Google Apps Script submission transport.
+// This deliberately does NOT wait for a CORS-readable response.
+// The browser posts the form to a hidden iframe and the UI is released
+// immediately after the browser accepts the request.
 function submitToGoogleSheet(params){
   return new Promise((resolve,reject)=>{
     try{
-      const body=new URLSearchParams();
-      Object.entries(params||{}).forEach(([key,value])=>{
-        body.append(key,String(value??''));
-      });
-
-      // sendBeacon is designed for reliable cross-origin fire-and-forget POSTs.
-      // It does not wait for a CORS-readable response, so the UI can never hang.
-      if(navigator.sendBeacon){
-        const ok=navigator.sendBeacon(GOOGLE_SHEET_WEB_APP_URL,body);
-        if(ok){
-          setTimeout(()=>resolve(true),250);
-          return;
-        }
-      }
-
-      // Fallback for browsers/environments where sendBeacon is unavailable or rejected.
       const iframe=document.createElement('iframe');
-      const iframeName='caths_sheet_submit_'+Date.now();
+      const iframeName='caths_sheet_submit_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);
       iframe.name=iframeName;
       iframe.style.display='none';
       document.body.appendChild(iframe);
@@ -1652,13 +1644,17 @@ function submitToGoogleSheet(params){
       });
 
       document.body.appendChild(form);
+
+      // Submit synchronously so the request is handed to the browser.
       form.submit();
 
+      // Never keep the submit button spinning while waiting for a
+      // cross-origin response we cannot read.
       setTimeout(()=>{
         form.remove();
         iframe.remove();
         resolve(true);
-      },500);
+      },800);
     }catch(err){
       reject(err);
     }
@@ -1691,10 +1687,10 @@ function loadGoogleSheetSubmissions(){
       if(settled)return;
       settled=true;
       cleanup();
-      reject(new Error('Unable to connect to the Google Spreadsheet. Make sure the Apps Script deployment is active.'));
+      reject(new Error('Unable to connect to the Google Spreadsheet. Make sure the Apps Script deployment is active and accessible to anyone.'));
     };
 
-    script.src=GOOGLE_SHEET_WEB_APP_URL+'?action=list&callback='+encodeURIComponent(callbackName);
+    script.src=GOOGLE_SHEET_WEB_APP_URL+'?action=list&callback='+encodeURIComponent(callbackName)+'&_='+Date.now();
     document.head.appendChild(script);
 
     setTimeout(()=>{
@@ -1724,9 +1720,8 @@ window.saveStudentSubmission=async function(_id,payload){
     throw new Error('Submissions are not enabled for this news post.');
   }
 
-  await submitToGoogleSheet({
+  const data={
     action:'submit',
-    submissionId:'SUB-'+Date.now()+'-'+Math.random().toString(36).slice(2,10),
     postId:targetPostId,
     postTitle:payload.postTitle||post.title||'',
     studentName:payload.submitterName||window.loggedUser.displayName||'Student',
@@ -1736,8 +1731,9 @@ window.saveStudentSubmission=async function(_id,payload){
     contactNumber:payload.contactNumber||'',
     details:payload.details||'',
     status:'pending'
-  });
+  };
 
+  await submitToGoogleSheet(data);
   return true;
 };
 
