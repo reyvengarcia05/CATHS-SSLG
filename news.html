@@ -1627,33 +1627,48 @@ function submitToGoogleSheet(params){
   });
 
   return new Promise((resolve,reject)=>{
-    const controller=new AbortController();
-    const timeout=setTimeout(()=>controller.abort(),15000);
+    try{
+      const id='caths_sheet_submit_'+Date.now()+'_'+Math.floor(Math.random()*100000);
+      const iframe=document.createElement('iframe');
+      iframe.name=id;
+      iframe.style.cssText='position:fixed;width:1px;height:1px;border:0;opacity:0;pointer-events:none;left:-9999px;top:-9999px;';
+      iframe.setAttribute('aria-hidden','true');
 
-    fetch(GOOGLE_SHEET_WEB_APP_URL,{
-      method:'POST',
-      mode:'no-cors',
-      cache:'no-store',
-      redirect:'follow',
-      signal:controller.signal,
-      headers:{
-        'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'
-      },
-      body:new URLSearchParams(cleanParams).toString()
-    })
-    .then(()=>{
-      clearTimeout(timeout);
-      resolve(true);
-    })
-    .catch(err=>{
-      clearTimeout(timeout);
-      reject(err?.name==='AbortError'
-        ? new Error('The submission request timed out. Please try again.')
-        : err);
-    });
+      const form=document.createElement('form');
+      form.method='POST';
+      form.action=GOOGLE_SHEET_WEB_APP_URL;
+      form.target=id;
+      form.style.display='none';
+      form.acceptCharset='UTF-8';
+
+      Object.entries(cleanParams).forEach(([key,value])=>{
+        const input=document.createElement('input');
+        input.type='hidden';
+        input.name=key;
+        input.value=value;
+        form.appendChild(input);
+      });
+
+      document.body.appendChild(iframe);
+      document.body.appendChild(form);
+
+      // Native HTML form POST is intentionally used here instead of fetch/CORS.
+      // This is the most reliable browser-to-Apps-Script transport for a Web App.
+      form.submit();
+
+      // Release the UI quickly after the browser has handed the POST to the network.
+      // Keep the form + iframe alive long enough for slow/cold Apps Script starts.
+      setTimeout(()=>resolve(true),500);
+
+      setTimeout(()=>{
+        try{form.remove();}catch{}
+        try{iframe.remove();}catch{}
+      },30000);
+    }catch(err){
+      reject(err);
+    }
   });
 }
-
 function loadGoogleSheetSubmissions(){
   return new Promise((resolve,reject)=>{
     const callbackName='__cathsSheetCallback_'+Date.now()+'_'+Math.floor(Math.random()*100000);
