@@ -1187,6 +1187,8 @@ $('submitEntryBtn').addEventListener('click',async()=>{
     contactNumber:$('submitContact').value.trim(),
     details:$('submitDetails').value.trim(),
     status:'pending',
+    createdAt:serverTimestamp(),
+    updatedAt:serverTimestamp()
   };
 
   try{
@@ -1237,7 +1239,7 @@ async function loadSubmissionsForPost(postId){
   return await loadGoogleSheetSubmissions();
 }
 
-window.openSubmissions=async function(postId){
+window.openSubmissions=function(postId){
   if(!adminMode || !window.loggedUser){
     showAppNotice('Admin access required','Only authorized admins can view student submissions.','error');
     return;
@@ -1249,53 +1251,33 @@ window.openSubmissions=async function(postId){
     return;
   }
 
+  const frameUrl=GOOGLE_SHEET_WEB_APP_URL +
+    '?action=admin&postTitle=' + encodeURIComponent(post.title||'Student Submissions') +
+    '&_=' + Date.now();
+
   const list=$('submissionsList');
-  list.innerHTML='<div class="submission-empty">Loading submissions...</div>';
+  list.innerHTML='';
+
+  const frame=document.createElement('iframe');
+  frame.src=frameUrl;
+  frame.title='Student submissions';
+  frame.loading='eager';
+  frame.referrerPolicy='no-referrer';
+  frame.style.cssText='width:100%;height:62vh;min-height:480px;border:0;border-radius:14px;background:#f7faff;display:block;';
+
+  const loading=document.createElement('div');
+  loading.className='submission-empty';
+  loading.textContent='Loading submissions...';
+
+  frame.addEventListener('load',()=>{
+    try{loading.remove();}catch{}
+  },{once:true});
+
+  list.appendChild(loading);
+  list.appendChild(frame);
   $('submissionsSubtitle').textContent='Student entries saved in the Google Spreadsheet';
   $('submissionsOverlay').classList.add('show');
   $('submissionsOverlay').setAttribute('aria-hidden','false');
-
-  try{
-    const rows=await loadGoogleSheetSubmissions();
-
-    rows.sort((a,b)=>{
-      const ta=Date.parse(a.timestamp||'')||0;
-      const tb=Date.parse(b.timestamp||'')||0;
-      return tb-ta;
-    });
-
-    $('submissionsSubtitle').textContent=
-      `${rows.length} student submission${rows.length===1?'':'s'} saved in the Google Spreadsheet`;
-
-    if(!rows.length){
-      list.innerHTML='<div class="submission-empty">📭<br><br>No student submissions yet.</div>';
-      return;
-    }
-
-    list.innerHTML=rows.map(row=>{
-      const status=String(row.status||'pending').toLowerCase();
-      const statusClass=status==='reviewed'?'reviewed':status==='rejected'?'rejected':'';
-
-      return `
-        <div class="submission-admin-row">
-          <div class="submission-admin-top">
-            <div>
-              <div class="submission-admin-name">${escapeHtml(row.studentName||'Student')}</div>
-              <div class="submission-admin-meta">${escapeHtml(row.studentEmail||'')} • ${escapeHtml(row.gradeSection||'')}</div>
-              <div class="submission-admin-meta"><b>Applying for:</b> ${escapeHtml(row.applyingFor||'Not specified')}</div>
-              <div class="submission-admin-meta">${escapeHtml(row.contactNumber||'No contact number')} • ${escapeHtml(row.timestamp||'')}</div>
-            </div>
-            <span class="submission-status ${statusClass}">${escapeHtml(status.toUpperCase())}</span>
-          </div>
-          <div class="submission-admin-details">${escapeHtml(row.details||'No details provided.')}</div>
-        </div>`;
-    }).join('');
-
-  }catch(err){
-    console.error('Spreadsheet submissions load failed:',err);
-    list.innerHTML='<div class="submission-empty">Unable to load spreadsheet submissions right now.</div>';
-    showAppNotice('Could not load submissions',err?.message||'Please check your Google Apps Script deployment.','error');
-  }
 };
 
 window.updateSubmissionStatus=async function(){
