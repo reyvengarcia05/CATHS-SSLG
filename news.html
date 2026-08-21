@@ -370,6 +370,10 @@ body{padding-bottom:82px;overflow-x:hidden}
 .post-author-photo{width:34px;height:34px;border-radius:50%;object-fit:cover;background:#eef4ff;border:2px solid rgba(255,255,255,.35);box-shadow:0 5px 14px rgba(0,0,0,.12)}
 .post-author-info{min-width:0}.post-author-name{font-size:10px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.post-author-role{font-size:8px;opacity:.68;margin-top:2px}
 
+
+#actionOverlay{display:none!important;position:fixed!important;inset:0!important;z-index:52000!important;align-items:center!important;justify-content:center!important;padding:20px!important;background:rgba(0,18,60,.66)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+#actionOverlay.show{display:flex!important}#actionCard{width:min(390px,92vw);margin:auto;background:rgba(255,255,255,.98);border-radius:25px;padding:24px 20px;text-align:center;color:#173a86;box-shadow:0 28px 90px rgba(0,0,0,.38)}.action-icon{width:66px;height:66px;margin:0 auto 12px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;background:#eef4ff;color:#173a86}.action-icon.danger{background:#ffe6e6;color:#c62828}.action-icon.success{background:#e5f7eb;color:#1d7a43}.action-icon.warning{background:#fff2cf;color:#8a6400}#actionCard h3{font-size:19px;color:#00296B;margin-bottom:6px}#actionCard p{font-size:11px;color:#6a7894;line-height:1.55}.action-buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}.action-btn{border:none;border-radius:11px;padding:11px;font-size:11px;font-weight:800;cursor:pointer}.action-cancel{background:#eef4ff;color:#173a86}.action-primary{background:#003DA5;color:#fff}.action-danger{background:#c62828;color:#fff}.action-select{width:100%;margin-top:13px;border:1px solid #d7e2f5;background:#f8fbff;color:#173a86;border-radius:12px;padding:11px;font-family:inherit;font-weight:700;font-size:12px;outline:none}.edit-field.invalid input,.edit-field.invalid textarea{border-color:#e05252!important;background:#fff7f7!important;box-shadow:0 0 0 3px rgba(224,82,82,.1)!important}.edit-field.invalid label{color:#c62828!important}.edit-field-error{display:none;color:#c62828;font-size:9px;font-weight:700}.edit-field.invalid .edit-field-error{display:block}.publish-field-invalid input,.publish-field-invalid textarea{border-color:#e05252!important;background:#fff7f7!important;box-shadow:0 0 0 3px rgba(224,82,82,.1)!important}.publish-field-invalid label{color:#c62828!important}.publish-field-error{display:none;color:#c62828;font-size:9px;font-weight:700}.publish-field-invalid .publish-field-error{display:block}@media(max-width:768px){#actionCard{width:min(340px,94vw);padding:21px 17px}.action-buttons{grid-template-columns:1fr}.action-btn{min-height:44px}}
+
 </style>
 </head>
 <body>
@@ -442,13 +446,13 @@ body{padding-bottom:82px;overflow-x:hidden}
   <h3>📰 Post News</h3>
   <div class="modal-date">Only authorized admin accounts can publish news.</div>
   <div class="form-grid">
-    <div class="field full"><label>Title</label><input id="newTitle" maxlength="120" placeholder="Enter the news title"></div>
+    <div id="publishTitleField" class="field full"><label>Title</label><input id="newTitle" maxlength="120" placeholder="Enter the news title"></div>
     <div class="field"><label>Category</label><select id="newType"><option value="announcement">Announcement</option><option value="events">Events</option><option value="student">Student Life</option></select></div>
     <div class="field"><label>Icon</label><input id="newIcon" maxlength="4" value="📰"></div>
     <div class="field"><label>Tag</label><input id="newTag" maxlength="40" value="Announcement"></div>
     <div class="field"><label>Date / Meta</label><input id="newDate" maxlength="80" placeholder="School Update"></div>
-    <div class="field full"><label>Excerpt</label><textarea id="newExcerpt" maxlength="500" placeholder="Short preview shown on the card"></textarea></div>
-    <div class="field full"><label>Full Body</label><textarea id="newBody" maxlength="10000" placeholder="Full news content..."></textarea></div>
+    <div id="publishExcerptField" class="field full"><label>Excerpt</label><textarea id="newExcerpt" maxlength="500" placeholder="Short preview shown on the card"></textarea></div>
+    <div id="publishBodyField" class="field full"><label>Full Body</label><textarea id="newBody" maxlength="10000" placeholder="Full news content..."></textarea><div class="publish-field-error">Full body is required.</div></div>
     <div class="field"><label>Visibility</label><select id="newVisibility"><option value="public">Public</option><option value="friends">Friends</option><option value="onlyMe">Only Me</option></select></div>
     <div class="field"><label>Status</label><div class="status-chips"><span class="status-chip success">New post</span><span class="status-chip">Visible</span></div></div>
   </div>
@@ -460,13 +464,13 @@ body{padding-bottom:82px;overflow-x:hidden}
   <h3>✏️ Edit News Post</h3>
   <div class="modal-date">Changes are saved to Firestore.</div>
   <div class="form-grid">
-    <div class="field"><label>Title</label><input id="adminTitle" maxlength="120"></div>
+    <div id="adminTitleField" class="field edit-field"><label>Title</label><input id="adminTitle" maxlength="120"><div class="edit-field-error">Title is required.<div class="publish-field-error">Title is required.</div></div>
     <div class="field"><label>Category</label><select id="adminType"><option value="announcement">Announcement</option><option value="events">Events</option><option value="student">Student Life</option></select></div>
     <div class="field"><label>Icon</label><input id="adminIcon" maxlength="4"></div>
     <div class="field"><label>Tag</label><input id="adminTag" maxlength="40"></div>
     <div class="field full"><label>Date / Meta</label><input id="adminDate" maxlength="80"></div>
-    <div class="field full"><label>Excerpt</label><textarea id="adminExcerpt" maxlength="500"></textarea></div>
-    <div class="field full"><label>Full Body</label><textarea id="adminBody" maxlength="10000"></textarea></div>
+    <div id="adminExcerptField" class="field full edit-field"><label>Excerpt</label><textarea id="adminExcerpt" maxlength="500"></textarea><div class="edit-field-error">Excerpt is required.</div></div>
+    <div id="adminBodyField" class="field full edit-field"><label>Full Body</label><textarea id="adminBody" maxlength="10000"></textarea><div class="edit-field-error">Full body is required.</div></div>
     <div class="field"><label>Visibility</label><select id="adminVisibility"><option value="public">Public</option><option value="friends">Friends</option><option value="onlyMe">Only Me</option></select></div>
     <div class="field"><label>Status</label><div class="status-chips"><span id="adminStatusHidden" class="status-chip">Visible</span><span id="adminStatusPinned" class="status-chip">Not pinned</span><span id="adminStatusOfficial" class="status-chip">Regular post</span></div></div>
   </div>
@@ -531,6 +535,9 @@ body{padding-bottom:82px;overflow-x:hidden}
   </div>
 </div>
 
+
+<div id="actionOverlay" aria-hidden="true"><div id="actionCard"><div id="actionIcon" class="action-icon">ℹ️</div><h3 id="actionTitle">Notice</h3><p id="actionMessage"></p><select id="actionSelect" class="action-select" style="display:none"></select><div id="actionButtons" class="action-buttons"><button id="actionCancel" class="action-btn action-cancel" type="button">Cancel</button><button id="actionConfirm" class="action-btn action-primary" type="button">Continue</button></div></div></div>
+
 <script>
 const NEWS=[];
 let currentFilter='all';
@@ -589,12 +596,12 @@ $('managePostsBtn').addEventListener('click',()=>{
 });
 
 function postById(id){return mergedNews.find(x=>String(x.id)===String(id));}
-window.editPost=function(id){const p=postById(id);if(!p)return;editingPostId=String(id);['adminTitle','adminType','adminIcon','adminTag','adminDate','adminExcerpt','adminBody','adminVisibility'].forEach(k=>$(k).value='');$('adminTitle').value=p.title;$('adminType').value=p.type;$('adminIcon').value=p.icon;$('adminTag').value=p.tag;$('adminDate').value=p.date;$('adminExcerpt').value=p.excerpt;$('adminBody').value=p.body;$('adminVisibility').value=p.visibility||'public';$('adminStatusHidden').textContent=p.hidden?'Hidden':'Visible';$('adminStatusHidden').className='status-chip '+(p.hidden?'warning':'success');$('adminStatusPinned').textContent=p.pinned?'Pinned':'Not pinned';$('adminStatusPinned').className='status-chip '+(p.pinned?'warning':'');$('adminStatusOfficial').textContent=p.official?'Official announcement':'Regular post';$('adminStatusOfficial').className='status-chip '+(p.official?'success':'');$('adminModal').classList.add('show');};
-window.toggleHidden=async function(id){const p=postById(id);if(!p)return;await window.savePostOverride(id,{hidden:!p.hidden});};
-window.togglePinned=async function(id){const p=postById(id);if(!p)return;await window.savePostOverride(id,{pinned:!p.pinned});};
-window.toggleOfficial=async function(id){const p=postById(id);if(!p)return;await window.savePostOverride(id,{official:!p.official});};
-window.changeVisibility=async function(id){const p=postById(id);if(!p)return;const next=prompt('Enter visibility: public, friends, or onlyMe',p.visibility||'public');if(next===null)return;if(!['public','friends','onlyMe'].includes(next)){showAppNotice('Invalid visibility','Use public, friends, or onlyMe.','warning');return;}await window.savePostOverride(id,{visibility:next});};
-window.deletePost=async function(id){const p=postById(id);if(!p)return;if(!confirm(`Delete "${p.title}"? This removes it from the news page.`))return;await window.savePostOverride(id,{deleted:true,hidden:true});};
+window.editPost=async function(id){const p=postById(id);if(!p)return;if(!(await verifySensitiveCode('Admin Verification','Enter the code to edit this news.')))return;editingPostId=String(id);$("adminTitle").value=p.title;$("adminType").value=p.type;$("adminIcon").value=p.icon;$("adminTag").value=p.tag;$("adminDate").value=p.date;$("adminExcerpt").value=p.excerpt;$("adminBody").value=p.body;$("adminVisibility").value=p.visibility||'public';$("adminTitleField").classList.remove('invalid');$("adminExcerptField").classList.remove('invalid');$("adminBodyField").classList.remove('invalid');$("adminStatusHidden").textContent=p.hidden?'Hidden':'Visible';$("adminStatusPinned").textContent=p.pinned?'Pinned':'Not pinned';$("adminStatusOfficial").textContent=p.official?'Official announcement':'Regular post';$("adminModal").classList.add('show')};
+window.toggleHidden=async function(id){const p=postById(id);if(!p)return;if(!(await verifySensitiveCode('Admin Verification','Enter the code to change this post.')))return;const saved=await window.savePostOverride(id,{hidden:!p.hidden});if(saved)showAppNotice('Visibility status updated','The post was updated successfully.','success')};
+window.togglePinned=async function(id){const p=postById(id);if(!p)return;if(!(await verifySensitiveCode('Admin Verification','Enter the code to change this post.')))return;const saved=await window.savePostOverride(id,{pinned:!p.pinned});if(saved)showAppNotice('Pin status updated','The post was updated successfully.','success')};
+window.toggleOfficial=async function(id){const p=postById(id);if(!p)return;if(!(await verifySensitiveCode('Admin Verification','Enter the code to change this post.')))return;const saved=await window.savePostOverride(id,{official:!p.official});if(saved)showAppNotice('Official status updated','The post was updated successfully.','success')};
+window.changeVisibility=async function(id){const p=postById(id);if(!p)return;if(!(await verifySensitiveCode('Admin Verification','Enter the code to change visibility.')))return;const next=await showAction('Change visibility','Choose who can see this news.','🔐','', [{value:'public',label:'Public'},{value:'friends',label:'Friends'},{value:'onlyMe',label:'Only Me'}],p.visibility||'public');if(!next)return;const saved=await window.savePostOverride(id,{visibility:next});if(saved)showAppNotice('Visibility updated','The post visibility was updated successfully.','success')};
+window.deletePost=async function(id){const p=postById(id);if(!p)return;if(!(await verifySensitiveCode('Admin Verification','Enter the code to delete this news.')))return;const ok=await showAction('Delete this news post?',p.title||'This post will be removed.','🗑️','danger');if(!ok)return;const saved=await window.savePostOverride(id,{deleted:true,hidden:true});if(saved)showAppNotice('Post deleted successfully','The news post has been removed from CATHS-MAIN News.','success')};
 
 function openCodeGate(){
   if(!adminMode || !window.loggedUser){
@@ -663,8 +670,15 @@ $('appNoticeOverlay').addEventListener('click',e=>{
   }
 });
 
+
+function showAction(title,message,icon='ℹ️',tone='',selectOptions=null,defaultValue=''){const ov=$('actionOverlay'),ic=$('actionIcon'),sel=$('actionSelect'),titleEl=$('actionTitle'),msg=$('actionMessage');ic.textContent=icon;ic.className='action-icon '+tone;titleEl.textContent=title;msg.textContent=message;if(selectOptions){sel.style.display='block';sel.innerHTML=selectOptions.map(o=>`<option value="${escapeHtml(o.value)}">${escapeHtml(o.label)}</option>`).join('');sel.value=defaultValue||selectOptions[0].value}else sel.style.display='none';ov.classList.add('show');ov.setAttribute('aria-hidden','false');return new Promise(resolve=>{const cancel=$('actionCancel'),confirm=$('actionConfirm');cancel.onclick=()=>{ov.classList.remove('show');ov.setAttribute('aria-hidden','true');resolve(null)};confirm.onclick=()=>{const v=selectOptions?sel.value:true;ov.classList.remove('show');ov.setAttribute('aria-hidden','true');resolve(v)};ov.onclick=e=>{if(e.target===ov){ov.classList.remove('show');ov.setAttribute('aria-hidden','true');resolve(null)}}})}
+async function verifySensitiveCode(title,message){return new Promise(resolve=>{const ov=$('actionOverlay'),ic=$('actionIcon'),sel=$('actionSelect'),buttons=$('actionButtons');ic.textContent='🔐';ic.className='action-icon';$('actionTitle').textContent=title;$('actionMessage').textContent=message;sel.style.display='none';buttons.innerHTML='<input id="sensitiveCodeInput" type="password" maxlength="30" autocomplete="off" placeholder="Enter code" style="grid-column:1/-1;width:100%;border:1px solid #d7e2f5;background:#f8fbff;color:#173a86;border-radius:12px;padding:12px;text-align:center;letter-spacing:2px;font-weight:800;font-family:inherit"><button id="sensitiveCancel" class="action-btn action-cancel" type="button">Cancel</button><button id="sensitiveConfirm" class="action-btn action-primary" type="button">Verify</button>';ov.classList.add('show');ov.setAttribute('aria-hidden','false');const input=$('sensitiveCodeInput');setTimeout(()=>input.focus(),50);const close=v=>{ov.classList.remove('show');ov.setAttribute('aria-hidden','true');buttons.innerHTML='<button id="actionCancel" class="action-btn action-cancel" type="button">Cancel</button><button id="actionConfirm" class="action-btn action-primary" type="button">Continue</button>';resolve(v)};$('sensitiveCancel').onclick=()=>close(false);$('sensitiveConfirm').onclick=()=>close(input.value.trim()==='SSLGFam143');input.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('sensitiveConfirm').click()}};})}
+function validateEditForm(){const a=$('adminTitle').value.trim(),b=$('adminExcerpt').value.trim(),c=$('adminBody').value.trim();$('adminTitleField').classList.toggle('invalid',!a);$('adminExcerptField').classList.toggle('invalid',!b);$('adminBodyField').classList.toggle('invalid',!c);if(!a||!b||!c){showAppNotice('Missing information','Please complete the title, excerpt, and full body.','warning');return false}return true}
+function validatePublishFields(){const a=$('newTitle').value.trim(),b=$('newExcerpt').value.trim(),c=$('newBody').value.trim();$('publishTitleField').classList.toggle('publish-field-invalid',!a);$('publishExcerptField').classList.toggle('publish-field-invalid',!b);$('publishBodyField').classList.toggle('publish-field-invalid',!c);if(!a||!b||!c){showAppNotice('Missing information','Please complete the title, excerpt, and full body.','warning');return false}return true}
+['newTitle','newExcerpt','newBody'].forEach((id,i)=>$(id)?.addEventListener('input',()=>$(['publishTitleField','publishExcerptField','publishBodyField'][i]).classList.remove('publish-field-invalid')));
+['adminTitle','adminExcerpt','adminBody'].forEach((id,i)=>$(id)?.addEventListener('input',()=>$(['adminTitleField','adminExcerptField','adminBodyField'][i]).classList.remove('invalid')));
 $('publishPostNews').addEventListener('click',async()=>{
-  if(!window._publishUnlocked){openCodeGate();return;}
+  if(!validatePublishFields())return;if(!window._publishUnlocked){openCodeGate();return;}
   window._publishUnlocked=false;
   if(!window.loggedUser||!adminMode){
     showAppNotice('Admin access required','Only authorized SSLG administrators can publish news.','error');
@@ -769,7 +783,7 @@ $('publishPostNews').addEventListener('click',async()=>{
 });
 
 $('closeAdmin').onclick=()=>$('adminModal').classList.remove('show');$('adminCancel').onclick=()=>$('adminModal').classList.remove('show');$('adminModal').addEventListener('click',e=>{if(e.target===$('adminModal'))$('adminModal').classList.remove('show')});
-$('adminSave').addEventListener('click',async()=>{if(!editingPostId)return;const payload={title:$('adminTitle').value.trim(),type:$('adminType').value,icon:$('adminIcon').value.trim()||'📰',tag:$('adminTag').value.trim()||'News',date:$('adminDate').value.trim()||'School Update',excerpt:$('adminExcerpt').value.trim(),body:$('adminBody').value.trim(),visibility:$('adminVisibility').value};if(!payload.title||!payload.excerpt||!payload.body){showAppNotice('Missing information','Please complete the title, excerpt, and full body.','warning');return;}await window.savePostOverride(editingPostId,payload);$('adminModal').classList.remove('show');});
+$('adminSave').addEventListener('click',async()=>{if(!editingPostId||!validateEditForm())return;if(!(await verifySensitiveCode('Admin Verification','Enter the code to save your edits.')))return;const payload={title:$('adminTitle').value.trim(),type:$('adminType').value,icon:$('adminIcon').value.trim()||'📰',tag:$('adminTag').value.trim()||'News',date:$('adminDate').value.trim()||'School Update',excerpt:$('adminExcerpt').value.trim(),body:$('adminBody').value.trim(),visibility:$('adminVisibility').value};const saved=await window.savePostOverride(editingPostId,payload);if(saved){$('adminModal').classList.remove('show');showAppNotice('News updated','Your changes were saved successfully.','success')}});
 </script>
 
 <script type="module">
