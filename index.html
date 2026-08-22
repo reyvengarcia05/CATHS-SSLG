@@ -1292,6 +1292,96 @@ color:black;
 @media(max-width:768px){.notification-panel{width:270px!important;right:-4px!important;left:auto!important;top:48px!important}}
 
 
+/* =========================
+   FINAL NOTIFICATION RESPONSIVE FIX
+   ========================= */
+.notification-panel{
+    z-index:20000 !important;
+    max-height: min(420px, calc(100vh - 90px));
+}
+.notification-list{
+    max-height:360px;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;
+}
+.notification-item{
+    transition:background .18s ease, transform .18s ease;
+    cursor:pointer;
+}
+.notification-item:hover{background:#f8fbff;}
+.notification-item.unread{
+    position:relative;
+    background:linear-gradient(90deg,#fffbea,#fff);
+}
+.notification-item.unread::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:10px;
+    bottom:10px;
+    width:3px;
+    border-radius:999px;
+    background:linear-gradient(180deg,#FFD93D,#003DA5);
+}
+.notification-icon{
+    box-shadow:0 4px 10px rgba(0,41,107,.08);
+}
+.notification-time{
+    margin-top:4px;
+    font-size:8px;
+    color:#94a3b8;
+}
+.notification-loading{
+    min-height:120px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    color:#64748b;
+    font-size:10px;
+}
+.notification-dots{
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    gap:5px;
+    height:18px;
+}
+.notification-dot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:#003DA5;
+    animation:notificationDotJump 1s ease-in-out infinite;
+}
+.notification-dot:nth-child(2){animation-delay:.12s;background:#1858b8}
+.notification-dot:nth-child(3){animation-delay:.24s;background:#3b74cf}
+.notification-dot:nth-child(4){animation-delay:.36s;background:#FFD93D}
+.notification-dot:nth-child(5){animation-delay:.48s;background:#f2c900}
+@keyframes notificationDotJump{
+    0%,60%,100%{transform:translateY(0) scale(.8);opacity:.45}
+    30%{transform:translateY(-8px) scale(1);opacity:1}
+}
+.notification-head-actions{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+.notification-mark-btn{
+    border:0;
+    background:#eef4ff;
+    color:#003DA5;
+    border-radius:999px;
+    padding:6px 9px;
+    font-size:9px;
+    font-weight:800;
+    cursor:pointer;
+}
+.notification-mark-btn:hover{background:#e3edff}
+
 /* Open Messages uses the same Quick Actions card design */
 .open-messages-card{
     background:inherit !important;
@@ -1421,7 +1511,9 @@ color:black;
         <div id="notificationPanel" class="notification-panel">
             <div class="notification-head">
                 <strong>Notifications</strong>
-                <button type="button" onclick="markNotificationsRead()" style="border:0;background:none;color:#003DA5;font-size:10px;font-weight:700;cursor:pointer;">Mark read</button>
+                <div class="notification-head-actions">
+                    <button type="button" class="notification-mark-btn" onclick="markNotificationsRead()">Mark read</button>
+                </div>
             </div>
             <div id="notificationList" class="notification-list">
                 <div class="notification-empty">No notifications yet.</div>
@@ -1604,113 +1696,278 @@ let currentNotificationUser = null;
 let notificationItems = [];
 
 function toggleNotifications(){
-    // Guests must log in, using the exact same login modal/design
-    // already used by the rest of the Index page.
     if(!window.userLoggedIn){
         closeNotifications();
-        if(typeof openLogin === 'function') openLogin();
+        if(typeof openLogin === 'function') openLogin(false);
         return;
     }
 
     const panel = document.getElementById('notificationPanel');
-    if(panel) panel.classList.toggle('open');
+    if(!panel) return;
+
+    const willOpen = !panel.classList.contains('open');
+    panel.classList.toggle('open', willOpen);
+
+    if(willOpen){
+        renderNotifications();
+    }
 }
+
 function closeNotifications(){
     document.getElementById('notificationPanel')?.classList.remove('open');
 }
+
 async function markNotificationsRead(){
     const unread = notificationItems.filter(n=>!n.read);
+
     if(!unread.length){
         renderNotifications();
         return;
     }
 
     try{
-        await Promise.all(unread.map(n=>
-            updateDoc(doc(db,'notifications',n.id),{read:true})
-        ));
-    }catch(error){
-        console.error('Mark notifications read failed:',error);
-        return;
-    }
+        await Promise.all(
+            unread.map(n=>
+                updateDoc(
+                    doc(db,'notifications',n.id),
+                    {read:true}
+                )
+            )
+        );
 
-    notificationItems = notificationItems.map(n=>({...n,read:true}));
-    renderNotifications();
+        notificationItems =
+            notificationItems.map(n=>({
+                ...n,
+                read:true
+            }));
+
+        renderNotifications();
+
+    }catch(error){
+        console.error(
+            'Mark notifications read failed:',
+            error
+        );
+    }
 }
-function renderNotifications(){
+
+function formatNotificationTime(timestamp){
+    if(!timestamp) return '';
+
+    try{
+        const date = new Date(timestamp);
+        if(Number.isNaN(date.getTime())) return '';
+
+        const now = Date.now();
+        const diff = Math.max(0, now - date.getTime());
+        const minute = 60000;
+        const hour = 60 * minute;
+        const day = 24 * hour;
+
+        if(diff < minute) return 'Just now';
+        if(diff < hour) return `${Math.floor(diff / minute)}m ago`;
+        if(diff < day) return `${Math.floor(diff / hour)}h ago`;
+        if(diff < 7 * day) return `${Math.floor(diff / day)}d ago`;
+
+        return date.toLocaleDateString(undefined,{
+            month:'short',
+            day:'numeric',
+            year:'numeric'
+        });
+    }catch(e){
+        return '';
+    }
+}
+
+function notificationLoadingHtml(){
+    return `
+        <div class="notification-loading">
+            <div class="notification-dots" aria-hidden="true">
+                <span class="notification-dot"></span>
+                <span class="notification-dot"></span>
+                <span class="notification-dot"></span>
+                <span class="notification-dot"></span>
+                <span class="notification-dot"></span>
+            </div>
+            <span>Loading notifications...</span>
+        </div>
+    `;
+}
+
+function renderNotifications(loading=false){
     const list = document.getElementById('notificationList');
     const badge = document.getElementById('notificationBadge');
+
     if(!list || !badge) return;
 
-    const unread = notificationItems.filter(n=>!n.read).length;
-    badge.textContent = unread > 99 ? '99+' : String(unread);
-    badge.classList.toggle('show', unread > 0);
-
-    if(!notificationItems.length){
-        list.innerHTML='<div class="notification-empty">No notifications yet.</div>';
+    if(loading){
+        list.innerHTML = notificationLoadingHtml();
         return;
     }
-    list.innerHTML = notificationItems.slice(0,50).map(n=>`
-        <div class="notification-item ${n.read?'':'unread'}">
-            <div class="notification-icon">${n.icon||'🔔'}</div>
-            <div class="notification-content">
-                <strong>${escapeNotificationText(n.title||'Notification')}</strong>
-                <p>${escapeNotificationText(n.text||'')}</p>
+
+    const unread = notificationItems.filter(n=>!n.read).length;
+
+    badge.textContent =
+        unread > 99
+            ? '99+'
+            : String(unread);
+
+    badge.classList.toggle(
+        'show',
+        unread > 0
+    );
+
+    if(!notificationItems.length){
+        list.innerHTML = `
+            <div class="notification-empty">
+                <div style="font-size:28px;margin-bottom:7px;">🔔</div>
+                <div style="font-weight:700;">No notifications yet.</div>
+                <div style="font-size:9px;margin-top:4px;opacity:.75;">You're all caught up.</div>
             </div>
-        </div>
-    `).join('');
+        `;
+        return;
+    }
+
+    list.innerHTML =
+        notificationItems
+            .slice(0,50)
+            .map(n=>`
+                <div
+                    class="notification-item ${n.read?'':'unread'}"
+                    data-notification-id="${escapeNotificationText(n.id)}"
+                    role="button"
+                    tabindex="0"
+                >
+                    <div class="notification-icon">${n.icon||'🔔'}</div>
+                    <div class="notification-content">
+                        <strong>${escapeNotificationText(n.title||'Notification')}</strong>
+                        <p>${escapeNotificationText(n.text||'')}</p>
+                        <div class="notification-time">${escapeNotificationText(formatNotificationTime(n.createdAt))}</div>
+                    </div>
+                </div>
+            `)
+            .join('');
 }
+
 function escapeNotificationText(value){
-    return String(value ?? '').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+    return String(value ?? '')
+        .replace(/[&<>"']/g,m=>({
+            '&':'&amp;',
+            '<':'&lt;',
+            '>':'&gt;',
+            '"':'&quot;',
+            "'":'&#039;'
+        }[m]));
 }
 
 document.addEventListener('click', e=>{
-    const wrap=document.querySelector('.notification-wrap');
-    if(wrap && !wrap.contains(e.target)) closeNotifications();
+    const wrap = document.querySelector('.notification-wrap');
+    if(wrap && !wrap.contains(e.target)){
+        closeNotifications();
+    }
+});
+
+document.addEventListener('keydown', e=>{
+    if(e.key === 'Escape'){
+        closeNotifications();
+    }
 });
 
 function startNotificationListener(uid){
-    if(typeof db==='undefined' || typeof onSnapshot==='undefined' || typeof collection==='undefined') return;
-    if(notificationUnsubscribe) notificationUnsubscribe();
+    if(!uid) return;
 
-    // Avoid a composite-index requirement here: fetch only this user's
-    // notifications and sort them in the browser.
-    const q = query(
-        collection(db,'notifications'),
-        where('recipientUid','==',uid),
-        limit(50)
-    );
+    if(notificationUnsubscribe){
+        notificationUnsubscribe();
+        notificationUnsubscribe = null;
+    }
 
-    notificationUnsubscribe = onSnapshot(q,snap=>{
-        notificationItems = snap.docs.map(d=>{
-            const n=d.data()||{};
-            let icon='🔔';
-            if(n.type==='reaction' || n.type==='like') icon='❤️';
-            else if(n.type==='comment') icon='💬';
-            else if(n.type==='share') icon='↗️';
-            else if(n.type==='message') icon='✉️';
-            else if(n.type==='friend_request' || n.type==='friend_accepted') icon='👥';
+    currentNotificationUser = uid;
+    notificationItems = [];
+    renderNotifications(true);
 
-            return {
-                id:d.id,
-                createdAt:n.createdAt?.toMillis?.() || 0,
-                icon,
-                title:n.actorName ? String(n.actorName) : (n.title||'Notification'),
-                text:n.text || ({
-                    reaction:'reacted to your post.',
-                    comment:'commented on your post.',
-                    share:'shared your post.',
-                    message:'sent you a message.'
-                }[n.type] || 'You have a new notification.'),
-                read:n.read===true
-            };
-        }).sort((a,b)=>b.createdAt-a.createdAt);
+    try{
+        const q = query(
+            collection(db,'notifications'),
+            where('recipientUid','==',uid),
+            limit(50)
+        );
 
-        renderNotifications();
-    },err=>{
-        console.warn('Notification listener:',err);
-        renderNotifications();
-    });
+        notificationUnsubscribe = onSnapshot(
+            q,
+            snap=>{
+                notificationItems =
+                    snap.docs
+                        .map(d=>{
+                            const n = d.data() || {};
+
+                            let icon = '🔔';
+
+                            if(
+                                n.type === 'reaction' ||
+                                n.type === 'like'
+                            ) icon = '❤️';
+                            else if(n.type === 'comment') icon = '💬';
+                            else if(n.type === 'share') icon = '↗️';
+                            else if(n.type === 'message') icon = '✉️';
+                            else if(
+                                n.type === 'friend_request' ||
+                                n.type === 'friend_accepted'
+                            ) icon = '👥';
+
+                            const createdAt =
+                                n.createdAt?.toMillis?.() ||
+                                (n.createdAt instanceof Date
+                                    ? n.createdAt.getTime()
+                                    : 0);
+
+                            const fallbackText = {
+                                reaction:'reacted to your post.',
+                                like:'liked your post.',
+                                comment:'commented on your post.',
+                                share:'shared your post.',
+                                message:'sent you a message.',
+                                friend_request:'sent you a friend request.',
+                                friend_accepted:'accepted your friend request.'
+                            }[n.type] ||
+                                'You have a new notification.';
+
+                            return {
+                                id:d.id,
+                                createdAt,
+                                icon,
+                                title:n.actorName
+                                    ? String(n.actorName)
+                                    : String(n.title || 'Notification'),
+                                text:n.text
+                                    ? String(n.text)
+                                    : fallbackText,
+                                read:n.read === true
+                            };
+                        })
+                        .sort(
+                            (a,b)=>b.createdAt-a.createdAt
+                        );
+
+                renderNotifications(false);
+            },
+            error=>{
+                console.error(
+                    'Notification listener failed:',
+                    error
+                );
+                notificationItems = [];
+                renderNotifications(false);
+            }
+        );
+
+    }catch(error){
+        console.error(
+            'Notification query setup failed:',
+            error
+        );
+        notificationItems = [];
+        renderNotifications(false);
+    }
 }
 
 window.userLoggedIn = false;
