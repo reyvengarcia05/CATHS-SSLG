@@ -631,6 +631,61 @@ body{padding-bottom:82px;overflow-x:hidden}
 .submission-admin-action.reject{background:#c62828;color:#fff}
 .submission-empty{padding:32px 18px;text-align:center;color:#74809a;background:#f7faff;border-radius:15px;border:1px dashed #d6e2f5}
 .submission-error{padding:24px 18px;text-align:center;color:#b42323;background:#fff7f7;border:1px solid #ffd1d1;border-radius:15px;font-size:11px;line-height:1.6}
+
+/* ===== Smooth 5-dot submission loader ===== */
+.submission-loading{
+  min-height:190px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  border:1px solid #e6edf9;
+  background:linear-gradient(180deg,#ffffff,#f8fbff);
+  border-radius:18px;
+  color:#71809a;
+  text-align:center;
+}
+.submission-loading-title{
+  font-size:12px;
+  font-weight:800;
+  color:#173a86;
+}
+.submission-loading-sub{
+  margin-top:-10px;
+  font-size:9px;
+  color:#8a97ad;
+}
+.submission-dots{
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  gap:8px;
+  height:34px;
+}
+.submission-dot{
+  width:11px;
+  height:11px;
+  border-radius:50%;
+  background:#9db3df;
+  animation:submissionDotBounce 1.05s infinite ease-in-out;
+  box-shadow:0 4px 10px rgba(0,61,165,.12);
+}
+.submission-dot:nth-child(1){animation-delay:0s}
+.submission-dot:nth-child(2){animation-delay:.10s}
+.submission-dot:nth-child(3){animation-delay:.20s}
+.submission-dot:nth-child(4){animation-delay:.30s}
+.submission-dot:nth-child(5){animation-delay:.40s}
+@keyframes submissionDotBounce{
+  0%,100%{transform:translateY(6px) scale(.82);background:#9db3df;opacity:.58}
+  25%{transform:translateY(-10px) scale(1);background:#003DA5;opacity:1}
+  50%{transform:translateY(2px) scale(.92);background:#FFD93D;opacity:.95}
+  75%{transform:translateY(8px) scale(.84);background:#6c8fd0;opacity:.72}
+}
+@media(max-width:768px){
+  .submission-loading{min-height:160px;border-radius:15px}
+  .submission-dot{width:10px;height:10px}
+}
 @media(max-width:768px){
   #submissionsCard{width:min(390px,94vw);max-height:88vh;padding:17px;border-radius:22px}
   .submission-admin-list{max-height:calc(88vh - 145px)}
@@ -960,7 +1015,7 @@ async function showSubmissionsViewer(postId=null){
   const list=$('submissionsList');
   const count=$('submissionCount');
   const subtitle=$('submissionsSubtitle');
-  list.innerHTML='<div class="submission-empty">⏳<br><br>Loading student submissions...</div>';
+  list.innerHTML='<div class="submission-loading"><div class="submission-dots" aria-hidden="true"><span class="submission-dot"></span><span class="submission-dot"></span><span class="submission-dot"></span><span class="submission-dot"></span><span class="submission-dot"></span></div><div class="submission-loading-title">Loading student submissions...</div><div class="submission-loading-sub">Please wait while we connect to the application spreadsheet.</div></div>';
   count.textContent='Loading...';
   subtitle.textContent=postId ? 'Loading entries for this news post...' : 'All student entries saved in the Google Spreadsheet';
   $('submissionsOverlay').classList.add('show');
@@ -1580,6 +1635,66 @@ $('adminSave').addEventListener('click',async()=>{
 });
 </script>
 
+<script>
+/* =====================================================
+   GLOBAL GOOGLE SHEET SUBMISSION LOADER
+   Kept outside the Firebase module on purpose so the
+   admin submissions viewer always has access to it,
+   even if a Firebase module/import fails to initialize.
+===================================================== */
+window.GOOGLE_SHEET_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxWip-0Ybgszyvz89nMtfdLWU52aXCD7mrX5jTiNhjALgW1x1p-_d1QqT2lgG0bMMfu4w/exec';
+
+window.loadGoogleSheetSubmissions = function(){
+  return new Promise((resolve,reject)=>{
+    const callbackName = '__cathsSheetCallback_' + Date.now() + '_' + Math.floor(Math.random()*100000);
+    const script = document.createElement('script');
+    let settled = false;
+
+    const cleanup = ()=>{
+      try{ delete window[callbackName]; }catch(e){}
+      try{ script.remove(); }catch(e){}
+    };
+
+    const finishError = (message)=>{
+      if(settled)return;
+      settled = true;
+      cleanup();
+      reject(new Error(message));
+    };
+
+    window[callbackName] = (data)=>{
+      if(settled)return;
+      settled = true;
+      cleanup();
+
+      if(!data || data.success !== true){
+        reject(new Error(data?.error || 'Google Spreadsheet could not be read.'));
+        return;
+      }
+
+      resolve(Array.isArray(data.rows) ? data.rows : []);
+    };
+
+    script.async = true;
+    script.onerror = ()=>finishError(
+      'Unable to connect to the Google Spreadsheet. Please make sure the Apps Script Web App deployment is active and set to Anyone.'
+    );
+
+    script.src = window.GOOGLE_SHEET_WEB_APP_URL +
+      '?action=list&callback=' +
+      encodeURIComponent(callbackName) +
+      '&_=' + Date.now();
+
+    document.head.appendChild(script);
+
+    setTimeout(()=>{
+      if(settled)return;
+      finishError('Google Spreadsheet took too long to respond. Please try again.');
+    },15000);
+  });
+};
+</script>
+
 <script type="module">
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js';
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserLocalPersistence} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js';
@@ -1642,7 +1757,7 @@ window.savePostOverride=async function(id,changes){
   }catch(e){console.error('Admin save failed:',e);showAppNotice('Save failed',e.message||'Unable to save the changes right now.','error');return false;}
 };
 
-const GOOGLE_SHEET_WEB_APP_URL='https://script.google.com/macros/s/AKfycbxWip-0Ybgszyvz89nMtfdLWU52aXCD7mrX5jTiNhjALgW1x1p-_d1QqT2lgG0bMMfu4w/exec';
+const GOOGLE_SHEET_WEB_APP_URL=window.GOOGLE_SHEET_WEB_APP_URL;
 
 // Google Apps Script submission transport.
 // This deliberately does NOT wait for a CORS-readable response.
@@ -1697,47 +1812,7 @@ function submitToGoogleSheet(params){
     }
   });
 }
-function loadGoogleSheetSubmissions(){
-  return new Promise((resolve,reject)=>{
-    const callbackName='__cathsSheetCallback_'+Date.now()+'_'+Math.floor(Math.random()*100000);
-    const script=document.createElement('script');
-    let settled=false;
-
-    const cleanup=()=>{
-      try{delete window[callbackName]}catch{}
-      script.remove();
-    };
-
-    window[callbackName]=(data)=>{
-      if(settled)return;
-      settled=true;
-      cleanup();
-      if(!data || data.success!==true){
-        reject(new Error(data?.error||'Google Spreadsheet could not be read.'));
-        return;
-      }
-      resolve(Array.isArray(data.rows)?data.rows:[]);
-    };
-
-    script.onerror=()=>{
-      if(settled)return;
-      settled=true;
-      cleanup();
-      reject(new Error('Unable to connect to the Google Spreadsheet. Make sure the Apps Script deployment is active and accessible to anyone.'));
-    };
-
-    script.src=GOOGLE_SHEET_WEB_APP_URL+'?action=list&callback='+encodeURIComponent(callbackName)+'&_='+Date.now();
-    document.head.appendChild(script);
-
-    setTimeout(()=>{
-      if(settled)return;
-      settled=true;
-      cleanup();
-      reject(new Error('Google Spreadsheet took too long to respond.'));
-    },10000);
-  });
-}
-
+function loadGoogleSheetSubmissions(){ return window.loadGoogleSheetSubmissions(); }
 window.saveStudentSubmission=async function(_id,payload){
   if(!window.loggedUser){
     throw new Error('You must be logged in to submit an entry.');
