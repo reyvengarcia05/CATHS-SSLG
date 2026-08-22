@@ -693,6 +693,20 @@ body{padding-bottom:82px;overflow-x:hidden}
   .submission-status{align-self:flex-start}
   .submission-fields{grid-template-columns:1fr}
 }
+
+/* ===== Student submit animation ===== */
+#submitLoadingOverlay{display:none !important;position:fixed !important;inset:0 !important;width:100vw !important;height:100vh !important;z-index:56000 !important;align-items:center !important;justify-content:center !important;padding:18px !important;background:rgba(0,18,60,.70) !important;backdrop-filter:blur(11px);-webkit-backdrop-filter:blur(11px)}
+#submitLoadingOverlay.show{display:flex !important}
+#submitLoadingCard{width:min(360px,92vw);background:rgba(255,255,255,.98);color:#173a86;border-radius:26px;padding:28px 22px 25px;text-align:center;box-shadow:0 28px 90px rgba(0,0,0,.42);border:1px solid rgba(255,255,255,.84);animation:submissionPop .28s cubic-bezier(.16,1,.3,1)}
+.submit-loading-icon{width:72px;height:72px;margin:0 auto 14px;border-radius:22px;display:flex;align-items:center;justify-content:center;background:#eef4ff;font-size:38px;animation:submitIconFloat 1.35s ease-in-out infinite}
+#submitLoadingCard h3{font-size:20px;color:#00296B;margin-bottom:7px}
+#submitLoadingCard p{font-size:11px;color:#71809a;line-height:1.55;margin:0}
+.submit-bouncing-text{display:flex;justify-content:center;align-items:flex-end;gap:1px;margin-top:18px;height:32px}
+.submit-bouncing-text span{display:inline-block;font-size:18px;font-weight:900;color:#003DA5;animation:submitLetterBounce 1.05s ease-in-out infinite}
+.submit-bouncing-text span:nth-child(1){animation-delay:0s}.submit-bouncing-text span:nth-child(2){animation-delay:.08s}.submit-bouncing-text span:nth-child(3){animation-delay:.16s}.submit-bouncing-text span:nth-child(4){animation-delay:.24s}.submit-bouncing-text span:nth-child(5){animation-delay:.32s}.submit-bouncing-text span:nth-child(6){animation-delay:.40s}.submit-bouncing-text span:nth-child(7){animation-delay:.48s}.submit-bouncing-text span:nth-child(8){animation-delay:.56s}.submit-bouncing-text span:nth-child(9){animation-delay:.64s}.submit-bouncing-text span:nth-child(10){animation-delay:.72s}.submit-bouncing-text span:nth-child(11){animation-delay:.80s}
+@keyframes submitLetterBounce{0%,100%{transform:translateY(5px) scale(.96);opacity:.58}25%{transform:translateY(-12px) scale(1.08);opacity:1}50%{transform:translateY(2px) scale(1);opacity:.92}75%{transform:translateY(7px) scale(.97);opacity:.7}}
+@keyframes submitIconFloat{0%,100%{transform:translateY(2px) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}
+@media(max-width:768px){#submitLoadingCard{width:min(340px,94vw);padding:24px 18px 22px;border-radius:22px}.submit-loading-icon{width:64px;height:64px;font-size:33px}.submit-bouncing-text span{font-size:16px}}
 </style>
 </head>
 <body>
@@ -935,6 +949,17 @@ body{padding-bottom:82px;overflow-x:hidden}
   </div>
 </div>
 
+
+<div id="submitLoadingOverlay" aria-hidden="true">
+  <div id="submitLoadingCard" role="status" aria-live="polite">
+    <div class="submit-loading-icon">📨</div>
+    <h3>Submitting your entry...</h3>
+    <p>Please wait while we securely send your application.</p>
+    <div class="submit-bouncing-text" aria-hidden="true">
+      <span>S</span><span>u</span><span>b</span><span>m</span><span>i</span><span>t</span><span>t</span><span>i</span><span>n</span><span>g</span><span>!</span>
+    </div>
+  </div>
+</div>
 
 <div id="submissionsOverlay" aria-hidden="true">
   <div id="submissionsCard" role="dialog" aria-modal="true">
@@ -1301,9 +1326,14 @@ $('submitEntryBtn').addEventListener('click',async()=>{
   const post=postById(postId);
   const btn=$('submitEntryBtn');
   const originalText=btn.textContent;
+  const loadingOverlay=$('submitLoadingOverlay');
 
   btn.disabled=true;
   btn.textContent='⏳ Submitting...';
+
+  // Show animated submitting screen immediately.
+  loadingOverlay?.classList.add('show');
+  loadingOverlay?.setAttribute('aria-hidden','false');
 
   const payload={
     postId:postId,
@@ -1347,6 +1377,9 @@ $('submitEntryBtn').addEventListener('click',async()=>{
       isPermission?'warning':'error'
     );
   }finally{
+    // Always remove the loading screen, even if submission fails.
+    loadingOverlay?.classList.remove('show');
+    loadingOverlay?.setAttribute('aria-hidden','true');
     btn.disabled=false;
     btn.textContent=originalText||'✅ Submit Entry';
   }
