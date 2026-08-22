@@ -1022,21 +1022,11 @@ async function showSubmissionsViewer(postId=null){
   $('submissionsOverlay').setAttribute('aria-hidden','false');
 
   try{
-    let ordered=[];
-    try{
-      const fsSnap = await getDocs(query(collection(db,'studentSubmissions'), ...(postId ? [where('postId','==',String(postId))] : []), limit(100)));
-      ordered = fsSnap.docs.map(d=>({id:d.id,...(d.data()||{}), timestamp:formatSubmissionDate(d.data()?.createdAt)})).sort((a,b)=>{
-        const at=a.createdAt?.toMillis?.()||0, bt=b.createdAt?.toMillis?.()||0;
-        return bt-at;
-      });
-    }catch(fsErr){
-      console.warn('Firestore submissions unavailable, falling back to Google Sheet:',fsErr);
-      const rows=await loadGoogleSheetSubmissions();
-      const filtered=postId ? rows.filter(row=>String(row.postId||'')===String(postId) || !row.postId) : rows;
-      ordered=[...filtered].reverse();
-    }
+    const rows=await loadGoogleSheetSubmissions();
+    const filtered=postId ? rows.filter(row=>String(row.postId||'')===String(postId) || !row.postId) : rows;
+    const ordered=[...filtered].reverse();
     count.textContent=`${ordered.length} submission${ordered.length===1?'':'s'}`;
-    subtitle.textContent=postId ? `Applications submitted for “${postById(postId)?.title||'this news post'}”` : 'All student entries';
+    subtitle.textContent=postId ? `Applications submitted for “${postById(postId)?.title||'this news post'}”` : 'All student entries saved in the Google Spreadsheet';
 
     if(!ordered.length){
       list.innerHTML='<div class="submission-empty">📭<br><br><b>No student submissions yet.</b><br><span style="font-size:10px">Submitted entries will appear here for authorized admins.</span></div>';
@@ -1045,7 +1035,7 @@ async function showSubmissionsViewer(postId=null){
 
     list.innerHTML=ordered.map((row,index)=>{
       const status=String(row.status||'pending').toLowerCase();
-      const statusClass=status==='approved'?'reviewed':status==='reviewed'?'reviewed':status==='rejected'?'rejected':'pending';
+      const statusClass=status==='reviewed'?'reviewed':status==='rejected'?'rejected':'pending';
       return `
         <article class="submission-admin-row">
           <div class="submission-admin-top">
@@ -1066,10 +1056,6 @@ async function showSubmissionsViewer(postId=null){
             <div class="submission-details-label">Submission Details</div>
             <div class="submission-admin-details">${escapeHtml(row.details||'No submission details provided.')}</div>
           </div>
-          ${row.id && row.submitterUid ? `<div class="submission-admin-actions">
-            <button class="submission-admin-action review" type="button" onclick="reviewSubmission('${escapeHtml(row.id)}','approved','${escapeHtml(row.submitterUid)}')">✅ Approve</button>
-            <button class="submission-admin-action reject" type="button" onclick="reviewSubmission('${escapeHtml(row.id)}','rejected','${escapeHtml(row.submitterUid)}')">❌ Reject</button>
-          </div>` : ''}
         </article>`;
     }).join('');
   }catch(err){
@@ -1078,29 +1064,6 @@ async function showSubmissionsViewer(postId=null){
     list.innerHTML=`<div class="submission-error"><b>⚠️ Could not load submissions.</b><br>${escapeHtml(err?.message||'Please check the Google Apps Script deployment and try again.')}</div>`;
   }
 }
-
-window.reviewSubmission=async function(submissionId,status,submitterUid){
-  if(!adminMode||!window.loggedUser||!submissionId||!submitterUid)return;
-  try{
-    await updateDoc(doc(db,'studentSubmissions',String(submissionId)),{status,reviewedAt:serverTimestamp(),reviewedBy:window.loggedUser.uid});
-    await addDoc(collection(db,'notifications'),{
-      recipientUid:String(submitterUid),
-      actorUid:window.loggedUser.uid,
-      actorName:window.loggedUser.displayName||'SSLG Admin',
-      type:status==='approved'?'application_approved':'application_rejected',
-      title:status==='approved'?'Application Approved':'Application Rejected',
-      text:status==='approved'?'Your application has been approved by the SSLG administrator.':'Your application has been rejected by the SSLG administrator.',
-      submissionId:String(submissionId),
-      read:false,
-      createdAt:serverTimestamp()
-    });
-    showAppNotice(status==='approved'?'Application approved':'Application rejected',status==='approved'?'The student will receive a real-time notification.':'The student will receive a real-time notification.','success');
-    await showSubmissionsViewer();
-  }catch(e){
-    console.error('Review submission failed:',e);
-    showAppNotice('Could not update application',e?.message||'Please check Firestore Rules.','error');
-  }
-};
 
 $('viewAllSubmissionsBtn').addEventListener('click',()=>showSubmissionsViewer());
 
@@ -1868,62 +1831,20 @@ window.saveStudentSubmission=async function(_id,payload){
     throw new Error('Submissions are not enabled for this news post.');
   }
 
-  const submissionData={
+  const data={
+    action:'submit',
     postId:targetPostId,
     postTitle:payload.postTitle||post.title||'',
-    submitterUid:window.loggedUser.uid,
     studentName:payload.submitterName||window.loggedUser.displayName||'Student',
     studentEmail:payload.submitterEmail||window.loggedUser.email||'',
     gradeSection:payload.gradeSection||'',
     applyingFor:payload.applyingFor||'',
     contactNumber:payload.contactNumber||'',
     details:payload.details||'',
-    status:'pending',
-    createdAt:serverTimestamp(),
-    updatedAt:serverTimestamp()
+    status:'pending'
   };
 
-  const submissionRef=await addDoc(collection(db,'studentSubmissions'),submissionData);
-
-  // Notify every admin profile that can be discovered in Firestore.
-  try{
-    const adminSnap=await getDocs(collection(db,'users'));
-    const adminIds=[];
-    adminSnap.forEach(d=>{const u=d.data()||{}; if(d.id!==window.loggedUser.uid && (u.role==='admin' || isVerifiedAdminEmail(u.email))) adminIds.push(d.id);});
-    await Promise.all(adminIds.map(adminUid=>addDoc(collection(db,'notifications'),{
-      recipientUid:adminUid,
-      actorUid:window.loggedUser.uid,
-      actorName:window.loggedUser.displayName||'Student',
-      type:'application_submitted',
-      title:'New Student Application',
-      text:`${window.loggedUser.displayName||'A student'} submitted an application for ${post.title||'a school opportunity'}.`,
-      submissionId:submissionRef.id,
-      postId:targetPostId,
-      read:false,
-      createdAt:serverTimestamp()
-    })));
-  }catch(notificationError){
-    console.warn('Application admin notification failed:',notificationError);
-  }
-
-  // Keep the spreadsheet as a backup/export destination.
-  try{
-    await submitToGoogleSheet({
-      action:'submit',
-      postId:targetPostId,
-      postTitle:submissionData.postTitle,
-      studentName:submissionData.studentName,
-      studentEmail:submissionData.studentEmail,
-      gradeSection:submissionData.gradeSection,
-      applyingFor:submissionData.applyingFor,
-      contactNumber:submissionData.contactNumber,
-      details:submissionData.details,
-      status:'pending'
-    });
-  }catch(sheetError){
-    console.warn('Spreadsheet backup failed; Firestore submission is still saved:',sheetError);
-  }
-
+  await submitToGoogleSheet(data);
   return true;
 };
 
