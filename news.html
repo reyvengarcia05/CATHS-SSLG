@@ -592,41 +592,52 @@ body{padding-bottom:82px;overflow-x:hidden}
 }
 #submissionsOverlay.show{display:flex !important}
 #submissionsCard{
-  width:min(900px,95vw);max-height:88vh;overflow:auto;margin:auto;
-  background:rgba(255,255,255,.98);color:#173a86;border-radius:26px;
-  padding:22px;box-shadow:0 28px 90px rgba(0,0,0,.42)
+  width:min(980px,95vw);max-height:90vh;overflow:hidden;margin:auto;
+  background:rgba(255,255,255,.99);color:#173a86;border-radius:28px;
+  padding:22px;box-shadow:0 28px 90px rgba(0,0,0,.42);
+  display:flex;flex-direction:column;min-height:0
 }
-#submissionsCard h3{font-size:20px;color:#00296B;margin-bottom:4px}
+#submissionsCard h3{font-size:21px;color:#00296B;margin-bottom:4px}
 #submissionsSubtitle{font-size:10px;color:#71809a;margin-bottom:14px}
-.submission-admin-list{display:grid;gap:10px}
+.submission-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.submission-summary{display:flex;gap:7px;flex-wrap:wrap}
+.submission-count{padding:6px 10px;border-radius:999px;background:#eef4ff;color:#173a86;font-size:9px;font-weight:800}
+.submission-hint{font-size:9px;color:#7a879f}
+.submission-admin-list{display:grid;gap:12px;overflow-y:auto;min-height:0;max-height:calc(90vh - 150px);padding:2px 4px 8px 2px;scrollbar-width:thin}
+.submission-admin-list::-webkit-scrollbar{width:8px}
+.submission-admin-list::-webkit-scrollbar-track{background:#eef4ff;border-radius:10px}
+.submission-admin-list::-webkit-scrollbar-thumb{background:#b8c8e6;border-radius:10px}
 .submission-admin-row{
-  background:#f7faff;border:1px solid #e0e8f6;border-radius:14px;padding:12px
+  background:linear-gradient(180deg,#fff,#f8fbff);border:1px solid #dfe8f8;border-radius:18px;padding:15px;
+  box-shadow:0 8px 22px rgba(23,58,134,.07)
 }
-.submission-admin-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
-.submission-admin-name{font-size:12px;font-weight:800;color:#173a86}
-.submission-admin-meta{font-size:9px;color:#75819a;margin-top:2px}
-.submission-admin-details{margin-top:8px;font-size:10px;color:#344568;line-height:1.5;white-space:pre-line}
-.submission-status{
-  border:none;border-radius:999px;padding:5px 8px;font-size:8px;font-weight:800;
-  background:#fff4cf;color:#7a5b00
-}
+.submission-admin-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.submission-person{min-width:0}
+.submission-admin-name{font-size:14px;font-weight:800;color:#173a86;word-break:break-word}
+.submission-admin-meta{font-size:9px;color:#71809a;margin-top:4px;line-height:1.5;word-break:break-word}
+.submission-status{flex:0 0 auto;border:none;border-radius:999px;padding:6px 9px;font-size:8px;font-weight:900;background:#fff4cf;color:#7a5b00}
 .submission-status.reviewed{background:#e5f7eb;color:#1d7a43}
 .submission-status.rejected{background:#ffe6e6;color:#b42323}
-.submission-admin-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.submission-admin-action{
-  border:none;border-radius:9px;padding:7px 9px;font-size:9px;font-weight:800;cursor:pointer
-}
+.submission-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.submission-info-box{background:#f5f8ff;border:1px solid #e5ecfa;border-radius:12px;padding:9px 10px;min-width:0}
+.submission-info-label{font-size:8px;text-transform:uppercase;letter-spacing:.4px;color:#8190aa;font-weight:800}
+.submission-info-value{margin-top:3px;font-size:10px;color:#243d6f;font-weight:600;line-height:1.45;word-break:break-word}
+.submission-details-box{margin-top:9px;background:#fff;border:1px solid #e3e9f5;border-radius:13px;padding:10px}
+.submission-details-label{font-size:8px;text-transform:uppercase;letter-spacing:.4px;color:#8190aa;font-weight:800}
+.submission-admin-details{margin-top:5px;font-size:10px;color:#344568;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.submission-admin-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.submission-admin-action{border:none;border-radius:10px;padding:8px 10px;font-size:9px;font-weight:900;cursor:pointer}
 .submission-admin-action.review{background:#003DA5;color:#fff}
 .submission-admin-action.reject{background:#c62828;color:#fff}
-.submission-empty{
-  padding:28px 18px;text-align:center;color:#74809a;background:#f7faff;border-radius:15px
-}
+.submission-empty{padding:32px 18px;text-align:center;color:#74809a;background:#f7faff;border-radius:15px;border:1px dashed #d6e2f5}
+.submission-error{padding:24px 18px;text-align:center;color:#b42323;background:#fff7f7;border:1px solid #ffd1d1;border-radius:15px;font-size:11px;line-height:1.6}
 @media(max-width:768px){
-  #submissionsCard{width:min(350px,94vw);padding:17px;border-radius:22px}
+  #submissionsCard{width:min(390px,94vw);max-height:88vh;padding:17px;border-radius:22px}
+  .submission-admin-list{max-height:calc(88vh - 145px)}
   .submission-admin-top{flex-direction:column}
   .submission-status{align-self:flex-start}
+  .submission-fields{grid-template-columns:1fr}
 }
-
 </style>
 </head>
 <body>
@@ -875,6 +886,10 @@ body{padding-bottom:82px;overflow-x:hidden}
     <button class="close-btn" id="closeSubmissions" type="button">✕</button>
     <h3>📥 Student Submissions</h3>
     <div id="submissionsSubtitle">Admin-only view</div>
+    <div class="submission-toolbar">
+      <div class="submission-summary"><span id="submissionCount" class="submission-count">0 submissions</span></div>
+      <div class="submission-hint">Scroll to view all applications</div>
+    </div>
     <div id="submissionsList" class="submission-admin-list"></div>
   </div>
 </div>
@@ -936,34 +951,66 @@ $('managePostsBtn').addEventListener('click',()=>{
  if(!hidden) return;
  setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'start'}),40);
 });
-$('viewAllSubmissionsBtn').addEventListener('click',()=>{
- if(!adminMode || !window.loggedUser){
-   showAppNotice('Admin access required','Only authorized admins can view student submissions.','error');
-   return;
- }
+async function showSubmissionsViewer(postId=null){
+  if(!adminMode || !window.loggedUser){
+    showAppNotice('Admin access required','Only authorized admins can view student submissions.','error');
+    return;
+  }
 
- const frameUrl=GOOGLE_SHEET_WEB_APP_URL+'?action=admin&postTitle='+encodeURIComponent('All Student Submissions')+'&_='+Date.now();
- const list=$('submissionsList');
- list.innerHTML='';
+  const list=$('submissionsList');
+  const count=$('submissionCount');
+  const subtitle=$('submissionsSubtitle');
+  list.innerHTML='<div class="submission-empty">⏳<br><br>Loading student submissions...</div>';
+  count.textContent='Loading...';
+  subtitle.textContent=postId ? 'Loading entries for this news post...' : 'All student entries saved in the Google Spreadsheet';
+  $('submissionsOverlay').classList.add('show');
+  $('submissionsOverlay').setAttribute('aria-hidden','false');
 
- const frame=document.createElement('iframe');
- frame.src=frameUrl;
- frame.title='All student submissions';
- frame.loading='eager';
- frame.referrerPolicy='no-referrer';
- frame.style.cssText='width:100%;height:62vh;min-height:480px;border:0;border-radius:14px;background:#f7faff;display:block;';
+  try{
+    const rows=await loadGoogleSheetSubmissions();
+    const filtered=postId ? rows.filter(row=>String(row.postId||'')===String(postId) || !row.postId) : rows;
+    const ordered=[...filtered].reverse();
+    count.textContent=`${ordered.length} submission${ordered.length===1?'':'s'}`;
+    subtitle.textContent=postId ? `Applications submitted for “${postById(postId)?.title||'this news post'}”` : 'All student entries saved in the Google Spreadsheet';
 
- const loading=document.createElement('div');
- loading.className='submission-empty';
- loading.textContent='Loading submissions...';
- frame.addEventListener('load',()=>{try{loading.remove();}catch{}},{once:true});
+    if(!ordered.length){
+      list.innerHTML='<div class="submission-empty">📭<br><br><b>No student submissions yet.</b><br><span style="font-size:10px">Submitted entries will appear here for authorized admins.</span></div>';
+      return;
+    }
 
- list.appendChild(loading);
- list.appendChild(frame);
- $('submissionsSubtitle').textContent='All student entries saved in the Google Spreadsheet';
- $('submissionsOverlay').classList.add('show');
- $('submissionsOverlay').setAttribute('aria-hidden','false');
-});
+    list.innerHTML=ordered.map((row,index)=>{
+      const status=String(row.status||'pending').toLowerCase();
+      const statusClass=status==='reviewed'?'reviewed':status==='rejected'?'rejected':'pending';
+      return `
+        <article class="submission-admin-row">
+          <div class="submission-admin-top">
+            <div class="submission-person">
+              <div class="submission-admin-name">${escapeHtml(row.studentName||'Student')}</div>
+              <div class="submission-admin-meta">Application #${ordered.length-index}${row.timestamp?' • '+escapeHtml(row.timestamp):''}</div>
+            </div>
+            <span class="submission-status ${statusClass}">${escapeHtml(status.toUpperCase())}</span>
+          </div>
+          <div class="submission-fields">
+            <div class="submission-info-box"><div class="submission-info-label">Name</div><div class="submission-info-value">${escapeHtml(row.studentName||'—')}</div></div>
+            <div class="submission-info-box"><div class="submission-info-label">Section</div><div class="submission-info-value">${escapeHtml(row.gradeSection||'—')}</div></div>
+            <div class="submission-info-box"><div class="submission-info-label">Position / Applying For</div><div class="submission-info-value">${escapeHtml(row.applyingFor||'—')}</div></div>
+            <div class="submission-info-box"><div class="submission-info-label">Email</div><div class="submission-info-value">${escapeHtml(row.studentEmail||'—')}</div></div>
+            <div class="submission-info-box"><div class="submission-info-label">Contact Number</div><div class="submission-info-value">${escapeHtml(row.contactNumber||'—')}</div></div>
+          </div>
+          <div class="submission-details-box">
+            <div class="submission-details-label">Submission Details</div>
+            <div class="submission-admin-details">${escapeHtml(row.details||'No submission details provided.')}</div>
+          </div>
+        </article>`;
+    }).join('');
+  }catch(err){
+    console.error('Failed to load student submissions:',err);
+    count.textContent='Unavailable';
+    list.innerHTML=`<div class="submission-error"><b>⚠️ Could not load submissions.</b><br>${escapeHtml(err?.message||'Please check the Google Apps Script deployment and try again.')}</div>`;
+  }
+}
+
+$('viewAllSubmissionsBtn').addEventListener('click',()=>showSubmissionsViewer());
 
 
 function showAction(title,message,icon='ℹ️',tone='',selectOptions=null,defaultValue=''){
@@ -1268,42 +1315,7 @@ async function loadSubmissionsForPost(postId){
   return await loadGoogleSheetSubmissions();
 }
 
-window.openSubmissions=function(postId){
-  if(!adminMode || !window.loggedUser){
-    showAppNotice('Admin access required','Only authorized admins can view student submissions.','error');
-    return;
-  }
-
-  const post=postById(postId);
-
-  const frameUrl=GOOGLE_SHEET_WEB_APP_URL +
-    '?action=admin&postTitle=' + encodeURIComponent(post.title||'Student Submissions') +
-    '&_=' + Date.now();
-
-  const list=$('submissionsList');
-  list.innerHTML='';
-
-  const frame=document.createElement('iframe');
-  frame.src=frameUrl;
-  frame.title='Student submissions';
-  frame.loading='eager';
-  frame.referrerPolicy='no-referrer';
-  frame.style.cssText='width:100%;height:62vh;min-height:480px;border:0;border-radius:14px;background:#f7faff;display:block;';
-
-  const loading=document.createElement('div');
-  loading.className='submission-empty';
-  loading.textContent='Loading submissions...';
-
-  frame.addEventListener('load',()=>{
-    try{loading.remove();}catch{}
-  },{once:true});
-
-  list.appendChild(loading);
-  list.appendChild(frame);
-  $('submissionsSubtitle').textContent='Student entries saved in the Google Spreadsheet';
-  $('submissionsOverlay').classList.add('show');
-  $('submissionsOverlay').setAttribute('aria-hidden','false');
-};
+window.openSubmissions=function(postId){ return showSubmissionsViewer(postId); };
 
 window.updateSubmissionStatus=async function(){
   showAppNotice('Update in Google Sheets','Change the Status cell in the Google Spreadsheet to reviewed or rejected.','warning');
