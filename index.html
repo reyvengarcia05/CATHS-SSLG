@@ -1376,6 +1376,13 @@ color:black;
     color:#fff !important;
 }
 
+/* Guidance Councilor — centered underneath Student Voice + Open Messages */
+.quick-wrapper .grid .guidance-card{
+    grid-column:1 / -1;
+    width:min(100%, 520px);
+    justify-self:center;
+}
+
 /* Open Messages gets the exact same glass treatment */
 .quick-wrapper .grid .open-messages-card{
     background:linear-gradient(
@@ -1541,6 +1548,11 @@ and connect with the school community.
 <a href="messages.html" class="card open-messages-card" onclick="openProtectedNavigation(event, 'messages.html')">
 <div class="icon">💬</div>
 <h3>Open Messages</h3>
+</a>
+
+<a href="Guidance.html" class="card guidance-card" onclick="openProtectedNavigation(event, 'Guidance.html')">
+<div class="icon">🧑‍🏫</div>
+<h3>Guidance Councilor</h3>
 </a>
 
 </div>
