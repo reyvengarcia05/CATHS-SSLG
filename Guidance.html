@@ -21,7 +21,7 @@ label{display:block;margin:14px 0 8px;font-weight:600}input,select,textarea{widt
 .verify-box{display:none;margin-top:2px;padding:14px;border:1px solid rgba(255,255,255,.14);border-radius:16px;background:rgba(0,0,0,.08)}.verify-message{display:none;padding:10px 12px;border-radius:12px;margin:8px 0 2px;text-align:center;font-weight:600}
 .notice{margin:14px 0;padding:12px 14px;border-radius:14px;background:rgba(255,215,0,.14);border:1px solid rgba(255,215,0,.28);font-size:13px;line-height:1.55}.admin-badge{display:none;margin:0 0 16px;padding:12px 14px;border-radius:14px;background:rgba(40,167,69,.22);border:1px solid rgba(255,255,255,.22);font-weight:700}
 .btn{width:100%;padding:15px;margin-top:18px;border:0;border-radius:15px;background:var(--yellow);color:var(--blue);font-size:16px;font-weight:800;cursor:pointer;transition:.25s}.btn:hover{transform:translateY(-3px)}.btn:disabled{opacity:.7;cursor:not-allowed;transform:none}.btn-secondary{background:rgba(255,255,255,.16);color:white;border:1px solid rgba(255,255,255,.24)}
-.error{display:none;color:#ffe5e5;font-size:12px;margin-top:-18px;margin-bottom:14px;font-weight:600}.popup{display:none;position:fixed;inset:0;background:rgba(0,0,0,.58);z-index:2000;align-items:center;justify-content:center;padding:20px}.popup-content{width:min(430px,100%);background:linear-gradient(135deg,#083477,#0b54bd);padding:30px;border-radius:24px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.35)}.popup-content h2{margin:8px 0}.popup-content p{opacity:.92;line-height:1.55}.checkmark{font-size:58px}.popup button{margin-top:18px;border:0;border-radius:12px;padding:12px 22px;font-weight:800;cursor:pointer;background:var(--yellow);color:var(--blue)}
+.error{display:none;color:#ffd9d9;font-size:12px;margin-top:7px;margin-bottom:10px;font-weight:600;line-height:1.4}.invalid-field{border:2px solid #ff5c5c !important;box-shadow:0 0 0 3px rgba(255,92,92,.16) !important;background:#fffafa !important}.valid-field{border:2px solid #4ade80 !important;box-shadow:0 0 0 3px rgba(74,222,128,.12) !important}.admin-panel{position:relative}.admin-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.admin-action-btn{border:0;border-radius:12px;padding:12px 14px;font-weight:800;cursor:pointer;background:#ffd700;color:#00296B}.admin-action-btn.secondary{background:rgba(255,255,255,.14);color:white;border:1px solid rgba(255,255,255,.22)}.admin-submissions{display:none;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.14)}.submission-card{background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:14px;margin-bottom:10px}.submission-card h4{margin-bottom:6px}.submission-card p{font-size:12px;line-height:1.5;margin:4px 0}.submission-status{display:inline-block;margin:7px 0;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800;background:rgba(255,215,0,.18)}.approve-btn{width:100%;margin-top:10px;border:0;border-radius:10px;padding:10px;font-weight:800;cursor:pointer;background:#28a745;color:#fff}.approve-btn:disabled{opacity:.6;cursor:not-allowed}.admin-note{font-size:11px!important;opacity:.75!important;margin-top:10px!important}@media(max-width:720px){.admin-actions{grid-template-columns:1fr}.submission-card{padding:12px}}.popup{display:none;position:fixed;inset:0;background:rgba(0,0,0,.58);z-index:2000;align-items:center;justify-content:center;padding:20px}.popup-content{width:min(430px,100%);background:linear-gradient(135deg,#083477,#0b54bd);padding:30px;border-radius:24px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.35)}.popup-content h2{margin:8px 0}.popup-content p{opacity:.92;line-height:1.55}.checkmark{font-size:58px}.popup button{margin-top:18px;border:0;border-radius:12px;padding:12px 22px;font-weight:800;cursor:pointer;background:var(--yellow);color:var(--blue)}
 .admin-panel{display:none;margin-top:18px;padding:18px;border-radius:18px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16)}.admin-panel h3{margin-bottom:8px}.admin-panel p{font-size:13px;line-height:1.55;opacity:.9}
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;height:78px;background:linear-gradient(90deg,#1e3a8a,#b59f1a);display:flex;justify-content:space-around;align-items:center;z-index:999}.nav-item{display:flex;flex-direction:column;align-items:center;text-decoration:none;color:white;font-size:12px;gap:2px}.nav-item div{font-size:22px}.nav-item.active{font-weight:800}
 @media(max-width:720px){
@@ -169,8 +169,16 @@ label{display:block;margin:14px 0 8px;font-weight:600}input,select,textarea{widt
     </form>
 
     <div id="adminPanel" class="admin-panel">
-      <h3>🛡️ Admin Access</h3>
-      <p>You are signed in using the registered admin Google account. Admin-specific controls can be connected to the Guidance backend without exposing them to regular students.</p>
+      <h3>🛡️ Guidance Admin Panel</h3>
+      <p>Admin controls are visible only to approved administrator Google accounts.</p>
+      <div class="admin-actions">
+        <button type="button" class="admin-action-btn" onclick="openGuidanceSubmissions()">📋 See Submissions</button>
+        <button type="button" class="admin-action-btn secondary" onclick="refreshGuidanceSubmissions()">🔄 Refresh</button>
+      </div>
+      <div id="adminSubmissions" class="admin-submissions">
+        <div id="adminSubmissionsList"></div>
+      </div>
+      <p class="admin-note">The submission list and approval action use your Google Apps Script backend actions <b>getGuidanceSubmissions</b> and <b>approveGuidance</b>.</p>
     </div>
   </section>
 </main>
@@ -201,6 +209,19 @@ label{display:block;margin:14px 0 8px;font-weight:600}input,select,textarea{widt
   </div>
 </div>
 
+<div id="submissionsPopup" class="popup">
+  <div class="popup-content" style="width:min(760px,100%);max-height:88vh;overflow:auto;text-align:left">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+      <div>
+        <div style="font-size:14px;opacity:.75">Guidance Admin</div>
+        <h2 style="margin:2px 0 0">📋 Guidance Submissions</h2>
+      </div>
+      <button onclick="closeSubmissionsPopup()" style="margin:0;padding:8px 12px">✕</button>
+    </div>
+    <div id="submissionsList" style="margin-top:16px"></div>
+  </div>
+</div>
+
 <nav class="bottom-nav">
   <a href="index.html" class="nav-item"><div>🏠</div><span>Home</span></a>
   <a href="news-feed.html" class="nav-item"><div>📰</div><span>News Feed</span></a>
@@ -223,8 +244,30 @@ const SECTION_CODES = {
 }
 const sections = Object.keys(SECTION_CODES);
 
-function hideErrors(){document.querySelectorAll('.error').forEach(el=>el.style.display='none')}
-function showError(id){const el=document.getElementById(id); if(el) el.style.display='block'}
+function hideErrors(){
+  document.querySelectorAll('.error').forEach(el=>el.style.display='none');
+  document.querySelectorAll('#guidanceForm input, #guidanceForm select, #guidanceForm textarea').forEach(el=>{
+    el.classList.remove('invalid-field','valid-field');
+  });
+}
+function showError(id, fieldId){
+  const el=document.getElementById(id);
+  if(el) el.style.display='block';
+  if(fieldId){
+    const field=document.getElementById(fieldId);
+    if(field){field.classList.add('invalid-field');field.classList.remove('valid-field')}
+  }
+}
+function showValid(fieldId){
+  const field=document.getElementById(fieldId);
+  if(field){field.classList.remove('invalid-field');field.classList.add('valid-field')}
+}
+function clearFieldState(fieldId,errorId){
+  const field=document.getElementById(fieldId);
+  const err=document.getElementById(errorId);
+  if(field){field.classList.remove('invalid-field','valid-field')}
+  if(err) err.style.display='none';
+}
 function normalizePhone(value){return value.replace(/[\s()-]/g,'')}
 function isValidPHPhone(value){const p=normalizePhone(value); return /^(09\d{9}|\+639\d{9}|639\d{9})$/.test(p)}
 function isAdmin(){return !!firebaseUser && ADMIN_EMAILS.includes(String(firebaseUser.email||'').trim().toLowerCase())}
@@ -259,7 +302,13 @@ function resetVerification(){
 document.getElementById('section').addEventListener('change',e=>{
   const chosen=e.target.value.trim();
   resetVerification();
-  if(chosen){document.getElementById('sectionError').style.display='none';document.getElementById('sectionVerification').style.display='block'}
+  if(chosen){
+    clearFieldState('section','sectionError');
+    showValid('section');
+    document.getElementById('sectionVerification').style.display='block';
+  }else{
+    showError('sectionError','section');
+  }
 });
 
 window.verifySectionCode=function(){
@@ -267,14 +316,36 @@ window.verifySectionCode=function(){
   const code=document.getElementById('verificationCode').value.trim();
   const message=document.getElementById('verificationMessage');
   const btn=document.getElementById('verifySectionBtn');
-  if(!section){showError('sectionError');return}
+  if(!section){showError('sectionError','section');return}
   if(!SECTION_CODES[section]){message.textContent='That section is not available. Please select a Grade 11 or Grade 12 section from the choices.';message.style.display='block';message.style.background='#ffe5e5';message.style.color='#b00020';return}
   if(!code){message.textContent='Please enter your section verification code.';message.style.display='block';message.style.background='#fff3cd';message.style.color='#856404';return}
   if(code!==SECTION_CODES[section]){sectionVerified=false;verifiedSection='';message.textContent='Incorrect section verification code for the selected section.';message.style.display='block';message.style.background='#ffe5e5';message.style.color='#b00020';return}
   sectionVerified=true;verifiedSection=section;message.textContent='Section verified successfully.';message.style.display='block';message.style.background='#d4edda';message.style.color='#155724';btn.disabled=true;btn.textContent='Section Verified';btn.style.background='#28a745';btn.style.color='white';document.getElementById('verificationCode').readOnly=true;
 }
 
-document.getElementById('phone').addEventListener('input',function(){this.value=this.value.replace(/[^0-9+\s()-]/g,'');if(isValidPHPhone(this.value))document.getElementById('phoneError').style.display='none'});
+document.getElementById('phone').addEventListener('input',function(){this.value=this.value.replace(/[^0-9+\s()-]/g,'');if(isValidPHPhone(this.value)){clearFieldState('phone','phoneError');showValid('phone')}else{this.classList.remove('valid-field')}});
+document.querySelectorAll('#guidanceForm select, #guidanceForm input, #guidanceForm textarea').forEach(el=>{
+  el.addEventListener('blur',()=>validateSingleField(el.id));
+});
+function validateSingleField(id){
+  const val=(document.getElementById(id)?.value||'').trim();
+  const map={
+    fullName:['nameError','Your Google account name could not be detected. Please sign in again.'],
+    phone:['phoneError','Enter a valid Philippine mobile number.'],
+    contactMethod:['contactError','Please select a contact method.'],
+    section:['sectionError','Please choose one of the available Grade 11 or Grade 12 sections.'],
+    requestType:['typeError','Please select a guidance request type.'],
+    urgency:['urgencyError','Please select the urgency of your request.'],
+    preferredSchedule:['scheduleError','Please select a preferred schedule.'],
+    concern:['concernError','Please provide your concern or reason for requesting guidance.'],
+    additionalDetails:['detailsError','Please provide the additional details.']
+  };
+  if(!map[id]) return true;
+  let valid=!!val;
+  if(id==='phone') valid=isValidPHPhone(val);
+  if(valid){clearFieldState(id,map[id][0]);showValid(id);return true}
+  showError(map[id][0],id);return false;
+}
 
 document.getElementById('guidanceForm').addEventListener('submit',async e=>{
   e.preventDefault();hideErrors();
@@ -291,20 +362,20 @@ document.getElementById('guidanceForm').addEventListener('submit',async e=>{
   const additionalDetails=document.getElementById('additionalDetails').value.trim();
 
   let valid=true;
-  if(!name) {showError('nameError');valid=false}
+  if(!name) {showError('nameError','fullName');valid=false} else showValid('fullName')
   if(!email) {valid=false}
-  if(!isValidPHPhone(phone)){showError('phoneError');valid=false}
-  if(!contactMethod){showError('contactError');valid=false}
-  if(!section){showError('sectionError');valid=false}
+  if(!isValidPHPhone(phone)){showError('phoneError','phone');valid=false} else showValid('phone')
+  if(!contactMethod){showError('contactError','contactMethod');valid=false} else showValid('contactMethod')
+  if(!section){showError('sectionError','section');valid=false} else if(!SECTION_CODES[section]){showError('sectionError','section');valid=false}
   else if(!sectionVerified || verifiedSection!==section){
     document.getElementById('sectionVerification').style.display='block';
     const m=document.getElementById('verificationMessage');m.textContent='Please verify your section before submitting.';m.style.display='block';m.style.background='#fff3cd';m.style.color='#856404';valid=false;
   }
-  if(!requestType){showError('typeError');valid=false}
-  if(!urgency){showError('urgencyError');valid=false}
-  if(!preferredSchedule){showError('scheduleError');valid=false}
-  if(!concern){showError('concernError');valid=false}
-  if(!additionalDetails){showError('detailsError');valid=false}
+  if(!requestType){showError('typeError','requestType');valid=false} else showValid('requestType')
+  if(!urgency){showError('urgencyError','urgency');valid=false} else showValid('urgency')
+  if(!preferredSchedule){showError('scheduleError','preferredSchedule');valid=false} else showValid('preferredSchedule')
+  if(!concern){showError('concernError','concern');valid=false} else showValid('concern')
+  if(!additionalDetails){showError('detailsError','additionalDetails');valid=false} else showValid('additionalDetails')
   if(!valid)return;
 
   const submitBtn=document.getElementById('submitBtn');submitBtn.disabled=true;
@@ -325,6 +396,55 @@ document.getElementById('guidanceForm').addEventListener('submit',async e=>{
     alert('Unable to submit your guidance request right now. Please try again.');
   }finally{submitBtn.disabled=false}
 });
+window.closeSubmissionsPopup=function(){document.getElementById('submissionsPopup').style.display='none'};
+window.openGuidanceSubmissions=async function(){
+  if(!firebaseUser || !isAdmin()){alert('🛡️ Admin access only.');return;}
+  document.getElementById('submissionsPopup').style.display='flex';
+  await refreshGuidanceSubmissions();
+};
+window.refreshGuidanceSubmissions=async function(){
+  const list=document.getElementById('submissionsList');
+  if(!list) return;
+  if(!firebaseUser || !isAdmin()){list.innerHTML='<p>Admin access only.</p>';return;}
+  list.innerHTML='<div style="text-align:center;padding:25px">⏳ Loading submissions...</div>';
+  try{
+    const response=await fetch(SCRIPT_URL+'?action=getGuidanceSubmissions&email='+encodeURIComponent(firebaseUser.email));
+    const data=await response.json();
+    if(data && data.success===false){list.innerHTML='<p style="padding:20px">'+(data.message||'Unable to load submissions.')+'</p>';return;}
+    const items=Array.isArray(data)?data:(data.submissions||data.data||[]);
+    if(!items.length){list.innerHTML='<div style="text-align:center;padding:28px">📭<br><br>No guidance submissions found.</div>';return;}
+    list.innerHTML=items.slice().reverse().map((item,idx)=>{
+      const status=String(item.status||'Pending');
+      const canApprove=status.toLowerCase()!=='approved';
+      const id=String(item.id||item.submissionId||item.timestamp||idx).replace(/[^a-zA-Z0-9_-]/g,'_');
+      return `<div class="submission-card">
+        <h4>👤 ${escapeHtml(item.name||'Unknown Student')}</h4>
+        <p><b>Email:</b> ${escapeHtml(item.email||'N/A')}</p>
+        <p><b>Phone:</b> ${escapeHtml(item.phone||'N/A')}</p>
+        <p><b>Section:</b> ${escapeHtml(item.section||'N/A')}</p>
+        <p><b>Request:</b> ${escapeHtml(item.requestType||'N/A')}</p>
+        <p><b>Concern:</b> ${escapeHtml(item.concern||'')}</p>
+        <p><b>Details:</b> ${escapeHtml(item.additionalDetails||'')}</p>
+        <span class="submission-status">Status: ${escapeHtml(status)}</span>
+        ${canApprove?`<button type="button" class="approve-btn" onclick="approveGuidanceSubmission(${JSON.stringify(item).replace(/</g,'\u003c')})">✅ Approve</button>`:'<button type="button" class="approve-btn" disabled>✅ Approved</button>'}
+      </div>`;
+    }).join('');
+  }catch(err){console.error(err);list.innerHTML='<p style="padding:20px">Failed to load guidance submissions. Check that the Apps Script supports getGuidanceSubmissions.</p>';}
+};
+window.approveGuidanceSubmission=async function(item){
+  if(!firebaseUser || !isAdmin()){alert('🛡️ Admin access only.');return;}
+  if(!confirm('Approve this guidance submission?')) return;
+  try{
+    const payload={action:'approveGuidance',email:firebaseUser.email,submissionId:item.id||item.submissionId||item.timestamp,name:item.name||'',studentEmail:item.email||item.studentEmail||''};
+    const response=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(payload)});
+    const result=await response.json();
+    if(!result.success){alert(result.message||'Unable to approve submission.');return;}
+    alert('✅ Guidance submission approved.');
+    await refreshGuidanceSubmissions();
+  }catch(err){console.error(err);alert('Unable to approve submission. Please check the Apps Script approveGuidance action.');}
+};
+function escapeHtml(value){return String(value??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[m]));}
+
 window.googleLogin=async function(){
   try{await signInWithPopup(window.auth,window.googleProvider);closeLogin()}catch(err){console.error(err);alert('Google login failed: '+err.message)}
 }
