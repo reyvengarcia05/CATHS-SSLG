@@ -46,7 +46,7 @@ label{display:block;margin:14px 0 8px;font-weight:600}input,select,textarea{widt
 }
 
 .loading-submissions{display:flex;align-items:center;justify-content:center;gap:4px;padding:25px;font-weight:700;letter-spacing:.2px}
-.guidance-toast{position:fixed;top:24px;left:50%;transform:translate(-50%,-20px);z-index:5000;min-width:min(420px,calc(100% - 28px));padding:15px 18px;border-radius:16px;background:rgba(18,37,78,.96);border:1px solid rgba(255,255,255,.16);box-shadow:0 18px 45px rgba(0,0,0,.28);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:none;opacity:0;transition:.3s ease;align-items:center;gap:12px}.guidance-toast.show{display:flex;opacity:1;transform:translate(-50%,0)}.guidance-toast.success{border-color:rgba(74,222,128,.45)}.guidance-toast .toast-icon{font-size:25px}.guidance-toast strong{display:block;font-size:14px}.guidance-toast span{display:block;font-size:12px;opacity:.86;margin-top:2px}@media(max-width:720px){.guidance-toast{top:14px}}.loading-dots{display:inline-flex;align-items:flex-end;gap:2px;height:22px}.loading-dots i{font-style:normal;font-size:24px;line-height:1;animation:dotJump .75s infinite ease-in-out;display:inline-block;text-shadow:0 0 10px rgba(255,255,255,.15)}.loading-dots i:nth-child(1){color:#ff4d6d;animation-delay:0s}.loading-dots i:nth-child(2){color:#ffd43b;animation-delay:.12s}.loading-dots i:nth-child(3){color:#4dabf7;animation-delay:.24s}@keyframes dotJump{0%,60%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-9px) scale(1.12)}}
+.guidance-notify{position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,.64);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:18px;opacity:0;transition:opacity .25s ease}.guidance-notify.show{display:flex;opacity:1}.guidance-notify-card{position:relative;width:min(430px,100%);background:linear-gradient(160deg,#fff,#f5f9ff);color:#12254e;border-radius:28px;padding:30px 22px 22px;text-align:center;box-shadow:0 28px 80px rgba(0,0,0,.38);transform:translateY(18px) scale(.94);animation:notifyPop .34s cubic-bezier(.2,.85,.25,1) forwards;overflow:hidden}.guidance-notify-card:before{content:"";position:absolute;left:0;top:0;right:0;height:7px;background:linear-gradient(90deg,#28a745,#4ade80,#ffd43b)}.guidance-notify-icon{width:82px;height:82px;margin:2px auto 14px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#28a745,#61e58d);color:#fff;font-size:42px;box-shadow:0 14px 30px rgba(40,167,69,.28);animation:notifyIcon .55s ease .08s both}.guidance-notify.error .guidance-notify-icon{background:linear-gradient(135deg,#e03131,#ff6b6b);box-shadow:0 14px 30px rgba(224,49,49,.24)}.guidance-notify-title{font-size:21px;font-weight:800;margin-bottom:8px}.guidance-notify-message{font-size:14px;line-height:1.6;color:#596983}.guidance-notify-close{width:100%;margin-top:20px;border:0;border-radius:14px;padding:13px 16px;background:#ffd700;color:#00296B;font-weight:800;font-size:15px;cursor:pointer;transition:.2s}.guidance-notify-close:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(0,0,0,.12)}@keyframes notifyPop{to{transform:translateY(0) scale(1)}}@keyframes notifyIcon{0%{transform:scale(.55) rotate(-10deg);opacity:.4}55%{transform:scale(1.1) rotate(4deg);opacity:1}100%{transform:scale(1) rotate(0)}}@media(max-width:720px){.guidance-notify{padding:14px}.guidance-notify-card{border-radius:24px;padding:28px 18px 18px}.guidance-notify-icon{width:72px;height:72px;font-size:36px}.guidance-notify-title{font-size:20px}}.loading-dots{display:inline-flex;align-items:flex-end;gap:2px;height:22px}.loading-dots i{font-style:normal;font-size:24px;line-height:1;animation:dotJump .75s infinite ease-in-out;display:inline-block;text-shadow:0 0 10px rgba(255,255,255,.15)}.loading-dots i:nth-child(1){color:#ff4d6d;animation-delay:0s}.loading-dots i:nth-child(2){color:#ffd43b;animation-delay:.12s}.loading-dots i:nth-child(3){color:#4dabf7;animation-delay:.24s}@keyframes dotJump{0%,60%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-9px) scale(1.12)}}
 </style>
 </head>
 <body>
@@ -212,7 +212,14 @@ label{display:block;margin:14px 0 8px;font-weight:600}input,select,textarea{widt
   </div>
 </div>
 
-<div id="guidanceToast" class="guidance-toast" role="status" aria-live="polite"><div class="toast-icon" id="guidanceToastIcon">✅</div><div><strong id="guidanceToastTitle">Success</strong><span id="guidanceToastMessage">Done.</span></div></div>
+<div id="guidanceNotify" class="guidance-notify" role="dialog" aria-modal="true" aria-labelledby="guidanceNotifyTitle" aria-describedby="guidanceNotifyMessage">
+  <div class="guidance-notify-card">
+    <div id="guidanceNotifyIcon" class="guidance-notify-icon">✅</div>
+    <div id="guidanceNotifyTitle" class="guidance-notify-title">Guidance Request Approved</div>
+    <div id="guidanceNotifyMessage" class="guidance-notify-message">The submission is now marked as Approved.</div>
+    <button type="button" class="guidance-notify-close" onclick="closeGuidanceNotify()">Okay</button>
+  </div>
+</div>
 
 <div id="submissionsPopup" class="popup">
   <div class="popup-content" style="width:min(760px,100%);max-height:88vh;overflow:auto;text-align:left">
@@ -482,16 +489,25 @@ window.refreshGuidanceSubmissions=async function(){
   }
 };
 
-function showGuidanceToast(title,message,icon="✅") {
-  const toast=document.getElementById("guidanceToast");
-  if(!toast)return;
-  document.getElementById("guidanceToastIcon").textContent=icon;
-  document.getElementById("guidanceToastTitle").textContent=title;
-  document.getElementById("guidanceToastMessage").textContent=message;
-  toast.classList.add("show","success");
-  clearTimeout(window.__guidanceToastTimer);
-  window.__guidanceToastTimer=setTimeout(()=>toast.classList.remove("show"),3200);
+function showGuidanceNotify(title,message,icon="✅",type="success"){
+  const modal=document.getElementById('guidanceNotify');
+  if(!modal)return;
+  document.getElementById('guidanceNotifyIcon').textContent=icon;
+  document.getElementById('guidanceNotifyTitle').textContent=title;
+  document.getElementById('guidanceNotifyMessage').textContent=message;
+  modal.className='guidance-notify show '+type;
+  setTimeout(()=>document.querySelector('.guidance-notify-close')?.focus(),120);
 }
+function closeGuidanceNotify(){
+  const modal=document.getElementById('guidanceNotify');
+  if(modal) modal.classList.remove('show');
+}
+document.getElementById('guidanceNotify')?.addEventListener('click',e=>{
+  if(e.target.id==='guidanceNotify') closeGuidanceNotify();
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape') closeGuidanceNotify();
+});
 
 window.approveGuidanceSubmission=async function(item,cardKey){
   if(!firebaseUser || !isAdmin()){alert('🛡️ Admin access only.');return;}
@@ -553,7 +569,7 @@ window.approveGuidanceSubmission=async function(item,cardKey){
       delete window.guidanceSubmissionStore[cardKey].approvedAt;
     }
 
-    showGuidanceToast('Guidance Request Approved', 'The submission is now marked as Approved.', '✅');
+    showGuidanceNotify('Guidance Request Approved', 'The submission is now marked as Approved.', '✅', 'success');
 
     // Verify against the server without replacing the current cards.
     setTimeout(async()=>{
@@ -592,7 +608,7 @@ window.approveGuidanceSubmission=async function(item,cardKey){
     btn.disabled=false;
     btn.textContent='✅ Approve';
     btn.classList.add('approve-guidance-btn');
-    showGuidanceToast('Approval Failed', err.message||'Unable to approve this guidance submission.', '⚠️');
+    showGuidanceNotify('Approval Failed', err.message||'Unable to approve this guidance submission.', '⚠️', 'error');
   }
 };
 
