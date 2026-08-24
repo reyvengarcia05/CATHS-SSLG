@@ -408,96 +408,152 @@ window.refreshGuidanceSubmissions=async function(){
   const list=document.getElementById('submissionsList');
   if(!list) return;
   if(!firebaseUser || !isAdmin()){list.innerHTML='<p>Admin access only.</p>';return;}
-  list.innerHTML='<div class="loading-submissions" role="status" aria-live="polite"><span>Loading submissions</span><span class="loading-dots"><i>.</i><i>.</i><i>.</i></span></div>';
-  try{
-    const response=await fetch(SCRIPT_URL+'?action=getGuidanceSubmissions&email='+encodeURIComponent(firebaseUser.email));
-    const data=await response.json();
-    if(data && data.success===false){list.innerHTML='<p style="padding:20px">'+(data.message||'Unable to load submissions.')+'</p>';return;}
-    const items=Array.isArray(data)?data:(data.submissions||data.data||[]);
-    if(!items.length){list.innerHTML='<div style="text-align:center;padding:28px">📭<br><br>No guidance submissions found.</div>';return;}
-    list.innerHTML=items.slice().reverse().map((item,idx)=>{
-      const status=String(item.status||'Pending');
-      const statusLower=status.toLowerCase();
-      const canApprove=statusLower!=='approved';
-      const statusClass=statusLower==='approved'?'status-approved':'status-pending';
-      const id=String(item.id||item.submissionId||item.timestamp||idx).replace(/[^a-zA-Z0-9_-]/g,'_');
-      return `<div class="submission-card" data-submission-id="${escapeHtml(item.id||item.submissionId||item.timestamp||'')}">
 
-        <h4>👤 ${escapeHtml(item.name||'Unknown Student')}</h4>
-        <p><b>Email:</b> ${escapeHtml(item.email||'N/A')}</p>
-        <p><b>Phone:</b> ${escapeHtml(item.phone||'N/A')}</p>
-        <p><b>Section:</b> ${escapeHtml(item.section||'N/A')}</p>
-        <p><b>Request:</b> ${escapeHtml(item.requestType||'N/A')}</p>
-        <p><b>Concern:</b> ${escapeHtml(item.concern||'')}</p>
-        <p><b>Details:</b> ${escapeHtml(item.additionalDetails||'')}</p>
-        <span id="status-${id}" class="submission-status ${statusClass}">Status: ${escapeHtml(status)}</span>
-        ${canApprove?`<button type="button" id="approve-${id}" class="approve-btn" onclick="approveGuidanceSubmission(${JSON.stringify(item).replace(/</g,'\u003c')}, '${id}')">✅ Approve</button>`:'<button type="button" class="approve-btn" disabled>✅ Approved</button>'}
-      </div>`;
+  list.innerHTML='<div class="loading-submissions" role="status" aria-live="polite"><span>Loading submissions</span><span class="loading-dots"><i>.</i><i>.</i><i>.</i></span></div>';
+
+  try{
+    const url=SCRIPT_URL+'?action=getGuidanceSubmissions&email='+encodeURIComponent(firebaseUser.email)+'&t='+Date.now();
+    const response=await fetch(url,{method:'GET',cache:'no-store'});
+    const raw=await response.text();
+
+    let data;
+    try{ data=JSON.parse(raw); }
+    catch(err){ throw new Error('The Apps Script returned an invalid submissions response.'); }
+
+    if(!response.ok) throw new Error(data?.message||'Unable to load submissions.');
+    if(data && data.success===false) throw new Error(data.message||'Unable to load submissions.');
+
+    const items=Array.isArray(data) ? data :
+      (Array.isArray(data?.submissions) ? data.submissions :
+      (Array.isArray(data?.data) ? data.data : []));
+
+    if(!items.length){
+      list.innerHTML='<div style="text-align:center;padding:28px">📭<br><br>No guidance submissions found.</div>';
+      return;
+    }
+
+    window.guidanceSubmissionStore={};
+
+    list.innerHTML=items.slice().reverse().map((item,idx)=>{
+      const submissionId=String(item.id||item.submissionId||item.timestamp||('row-'+idx));
+      const cardKey=('gsub-'+idx+'-'+Date.now()).replace(/[^a-zA-Z0-9_-]/g,'_');
+      window.guidanceSubmissionStore[cardKey]={...item,id:submissionId};
+
+      const status=String(item.status||'Pending');
+      const approved=status.toLowerCase()==='approved';
+      const statusClass=approved?'status-approved':'status-pending';
+
+      return `
+        <div class="submission-card" data-card-key="${cardKey}" data-submission-id="${escapeHtml(submissionId)}">
+          <h4>👤 ${escapeHtml(item.name||'Unknown Student')}</h4>
+          <p><b>Email:</b> ${escapeHtml(item.email||'N/A')}</p>
+          <p><b>Phone:</b> ${escapeHtml(item.phone||'N/A')}</p>
+          <p><b>Section:</b> ${escapeHtml(item.section||'N/A')}</p>
+          <p><b>Request:</b> ${escapeHtml(item.requestType||'N/A')}</p>
+          <p><b>Concern:</b> ${escapeHtml(item.concern||'')}</p>
+          <p><b>Details:</b> ${escapeHtml(item.additionalDetails||'')}</p>
+          <span id="status-${cardKey}" class="submission-status ${statusClass}">Status: ${escapeHtml(approved?'Approved':status)}</span>
+          ${
+            approved
+            ? '<button type="button" class="approve-btn" disabled aria-disabled="true">✅ Approved</button>'
+            : `<button type="button" class="approve-btn approve-guidance-btn" data-card-key="${cardKey}">✅ Approve</button>`
+          }
+        </div>`;
     }).join('');
-  }catch(err){console.error(err);list.innerHTML='<p style="padding:20px">Failed to load guidance submissions. Check that the Apps Script supports getGuidanceSubmissions.</p>';}
+
+    list.querySelectorAll('.approve-guidance-btn').forEach(btn=>{
+      btn.addEventListener('click',function(){
+        const key=this.getAttribute('data-card-key');
+        const item=window.guidanceSubmissionStore?.[key];
+        if(!item){
+          alert('Unable to identify this submission. Please refresh the submissions list.');
+          return;
+        }
+        approveGuidanceSubmission(item,key);
+      });
+    });
+
+  }catch(err){
+    console.error('Load guidance submissions error:',err);
+    list.innerHTML=`<div style="padding:20px"><p style="margin-bottom:10px">❌ Failed to load guidance submissions.</p><p style="font-size:12px;opacity:.85">${escapeHtml(err.message||'Please check the Apps Script Web App.')}</p></div>`;
+  }
 };
-window.approveGuidanceSubmission=async function(item, cardKey){
+
+window.approveGuidanceSubmission=async function(item,cardKey){
   if(!firebaseUser || !isAdmin()){alert('🛡️ Admin access only.');return;}
 
-  const submissionId = item.id || item.submissionId || item.timestamp;
-  if(!submissionId){alert('Unable to identify this submission.');return;}
-  if(!confirm('Approve this guidance submission?')) return;
+  const submissionId=String(item?.id||item?.submissionId||item?.timestamp||'').trim();
+  if(!submissionId){alert('Unable to identify this submission. Please refresh the submissions list.');return;}
 
-  const btn=document.getElementById('approve-'+cardKey);
+  const btn=document.querySelector('.approve-guidance-btn[data-card-key="'+CSS.escape(cardKey)+'"]');
   const statusEl=document.getElementById('status-'+cardKey);
-  if(btn){btn.disabled=true;btn.textContent='⏳ Approving...';}
+  if(!btn){alert('Approve button is no longer available. Please refresh the submissions list.');return;}
+  if(btn.disabled)return;
+  if(!confirm('Approve this guidance submission?'))return;
+
+  btn.disabled=true;
+  btn.textContent='⏳ Approving...';
 
   try{
     const payload={
       action:'approveGuidance',
-      email:firebaseUser.email,
-      submissionId:String(submissionId),
-      name:item.name||'',
-      studentEmail:item.email||item.studentEmail||''
+      email:String(firebaseUser.email||'').trim().toLowerCase(),
+      submissionId,
+      name:String(item.name||''),
+      studentEmail:String(item.email||item.studentEmail||'')
     };
 
     const response=await fetch(SCRIPT_URL,{
       method:'POST',
       headers:{'Content-Type':'text/plain;charset=utf-8'},
+      cache:'no-store',
       body:JSON.stringify(payload)
     });
 
     const raw=await response.text();
     let result;
-    try{ result=JSON.parse(raw); }
-    catch(parseErr){
-      throw new Error('The Apps Script returned an invalid response. Please make sure the latest Code.gs is deployed as a Web App.');
-    }
+    try{result=JSON.parse(raw);}
+    catch(err){throw new Error('Apps Script returned an invalid response. Make sure the latest Code.gs is deployed as a Web App.');}
 
     if(!response.ok || !result || result.success!==true){
-      throw new Error(result?.message || 'Unable to approve submission.');
+      throw new Error(result?.message||'The server did not approve this submission.');
     }
 
-    // Update the card immediately.
+    // Immediate UI update.
     if(statusEl){
       statusEl.textContent='Status: Approved';
       statusEl.classList.remove('status-pending');
       statusEl.classList.add('status-approved');
-      statusEl.style.background='rgba(40,167,69,.30)';
-      statusEl.style.color='#d8ffe2';
-      statusEl.style.border='1px solid rgba(140,255,170,.38)';
-    }
-    if(btn){
-      btn.textContent='✅ Approved';
-      btn.disabled=true;
-      btn.style.background='#28a745';
-      btn.style.color='#fff';
     }
 
-    // Keep the approved state visible immediately. Then verify with the backend
-    // once after a short delay without replacing the card if the read fails.
+    btn.textContent='✅ Approved';
+    btn.disabled=true;
+    btn.classList.remove('approve-guidance-btn');
+    btn.style.background='#28a745';
+    btn.style.color='#fff';
+    btn.style.cursor='not-allowed';
+
+    if(window.guidanceSubmissionStore?.[cardKey]){
+      window.guidanceSubmissionStore[cardKey].status='Approved';
+      window.guidanceSubmissionStore[cardKey].approvedBy=result.approvedBy||firebaseUser.email||'';
+      window.guidanceSubmissionStore[cardKey].approvedAt=result.approvedAt||'';
+    }
+
+    alert('✅ Guidance submission approved successfully.');
+
+    // Verify against the server without replacing the current cards.
     setTimeout(async()=>{
       try{
-        const verifyResponse=await fetch(SCRIPT_URL+'?action=getGuidanceSubmissions&email='+encodeURIComponent(firebaseUser.email),{cache:'no-store'});
+        const verifyUrl=SCRIPT_URL+'?action=getGuidanceSubmissions&email='+encodeURIComponent(firebaseUser.email)+'&t='+Date.now();
+        const verifyResponse=await fetch(verifyUrl,{method:'GET',cache:'no-store'});
         const verifyRaw=await verifyResponse.text();
         const verifyData=JSON.parse(verifyRaw);
+
         if(Array.isArray(verifyData?.submissions)){
-          const serverItem=verifyData.submissions.find(x=>String(x.id||x.submissionId||'')===String(submissionId));
+          const serverItem=verifyData.submissions.find(
+            x=>String(x.id||x.submissionId||'')===submissionId
+          );
+
           if(serverItem && String(serverItem.status||'').toLowerCase()==='approved'){
             if(statusEl){
               statusEl.textContent='Status: Approved';
@@ -507,22 +563,25 @@ window.approveGuidanceSubmission=async function(item, cardKey){
             if(btn){
               btn.textContent='✅ Approved';
               btn.disabled=true;
+              btn.style.background='#28a745';
+              btn.style.color='#fff';
             }
           }
         }
       }catch(verifyErr){
-        console.warn('Approval verification skipped:',verifyErr);
+        console.warn('Approval verification failed; keeping local approved state.',verifyErr);
       }
-    },500);
-
-    alert('✅ Guidance submission approved. Status is now Approved.');
+    },700);
 
   }catch(err){
     console.error('Approve guidance error:',err);
-    if(btn){btn.disabled=false;btn.textContent='✅ Approve';}
-    alert(err.message || 'Unable to approve submission. Please check the Apps Script approveGuidance action.');
+    btn.disabled=false;
+    btn.textContent='✅ Approve';
+    btn.classList.add('approve-guidance-btn');
+    alert(err.message||'Unable to approve this guidance submission.');
   }
 };
+
 function escapeHtml(value){return String(value??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[m]));}
 
 window.googleLogin=async function(){
