@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CATHS-MAIN Guidance Councilor</title>
+<link rel="icon" type="image/png" href="sslg-logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#00296B;--blue2:#003DA5;--yellow:#FFD700;--white:#fff}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{background:linear-gradient(135deg,#00296B,#003DA5,#FFD700);min-height:100vh;color:white;padding-bottom:100px}
+.header{position:relative;z-index:1000;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.08);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.logo-group{display:flex;align-items:center;gap:8px}.logo,.caths-logo{width:68px;height:68px;object-fit:contain}.header-center{flex:1;text-align:center}.header-center h1{font-size:21px;font-weight:700}.header-center p{font-size:12px;opacity:.9}
+.container{width:100%;max-width:1000px;margin:0 auto;padding:30px 18px 120px}
+.card{background:rgba(255,255,255,.13);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:30px;border-radius:28px;border:1px solid rgba(255,255,255,.16);box-shadow:0 18px 45px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.08)}
+.card h2{margin-bottom:8px}.intro{opacity:.92;line-height:1.6;margin-bottom:22px}
+label{display:block;margin:14px 0 8px;font-weight:600}input,select,textarea{width:100%;padding:14px;border:0;outline:0;border-radius:14px;font-size:14px;background:#fff;color:#16213b}input[readonly]{background:#eef2f7;color:#44506b;cursor:not-allowed}textarea{min-height:150px;resize:vertical}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 16px}.field{min-width:0}
+.section-wrap{position:relative}.suggestions{display:none;position:absolute;left:0;right:0;top:100%;z-index:50;background:#fff;color:#1b2745;border-radius:0 0 15px 15px;max-height:230px;overflow:auto;box-shadow:0 12px 25px rgba(0,0,0,.2)}.suggestions.show{display:block}.section-option{padding:12px 14px;cursor:pointer;border-bottom:1px solid #edf0f6}.section-option:hover{background:#eef5ff}.section-option.no-result{cursor:default;color:#777}
+.verify-box{display:none;margin-top:2px;padding:14px;border:1px solid rgba(255,255,255,.14);border-radius:16px;background:rgba(0,0,0,.08)}.verify-message{display:none;padding:10px 12px;border-radius:12px;margin:8px 0 2px;text-align:center;font-weight:600}
+.notice{margin:14px 0;padding:12px 14px;border-radius:14px;background:rgba(255,215,0,.14);border:1px solid rgba(255,215,0,.28);font-size:13px;line-height:1.55}.admin-badge{display:none;margin:0 0 16px;padding:12px 14px;border-radius:14px;background:rgba(40,167,69,.22);border:1px solid rgba(255,255,255,.22);font-weight:700}
+.btn{width:100%;padding:15px;margin-top:18px;border:0;border-radius:15px;background:var(--yellow);color:var(--blue);font-size:16px;font-weight:800;cursor:pointer;transition:.25s}.btn:hover{transform:translateY(-3px)}.btn:disabled{opacity:.7;cursor:not-allowed;transform:none}.btn-secondary{background:rgba(255,255,255,.16);color:white;border:1px solid rgba(255,255,255,.24)}
+.error{display:none;color:#ffe5e5;font-size:12px;margin-top:-18px;margin-bottom:14px;font-weight:600}.popup{display:none;position:fixed;inset:0;background:rgba(0,0,0,.58);z-index:2000;align-items:center;justify-content:center;padding:20px}.popup-content{width:min(430px,100%);background:linear-gradient(135deg,#083477,#0b54bd);padding:30px;border-radius:24px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.35)}.popup-content h2{margin:8px 0}.popup-content p{opacity:.92;line-height:1.55}.checkmark{font-size:58px}.popup button{margin-top:18px;border:0;border-radius:12px;padding:12px 22px;font-weight:800;cursor:pointer;background:var(--yellow);color:var(--blue)}
+.admin-panel{display:none;margin-top:18px;padding:18px;border-radius:18px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16)}.admin-panel h3{margin-bottom:8px}.admin-panel p{font-size:13px;line-height:1.55;opacity:.9}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:78px;background:linear-gradient(90deg,#1e3a8a,#b59f1a);display:flex;justify-content:space-around;align-items:center;z-index:999}.nav-item{display:flex;flex-direction:column;align-items:center;text-decoration:none;color:white;font-size:12px;gap:2px}.nav-item div{font-size:22px}.nav-item.active{font-weight:800}
+@media(max-width:720px){
+  body{padding-bottom:88px;overflow-x:hidden}
+  .header{padding:12px 10px;gap:6px}
+  .header-center h1{font-size:16px;line-height:1.2}
+  .header-center p{font-size:10px}
+  .logo,.caths-logo{width:46px;height:46px}
+  .header>div:last-child{width:46px !important}
+  .container{padding:14px 10px 100px}
+  .card{padding:18px 14px;border-radius:22px}
+  .card h2{font-size:20px}
+  .intro{font-size:13px;margin-bottom:16px}
+  .grid2{grid-template-columns:1fr;gap:0}
+  label{font-size:13px;margin:12px 0 7px}
+  input,select,textarea{font-size:15px;padding:13px 12px;border-radius:13px}
+  textarea{min-height:130px}
+  .btn{font-size:15px;padding:14px}
+  .bottom-nav{height:70px}
+  .nav-item{font-size:10px}
+  .nav-item div{font-size:19px}
+}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="logo-group"><img class="logo" src="sslg-logo.png" alt="SSLG Logo"><img class="caths-logo" src="caths-logo.png" alt="CATHS Logo"></div>
+  <div class="header-center"><h1>Guidance Councilor</h1><p>Private Student Guidance Request</p></div>
+  <div style="width:76px"></div>
+</header>
+
+<main class="container">
+  <section class="card">
+    <h2>🧑‍🏫 Guidance Request</h2>
+    <p class="intro">Complete every question below so the guidance office can properly review your request.</p>
+
+    <div id="adminBadge" class="admin-badge">🛡️ Guidance Admin Account Detected</div>
+
+    <form id="guidanceForm" novalidate>
+      <div class="grid2">
+        <div class="field">
+          <label for="fullName">Full Name</label>
+          <input id="fullName" type="text" readonly aria-readonly="true" placeholder="Your Google account name will appear here">
+          <div id="nameError" class="error">Your Google account name could not be detected. Please sign in again.</div>
+        </div>
+        <div class="field">
+          <label for="email">Google Account Email</label>
+          <input id="email" type="email" readonly aria-readonly="true" placeholder="Your Google account email will appear here">
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="field">
+          <label for="phone">Phone Number</label>
+          <input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="09XXXXXXXXX or +639XXXXXXXXX" maxlength="13">
+          <div id="phoneError" class="error">Enter a valid Philippine mobile number.</div>
+        </div>
+        <div class="field">
+          <label for="contactMethod">Preferred Contact Method</label>
+          <select id="contactMethod">
+            <option value="">Select contact method</option>
+            <option value="Phone Call">Phone Call</option>
+            <option value="Text Message">Text Message</option>
+            <option value="Google Account Email">Google Account Email</option>
+            <option value="In-Person">In-Person</option>
+          </select>
+          <div id="contactError" class="error">Please select a contact method.</div>
+        </div>
+      </div>
+
+      <label for="section">Grade and Section</label>
+      <select id="section">
+        <option value="">Select Grade 11 or Grade 12 section</option>
+        <optgroup label="Grade 11">
+          <option value="11-Twain">11-Twain</option>
+          <option value="11-Farmer">11-Farmer</option>
+          <option value="11-Lovelace">11-Lovelace</option>
+          <option value="11-Guerrero">11-Guerrero</option>
+          <option value="11-Morgan">11-Morgan</option>
+          <option value="11-Silverton">11-Silverton</option>
+          <option value="11-Westinghouse">11-Westinghouse</option>
+        </optgroup>
+        <optgroup label="Grade 12">
+          <option value="12-Ansel">12-Ansel</option>
+          <option value="12-Babbage">12-Babbage</option>
+          <option value="12-Javier">12-Javier</option>
+          <option value="12-Pacioli">12-Pacioli</option>
+          <option value="12-Shakespeare">12-Shakespeare</option>
+          <option value="12-Mendeleev">12-Mendeleev</option>
+        </optgroup>
+      </select>
+      <div id="sectionError" class="error">Please choose one of the available Grade 11 or Grade 12 sections.</div>
+
+      <div id="sectionVerification" class="verify-box">
+        <label for="verificationCode">Section Verification Code</label>
+        <input id="verificationCode" type="password" autocomplete="off" placeholder="Enter your section verification code">
+        <button id="verifySectionBtn" type="button" class="btn" style="margin-top:8px" onclick="verifySectionCode()">Verify Section</button>
+        <div id="verificationMessage" class="verify-message"></div>
+      </div>
+
+      <label for="requestType">Guidance Request Type</label>
+      <select id="requestType">
+        <option value="">Select request type</option>
+        <option value="Academic Concern">Academic Concern</option>
+        <option value="Personal Concern">Personal Concern</option>
+        <option value="Family Concern">Family Concern</option>
+        <option value="Peer or Friendship Concern">Peer or Friendship Concern</option>
+        <option value="Bullying Concern">Bullying Concern</option>
+        <option value="Mental and Emotional Support">Mental and Emotional Support</option>
+        <option value="Career or College Guidance">Career or College Guidance</option>
+        <option value="Other Guidance Request">Other Guidance Request</option>
+      </select>
+      <div id="typeError" class="error">Please select a guidance request type.</div>
+
+      <label for="urgency">Urgency</label>
+      <select id="urgency">
+        <option value="">Select urgency</option>
+        <option value="Routine">Routine</option>
+        <option value="Soon">Soon</option>
+        <option value="Urgent">Urgent</option>
+      </select>
+      <div id="urgencyError" class="error">Please select the urgency of your request.</div>
+
+      <label for="preferredSchedule">Preferred Schedule</label>
+      <select id="preferredSchedule">
+        <option value="">Select preferred schedule</option>
+        <option value="Before Class">Before Class</option>
+        <option value="Recess">Recess</option>
+        <option value="Lunch Break">Lunch Break</option>
+        <option value="After Class">After Class</option>
+        <option value="Any Available Time">Any Available Time</option>
+      </select>
+      <div id="scheduleError" class="error">Please select a preferred schedule.</div>
+
+      <label for="concern">Concern or Reason for Request</label>
+      <textarea id="concern" placeholder="Tell the guidance councilor what you need help with"></textarea>
+      <div id="concernError" class="error">Please provide your concern or reason for requesting guidance.</div>
+
+      <label for="additionalDetails">Additional Details</label>
+      <textarea id="additionalDetails" placeholder="Add any other details that may help the guidance office"></textarea>
+      <div id="detailsError" class="error">Please provide the additional details.</div>
+
+      <div class="notice">🔒 Your name and email come from your Google account. The Full Name field cannot be edited.</div>
+      <button id="submitBtn" class="btn" type="submit">Submit Guidance Request</button>
+    </form>
+
+    <div id="adminPanel" class="admin-panel">
+      <h3>🛡️ Admin Access</h3>
+      <p>You are signed in using the registered admin Google account. Admin-specific controls can be connected to the Guidance backend without exposing them to regular students.</p>
+    </div>
+  </section>
+</main>
+
+<div id="loginPopup" class="popup">
+  <div class="popup-content">
+    <div class="checkmark">🔐</div>
+    <h2>Google Login Required</h2>
+    <p>Please sign in with your Google account before submitting a guidance request.</p>
+    <button onclick="googleLogin()">Continue with Google</button>
+  </div>
+</div>
+
+<div id="submittingPopup" class="popup">
+  <div class="popup-content">
+    <div class="checkmark">⏳</div>
+    <h2>Submitting...</h2>
+    <p>Please wait while your guidance request is being submitted.</p>
+  </div>
+</div>
+
+<div id="successPopup" class="popup">
+  <div class="popup-content">
+    <div class="checkmark">✅</div>
+    <h2>Request Submitted</h2>
+    <p>Your guidance request has been submitted successfully.</p>
+    <button onclick="closeSuccessPopup()">OK</button>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <a href="index.html" class="nav-item"><div>🏠</div><span>Home</span></a>
+  <a href="news-feed.html" class="nav-item"><div>📰</div><span>News Feed</span></a>
+  <a href="voice.html" class="nav-item"><div>🗣️</div><span>Student Voice</span></a>
+  <a href="friends.html" class="nav-item"><div>👥</div><span>Add Friends</span></a>
+  <a href="profile.html" class="nav-item"><div>👤</div><span>Profile</span></a>
+</nav>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec";
+
+const ADMIN_EMAILS = ["reyvengarcia15@gmail.com", "rogel.salvador@deped.gov.ph"];
+let firebaseUser = null;
+let sectionVerified = false;
+let verifiedSection = "";
+
+const SECTION_CODES = {
+  "11-Twain":"736481IN","11-Farmer":"FARM295714","11-Lovelace":"814326LOVE","11-Guerrero":"GUER463859","11-Morgan":"927145MOR","11-Silverton":"TON351682","11-Westinghouse":"67823HOUSE4",
+  "12-Ansel":"542813SEL","12-Babbage":"BAB819365","12-Javier":"JAV274631","12-Pacioli":"635927CIOLI","12-Shakespeare":"391847PEARE","12-Mendeleev":"758216LEEV"
+}
+const sections = Object.keys(SECTION_CODES);
+
+function hideErrors(){document.querySelectorAll('.error').forEach(el=>el.style.display='none')}
+function showError(id){const el=document.getElementById(id); if(el) el.style.display='block'}
+function normalizePhone(value){return value.replace(/[\s()-]/g,'')}
+function isValidPHPhone(value){const p=normalizePhone(value); return /^(09\d{9}|\+639\d{9}|639\d{9})$/.test(p)}
+function isAdmin(){return !!firebaseUser && ADMIN_EMAILS.includes(String(firebaseUser.email||'').trim().toLowerCase())}
+function openLogin(){document.getElementById('loginPopup').style.display='flex'}
+function closeLogin(){document.getElementById('loginPopup').style.display='none'}
+function closeSuccessPopup(){document.getElementById('successPopup').style.display='none'}
+
+function setGoogleUser(user){
+  firebaseUser=user||null;
+  const name=document.getElementById('fullName');
+  const email=document.getElementById('email');
+  if(user){
+    name.value = user.displayName || '';
+    email.value = user.email || '';
+    document.getElementById('nameError').style.display = user.displayName ? 'none' : 'block';
+    if(isAdmin()){
+      document.getElementById('adminBadge').style.display='block';
+      document.getElementById('adminPanel').style.display='block';
+    }
+  }
+}
+
+function resetVerification(){
+  sectionVerified=false;verifiedSection='';
+  document.getElementById('sectionVerification').style.display='none';
+  document.getElementById('verificationCode').value='';
+  document.getElementById('verificationCode').readOnly=false;
+  const m=document.getElementById('verificationMessage');m.style.display='none';m.textContent='';
+  const b=document.getElementById('verifySectionBtn');b.disabled=false;b.textContent='Verify Section';b.style.background='var(--yellow)';b.style.color='var(--blue)';
+}
+
+document.getElementById('section').addEventListener('change',e=>{
+  const chosen=e.target.value.trim();
+  resetVerification();
+  if(chosen){document.getElementById('sectionError').style.display='none';document.getElementById('sectionVerification').style.display='block'}
+});
+
+window.verifySectionCode=function(){
+  const section=document.getElementById('section').value.trim();
+  const code=document.getElementById('verificationCode').value.trim();
+  const message=document.getElementById('verificationMessage');
+  const btn=document.getElementById('verifySectionBtn');
+  if(!section){showError('sectionError');return}
+  if(!SECTION_CODES[section]){message.textContent='That section is not available. Please select a Grade 11 or Grade 12 section from the choices.';message.style.display='block';message.style.background='#ffe5e5';message.style.color='#b00020';return}
+  if(!code){message.textContent='Please enter your section verification code.';message.style.display='block';message.style.background='#fff3cd';message.style.color='#856404';return}
+  if(code!==SECTION_CODES[section]){sectionVerified=false;verifiedSection='';message.textContent='Incorrect section verification code for the selected section.';message.style.display='block';message.style.background='#ffe5e5';message.style.color='#b00020';return}
+  sectionVerified=true;verifiedSection=section;message.textContent='Section verified successfully.';message.style.display='block';message.style.background='#d4edda';message.style.color='#155724';btn.disabled=true;btn.textContent='Section Verified';btn.style.background='#28a745';btn.style.color='white';document.getElementById('verificationCode').readOnly=true;
+}
+
+document.getElementById('phone').addEventListener('input',function(){this.value=this.value.replace(/[^0-9+\s()-]/g,'');if(isValidPHPhone(this.value))document.getElementById('phoneError').style.display='none'});
+
+document.getElementById('guidanceForm').addEventListener('submit',async e=>{
+  e.preventDefault();hideErrors();
+  if(!firebaseUser){openLogin();return}
+  const name=document.getElementById('fullName').value.trim();
+  const email=String(firebaseUser.email||'').trim().toLowerCase();
+  const phone=document.getElementById('phone').value.trim();
+  const contactMethod=document.getElementById('contactMethod').value;
+  const section=document.getElementById('section').value.trim();
+  const requestType=document.getElementById('requestType').value;
+  const urgency=document.getElementById('urgency').value;
+  const preferredSchedule=document.getElementById('preferredSchedule').value;
+  const concern=document.getElementById('concern').value.trim();
+  const additionalDetails=document.getElementById('additionalDetails').value.trim();
+
+  let valid=true;
+  if(!name) {showError('nameError');valid=false}
+  if(!email) {valid=false}
+  if(!isValidPHPhone(phone)){showError('phoneError');valid=false}
+  if(!contactMethod){showError('contactError');valid=false}
+  if(!section){showError('sectionError');valid=false}
+  else if(!sectionVerified || verifiedSection!==section){
+    document.getElementById('sectionVerification').style.display='block';
+    const m=document.getElementById('verificationMessage');m.textContent='Please verify your section before submitting.';m.style.display='block';m.style.background='#fff3cd';m.style.color='#856404';valid=false;
+  }
+  if(!requestType){showError('typeError');valid=false}
+  if(!urgency){showError('urgencyError');valid=false}
+  if(!preferredSchedule){showError('scheduleError');valid=false}
+  if(!concern){showError('concernError');valid=false}
+  if(!additionalDetails){showError('detailsError');valid=false}
+  if(!valid)return;
+
+  const submitBtn=document.getElementById('submitBtn');submitBtn.disabled=true;
+  document.getElementById('submittingPopup').style.display='flex';
+  const data={action:'submitGuidance',name,email,phone,contactMethod,section,verificationCode:document.getElementById('verificationCode').value.trim(),requestType,urgency,preferredSchedule,concern,additionalDetails,submittedBy:'Google Account',isAdmin:isAdmin()};
+  try{
+    const response=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(data)});
+    const result=await response.json();
+    document.getElementById('submittingPopup').style.display='none';
+    if(!result.success){alert(result.message||'Failed to submit guidance request.');return}
+    document.getElementById('successPopup').style.display='flex';
+    document.getElementById('guidanceForm').reset();
+    resetVerification();
+    setGoogleUser(firebaseUser);
+  }catch(err){
+    console.error('Guidance submit error:',err);
+    document.getElementById('submittingPopup').style.display='none';
+    alert('Unable to submit your guidance request right now. Please try again.');
+  }finally{submitBtn.disabled=false}
+});
+window.googleLogin=async function(){
+  try{await signInWithPopup(window.auth,window.googleProvider);closeLogin()}catch(err){console.error(err);alert('Google login failed: '+err.message)}
+}
+</script>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,setPersistence,browserLocalPersistence} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+const firebaseConfig={apiKey:"AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",authDomain:"caths-page.firebaseapp.com",projectId:"caths-page",storageBucket:"caths-page.firebasestorage.app",messagingSenderId:"945498022620",appId:"1:945498022620:web:71aeb4cd2472e061aeca19",measurementId:"G-CBG1YSK13G"};
+const app=initializeApp(firebaseConfig);window.auth=getAuth(app);window.googleProvider=new GoogleAuthProvider();setPersistence(auth,browserLocalPersistence).catch(console.error);
+onAuthStateChanged(auth,user=>{setGoogleUser(user);if(!user){document.getElementById('fullName').value='';document.getElementById('email').value=''}});
+</script>
+</body>
+</html>
