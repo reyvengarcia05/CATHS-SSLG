@@ -473,13 +473,22 @@ window.approveGuidanceSubmission=async function(item, cardKey){
       statusEl.textContent='Status: Approved';
       statusEl.classList.remove('status-pending');
       statusEl.classList.add('status-approved');
+      statusEl.style.background='rgba(40,167,69,.30)';
+      statusEl.style.color='#d8ffe2';
+      statusEl.style.border='1px solid rgba(140,255,170,.38)';
     }
     if(btn){
       btn.textContent='✅ Approved';
       btn.disabled=true;
+      btn.style.background='#28a745';
+      btn.style.color='#fff';
     }
 
-    alert('✅ Guidance submission approved.');
+    // Re-check the backend so the displayed status and the spreadsheet
+    // remain synchronized after a successful approval.
+    setTimeout(()=>{ refreshGuidanceSubmissions(); }, 350);
+
+    alert('✅ Guidance submission approved. Status is now Approved.');
 
   }catch(err){
     console.error('Approve guidance error:',err);
