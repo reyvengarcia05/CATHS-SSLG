@@ -462,9 +462,14 @@ window.approveGuidanceSubmission=async function(item, cardKey){
       body:JSON.stringify(payload)
     });
 
-    const result=await response.json();
+    const raw=await response.text();
+    let result;
+    try{ result=JSON.parse(raw); }
+    catch(parseErr){
+      throw new Error('The Apps Script returned an invalid response. Please make sure the latest Code.gs is deployed as a Web App.');
+    }
 
-    if(!result || result.success!==true){
+    if(!response.ok || !result || result.success!==true){
       throw new Error(result?.message || 'Unable to approve submission.');
     }
 
@@ -484,9 +489,31 @@ window.approveGuidanceSubmission=async function(item, cardKey){
       btn.style.color='#fff';
     }
 
-    // Re-check the backend so the displayed status and the spreadsheet
-    // remain synchronized after a successful approval.
-    setTimeout(()=>{ refreshGuidanceSubmissions(); }, 350);
+    // Keep the approved state visible immediately. Then verify with the backend
+    // once after a short delay without replacing the card if the read fails.
+    setTimeout(async()=>{
+      try{
+        const verifyResponse=await fetch(SCRIPT_URL+'?action=getGuidanceSubmissions&email='+encodeURIComponent(firebaseUser.email),{cache:'no-store'});
+        const verifyRaw=await verifyResponse.text();
+        const verifyData=JSON.parse(verifyRaw);
+        if(Array.isArray(verifyData?.submissions)){
+          const serverItem=verifyData.submissions.find(x=>String(x.id||x.submissionId||'')===String(submissionId));
+          if(serverItem && String(serverItem.status||'').toLowerCase()==='approved'){
+            if(statusEl){
+              statusEl.textContent='Status: Approved';
+              statusEl.classList.remove('status-pending');
+              statusEl.classList.add('status-approved');
+            }
+            if(btn){
+              btn.textContent='✅ Approved';
+              btn.disabled=true;
+            }
+          }
+        }
+      }catch(verifyErr){
+        console.warn('Approval verification skipped:',verifyErr);
+      }
+    },500);
 
     alert('✅ Guidance submission approved. Status is now Approved.');
 
