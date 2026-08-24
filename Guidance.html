@@ -45,7 +45,8 @@ label{display:block;margin:14px 0 8px;font-weight:600}input,select,textarea{widt
   .nav-item div{font-size:19px}
 }
 
-.loading-submissions{display:flex;align-items:center;justify-content:center;gap:4px;padding:25px;font-weight:700;letter-spacing:.2px}.loading-dots{display:inline-flex;align-items:flex-end;gap:2px;height:22px}.loading-dots i{font-style:normal;font-size:24px;line-height:1;animation:dotJump .75s infinite ease-in-out;display:inline-block;text-shadow:0 0 10px rgba(255,255,255,.15)}.loading-dots i:nth-child(1){color:#ff4d6d;animation-delay:0s}.loading-dots i:nth-child(2){color:#ffd43b;animation-delay:.12s}.loading-dots i:nth-child(3){color:#4dabf7;animation-delay:.24s}@keyframes dotJump{0%,60%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-9px) scale(1.12)}}
+.loading-submissions{display:flex;align-items:center;justify-content:center;gap:4px;padding:25px;font-weight:700;letter-spacing:.2px}
+.guidance-toast{position:fixed;top:24px;left:50%;transform:translate(-50%,-20px);z-index:5000;min-width:min(420px,calc(100% - 28px));padding:15px 18px;border-radius:16px;background:rgba(18,37,78,.96);border:1px solid rgba(255,255,255,.16);box-shadow:0 18px 45px rgba(0,0,0,.28);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:none;opacity:0;transition:.3s ease;align-items:center;gap:12px}.guidance-toast.show{display:flex;opacity:1;transform:translate(-50%,0)}.guidance-toast.success{border-color:rgba(74,222,128,.45)}.guidance-toast .toast-icon{font-size:25px}.guidance-toast strong{display:block;font-size:14px}.guidance-toast span{display:block;font-size:12px;opacity:.86;margin-top:2px}@media(max-width:720px){.guidance-toast{top:14px}}.loading-dots{display:inline-flex;align-items:flex-end;gap:2px;height:22px}.loading-dots i{font-style:normal;font-size:24px;line-height:1;animation:dotJump .75s infinite ease-in-out;display:inline-block;text-shadow:0 0 10px rgba(255,255,255,.15)}.loading-dots i:nth-child(1){color:#ff4d6d;animation-delay:0s}.loading-dots i:nth-child(2){color:#ffd43b;animation-delay:.12s}.loading-dots i:nth-child(3){color:#4dabf7;animation-delay:.24s}@keyframes dotJump{0%,60%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-9px) scale(1.12)}}
 </style>
 </head>
 <body>
@@ -210,6 +211,8 @@ label{display:block;margin:14px 0 8px;font-weight:600}input,select,textarea{widt
     <button onclick="closeSuccessPopup()">OK</button>
   </div>
 </div>
+
+<div id="guidanceToast" class="guidance-toast" role="status" aria-live="polite"><div class="toast-icon" id="guidanceToastIcon">✅</div><div><strong id="guidanceToastTitle">Success</strong><span id="guidanceToastMessage">Done.</span></div></div>
 
 <div id="submissionsPopup" class="popup">
   <div class="popup-content" style="width:min(760px,100%);max-height:88vh;overflow:auto;text-align:left">
@@ -479,6 +482,17 @@ window.refreshGuidanceSubmissions=async function(){
   }
 };
 
+function showGuidanceToast(title,message,icon="✅") {
+  const toast=document.getElementById("guidanceToast");
+  if(!toast)return;
+  document.getElementById("guidanceToastIcon").textContent=icon;
+  document.getElementById("guidanceToastTitle").textContent=title;
+  document.getElementById("guidanceToastMessage").textContent=message;
+  toast.classList.add("show","success");
+  clearTimeout(window.__guidanceToastTimer);
+  window.__guidanceToastTimer=setTimeout(()=>toast.classList.remove("show"),3200);
+}
+
 window.approveGuidanceSubmission=async function(item,cardKey){
   if(!firebaseUser || !isAdmin()){alert('🛡️ Admin access only.');return;}
 
@@ -535,11 +549,11 @@ window.approveGuidanceSubmission=async function(item,cardKey){
 
     if(window.guidanceSubmissionStore?.[cardKey]){
       window.guidanceSubmissionStore[cardKey].status='Approved';
-      window.guidanceSubmissionStore[cardKey].approvedBy=result.approvedBy||firebaseUser.email||'';
-      window.guidanceSubmissionStore[cardKey].approvedAt=result.approvedAt||'';
+      delete window.guidanceSubmissionStore[cardKey].approvedBy;
+      delete window.guidanceSubmissionStore[cardKey].approvedAt;
     }
 
-    alert('✅ Guidance submission approved successfully.');
+    showGuidanceToast('Guidance Request Approved', 'The submission is now marked as Approved.', '✅');
 
     // Verify against the server without replacing the current cards.
     setTimeout(async()=>{
@@ -578,7 +592,7 @@ window.approveGuidanceSubmission=async function(item,cardKey){
     btn.disabled=false;
     btn.textContent='✅ Approve';
     btn.classList.add('approve-guidance-btn');
-    alert(err.message||'Unable to approve this guidance submission.');
+    showGuidanceToast('Approval Failed', err.message||'Unable to approve this guidance submission.', '⚠️');
   }
 };
 
