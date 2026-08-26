@@ -126,6 +126,26 @@ line-height:1.7;
 font-size:14px;
 }
 
+
+/* ===== 3 LATEST NEWS ===== */
+.latest-news-section{margin-top:28px}
+.latest-news-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:12px}
+.latest-news-head .section-title{margin:0}
+.latest-news-link{border:0;background:transparent;color:#ffd700;font-size:11px;font-weight:800;cursor:pointer;text-decoration:none;padding:6px 0}
+.latest-news-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.latest-news-card{position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.13);border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.055));backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 12px 26px rgba(0,0,0,.14);padding:15px;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;cursor:pointer}
+.latest-news-card:hover{transform:translateY(-3px);box-shadow:0 16px 30px rgba(0,0,0,.18);border-color:rgba(255,215,0,.25)}
+.latest-news-card::before{content:"";position:absolute;inset:auto -28px -30px auto;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(255,215,0,.12),transparent 68%);pointer-events:none}
+.latest-news-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}
+.latest-news-icon{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:rgba(255,215,0,.11);border:1px solid rgba(255,215,0,.18);font-size:21px;flex:0 0 auto}
+.latest-news-tag{font-size:8px;font-weight:900;letter-spacing:.05em;text-transform:uppercase;padding:5px 8px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.11);opacity:.82;white-space:nowrap}
+.latest-news-title{font-size:14px;font-weight:850;line-height:1.3;margin:0 0 6px;color:#fff;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.latest-news-excerpt{font-size:10px;line-height:1.55;opacity:.78;margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.latest-news-meta{font-size:8px;opacity:.58;margin-top:10px}
+.latest-news-empty{padding:18px;border:1px dashed rgba(255,255,255,.16);border-radius:16px;background:rgba(255,255,255,.045);font-size:11px;opacity:.72;text-align:center}
+@media(max-width:900px){.latest-news-grid{grid-template-columns:1fr}.latest-news-card{padding:14px}.latest-news-title{font-size:13px}.latest-news-excerpt{font-size:10px}}
+@media(max-width:420px){.latest-news-section{margin-top:24px}.latest-news-head{align-items:center}.latest-news-link{font-size:10px}.latest-news-grid{gap:11px}.latest-news-card{border-radius:16px;padding:13px}.latest-news-icon{width:38px;height:38px;font-size:20px}.latest-news-title{font-size:12.5px}.latest-news-excerpt{font-size:9.5px}}
+
 /* QUICK ACTIONS */
 
 .section{
@@ -2201,6 +2221,17 @@ and connect with the school community.
 
 </div>
 
+<!-- 3 LATEST NEWS -->
+<section class="section latest-news-section" aria-labelledby="latestNewsHeading">
+  <div class="latest-news-head">
+    <div class="section-title" id="latestNewsHeading">3 Latest News</div>
+    <a class="latest-news-link" href="news.html" onclick="openProtectedNavigation(event, 'news.html')">View all →</a>
+  </div>
+  <div id="latestNewsGrid" class="latest-news-grid">
+    <div class="latest-news-empty">📰 Loading the latest admin announcements…</div>
+  </div>
+</section>
+
 <!-- NAVIGATION -->
 
 <div class="bottom-nav">
@@ -2492,6 +2523,7 @@ import {
 import {
     getFirestore,
     collection,
+    getDocs,
     query,
     where,
     limit,
@@ -2515,6 +2547,83 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+// =========================
+// 3 LATEST ADMIN NEWS
+// =========================
+function timestampMillis(value){
+    if(!value) return 0;
+    if(typeof value.toMillis === 'function') return value.toMillis();
+    if(value.seconds != null) return Number(value.seconds)*1000 + Number(value.nanoseconds||0)/1e6;
+    const parsed=Date.parse(String(value));
+    return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function safeNewsText(value, fallback=''){
+    return String(value ?? fallback).trim();
+}
+
+function renderLatestNews(items){
+    const box=document.getElementById('latestNewsGrid');
+    if(!box) return;
+    if(!items.length){
+        box.innerHTML='<div class="latest-news-empty">📰 No public news posts have been published yet.</div>';
+        return;
+    }
+    box.innerHTML=items.map(item=>{
+        const id=encodeURIComponent(String(item.id||''));
+        const icon=safeNewsText(item.icon,'📰');
+        const title=safeNewsText(item.title,'Untitled News');
+        const excerpt=safeNewsText(item.excerpt,item.body||'');
+        const tag=safeNewsText(item.tag,'News');
+        const date=safeNewsText(item.date,'School Update');
+        return `<article class="latest-news-card" role="button" tabindex="0" data-news-id="${id}">
+          <div class="latest-news-top"><div class="latest-news-icon">${icon}</div><div class="latest-news-tag">${tag}</div></div>
+          <h3 class="latest-news-title">${title}</h3>
+          <p class="latest-news-excerpt">${excerpt||'Tap to read the latest announcement.'}</p>
+          <div class="latest-news-meta">${date}</div>
+        </article>`;
+    }).join('');
+    box.querySelectorAll('.latest-news-card').forEach(card=>{
+        const open=()=>{
+            const id=decodeURIComponent(card.dataset.newsId||'');
+            if(id) window.location.href='news.html';
+        };
+        card.addEventListener('click',open);
+        card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
+    });
+}
+
+function loadLatestNews(){
+    const box=document.getElementById('latestNewsGrid');
+    if(!box) return;
+    try{
+        onSnapshot(collection(db,'newsPosts'), (snap)=>{
+            const items=[];
+            snap.forEach(docSnap=>{
+                const item={id:String(docSnap.id),...docSnap.data()};
+                const visibility=safeNewsText(item.visibility,'public');
+                if(item.deleted || item.hidden || visibility!=='public') return;
+                items.push(item);
+            });
+            items.sort((a,b)=>{
+                const at=timestampMillis(a.createdAt) || timestampMillis(a.updatedAt) || timestampMillis(a.date);
+                const bt=timestampMillis(b.createdAt) || timestampMillis(b.updatedAt) || timestampMillis(b.date);
+                return bt-at;
+            });
+            renderLatestNews(items.slice(0,3));
+        }, (error)=>{
+            console.error('Latest news listener failed:',error);
+            box.innerHTML='<div class="latest-news-empty">⚠️ Unable to load the latest news right now.</div>';
+        });
+    }catch(error){
+        console.error('Latest news setup failed:',error);
+        box.innerHTML='<div class="latest-news-empty">⚠️ Unable to load the latest news right now.</div>';
+    }
+}
+
+loadLatestNews();
+
 
 // Persist Google login across all CATHS-MAIN pages.
 setPersistence(auth, browserLocalPersistence).catch(err => {
