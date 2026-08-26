@@ -726,6 +726,11 @@ color:black;
         margin-top: 7px;
     }
 
+    .quick-wrapper .grid .guidance-card,
+    .quick-wrapper .grid .enrollment-card {
+        min-width: 0;
+    }
+
     .icon {
         font-size: 26px;
     }
@@ -757,22 +762,6 @@ color:black;
     #countdown {
         font-size: 20px;
         margin-top: 10px;
-    }
-
-    /* ANNOUNCEMENTS */
-    .announcement {
-        padding: 13px;
-        border-radius: 15px;
-        margin-bottom: 9px;
-    }
-
-    .announcement h4 {
-        font-size: 13px;
-    }
-
-    .announcement p {
-        font-size: 11px;
-        line-height: 1.5;
     }
 
     /* BOTTOM NAV */
@@ -914,8 +903,7 @@ color:black;
     }
 
     .hero-card,
-    .card,
-    .announcement {
+    .card {
         box-shadow: 0 10px 24px rgba(0,0,0,.12);
     }
 
@@ -1376,11 +1364,24 @@ color:black;
     color:#fff !important;
 }
 
-/* Guidance Councilor — centered underneath Student Voice + Open Messages */
-.quick-wrapper .grid .guidance-card{
-    grid-column:1 / -1;
-    width:min(100%, 520px);
-    justify-self:center;
+/* Guidance + Enrollment share the final row equally */
+.quick-wrapper .grid .guidance-card,
+.quick-wrapper .grid .enrollment-card{
+    grid-column:auto;
+    width:100%;
+}
+
+.quick-wrapper .grid .enrollment-card{
+    background:linear-gradient(135deg, rgba(255,215,0,.20), rgba(0,61,165,.70)) !important;
+    border-color:rgba(255,215,0,.32) !important;
+}
+
+.quick-wrapper .grid .enrollment-card:hover{
+    border-color:rgba(255,215,0,.58) !important;
+    box-shadow:
+        0 16px 35px rgba(0,25,80,.28),
+        0 0 0 1px rgba(255,215,0,.07),
+        inset 0 1px 0 rgba(255,255,255,.30);
 }
 
 /* Open Messages gets the exact same glass treatment */
@@ -1555,24 +1556,13 @@ and connect with the school community.
 <h3>Guidance Councilor</h3>
 </a>
 
-</div>
+<a href="student-information.html" class="card enrollment-card" onclick="openProtectedNavigation(event, 'student-information.html')">
+<div class="icon">🎓</div>
+<h3>Enrollment</h3>
+</a>
 
 </div>
 
-<!-- ANNOUNCEMENTS -->
-<div class="section">
-
-<div class="section-title">Latest Announcements</div>
-
-<div class="announcement">
-<h4>SSLG General Assembly</h4>
-<p>August 15, 2026 • School Gymnasium</p>
-</div>
-
-<div class="announcement">
-<h4>Student Leadership Training</h4>
-<p>Registration is now open.</p>
-</div>
 </div>
 
 <!-- NAVIGATION -->
