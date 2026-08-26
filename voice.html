@@ -11,6 +11,41 @@
 
 <style>
 
+/* ===== CONCERN PRIVACY WARNING ===== */
+.concern-warning{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    margin:0 0 22px;
+    padding:13px 15px;
+    border-radius:14px;
+    background:rgba(255,215,0,.13);
+    border:1px solid rgba(255,215,0,.35);
+    color:white;
+    font-size:13px;
+    line-height:1.5;
+}
+.concern-warning-icon{
+    flex:0 0 auto;
+    font-size:18px;
+    line-height:1.4;
+}
+.voice-card form > label:first-of-type{
+    margin-top:24px;
+}
+@media(max-width:768px){
+    .concern-warning{
+        gap:8px;
+        padding:11px 12px;
+        margin-bottom:18px;
+        font-size:11px;
+        line-height:1.45;
+    }
+    .concern-warning-icon{
+        font-size:16px;
+    }
+}
+
 
     
 
@@ -2037,15 +2072,15 @@ Your voice matters. Share your concerns, ideas,
 or suggestions to help improve our school community.
 </p>
 
+<div class="concern-warning">
+    <span class="concern-warning-icon">⚠️</span>
+    <span><strong>Privacy Notice:</strong> Only SSLG Admin will see your concern and the information you provide.</span>
+</div>
+
 <form id="voiceForm">
 
 <label>Full Name</label>
 <input type="text" id="name" placeholder="Enter your name">
-
-<div class="checkbox">
-    <input type="checkbox" id="anonymous">
-    <label for="anonymous">Submit Anonymously</label>
-</div>
 
 <div class="section-search-wrapper">
 
@@ -2179,31 +2214,7 @@ required></textarea>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec";
 
 let firebaseUser = null;
-
-const anonymous = document.getElementById("anonymous");
 const nameInput = document.getElementById("name");
-
-anonymous.addEventListener("change", () => {
-
-    if (anonymous.checked) {
-
-        nameInput.value = "Anonymous";
-        nameInput.readOnly = true;
-
-    } else {
-
-        if (firebaseUser) {
-            nameInput.value = firebaseUser.displayName || "";
-            nameInput.readOnly = true;
-        } else {
-            nameInput.value = "";
-            nameInput.readOnly = false;
-        }
-
-    }
-
-});
-
 
 let sectionVerified = false;
 let verifiedSection = "";
@@ -2496,25 +2507,13 @@ if(!email){
    NAME
 ========================================= */
 
-if(anonymous.checked){
+name = nameInput.value.trim();
 
-    name = "Anonymous";
-
-}else{
-
-    name =
-        nameInput.value.trim();
-
-    if(!name){
-
-        alert(
-            "Please enter your name."
-        );
-
-        return;
-
-    }
-
+if(!name){
+    alert(
+        "Please enter your name."
+    );
+    return;
 }
 
 
@@ -3077,7 +3076,7 @@ function renderConcerns(data){
         <div class="concern-card">
 
             <h3>
-                👤 ${item.name || "Anonymous"}
+                👤 ${item.name || "No Name"}
             </h3>
 
             <p>
