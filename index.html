@@ -1394,6 +1394,313 @@ color:black;
     color:#fff !important;
 }
 
+
+
+/* =========================================================
+   APP / WEBSITE INTRO — premium swipe-right launch
+   Locked until the user completes a real right swipe/drag.
+   ========================================================= */
+.launch-screen{
+    position:fixed;
+    inset:0;
+    z-index:999999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 50% 34%, rgba(255,255,255,.10), transparent 23%),
+      radial-gradient(circle at 22% 18%, rgba(255,215,0,.09), transparent 20%),
+      linear-gradient(145deg,#00183d 0%,#003DA5 54%,#00296B 100%);
+    color:#fff;
+    touch-action:none;
+    overscroll-behavior:none;
+    user-select:none;
+}
+.launch-screen::before,
+.launch-screen::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:42%;
+    width:34vmax;
+    height:34vmax;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,.06);
+    transform:translate(-50%,-50%);
+    animation:launchOrbit 18s linear infinite;
+}
+.launch-screen::after{
+    width:52vmax;
+    height:52vmax;
+    animation-direction:reverse;
+    animation-duration:27s;
+    opacity:.7;
+}
+.launch-content{
+    position:relative;
+    z-index:2;
+    width:min(92vw,520px);
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+.launch-logo-wrap{
+    position:relative;
+    width:clamp(140px,24vw,190px);
+    aspect-ratio:1;
+    display:grid;
+    place-items:center;
+    margin-bottom:10px;
+    opacity:0;
+    transform:scale(.76);
+    animation:launchLogoIn 1.2s cubic-bezier(.2,.82,.2,1) .10s forwards;
+}
+.launch-logo-wrap::before{
+    content:"";
+    position:absolute;
+    inset:3%;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,.15);
+    box-shadow:0 0 60px rgba(255,255,255,.10), inset 0 0 28px rgba(255,255,255,.04);
+    animation:launchPulse 2.8s ease-in-out 1s infinite;
+}
+.launch-logo-wrap::after{
+    content:"";
+    position:absolute;
+    width:180%;
+    height:28%;
+    left:-40%;
+    top:36%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent);
+    transform:translateX(-130%) rotate(-12deg);
+    filter:blur(10px);
+    opacity:0;
+    animation:launchShine 3.8s ease-in-out 1.5s infinite;
+}
+.launch-logo{
+    width:72%;
+    height:72%;
+    object-fit:contain;
+    filter:drop-shadow(0 16px 28px rgba(0,0,0,.28));
+    position:relative;
+    z-index:2;
+}
+
+/* Premium launch signal: steady dot + fast broadcast rings + 8 Quick Navigation emojis. */
+.launch-dot-stage{
+    position:relative;
+    width:290px;
+    height:175px;
+    margin:0 auto;
+    opacity:0;
+    animation:launchFadeUp .55s cubic-bezier(.22,1,.36,1) .78s forwards;
+}
+.launch-dot-stage::before{
+    content:"";
+    position:absolute;
+    left:15px; right:15px; top:50%; height:1px;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.14),transparent);
+    transform:translateY(-50%);
+}
+.launch-dot{
+    position:absolute; left:50%; top:50%;
+    width:11px; height:11px; border-radius:50%;
+    background:#FFD700;
+    transform:translate(-50%,-50%);
+    box-shadow:0 0 14px rgba(255,215,0,.95), 0 0 34px rgba(255,215,0,.36);
+    z-index:8;
+}
+.launch-dot::after{
+    content:""; position:absolute; inset:-7px; border-radius:50%;
+    border:1px solid rgba(255,255,255,.20);
+    animation:launchCoreHalo 1.35s ease-out infinite;
+}
+/* Clean launch presentation: no stacked rings beside the center dot.
+   The white outline appears only around each Quick Navigation emoji. */
+.launch-signal{
+    display:none;
+}
+.launch-signal-emoji{
+    position:absolute; left:50%; top:50%;
+    width:30px; height:30px; display:grid; place-items:center;
+    font-size:18px; line-height:1; border-radius:50%;
+    opacity:0; transform:translate(-50%,-50%) scale(.45);
+    filter:drop-shadow(0 4px 10px rgba(0,0,0,.32));
+    z-index:4; pointer-events:none;
+    animation:launchSignalEmoji 4.8s cubic-bezier(.16,1,.3,1) infinite;
+    animation-delay:var(--delay);
+}
+.launch-signal-emoji::before{
+    content:""; position:absolute; inset:-5px; border-radius:50%;
+    border:1.4px solid rgba(255,255,255,.74);
+    box-shadow:0 0 10px rgba(255,255,255,.12);
+    animation:launchEmojiRing 4.8s cubic-bezier(.16,1,.3,1) infinite;
+    animation-delay:var(--delay);
+}
+.launch-signal:nth-of-type(2), .launch-signal-emoji:nth-of-type(3){--delay:.15s;--size:40px;--drift:-88px;--drifty:-8px}
+.launch-signal:nth-of-type(4), .launch-signal-emoji:nth-of-type(5){--delay:.72s;--size:62px;--drift:-78px;--drifty:-54px}
+.launch-signal:nth-of-type(6), .launch-signal-emoji:nth-of-type(7){--delay:1.29s;--size:84px;--drift:-24px;--drifty:-80px}
+.launch-signal:nth-of-type(8), .launch-signal-emoji:nth-of-type(9){--delay:1.86s;--size:106px;--drift:58px;--drifty:-66px}
+.launch-signal:nth-of-type(10), .launch-signal-emoji:nth-of-type(11){--delay:2.43s;--size:128px;--drift:88px;--drifty:-4px}
+.launch-signal:nth-of-type(12), .launch-signal-emoji:nth-of-type(13){--delay:3.00s;--size:150px;--drift:58px;--drifty:58px}
+.launch-signal:nth-of-type(14), .launch-signal-emoji:nth-of-type(15){--delay:3.57s;--size:172px;--drift:-20px;--drifty:78px}
+.launch-signal:nth-of-type(16), .launch-signal-emoji:nth-of-type(17){--delay:4.14s;--size:194px;--drift:-88px;--drifty:48px}
+
+.launch-title{
+    font-size:clamp(22px,4vw,31px);
+    font-weight:800;
+    letter-spacing:.2px;
+    opacity:0;
+    transform:translateY(10px);
+    animation:launchFadeUp .7s ease 1.25s forwards;
+}
+.launch-subtitle{
+    margin-top:6px;
+    font-size:clamp(11px,2.2vw,14px);
+    opacity:0;
+    transform:translateY(10px);
+    animation:launchFadeUp .7s ease 1.38s forwards;
+    color:rgba(255,255,255,.84);
+}
+.launch-swipe-area{
+    position:relative;
+    width:min(92vw,390px);
+    margin-top:30px;
+    padding:8px;
+    border:1px solid rgba(255,255,255,.15);
+    border-radius:999px;
+    background:rgba(255,255,255,.075);
+    box-shadow:0 16px 45px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.08);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    opacity:0;
+    transform:translateY(12px);
+    animation:launchFadeUp .75s ease 1.58s forwards;
+    cursor:grab;
+}
+.launch-swipe-area:active{ cursor:grabbing; }
+.launch-swipe-track{
+    height:56px;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    border-radius:999px;
+}
+.launch-swipe-track::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(110deg,transparent 20%,rgba(255,255,255,.08) 48%,transparent 76%);
+    transform:translateX(-120%);
+    animation:launchTrackShimmer 3.2s ease-in-out 2.2s infinite;
+}
+.launch-swipe-label{
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.95px;
+    text-transform:uppercase;
+    opacity:.74;
+    pointer-events:none;
+}
+.launch-swipe-hint{
+    position:absolute;
+    left:8px;
+    top:8px;
+    width:56px;
+    height:40px;
+    border-radius:999px;
+    display:grid;
+    place-items:center;
+    background:linear-gradient(180deg,#ffe75e,#FFD700);
+    color:#00296B;
+    box-shadow:0 9px 26px rgba(0,0,0,.22),0 0 22px rgba(255,215,0,.20);
+    will-change:transform;
+    z-index:2;
+    transition:transform .08s linear, box-shadow .15s ease;
+    animation:launchHintGuide 2.25s cubic-bezier(.65,0,.35,1) 2.0s infinite;
+}
+.launch-swipe-hint.is-dragging{ animation:none; box-shadow:0 10px 28px rgba(0,0,0,.26),0 0 30px rgba(255,215,0,.38); }
+.launch-swipe-hint svg{ width:20px; height:20px; }
+.launch-swipe-label span{ opacity:.55; }
+.launch-threshold{
+    margin-top:11px;
+    font-size:10px;
+    letter-spacing:.45px;
+    color:rgba(255,255,255,.48);
+    opacity:0;
+    animation:launchFadeUp .7s ease 1.72s forwards;
+}
+.launch-screen.is-leaving{
+    opacity:0;
+    visibility:hidden;
+    transition:opacity .5s ease, visibility .5s ease;
+}
+.launch-screen.is-leaving .launch-content{
+    transform:translateX(18%) scale(.98);
+    opacity:.2;
+    transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .35s ease;
+}
+@keyframes launchLogoIn{
+    0%{opacity:0;transform:scale(.76);filter:blur(10px)}
+    55%{opacity:1;transform:scale(1.045);filter:blur(0)}
+    100%{opacity:1;transform:scale(1)}
+}
+@keyframes launchFadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes launchPulse{0%,100%{transform:scale(1);opacity:.55}50%{transform:scale(1.08);opacity:.95}}
+@keyframes launchShine{0%,52%{opacity:0;transform:translateX(-130%) rotate(-12deg)}64%{opacity:.75}78%,100%{opacity:0;transform:translateX(130%) rotate(-12deg)}}
+@keyframes launchOrbit{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes launchCoreHalo{0%{transform:scale(.72);opacity:.15}45%{transform:scale(1.15);opacity:.42}100%{transform:scale(1.42);opacity:0}}
+@keyframes launchSignalWave{
+    0%{opacity:0;transform:translate(-50%,-50%) scale(.08)}
+    7%{opacity:.96}
+    44%{opacity:.62}
+    74%{opacity:.16}
+    100%{opacity:0;transform:translate(-50%,-50%) scale(calc(var(--size) / 24));}
+}
+@keyframes launchSignalEmoji{
+    0%,8%{opacity:0;transform:translate(-50%,-50%) scale(.35)}
+    13%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}
+    22%{opacity:1;transform:translate(calc(-50% + var(--drift)),calc(-50% + var(--drifty))) scale(1)}
+    66%{opacity:.98;transform:translate(calc(-50% + var(--drift)),calc(-50% + var(--drifty))) scale(1)}
+    100%{opacity:0;transform:translate(calc(-50% + var(--drift)),calc(-50% + var(--drifty))) scale(.82)}
+}
+@keyframes launchEmojiRing{
+    0%,10%{opacity:0;transform:scale(.55)}
+    18%{opacity:.95;transform:scale(.9)}
+    42%{opacity:.58;transform:scale(1.14)}
+    68%,100%{opacity:0;transform:scale(1.38)}
+}
+@keyframes launchHintGuide{
+    0%,12%{transform:translateX(0)}
+    50%{transform:translateX(314px)}
+    58%,100%{transform:translateX(0)}
+}
+@keyframes launchTrackShimmer{0%,35%{transform:translateX(-120%)}60%,100%{transform:translateX(120%)}}
+@media (max-width:600px){
+    .launch-logo-wrap{width:150px}
+    .launch-dot-stage{width:250px;height:145px}
+    .launch-swipe-area{width:88vw}
+    .launch-swipe-track{height:52px}
+    .launch-swipe-hint{width:52px;height:36px}
+    .launch-threshold{font-size:9px}
+    @keyframes launchHintGuide{
+        0%,12%{transform:translateX(0)}
+        50%{transform:translateX(calc(88vw - 108px))}
+        58%,100%{transform:translateX(0)}
+    }
+}
+@media (prefers-reduced-motion:reduce){
+    .launch-screen *, .launch-screen::before, .launch-screen::after{
+        animation-duration:.01ms !important;
+        animation-iteration-count:1 !important;
+        transition-duration:.01ms !important;
+    }
+}
+
 </style>
 
   <link rel="manifest" href="manifest.json">
@@ -1405,6 +1712,124 @@ color:black;
 </head>
 
 <body>
+
+<!-- APP / WEBSITE LAUNCH EXPERIENCE -->
+<div id="launchScreen" class="launch-screen" aria-label="CATHS-MAIN Student Voice launch screen">
+  <div class="launch-content" id="launchContent">
+    <div class="launch-logo-wrap">
+      <img src="sslg-logo.png" class="launch-logo" alt="CATHS-MAIN SSLG logo">
+    </div>
+
+    <div class="launch-dot-stage" aria-hidden="true">
+      <span class="launch-dot"></span>
+      <span class="launch-signal"></span><span class="launch-signal-emoji">📢</span>
+      <span class="launch-signal"></span><span class="launch-signal-emoji">📰</span>
+      <span class="launch-signal"></span><span class="launch-signal-emoji">👥</span>
+      <span class="launch-signal"></span><span class="launch-signal-emoji">🏆</span>
+      <span class="launch-signal"></span><span class="launch-signal-emoji">🗣️</span>
+      <span class="launch-signal"></span><span class="launch-signal-emoji">💬</span>
+      <span class="launch-signal"></span><span class="launch-signal-emoji">🧑‍🏫</span>
+      <span class="launch-signal"></span><span class="launch-signal-emoji">🎓</span>
+    </div>
+
+    <div class="launch-title">CATHS-MAIN Student Voice</div>
+    <div class="launch-subtitle">Official SSLG Communication Platform</div>
+
+    <div id="launchSwipeArea" class="launch-swipe-area" role="presentation" aria-label="Swipe right to enter">
+      <div class="launch-swipe-track">
+        <div class="launch-swipe-label">Swipe right to enter</div>
+        <div class="launch-swipe-hint" id="launchSwipeHint" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 12h15"></path>
+            <path d="m14 6 6 6-6 6"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="launch-threshold">Swipe the control all the way to the right</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const screen = document.getElementById('launchScreen');
+  const swipeArea = document.getElementById('launchSwipeArea');
+  const hint = document.getElementById('launchSwipeHint');
+  if(!screen || !swipeArea || !hint) return;
+
+  let completed = false;
+  let dragging = false;
+  let startX = 0;
+  let currentX = 0;
+  let pointerId = null;
+
+  const maxDistance = () => Math.max(0, swipeArea.clientWidth - hint.offsetWidth - 16);
+
+  function setHintX(distance){
+    const d = Math.max(0, Math.min(distance, maxDistance()));
+    hint.style.transform = `translateX(${d}px)`;
+  }
+
+  function resetHint(){
+    hint.classList.remove('is-dragging');
+    hint.style.transition = 'transform .25s cubic-bezier(.2,.8,.2,1)';
+    setHintX(0);
+    window.setTimeout(()=>hint.style.transition='',260);
+  }
+
+  function enterApp(){
+    if(completed) return;
+    completed = true;
+    screen.classList.add('is-leaving');
+    document.body.classList.add('launch-complete');
+    window.setTimeout(() => screen.remove(), 550);
+  }
+
+  function pointerStart(e){
+    dragging = true;
+    pointerId = e.pointerId;
+    startX = e.clientX;
+    currentX = startX;
+    hint.classList.add('is-dragging');
+    swipeArea.setPointerCapture?.(pointerId);
+    e.preventDefault();
+  }
+
+  function pointerMove(e){
+    if(!dragging || e.pointerId !== pointerId) return;
+    currentX = e.clientX;
+    const delta = currentX - startX;
+    setHintX(delta);
+    e.preventDefault();
+  }
+
+  function pointerEnd(e){
+    if(!dragging || e.pointerId !== pointerId) return;
+    const delta = currentX - startX;
+    dragging = false;
+    pointerId = null;
+    const required = Math.max(120, maxDistance() * .78);
+
+    if(delta >= required){
+      setHintX(maxDistance());
+      window.setTimeout(enterApp, 120);
+    }else{
+      resetHint();
+    }
+    e.preventDefault();
+  }
+
+  swipeArea.addEventListener('pointerdown', pointerStart, {passive:false});
+  swipeArea.addEventListener('pointermove', pointerMove, {passive:false});
+  swipeArea.addEventListener('pointerup', pointerEnd, {passive:false});
+  swipeArea.addEventListener('pointercancel', pointerEnd, {passive:false});
+  swipeArea.addEventListener('lostpointercapture', ()=>{
+    if(dragging){ dragging=false; pointerId=null; resetHint(); }
+  });
+
+  // Never auto-open. The user must complete the rightward swipe/drag on both touch and mouse devices.
+})();
+</script>
 
 <!-- HEADER -->
 
