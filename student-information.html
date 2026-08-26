@@ -155,6 +155,15 @@ button{cursor:pointer}
   </div>
 </div>
 
+<div id="loadingOverlay" class="loading-overlay" aria-hidden="true">
+  <div class="loading-card" role="status" aria-live="polite">
+    <div class="loading-orbit" aria-hidden="true"></div>
+    <h3 id="loadingTitle">Please wait</h3>
+    <p id="loadingText">Connecting to the school spreadsheet…</p>
+    <div class="loading-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+  </div>
+</div>
+
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <nav class="bottom-nav" aria-label="Bottom navigation">
@@ -176,7 +185,7 @@ const app=initializeApp(firebaseConfig); const auth=getAuth(app); setPersistence
 const VERIFIED_ADMIN_EMAILS=new Set(['reyvengarcia15@gmail.com','reyvenbermudo091@gmail.com','reyvengarcia05@gmail.com','chezcadc14@gmail.com','nathanielgarc679@gmail.com','marteena.133@gmail.com','gabbicastillo0126@gmail.com','leddadanielle91@gmail.com','jennapastor062@gmail.com','dhenmark1313@gmail.com','christianangelointes0@gmail.com','alexaislacruz@gmail.com','galangjullianne016@gmail.com','vanessajotic2403@gmail.com','aquinobernardjr0@gmail.com','angellyar0909@gmail.com','vhergelnarciso@gmail.com','sicatmadisson487@gmail.com']);
 function isAdmin(email){return VERIFIED_ADMIN_EMAILS.has(String(email||'').trim().toLowerCase());}
 
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxAidcfDEVXAyPTrXj9q3iLUUU9eATjugKyuYBuKkR4y412Uzdimc4VEPtC5zhvhKv5gg/exec';
+const GOOGLE_SCRIPT_URL='https://script.google.com/macros/s/AKfycbxAidcfDEVXAyPTrXj9q3iLUUU9eATjugKyuYBuKkR4y412Uzdimc4VEPtC5zhvhKv5gg/exec';
 const STORAGE_KEY='cathsStudentInformation';
 let currentUser=null, adminMode=false, adminFilter='all', lastEnrollees=[];
 const $=id=>document.getElementById(id);
@@ -211,6 +220,37 @@ function renderSummary(data){const rows=[['Full Name',data.fullName],['Age',data
 function saveLocal(data){localStorage.setItem(STORAGE_KEY,JSON.stringify(data))}
 function loadSaved(){try{const raw=localStorage.getItem(STORAGE_KEY);if(!raw)return;const data=JSON.parse(raw);['fullName','age','contactNumber','gradeLevel','schoolYear'].forEach(k=>{if($(k)&&data[k]!==undefined)$(k).value=data[k]});syncStrand();if(isSeniorHigh()&&data.strand)strand.value=data.strand;renderSummary(data)}catch(e){console.warn(e)}}
 
+async function parseApiResponse(response){
+  const raw=await response.text();
+  if(!response.ok){
+    throw new Error('Apps Script request failed (HTTP '+response.status+').');
+  }
+  try{return JSON.parse(raw)}catch(_){
+    const snippet=raw.replace(/\s+/g,' ').slice(0,260);
+    throw new Error('The Apps Script did not return JSON. Response: '+snippet);
+  }
+}
+async function apiGet(params,timeoutMs=12000){
+  const url=new URL(GOOGLE_SCRIPT_URL);
+  Object.entries(params||{}).forEach(([k,v])=>url.searchParams.set(k,String(v??'')));
+  url.searchParams.set('_',Date.now().toString());
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),timeoutMs);
+  try{
+    const response=await fetch(url.toString(),{method:'GET',mode:'cors',credentials:'omit',cache:'no-store',redirect:'follow',signal:controller.signal});
+    return await parseApiResponse(response);
+  }finally{clearTimeout(timer)}
+}
+async function apiPost(payload,timeoutMs=15000){
+  const url=new URL(GOOGLE_SCRIPT_URL);
+  url.searchParams.set('_',Date.now().toString());
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),timeoutMs);
+  try{
+    const response=await fetch(url.toString(),{method:'POST',mode:'cors',credentials:'omit',cache:'no-store',redirect:'follow',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:payload.toString(),signal:controller.signal});
+    return await parseApiResponse(response);
+  }finally{clearTimeout(timer)}
+}
 form.addEventListener('submit',async e=>{
  e.preventDefault();
  if(!currentUser){setStatus('Please log in first.','error');toast('Please log in with Google from the Home page.');return}
@@ -220,10 +260,7 @@ form.addEventListener('submit',async e=>{
  try{
    showLoading('Submitting enrollment','Please wait while we save your information to the school spreadsheet.');
    const payload=new URLSearchParams({action:'submit',fullName:data.fullName,age:data.age,contactNumber:data.contactNumber,gradeLevel:data.gradeLevel,strand:data.strand,schoolYear:data.schoolYear,uid:currentUser.uid||'',email:currentUser.email||''});
-   const controller=new AbortController(); const timer=setTimeout(()=>controller.abort(),15000);
-   const response=await fetch(GOOGLE_SCRIPT_URL,{method:'POST',body:payload,cache:'no-store',signal:controller.signal});
-   clearTimeout(timer);
-   const json=await response.json();
+   const json=await apiPost(payload,15000);
    if(!json.ok)throw new Error(json.error||'The spreadsheet rejected the submission.');
    saveLocal(data);renderSummary(data);setStatus('Submitted successfully. Status: Pending.','success');$('successModal').classList.add('show');
    if(adminMode)loadEnrollees();
@@ -246,22 +283,33 @@ window.setAdminFilter=(f)=>{adminFilter=f;document.querySelectorAll('.filter-btn
 window.openAdminPanel=()=>{if(!adminMode)return;renderEnrollees('adminModalList');$('adminModal').classList.add('show');loadEnrollees()}
 window.closeAdminPanel=()=>$('adminModal').classList.remove('show');
 
-function showLoading(title,text){$('loadingTitle').textContent=title;$('loadingText').textContent=text;$('loadingOverlay').classList.add('show');$('loadingOverlay').setAttribute('aria-hidden','false');}
-function hideLoading(){$('loadingOverlay').classList.remove('show');$('loadingOverlay').setAttribute('aria-hidden','true')}
+function showLoading(title,text){
+ const overlay=$('loadingOverlay');
+ if(!overlay)return;
+ const titleEl=$('loadingTitle');
+ const textEl=$('loadingText');
+ if(titleEl)titleEl.textContent=title||'Please wait';
+ if(textEl)textEl.textContent=text||'Connecting to the school spreadsheet…';
+ overlay.classList.add('show');
+ overlay.setAttribute('aria-hidden','false');
+}
+function hideLoading(){
+ const overlay=$('loadingOverlay');
+ if(!overlay)return;
+ overlay.classList.remove('show');
+ overlay.setAttribute('aria-hidden','true');
+}
 
 async function loadEnrollees(){
  if(!adminMode||!GOOGLE_SCRIPT_URL||GOOGLE_SCRIPT_URL.includes('PASTE_YOUR_'))return;
  $('adminList').innerHTML='<div class="empty-state">Loading enrollees…</div>';$('adminModalList').innerHTML='<div class="empty-state">Loading enrollees…</div>';
  try{
-   const url=GOOGLE_SCRIPT_URL+'?action=list&adminEmail='+encodeURIComponent(currentUser.email||'');
-   const controller=new AbortController(); const timer=setTimeout(()=>controller.abort(),12000);
-   const res=await fetch(url,{method:'GET',cache:'no-store',signal:controller.signal}); clearTimeout(timer);
-   const json=await res.json();
+   const json=await apiGet({action:'list',adminEmail:currentUser.email||''},12000);
    if(!json.ok)throw new Error(json.error||'Could not load enrollees');
    lastEnrollees=Array.isArray(json.rows)?json.rows:[];renderEnrollees('adminList');renderEnrollees('adminModalList');
  }catch(err){
    console.error(err);
-   const msg=err.name==='AbortError'?'The spreadsheet took too long to respond. Please refresh and try again.':(err.message||'Could not load the spreadsheet right now.');
+   const msg=err.name==='AbortError'?'The spreadsheet took too long to respond. Please refresh and try again.':(err.message||'Could not load the spreadsheet right now. Check the Apps Script deployment.');
    $('adminList').innerHTML=`<div class="empty-state">${escapeHtml(msg)}</div>`;
    $('adminModalList').innerHTML=`<div class="empty-state">${escapeHtml(msg)}</div>`;
  }
@@ -270,10 +318,8 @@ window.approveEnrollee=async(id)=>{
  if(!adminMode||!id)return; if(!confirm('Approve this student submission?'))return;
  try{
    showLoading('Approving enrollment','Updating the student status in the spreadsheet…');
-   const url=GOOGLE_SCRIPT_URL+'?action=approve&adminEmail='+encodeURIComponent(currentUser.email||'')+'&id='+encodeURIComponent(id);
-   const controller=new AbortController(); const timer=setTimeout(()=>controller.abort(),12000);
-   const res=await fetch(url,{method:'GET',cache:'no-store',signal:controller.signal}); clearTimeout(timer);
-   const json=await res.json(); if(!json.ok)throw new Error(json.error||'Approval failed');
+   const json=await apiGet({action:'approve',adminEmail:currentUser.email||'',id:id},12000);
+   if(!json.ok)throw new Error(json.error||'Approval failed');
    toast('Student approved successfully.'); await loadEnrollees();
  }catch(err){console.error(err);toast(err.name==='AbortError'?'Approval timed out. Please try again.':(err.message||'Approval failed.'))}
  finally{hideLoading()}
