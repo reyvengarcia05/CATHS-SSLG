@@ -165,7 +165,7 @@ const app=initializeApp(firebaseConfig); const auth=getAuth(app); setPersistence
 const VERIFIED_ADMIN_EMAILS=new Set(['reyvengarcia15@gmail.com','reyvenbermudo091@gmail.com','reyvengarcia05@gmail.com','chezcadc14@gmail.com','nathanielgarc679@gmail.com','marteena.133@gmail.com','gabbicastillo0126@gmail.com','leddadanielle91@gmail.com','jennapastor062@gmail.com','dhenmark1313@gmail.com','christianangelointes0@gmail.com','alexaislacruz@gmail.com','galangjullianne016@gmail.com','vanessajotic2403@gmail.com','aquinobernardjr0@gmail.com','angellyar0909@gmail.com','vhergelnarciso@gmail.com','sicatmadisson487@gmail.com']);
 function isAdmin(email){return VERIFIED_ADMIN_EMAILS.has(String(email||'').trim().toLowerCase());}
 
-const GOOGLE_SCRIPT_URL='PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+const GOOGLE_SCRIPT_URL='https://script.google.com/macros/s/AKfycbxsTzpbUSBEraJIh2zupZvERTVScQjwj2Z5R6uupoBdb-G0WaGKIhnwjMAphEV4_HjZrw/exec';
 const STORAGE_KEY='cathsStudentInformation';
 let currentUser=null, adminMode=false, adminFilter='all', lastEnrollees=[];
 const $=id=>document.getElementById(id);
