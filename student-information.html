@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Information • CATHS-MAIN Student Voice</title>
+<link rel="icon" type="image/png" href="sslg-logo.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#003DA5">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{--blue:#003DA5;--darkblue:#00296B;--yellow:#FFD700;--red:#ff5f67;--green:#44d483;--white:#fff}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
+html,body{min-height:100%;background:linear-gradient(145deg,#003DA5 0%,#00296B 55%,#001b48 100%);color:#fff}
+body{padding-bottom:88px;overflow-x:hidden}
+body::before,body::after{content:"";position:fixed;border-radius:50%;filter:blur(12px);pointer-events:none;z-index:0}
+body::before{width:210px;height:210px;top:-75px;right:-70px;background:rgba(255,215,0,.15)}
+body::after{width:250px;height:250px;left:-125px;bottom:70px;background:rgba(0,174,255,.14)}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.header{position:sticky;top:0;z-index:70;display:flex;align-items:center;gap:12px;padding:11px 14px;background:rgba(0,28,76,.58);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.12)}
+.header-left{display:flex;align-items:center;gap:5px;min-width:0}.logo{width:40px;height:40px;object-fit:contain}.title{min-width:0}.title h1{font-size:15px;line-height:1.1;white-space:nowrap}.title p{font-size:8px;opacity:.76;margin-top:3px;white-space:nowrap}.header-right{margin-left:auto;display:flex;gap:7px;align-items:center}.top-btn{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;border-radius:13px;padding:8px 11px;font-size:10px;font-weight:800;backdrop-filter:blur(10px);transition:.2s}.top-btn:hover{transform:translateY(-2px);background:rgba(255,255,255,.16)}
+.page{position:relative;z-index:1;width:min(800px,100%);margin:0 auto;padding:20px 14px 24px}.hero-card,.form-card,.admin-card{border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 18px 45px rgba(0,0,0,.17)}.hero-card{padding:21px;border-radius:24px;background:rgba(255,255,255,.1);animation:fadeUp .55s cubic-bezier(.16,1,.3,1)}.eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:10px;font-weight:800;padding:7px 10px;border-radius:999px;background:rgba(255,215,0,.14);color:var(--yellow);border:1px solid rgba(255,215,0,.22)}.hero-card h2{font-size:26px;margin-top:11px;line-height:1.15}.hero-card h2 span{color:var(--yellow)}.hero-card p{font-size:11px;line-height:1.7;opacity:.84;margin-top:8px}.form-card{margin-top:15px;padding:18px;border-radius:24px;background:linear-gradient(135deg,rgba(255,255,255,.14),rgba(255,255,255,.075));animation:fadeUp .6s cubic-bezier(.16,1,.3,1) .05s both}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:10px;font-weight:800;opacity:.94}.field input,.field select{width:100%;border:1px solid rgba(255,255,255,.18);outline:none;border-radius:14px;padding:12px 13px;background:rgba(0,20,60,.34);color:#fff;font-size:12px;transition:border-color .2s,box-shadow .2s,transform .2s,background .2s}.field input::placeholder{color:rgba(255,255,255,.46)}.field input:focus,.field select:focus{border-color:rgba(255,215,0,.65);box-shadow:0 0 0 4px rgba(255,215,0,.09);transform:translateY(-1px)}.field select option{color:#111;background:#fff}.field.invalid input,.field.invalid select{border-color:rgba(255,95,103,.95);background:rgba(120,18,27,.25);box-shadow:0 0 0 4px rgba(255,95,103,.09)}.field.invalid label{color:#ffd7da}.field-error{display:none;color:#ffd7da;font-size:9px;font-weight:700;line-height:1.35}.field.invalid .field-error{display:block;animation:fadeUp .18s ease}.hint{font-size:9px;opacity:.58}.actions{display:flex;gap:9px;margin-top:18px}.save-btn,.clear-btn{flex:1;border:none;border-radius:14px;padding:13px 15px;font-weight:800;transition:.22s}.save-btn{background:var(--yellow);color:var(--darkblue);box-shadow:0 10px 22px rgba(255,215,0,.18)}.clear-btn{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.14)}.save-btn:hover,.clear-btn:hover{transform:translateY(-2px)}.save-btn:disabled{opacity:.65;cursor:not-allowed;transform:none}.status{margin-top:11px;min-height:18px;text-align:center;font-size:10px;font-weight:700}.status.success{color:#d8ffd0}.status.error{color:#ffd0d3}.shake{animation:shake .32s ease}
+.summary{margin-top:15px;display:none;border-radius:22px;padding:17px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(16px)}.summary.show{display:block}.summary-top,.admin-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.summary h3,.admin-head h3{font-size:14px}.edit-link{border:0;background:none;color:var(--yellow);font-size:10px;font-weight:800}.summary-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:13px}.summary-item{padding:10px 11px;border-radius:14px;background:rgba(0,36,94,.27);border:1px solid rgba(255,255,255,.08)}.summary-item small{display:block;font-size:8px;opacity:.58}.summary-item strong{display:block;font-size:11px;margin-top:3px;overflow:hidden;text-overflow:ellipsis}
+.admin-card{display:none;margin-top:15px;padding:17px;border-radius:24px;background:linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.07));animation:fadeUp .45s cubic-bezier(.16,1,.3,1)}.admin-card.show{display:block}.admin-title-wrap p{font-size:9px;opacity:.68;margin-top:3px}.admin-badge{padding:6px 9px;border-radius:999px;background:rgba(255,215,0,.14);color:var(--yellow);border:1px solid rgba(255,215,0,.2);font-size:9px;font-weight:900}.admin-toolbar{display:flex;gap:7px;margin-top:13px;flex-wrap:wrap}.filter-btn{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:#fff;border-radius:10px;padding:8px 10px;font-size:9px;font-weight:800}.filter-btn.active{background:var(--yellow);color:var(--darkblue);border-color:var(--yellow)}.enrollee-list{display:grid;gap:10px;margin-top:13px;max-height:500px;overflow:auto;padding-right:2px}.enrollee-card{padding:13px;border-radius:17px;background:rgba(0,24,74,.26);border:1px solid rgba(255,255,255,.1)}.enrollee-top{display:flex;justify-content:space-between;gap:9px;align-items:flex-start}.enrollee-name{font-size:12px;font-weight:900;word-break:break-word}.enrollee-meta{font-size:9px;opacity:.65;margin-top:3px;line-height:1.5}.status-chip{font-size:8px;font-weight:900;padding:6px 8px;border-radius:999px;white-space:nowrap}.status-chip.pending{background:rgba(255,215,0,.14);color:var(--yellow)}.status-chip.approved{background:rgba(68,212,131,.14);color:#8ff0bb}.enrollee-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:11px}.detail-box{padding:8px 9px;border-radius:11px;background:rgba(255,255,255,.06)}.detail-box small{display:block;font-size:7px;opacity:.54}.detail-box strong{display:block;font-size:9px;margin-top:2px;word-break:break-word}.admin-actions{display:flex;gap:7px;margin-top:10px}.approve-btn{flex:1;border:0;border-radius:11px;padding:9px;background:var(--green);color:#073b25;font-size:9px;font-weight:900}.refresh-btn{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);color:#fff;border-radius:11px;padding:9px 12px;font-size:9px;font-weight:800}.empty-state{padding:24px 12px;text-align:center;opacity:.68;font-size:10px}
+.modal{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.62);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}.modal.show{display:flex}.modal-card{width:min(410px,100%);padding:22px;border-radius:25px;background:linear-gradient(145deg,rgba(0,61,165,.95),rgba(0,41,107,.96));border:1px solid rgba(255,255,255,.2);box-shadow:0 22px 70px rgba(0,0,0,.38);animation:pop .28s ease}.modal-card.center{text-align:center}.modal-icon{font-size:38px}.modal-card h3{font-size:18px;margin-top:8px}.modal-card p{font-size:10px;line-height:1.7;opacity:.82;margin-top:6px}.modal-btn{width:100%;margin-top:14px;padding:12px;border:0;border-radius:14px;background:var(--yellow);color:var(--darkblue);font-weight:900}.admin-modal-card{width:min(760px,100%);max-height:88vh;display:flex;flex-direction:column;padding:18px}.admin-modal-card h3{margin:0}.modal-close{width:32px;height:32px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.1);color:#fff;font-weight:900}.admin-modal-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.admin-modal-sub{font-size:9px;opacity:.68;margin-top:3px}.admin-modal-content{overflow:auto;margin-top:12px;padding-right:2px}.toast{position:fixed;left:50%;bottom:86px;z-index:150;transform:translate(-50%,18px);opacity:0;pointer-events:none;background:rgba(0,0,0,.72);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(12px);color:#fff;padding:10px 14px;border-radius:999px;font-size:9px;font-weight:800;transition:.25s}.toast.show{opacity:1;transform:translate(-50%,0)}
+.bottom-nav{position:fixed;z-index:80;left:0;right:0;bottom:0;height:72px;background:rgba(0,0,0,.25);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;justify-content:space-around;align-items:center;border-top:1px solid rgba(255,255,255,.08)}.nav-item{text-align:center;font-size:8px;color:#fff;text-decoration:none;min-width:54px;padding:4px 2px;transition:transform .22s ease,color .22s ease}.nav-item div{font-size:20px;line-height:1;margin-bottom:4px}.nav-item.active{color:var(--yellow);transform:translateY(-4px) scale(1.06)}
+@keyframes pop{from{opacity:0;transform:scale(.82) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}50%{transform:translateX(4px)}75%{transform:translateX(-3px)}}
+@media(max-width:560px){body{padding-bottom:82px}.header{padding:9px 10px}.logo{width:35px;height:35px}.title h1{font-size:13px}.title p{font-size:7px}.top-btn{padding:7px 9px;font-size:9px}.page{padding:16px 11px 22px}.hero-card{padding:17px;border-radius:20px}.hero-card h2{font-size:22px}.form-card,.admin-card{padding:15px;border-radius:20px}.grid{grid-template-columns:1fr}.field.full{grid-column:auto}.summary-list,.enrollee-details{grid-template-columns:1fr}.actions{position:sticky;bottom:78px;z-index:15;padding-top:3px}.save-btn,.clear-btn{padding:12px 10px;font-size:11px}.bottom-nav{height:67px}.admin-head{align-items:flex-start}.admin-toolbar{display:grid;grid-template-columns:1fr 1fr 1fr}.filter-btn{padding:8px 5px}.admin-modal-card{max-height:90vh}.enrollee-top{flex-direction:column}.status-chip{align-self:flex-start}}
+</style>
+
+<body>
+<header class="header">
+  <div class="header-left">
+    <img src="sslg-logo.png" class="logo" alt="SSLG logo">
+    <img src="caths-logo.png" class="logo" alt="CATHS logo">
+    <div class="title"><h1>CATHS-MAIN</h1><p>Official SSLG Communication Platform</p></div>
+  </div>
+  <div class="header-right">
+    <button class="top-btn" type="button" onclick="goBack()">← Back</button>
+    <button id="adminNavBtn" class="top-btn" type="button" style="display:none" onclick="openAdminPanel()">🛠️ Admin</button>
+  </div>
+</header>
+
+<main class="page">
+  <section class="hero-card">
+    <span class="eyebrow">📝 STUDENT REGISTRATION</span>
+    <h2>Tell us about <span>you.</span></h2>
+    <p>Enter your basic student information. You can update these details later once your enrollment information is confirmed.</p>
+  </section>
+
+  <section class="form-card">
+    <form id="studentForm" novalidate>
+      <div class="grid">
+        <div class="field full" data-field="fullName">
+          <label for="fullName">Full Name</label>
+          <input id="fullName" name="fullName" type="text" placeholder="Enter your full name" maxlength="80" autocomplete="name" required>
+          <span class="field-error">Full name is required.</span>
+        </div>
+        <div class="field" data-field="age">
+          <label for="age">Age</label>
+          <input id="age" name="age" type="number" min="10" max="30" placeholder="e.g. 16" inputmode="numeric" required>
+          <span class="field-error">Enter your age.</span>
+        </div>
+        <div class="field" data-field="contactNumber">
+          <label for="contactNumber">Contact Number</label>
+          <input id="contactNumber" name="contactNumber" type="tel" placeholder="09XXXXXXXXX" maxlength="11" inputmode="numeric" autocomplete="tel" required>
+          <span class="field-error">Enter a valid 11-digit number.</span>
+        </div>
+        <div class="field" data-field="gradeLevel">
+          <label for="gradeLevel">Grade Level</label>
+          <select id="gradeLevel" name="gradeLevel" required>
+            <option value="" selected disabled>Select grade level</option>
+            <option>Grade 7</option><option>Grade 8</option><option>Grade 9</option><option>Grade 10</option>
+            <option>Grade 11</option><option>Grade 12</option>
+          </select>
+          <span class="field-error">Select your grade level.</span>
+        </div>
+        <div class="field" id="strandField" data-field="strand">
+          <label for="strand">Strand <span style="opacity:.55">(Senior High only)</span></label>
+          <select id="strand" name="strand" disabled>
+            <option value="" selected>Select strand</option>
+            <option>ASSH</option><option>STEM</option><option>ABM</option><option>TVL</option><option>Other</option>
+          </select>
+          <span class="hint">Strand appears when Grade 11 or 12 is selected.</span>
+          <span class="field-error">Select your strand.</span>
+        </div>
+        <div class="field full" data-field="schoolYear">
+          <label for="schoolYear">School Year</label>
+          <input id="schoolYear" name="schoolYear" type="text" value="2026–2027" maxlength="9" required>
+          <span class="field-error">School year is required.</span>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="clear-btn" type="button" onclick="clearForm()">Clear</button>
+        <button class="save-btn" type="submit">Submit Information</button>
+      </div>
+      <div id="status" class="status" aria-live="polite"></div>
+    </form>
+  </section>
+
+  <section id="summary" class="summary">
+    <div class="summary-top"><h3>Submitted Student Information</h3><button class="edit-link" type="button" onclick="editInformation()">Edit</button></div>
+    <div id="summaryList" class="summary-list"></div>
+  </section>
+
+  <section id="adminCard" class="admin-card">
+    <div class="admin-head">
+      <div class="admin-title-wrap"><h3>🛠️ Enrollees Management</h3><p>Review student submissions and approve pending records.</p></div>
+      <span class="admin-badge">ADMIN</span>
+    </div>
+    <div class="admin-toolbar">
+      <button class="filter-btn active" data-filter="all" onclick="setAdminFilter('all')">All</button>
+      <button class="filter-btn" data-filter="pending" onclick="setAdminFilter('pending')">Pending</button>
+      <button class="filter-btn" data-filter="approved" onclick="setAdminFilter('approved')">Approved</button>
+    </div>
+    <button class="filter-btn" type="button" style="width:100%;margin-top:10px;background:rgba(255,215,0,.12);color:var(--yellow);border-color:rgba(255,215,0,.25)" onclick="openAdminPanel()">👥 See Enrollees</button>
+    <div id="adminList" class="enrollee-list"><div class="empty-state">Loading enrollees…</div></div>
+    <div style="margin-top:10px;display:flex;justify-content:flex-end"><button class="refresh-btn" type="button" onclick="loadEnrollees()">↻ Refresh</button></div>
+  </section>
+</main>
+
+<div id="successModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="successTitle">
+  <div class="modal-card center">
+    <div class="modal-icon">✅</div><h3 id="successTitle">Information Submitted!</h3>
+    <p>Your student information has been sent to the school spreadsheet and is now <strong>Pending</strong> approval.</p>
+    <button class="modal-btn" type="button" onclick="closeSuccess()">Done</button>
+  </div>
+</div>
+
+<div id="adminModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+  <div class="modal-card admin-modal-card">
+    <div class="admin-modal-head">
+      <div><h3 id="adminTitle">🛠️ See Enrollees</h3><p class="admin-modal-sub">Authorized admin access • review submissions here.</p></div>
+      <button class="modal-close" type="button" onclick="closeAdminPanel()">✕</button>
+    </div>
+    <div class="admin-modal-content">
+      <div id="adminModalList" class="enrollee-list"><div class="empty-state">Loading enrollees…</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<nav class="bottom-nav" aria-label="Bottom navigation">
+  <a href="index.html" class="nav-item active"><div>🏠</div><span>Home</span></a>
+  <a href="news-feed.html" class="nav-item"><div>📰</div><span>News</span></a>
+  <a href="voice.html" class="nav-item"><div>🗣️</div><span>Voice</span></a>
+  <a href="friends.html" class="nav-item"><div>👥</div><span>Friends</span></a>
+  <a href="profile.html" class="nav-item"><div>👤</div><span>Profile</span></a>
+</nav>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+const firebaseConfig={apiKey:"AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",authDomain:"caths-page.firebaseapp.com",projectId:"caths-page",storageBucket:"caths-page.firebasestorage.app",messagingSenderId:"945498022620",appId:"1:945498022620:web:71aeb4cd2472e061aeca19",measurementId:"G-CBG1YSK13G"};
+const app=initializeApp(firebaseConfig); const auth=getAuth(app); setPersistence(auth,browserLocalPersistence).catch(console.error);
+
+// Same verified-admin list already used by the CATHS-MAIN admin pages.
+const VERIFIED_ADMIN_EMAILS=new Set(['reyvengarcia15@gmail.com','reyvenbermudo091@gmail.com','reyvengarcia05@gmail.com','chezcadc14@gmail.com','nathanielgarc679@gmail.com','marteena.133@gmail.com','gabbicastillo0126@gmail.com','leddadanielle91@gmail.com','jennapastor062@gmail.com','dhenmark1313@gmail.com','christianangelointes0@gmail.com','alexaislacruz@gmail.com','galangjullianne016@gmail.com','vanessajotic2403@gmail.com','aquinobernardjr0@gmail.com','angellyar0909@gmail.com','vhergelnarciso@gmail.com','sicatmadisson487@gmail.com']);
+function isAdmin(email){return VERIFIED_ADMIN_EMAILS.has(String(email||'').trim().toLowerCase());}
+
+const GOOGLE_SCRIPT_URL='PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+const STORAGE_KEY='cathsStudentInformation';
+let currentUser=null, adminMode=false, adminFilter='all', lastEnrollees=[];
+const $=id=>document.getElementById(id);
+const form=$('studentForm'), grade=$('gradeLevel'), strand=$('strand'), statusBox=$('status');
+
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>t.classList.remove('show'),2500)}
+function fieldWrap(id){return document.querySelector(`[data-field="${id}"]`)}
+function markField(id,invalid,msg){const wrap=fieldWrap(id);if(!wrap)return;wrap.classList.toggle('invalid',invalid);const err=wrap.querySelector('.field-error');if(err&&msg)err.textContent=msg;}
+function clearFieldErrorOnInput(id){const el=$(id);if(!el)return;['input','change'].forEach(evt=>el.addEventListener(evt,()=>markField(id,false)))}
+['fullName','age','contactNumber','gradeLevel','strand','schoolYear'].forEach(clearFieldErrorOnInput);
+
+function isSeniorHigh(){return grade.value==='Grade 11'||grade.value==='Grade 12';}
+function syncStrand(){const sh=isSeniorHigh();strand.disabled=!sh;strand.required=sh;if(!sh){strand.value='';markField('strand',false)}}
+grade.addEventListener('change',syncStrand);syncStrand();
+
+$('contactNumber').addEventListener('input',e=>{e.target.value=e.target.value.replace(/\D/g,'').slice(0,11)});
+function readData(){return {fullName:$('fullName').value.trim(),age:$('age').value.trim(),contactNumber:$('contactNumber').value.trim(),gradeLevel:grade.value,strand:isSeniorHigh()?strand.value:'N/A',schoolYear:$('schoolYear').value.trim()};}
+function validate(data){
+  let ok=true;
+  if(!data.fullName){markField('fullName',true,'Full name is required.');ok=false}
+  if(!data.age || Number(data.age)<10 || Number(data.age)>30){markField('age',true,'Enter a valid age.');ok=false}
+  if(!/^09\d{9}$/.test(data.contactNumber)){markField('contactNumber',true,'Use an 11-digit number starting with 09.');ok=false}
+  if(!data.gradeLevel){markField('gradeLevel',true,'Select your grade level.');ok=false}
+  if(isSeniorHigh() && !data.strand){markField('strand',true,'Select your strand.');ok=false}
+  if(!data.schoolYear){markField('schoolYear',true,'School year is required.');ok=false}
+  if(!ok){document.querySelector('.field.invalid')?.querySelector('input,select')?.focus();document.querySelectorAll('.field.invalid').forEach(w=>{w.classList.remove('shake');void w.offsetWidth;w.classList.add('shake')})}
+  return ok;
+}
+function setStatus(message,type=''){statusBox.textContent=message;statusBox.className='status '+type;}
+function escapeHtml(value){return String(value??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+function renderSummary(data){const rows=[['Full Name',data.fullName],['Age',data.age],['Contact Number',data.contactNumber],['Grade Level',data.gradeLevel],['Strand',data.strand],['School Year',data.schoolYear]];$('summaryList').innerHTML=rows.map(([l,v])=>`<div class="summary-item"><small>${l}</small><strong>${escapeHtml(v)}</strong></div>`).join('');$('summary').classList.add('show')}
+function saveLocal(data){localStorage.setItem(STORAGE_KEY,JSON.stringify(data))}
+function loadSaved(){try{const raw=localStorage.getItem(STORAGE_KEY);if(!raw)return;const data=JSON.parse(raw);['fullName','age','contactNumber','gradeLevel','schoolYear'].forEach(k=>{if($(k)&&data[k]!==undefined)$(k).value=data[k]});syncStrand();if(isSeniorHigh()&&data.strand)strand.value=data.strand;renderSummary(data)}catch(e){console.warn(e)}}
+
+form.addEventListener('submit',async e=>{
+ e.preventDefault();
+ if(!currentUser){setStatus('Please log in first.','error');toast('Please log in with Google from the Home page.');return}
+ const data=readData();if(!validate(data)){setStatus('Please complete the fields marked in red.','error');return}
+ if(!GOOGLE_SCRIPT_URL||GOOGLE_SCRIPT_URL.includes('PASTE_YOUR_')){setStatus('Google Sheets is not connected yet.','error');toast('Add your Apps Script Web App URL first.');return}
+ const btn=form.querySelector('.save-btn');const old=btn.textContent;btn.disabled=true;btn.textContent='Submitting…';setStatus('Sending to the school spreadsheet…');
+ try{
+   await fetch(GOOGLE_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({...data,uid:currentUser.uid,email:currentUser.email||'',status:'Pending'})});
+   saveLocal(data);renderSummary(data);setStatus('Submitted successfully. Status: Pending.','success');$('successModal').classList.add('show');
+   if(adminMode)loadEnrollees();
+ }catch(err){console.error(err);setStatus('Unable to submit right now. Please try again.','error')}
+ finally{btn.disabled=false;btn.textContent=old}
+});
+
+window.clearForm=()=>{form.reset();$('schoolYear').value='2026–2027';document.querySelectorAll('.field').forEach(x=>x.classList.remove('invalid','shake'));setStatus('');syncStrand()};
+window.editInformation=()=>document.querySelector('.form-card').scrollIntoView({behavior:'smooth',block:'start'});
+window.closeSuccess=()=>$('successModal').classList.remove('show');
+window.goBack=()=>window.location.href='index.html';
+
+function makeEnrolleeCard(row){
+ const status=String(row.status||'Pending');const approved=status.toLowerCase()==='approved';
+ return `<div class="enrollee-card"><div class="enrollee-top"><div><div class="enrollee-name">${escapeHtml(row.fullName||'Unnamed Student')}</div><div class="enrollee-meta">${escapeHtml(row.gradeLevel||'')} • ${escapeHtml(row.strand||'N/A')} • ${escapeHtml(row.schoolYear||'')}</div></div><span class="status-chip ${approved?'approved':'pending'}">${approved?'APPROVED':'PENDING'}</span></div><div class="enrollee-details"><div class="detail-box"><small>Age</small><strong>${escapeHtml(row.age||'—')}</strong></div><div class="detail-box"><small>Contact</small><strong>${escapeHtml(row.contactNumber||'—')}</strong></div><div class="detail-box"><small>Submitted</small><strong>${escapeHtml(row.timestamp||'—')}</strong></div><div class="detail-box"><small>Email</small><strong>${escapeHtml(row.email||'—')}</strong></div></div>${!approved?`<div class="admin-actions"><button class="approve-btn" type="button" onclick="approveEnrollee('${escapeHtml(String(row.id||row.rowNumber||''))}')">✓ Approve</button></div>`:''}</div>`;
+}
+function filteredRows(){return lastEnrollees.filter(r=>adminFilter==='all'||String(r.status||'Pending').toLowerCase()===adminFilter)}
+function renderEnrollees(targetId){const target=$(targetId);if(!target)return;const rows=filteredRows();target.innerHTML=rows.length?rows.map(makeEnrolleeCard).join(''):'<div class="empty-state">No enrollees found for this filter.</div>'}
+window.setAdminFilter=(f)=>{adminFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active',b.dataset.filter===f));renderEnrollees('adminList');renderEnrollees('adminModalList')}
+window.openAdminPanel=()=>{if(!adminMode)return;renderEnrollees('adminModalList');$('adminModal').classList.add('show');loadEnrollees()}
+window.closeAdminPanel=()=>$('adminModal').classList.remove('show');
+
+async function loadEnrollees(){
+ if(!adminMode||!GOOGLE_SCRIPT_URL||GOOGLE_SCRIPT_URL.includes('PASTE_YOUR_'))return;
+ $('adminList').innerHTML='<div class="empty-state">Loading enrollees…</div>';$('adminModalList').innerHTML='<div class="empty-state">Loading enrollees…</div>';
+ try{
+   const url=GOOGLE_SCRIPT_URL+'?action=list&adminEmail='+encodeURIComponent(currentUser.email||'');
+   const res=await fetch(url); const json=await res.json();
+   if(!json.ok)throw new Error(json.error||'Could not load enrollees');
+   lastEnrollees=Array.isArray(json.rows)?json.rows:[];renderEnrollees('adminList');renderEnrollees('adminModalList');
+ }catch(err){console.error(err);const msg='Could not load the spreadsheet right now.';$('adminList').innerHTML=`<div class="empty-state">${msg}</div>`;$('adminModalList').innerHTML=`<div class="empty-state">${msg}</div>`}
+}
+window.approveEnrollee=async(id)=>{
+ if(!adminMode||!id)return; if(!confirm('Approve this student submission?'))return;
+ try{
+   const url=GOOGLE_SCRIPT_URL+'?action=approve&adminEmail='+encodeURIComponent(currentUser.email||'')+'&id='+encodeURIComponent(id);
+   const res=await fetch(url);const json=await res.json();if(!json.ok)throw new Error(json.error||'Approval failed');toast('Student approved.');await loadEnrollees();
+ }catch(err){console.error(err);toast('Approval failed. Please try again.')}
+}
+
+onAuthStateChanged(auth,user=>{
+ currentUser=user||null;adminMode=!!user&&isAdmin(user.email);
+ $('adminNavBtn').style.display=adminMode?'inline-flex':'none';$('adminCard').classList.toggle('show',adminMode);
+ if(!user){setStatus('Please log in from the Home page before submitting.','error');return}
+ if(adminMode){loadEnrollees()} 
+});
+
+window.addEventListener('click',e=>{if(e.target===$('successModal'))window.closeSuccess();if(e.target===$('adminModal'))window.closeAdminPanel()});
+loadSaved();
+</script>
+</body>
+</html>
