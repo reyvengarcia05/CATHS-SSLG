@@ -1757,6 +1757,23 @@ color:black;
   const hint = document.getElementById('launchSwipeHint');
   if(!screen || !swipeArea || !hint) return;
 
+  // Show the intro only once per app/browser session.
+  // sessionStorage survives navigation/back to index.html in the same tab/session,
+  // but resets when the app is launched as a fresh session.
+  const INTRO_SEEN_KEY = 'cathsStudentVoiceIntroSeen';
+  let introAlreadySeen = false;
+  try {
+    introAlreadySeen = sessionStorage.getItem(INTRO_SEEN_KEY) === '1';
+  } catch (err) {
+    introAlreadySeen = false;
+  }
+
+  if(introAlreadySeen){
+    document.body.classList.add('launch-complete');
+    screen.remove();
+    return;
+  }
+
   let completed = false;
   let dragging = false;
   let startX = 0;
@@ -1780,6 +1797,14 @@ color:black;
   function enterApp(){
     if(completed) return;
     completed = true;
+
+    // Remember that this app session has already completed the intro.
+    try {
+      sessionStorage.setItem(INTRO_SEEN_KEY, '1');
+    } catch (err) {
+      // Ignore storage errors; the intro can still complete normally.
+    }
+
     screen.classList.add('is-leaving');
     document.body.classList.add('launch-complete');
     window.setTimeout(() => screen.remove(), 550);
