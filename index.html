@@ -1681,18 +1681,204 @@ color:black;
 }
 @keyframes launchTrackShimmer{0%,35%{transform:translateX(-120%)}60%,100%{transform:translateX(120%)}}
 @media (max-width:600px){
-    .launch-logo-wrap{width:150px}
-    .launch-dot-stage{width:250px;height:145px}
-    .launch-swipe-area{width:88vw}
-    .launch-swipe-track{height:52px}
-    .launch-swipe-hint{width:52px;height:36px}
-    .launch-threshold{font-size:9px}
+    .launch-screen{
+        padding:calc(env(safe-area-inset-top) + 18px) 14px calc(env(safe-area-inset-bottom) + 18px);
+        align-items:center;
+    }
+    .launch-content{
+        width:min(100%,390px);
+        max-height:100%;
+        justify-content:center;
+    }
+    .launch-logo-wrap{
+        width:118px;
+        margin-bottom:2px;
+    }
+    .launch-logo{width:78%;height:78%;}
+    .launch-dot-stage{
+        width:214px;
+        height:118px;
+        margin-top:0;
+    }
+    .launch-dot-stage::before{left:28px;right:28px;}
+    .launch-dot{width:10px;height:10px;}
+    .launch-signal-emoji{
+        width:28px;height:28px;font-size:17px;
+    }
+    .launch-signal:nth-of-type(2), .launch-signal-emoji:nth-of-type(3){--drift:-64px;--drifty:-6px;--size:32px}
+    .launch-signal:nth-of-type(4), .launch-signal-emoji:nth-of-type(5){--drift:-56px;--drifty:-42px;--size:50px}
+    .launch-signal:nth-of-type(6), .launch-signal-emoji:nth-of-type(7){--drift:-18px;--drifty:-58px;--size:68px}
+    .launch-signal:nth-of-type(8), .launch-signal-emoji:nth-of-type(9){--drift:44px;--drifty:-50px;--size:86px}
+    .launch-signal:nth-of-type(10), .launch-signal-emoji:nth-of-type(11){--drift:64px;--drifty:-2px;--size:104px}
+    .launch-signal:nth-of-type(12), .launch-signal-emoji:nth-of-type(13){--drift:46px;--drifty:42px;--size:122px}
+    .launch-signal:nth-of-type(14), .launch-signal-emoji:nth-of-type(15){--drift:-16px;--drifty:56px;--size:140px}
+    .launch-signal:nth-of-type(16), .launch-signal-emoji:nth-of-type(17){--drift:-62px;--drifty:34px;--size:156px}
+    .launch-title{
+        font-size:20px;
+        line-height:1.2;
+        padding:0 8px;
+    }
+    .launch-subtitle{
+        margin-top:5px;
+        font-size:10.5px;
+        line-height:1.45;
+        padding:0 14px;
+    }
+    .launch-swipe-area{
+        width:100%;
+        max-width:356px;
+        margin-top:21px;
+        padding:6px;
+        border-radius:28px;
+    }
+    .launch-swipe-track{height:48px;}
+    .launch-swipe-label{
+        font-size:10px;
+        letter-spacing:.75px;
+        padding-left:4px;
+    }
+    .launch-swipe-hint{
+        left:6px;
+        top:6px;
+        width:52px;
+        height:36px;
+    }
+    .launch-swipe-hint svg{width:19px;height:19px;}
+    .launch-threshold{
+        margin-top:8px;
+        font-size:8.5px;
+    }
     @keyframes launchHintGuide{
         0%,12%{transform:translateX(0)}
-        50%{transform:translateX(calc(88vw - 108px))}
+        50%{transform:translateX(calc(100% - 64px))}
         58%,100%{transform:translateX(0)}
     }
 }
+@media (max-width:380px){
+    .launch-logo-wrap{width:102px}
+    .launch-dot-stage{width:190px;height:106px}
+    .launch-title{font-size:18px}
+    .launch-subtitle{font-size:9.5px}
+    .launch-swipe-area{max-width:330px}
+    .launch-swipe-label{font-size:9.5px}
+    .launch-signal-emoji{width:25px;height:25px;font-size:15px}
+    .launch-signal:nth-of-type(2), .launch-signal-emoji:nth-of-type(3){--drift:-55px;--drifty:-4px}
+    .launch-signal:nth-of-type(4), .launch-signal-emoji:nth-of-type(5){--drift:-48px;--drifty:-34px}
+    .launch-signal:nth-of-type(6), .launch-signal-emoji:nth-of-type(7){--drift:-15px;--drifty:-50px}
+    .launch-signal:nth-of-type(8), .launch-signal-emoji:nth-of-type(9){--drift:38px;--drifty:-42px}
+    .launch-signal:nth-of-type(10), .launch-signal-emoji:nth-of-type(11){--drift:54px;--drifty:-2px}
+    .launch-signal:nth-of-type(12), .launch-signal-emoji:nth-of-type(13){--drift:38px;--drifty:35px}
+    .launch-signal:nth-of-type(14), .launch-signal-emoji:nth-of-type(15){--drift:-14px;--drifty:48px}
+    .launch-signal:nth-of-type(16), .launch-signal-emoji:nth-of-type(17){--drift:-54px;--drifty:30px}
+}
+
+/* FINAL MOBILE POLISH — airy, premium, uncluttered */
+@media (max-width:600px){
+    .launch-screen{
+        padding:calc(env(safe-area-inset-top) + 24px) 20px calc(env(safe-area-inset-bottom) + 24px);
+    }
+    .launch-content{
+        width:min(100%, 360px);
+        height:100%;
+        max-height:none;
+        justify-content:center;
+        gap:0;
+    }
+    .launch-logo-wrap{
+        width:110px;
+        margin-bottom:18px;
+    }
+    .launch-logo{width:76%;height:76%;}
+
+    .launch-dot-stage{
+        width:278px;
+        height:178px;
+        margin:0 auto 12px;
+    }
+    .launch-dot-stage::before{
+        left:18px;
+        right:18px;
+        opacity:.55;
+    }
+    .launch-dot{
+        width:10px;
+        height:10px;
+    }
+    .launch-dot::after{inset:-8px;}
+
+    .launch-signal-emoji{
+        width:29px;
+        height:29px;
+        font-size:16px;
+    }
+    .launch-signal:nth-of-type(2), .launch-signal-emoji:nth-of-type(3){--drift:-76px;--drifty:-4px;--size:34px}
+    .launch-signal:nth-of-type(4), .launch-signal-emoji:nth-of-type(5){--drift:-68px;--drifty:-48px;--size:54px}
+    .launch-signal:nth-of-type(6), .launch-signal-emoji:nth-of-type(7){--drift:-22px;--drifty:-70px;--size:74px}
+    .launch-signal:nth-of-type(8), .launch-signal-emoji:nth-of-type(9){--drift:52px;--drifty:-58px;--size:94px}
+    .launch-signal:nth-of-type(10), .launch-signal-emoji:nth-of-type(11){--drift:76px;--drifty:-2px;--size:114px}
+    .launch-signal:nth-of-type(12), .launch-signal-emoji:nth-of-type(13){--drift:50px;--drifty:50px;--size:134px}
+    .launch-signal:nth-of-type(14), .launch-signal-emoji:nth-of-type(15){--drift:-18px;--drifty:66px;--size:154px}
+    .launch-signal:nth-of-type(16), .launch-signal-emoji:nth-of-type(17){--drift:-76px;--drifty:42px;--size:174px}
+
+    .launch-title{
+        font-size:19px;
+        line-height:1.25;
+        letter-spacing:.15px;
+        padding:0 10px;
+        white-space:nowrap;
+    }
+    .launch-subtitle{
+        margin-top:7px;
+        max-width:280px;
+        font-size:10.5px;
+        line-height:1.5;
+        padding:0;
+    }
+    .launch-swipe-area{
+        width:100%;
+        max-width:336px;
+        margin-top:28px;
+        padding:6px;
+    }
+    .launch-swipe-track{height:50px;}
+    .launch-swipe-label{
+        font-size:9.5px;
+        letter-spacing:.7px;
+        padding-left:5px;
+    }
+    .launch-swipe-hint{
+        left:6px;
+        top:6px;
+        width:54px;
+        height:38px;
+    }
+    .launch-swipe-hint svg{width:19px;height:19px;}
+    .launch-threshold{
+        margin-top:10px;
+        font-size:8.5px;
+        letter-spacing:.35px;
+    }
+}
+
+@media (max-width:380px){
+    .launch-content{width:min(100%,330px);}
+    .launch-logo-wrap{width:98px;margin-bottom:15px;}
+    .launch-dot-stage{width:248px;height:164px;margin-bottom:9px;}
+    .launch-title{font-size:17.5px;}
+    .launch-subtitle{font-size:9.5px;max-width:250px;}
+    .launch-swipe-area{max-width:310px;margin-top:24px;}
+    .launch-swipe-label{font-size:9px;}
+    .launch-signal-emoji{width:26px;height:26px;font-size:15px;}
+    .launch-signal:nth-of-type(2), .launch-signal-emoji:nth-of-type(3){--drift:-66px;--drifty:-2px}
+    .launch-signal:nth-of-type(4), .launch-signal-emoji:nth-of-type(5){--drift:-59px;--drifty:-43px}
+    .launch-signal:nth-of-type(6), .launch-signal-emoji:nth-of-type(7){--drift:-19px;--drifty:-61px}
+    .launch-signal:nth-of-type(8), .launch-signal-emoji:nth-of-type(9){--drift:44px;--drifty:-51px}
+    .launch-signal:nth-of-type(10), .launch-signal-emoji:nth-of-type(11){--drift:66px;--drifty:-1px}
+    .launch-signal:nth-of-type(12), .launch-signal-emoji:nth-of-type(13){--drift:43px;--drifty:43px}
+    .launch-signal:nth-of-type(14), .launch-signal-emoji:nth-of-type(15){--drift:-16px;--drifty:58px}
+    .launch-signal:nth-of-type(16), .launch-signal-emoji:nth-of-type(17){--drift:-66px;--drifty:37px}
+}
+
 @media (prefers-reduced-motion:reduce){
     .launch-screen *, .launch-screen::before, .launch-screen::after{
         animation-duration:.01ms !important;
