@@ -2570,6 +2570,243 @@ color:black;
 @media (prefers-reduced-motion:reduce){
   .project-name span,.launch-project-title,.project-name,.project-name::before,.project-name::after,.launch-project-subtitle{animation:none!important;opacity:1!important;transform:none!important;filter:none!important}
 }
+
+/* =========================================================
+   FINAL UI POLISH — FLOATING NAV + MOBILE + INTRO SESSION
+   ========================================================= */
+
+/* Intro: hidden after the first completed launch in this tab/session */
+.launch-screen.session-skip{
+    display:none !important;
+}
+
+/* Login modal: backdrop blurs ONLY the page behind it.
+   The modal content stays fully sharp and clickable. */
+#loginModal{
+    position:fixed !important;
+    inset:0 !important;
+    z-index:1000000 !important;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    background:rgba(0,10,28,.58) !important;
+    -webkit-backdrop-filter:blur(12px) saturate(120%) !important;
+    backdrop-filter:blur(12px) saturate(120%) !important;
+    overflow:auto;
+    isolation:isolate;
+}
+#loginModal .modal-content{
+    position:relative;
+    z-index:2;
+    width:min(92vw,400px);
+    max-height:calc(100dvh - 48px);
+    overflow:auto;
+    margin:0 !important;
+    opacity:1 !important;
+    filter:none !important;
+    -webkit-filter:none !important;
+    transform:none;
+    -webkit-transform:none;
+}
+#loginModal .modal-content *,
+#loginModal button,
+#loginModal .close{
+    filter:none !important;
+    -webkit-filter:none !important;
+}
+
+/* Floating bottom navigation — locked to viewport center */
+.bottom-nav{
+    position:fixed !important;
+    left:50% !important;
+    right:auto !important;
+    bottom:calc(16px + env(safe-area-inset-bottom)) !important;
+    transform:translateX(-50%) !important;
+    width:min(720px, calc(100vw - 32px)) !important;
+    height:68px !important;
+    padding:7px 12px !important;
+    border:1px solid rgba(255,255,255,.16) !important;
+    border-radius:22px !important;
+    background:rgba(2,18,48,.72) !important;
+    -webkit-backdrop-filter:blur(22px) saturate(145%) !important;
+    backdrop-filter:blur(22px) saturate(145%) !important;
+    box-shadow:
+        0 18px 50px rgba(0,10,35,.28),
+        inset 0 1px 0 rgba(255,255,255,.12),
+        0 0 0 1px rgba(70,160,255,.05) !important;
+    justify-content:center !important;
+    gap:6px !important;
+    z-index:99990 !important;
+}
+.bottom-nav::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:inherit;
+    pointer-events:none;
+    background:linear-gradient(90deg,rgba(77,169,255,.05),transparent 28%,transparent 72%,rgba(77,169,255,.05));
+}
+.bottom-nav .nav-item{
+    position:relative;
+    z-index:1;
+    flex:1 1 0;
+    max-width:132px;
+    min-width:78px;
+    height:54px;
+    border-radius:16px;
+    padding:6px 10px !important;
+    display:flex !important;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    font-size:10px !important;
+    font-weight:600;
+    letter-spacing:.15px;
+    color:rgba(255,255,255,.72) !important;
+    transition:
+        transform .28s cubic-bezier(.22,1,.36,1),
+        background .28s ease,
+        color .28s ease,
+        box-shadow .28s ease;
+}
+.bottom-nav .nav-item:hover{
+    transform:translateY(-3px);
+    background:rgba(255,255,255,.07);
+    color:#fff !important;
+}
+.bottom-nav .nav-item.active{
+    transform:translateY(-5px) !important;
+    background:linear-gradient(180deg,rgba(87,169,255,.18),rgba(87,169,255,.07));
+    color:#8fd0ff !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.12),
+        0 8px 22px rgba(20,120,255,.12);
+}
+.bottom-nav .nav-item.active::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:4px;
+    width:22px;
+    height:3px;
+    border-radius:999px;
+    transform:translateX(-50%);
+    background:#77c4ff;
+    box-shadow:0 0 12px rgba(119,196,255,.65);
+}
+.bottom-nav .nav-item div,
+.bottom-nav .nav-item .profile-nav-icon{
+    width:28px !important;
+    height:25px !important;
+    margin:0 !important;
+    display:flex !important;
+    align-items:center;
+    justify-content:center;
+}
+.bottom-nav .nav-item svg{
+    width:22px;
+    height:22px;
+}
+.bottom-nav .profile-nav-icon img,
+.bottom-nav #profileNavPhoto img{
+    width:24px !important;
+    height:24px !important;
+    min-width:24px !important;
+    min-height:24px !important;
+}
+
+/* Give the page enough breathing room behind the floating nav */
+body{
+    padding-bottom:120px !important;
+    overflow-x:hidden;
+    scroll-padding-bottom:120px;
+}
+
+/* Better compact mobile composition */
+@media (max-width:768px){
+    body{
+        padding-bottom:108px !important;
+    }
+    .bottom-nav{
+        width:calc(100vw - 20px) !important;
+        bottom:calc(10px + env(safe-area-inset-bottom)) !important;
+        height:64px !important;
+        padding:6px 6px !important;
+        border-radius:20px !important;
+        gap:3px !important;
+    }
+    .bottom-nav .nav-item{
+        min-width:0 !important;
+        max-width:none !important;
+        height:50px;
+        padding:5px 4px !important;
+        border-radius:14px;
+        font-size:8.5px !important;
+    }
+    .bottom-nav .nav-item div,
+    .bottom-nav .nav-item .profile-nav-icon{
+        width:25px !important;
+        height:23px !important;
+    }
+    .bottom-nav .nav-item svg{
+        width:20px;
+        height:20px;
+    }
+    .bottom-nav .nav-item.active{
+        transform:translateY(-4px) !important;
+    }
+    .header{
+        grid-template-columns:auto minmax(0,1fr) auto !important;
+    }
+    .hero{
+        padding-left:12px !important;
+        padding-right:12px !important;
+    }
+    .hero-card{
+        width:100%;
+    }
+    .quick-wrapper .grid{
+        width:100%;
+    }
+    .modal-content{
+        padding:22px 18px !important;
+    }
+}
+
+@media (max-width:420px){
+    .bottom-nav{
+        width:calc(100vw - 14px) !important;
+        bottom:calc(7px + env(safe-area-inset-bottom)) !important;
+        height:62px !important;
+        border-radius:18px !important;
+    }
+    .bottom-nav .nav-item{
+        font-size:7.5px !important;
+    }
+    .bottom-nav .nav-item.active{
+        transform:translateY(-3px) !important;
+    }
+}
+
+
+/* Navigation icons — clean line glyphs */
+.bottom-nav .nav-item::before{
+    font-size:18px;
+    line-height:1;
+    opacity:.9;
+    margin-bottom:1px;
+}
+.bottom-nav .nav-item:nth-child(1)::before{content:"⌂";}
+.bottom-nav .nav-item:nth-child(2)::before{content:"◫";}
+.bottom-nav .nav-item:nth-child(3)::before{content:"◌";}
+.bottom-nav .nav-item:nth-child(4)::before{content:"◉";}
+.bottom-nav .nav-item:nth-child(5)::before{content:none;}
+@media(max-width:768px){
+    .bottom-nav .nav-item::before{font-size:16px;}
+}
+
 </style>
 
   <link rel="manifest" href="manifest.json">
@@ -2910,8 +3147,14 @@ body.launch-complete .quick-wrapper .grid .card:nth-child(8) .icon{animation-del
   const hint = document.getElementById('launchSwipeHint');
   if(!screen || !swipeArea || !hint) return;
 
-  // Always show the full intro animation whenever index.html is opened/reloaded.
-  // No sessionStorage skip is used, so the launch experience is visible every time.
+  // Show the launch animation once per browser tab/session.
+  // Returning to index.html during the same session skips the intro.
+  const INTRO_KEY = 'caths_sslg_intro_seen_v1';
+  if (sessionStorage.getItem(INTRO_KEY) === '1') {
+    screen.classList.add('session-skip');
+    document.body.classList.add('launch-complete');
+    return;
+  }
 
   const launchDotStage = document.querySelector('.launch-dot-stage');
   window.setTimeout(() => {
@@ -2946,6 +3189,9 @@ body.launch-complete .quick-wrapper .grid .card:nth-child(8) .icon{animation-del
   function enterApp(){
     if(completed) return;
     completed = true;
+
+    // Remember that this tab/session has completed the intro.
+    sessionStorage.setItem(INTRO_KEY, '1');
 
     screen.classList.add('is-leaving');
     document.body.classList.add('launch-complete');
@@ -3382,44 +3628,29 @@ days + "d " + hours + "h " + minutes + "m";
 
 
     <script>
-
 function openLogin(fromStudentVoice = false){
-
     window.loginForStudentVoice = fromStudentVoice;
-
-    if (fromStudentVoice) {
-        window.pendingNavigation = null;
-    }
-
-    document.getElementById("loginModal").style.display = "block";
-}
-
-function closeLogin(){
-    document.getElementById("loginModal").style.display = "none";
-}
-
-window.onclick = function(event){
+    if (fromStudentVoice) window.pendingNavigation = null;
 
     const modal = document.getElementById("loginModal");
+    if (!modal) return;
 
-    if(event.target === modal){
-        modal.style.display = "none";
-    }
-
-};
+    modal.style.display = "flex";
+    document.body.classList.add("login-modal-open");
+}
 
 function closeLogin(){
-document.getElementById("loginModal").style.display="none";
+    const modal = document.getElementById("loginModal");
+    if (!modal) return;
+
+    modal.style.display = "none";
+    document.body.classList.remove("login-modal-open");
 }
 
-window.onclick=function(event){
-const modal=document.getElementById("loginModal");
-
-if(event.target==modal){
-modal.style.display="none";
-}
-}
-
+window.addEventListener("click", function(event){
+    const modal = document.getElementById("loginModal");
+    if (event.target === modal) closeLogin();
+});
 </script>
 
 <script type="module">
