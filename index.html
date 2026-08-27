@@ -2807,6 +2807,202 @@ body{
     .bottom-nav .nav-item::before{font-size:16px;}
 }
 
+
+/* =========================================================
+   FINAL HEADER + FULL FOOTER NAVIGATION
+   Single authoritative layer — overrides older navigation experiments.
+   ========================================================= */
+.header{
+  position:sticky !important;
+  top:10px !important;
+  z-index:9990 !important;
+  width:calc(100% - 24px) !important;
+  max-width:1400px !important;
+  min-height:78px !important;
+  margin:10px auto 0 !important;
+  padding:12px 18px !important;
+  border:1px solid rgba(255,255,255,.20) !important;
+  border-radius:22px !important;
+  background:linear-gradient(135deg,rgba(255,255,255,.13),rgba(255,255,255,.055)) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(145%) !important;
+  backdrop-filter:blur(22px) saturate(145%) !important;
+  box-shadow:0 14px 35px rgba(0,8,30,.22),inset 0 1px 0 rgba(255,255,255,.16) !important;
+}
+.header::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  background:linear-gradient(90deg,rgba(80,170,255,.08),transparent 28%,transparent 72%,rgba(80,170,255,.08));
+}
+.header > *{position:relative;z-index:1}
+
+.bottom-nav{
+  position:fixed !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  width:100% !important;
+  max-width:none !important;
+  height:82px !important;
+  min-height:82px !important;
+  margin:0 !important;
+  padding:8px 16px calc(8px + env(safe-area-inset-bottom)) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:8px !important;
+  transform:none !important;
+  border:0 !important;
+  border-top:1px solid rgba(255,255,255,.18) !important;
+  border-radius:22px 22px 0 0 !important;
+  background:linear-gradient(180deg,rgba(5,22,52,.93),rgba(2,13,32,.98)) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(150%) !important;
+  backdrop-filter:blur(22px) saturate(150%) !important;
+  box-shadow:0 -14px 35px rgba(0,8,30,.22),inset 0 1px 0 rgba(255,255,255,.10) !important;
+  z-index:99990 !important;
+  overflow:visible !important;
+}
+.bottom-nav::before{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  border-radius:inherit !important;
+  pointer-events:none !important;
+  background:linear-gradient(90deg,rgba(77,169,255,.06),transparent 25%,transparent 75%,rgba(77,169,255,.06)) !important;
+}
+.bottom-nav .nav-item{
+  position:relative !important;
+  z-index:1 !important;
+  flex:1 1 0 !important;
+  width:auto !important;
+  max-width:180px !important;
+  min-width:0 !important;
+  height:62px !important;
+  margin:0 !important;
+  padding:7px 10px !important;
+  border-radius:16px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:4px !important;
+  text-align:center !important;
+  white-space:nowrap !important;
+  color:rgba(255,255,255,.72) !important;
+  font-size:10px !important;
+  font-weight:600 !important;
+  text-decoration:none !important;
+  transform:none !important;
+}
+.bottom-nav .nav-item:hover{
+  color:#fff !important;
+  background:rgba(255,255,255,.07) !important;
+  transform:translateY(-2px) !important;
+}
+.bottom-nav .nav-item.active{
+  color:#8fd0ff !important;
+  background:linear-gradient(180deg,rgba(87,169,255,.19),rgba(87,169,255,.07)) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 8px 22px rgba(20,120,255,.12) !important;
+  transform:none !important;
+}
+.bottom-nav .nav-item.active::after{
+  content:"" !important;
+  position:absolute !important;
+  left:50% !important;
+  bottom:4px !important;
+  width:24px !important;
+  height:3px !important;
+  border-radius:999px !important;
+  transform:translateX(-50%) !important;
+  background:#77c4ff !important;
+  box-shadow:0 0 12px rgba(119,196,255,.65) !important;
+}
+.bottom-nav .nav-item::before{
+  font-size:20px !important;
+  line-height:1 !important;
+  opacity:.92 !important;
+  margin:0 !important;
+}
+.bottom-nav .nav-item:nth-child(1)::before{content:"⌂" !important}
+.bottom-nav .nav-item:nth-child(2)::before{content:"◫" !important}
+.bottom-nav .nav-item:nth-child(3)::before{content:"◌" !important}
+.bottom-nav .nav-item:nth-child(4)::before{content:"◉" !important}
+.bottom-nav .nav-item:nth-child(5)::before{content:"◎" !important}
+.bottom-nav .profile-nav-icon{
+  width:25px !important;
+  height:25px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  margin:0 !important;
+  background:rgba(255,255,255,.08) !important;
+  border-radius:50% !important;
+  overflow:hidden !important;
+}
+.bottom-nav .profile-nav-icon img,
+.bottom-nav #profileNavPhoto img{
+  display:block !important;
+  width:25px !important;
+  height:25px !important;
+  min-width:25px !important;
+  min-height:25px !important;
+  max-width:25px !important;
+  max-height:25px !important;
+  object-fit:cover !important;
+  border-radius:50% !important;
+}
+body{
+  padding-bottom:106px !important;
+  overflow-x:hidden !important;
+  scroll-padding-bottom:106px !important;
+}
+.notification-head button{
+  width:auto !important;
+  margin:0 !important;
+  padding:4px 6px !important;
+  border-radius:8px !important;
+}
+@media(max-width:768px){
+  .header{
+    top:8px !important;
+    width:calc(100% - 16px) !important;
+    min-height:66px !important;
+    margin:8px auto 0 !important;
+    padding:8px 10px !important;
+    border-radius:18px !important;
+  }
+  .bottom-nav{
+    height:74px !important;
+    min-height:74px !important;
+    padding:6px 6px calc(6px + env(safe-area-inset-bottom)) !important;
+    gap:2px !important;
+    border-radius:18px 18px 0 0 !important;
+  }
+  .bottom-nav .nav-item{
+    height:58px !important;
+    padding:5px 3px !important;
+    border-radius:13px !important;
+    gap:3px !important;
+    font-size:8.5px !important;
+  }
+  .bottom-nav .nav-item::before{font-size:17px !important}
+  .bottom-nav .profile-nav-icon,
+  .bottom-nav .profile-nav-icon img,
+  .bottom-nav #profileNavPhoto img{
+    width:23px !important;height:23px !important;min-width:23px !important;min-height:23px !important;max-width:23px !important;max-height:23px !important;
+  }
+  body{padding-bottom:94px !important;scroll-padding-bottom:94px !important}
+}
+@media(max-width:380px){
+  .header{width:calc(100% - 12px) !important;padding-left:8px !important;padding-right:8px !important}
+  .bottom-nav{height:70px !important;min-height:70px !important}
+  .bottom-nav .nav-item{height:54px !important;font-size:7.5px !important}
+  .bottom-nav .nav-item::before{font-size:16px !important}
+  body{padding-bottom:90px !important;scroll-padding-bottom:90px !important}
+}
+
 </style>
 
   <link rel="manifest" href="manifest.json">
@@ -2982,7 +3178,7 @@ body.launch-complete .quick-wrapper .grid .card:nth-child(6) .icon{animation-del
 body.launch-complete .quick-wrapper .grid .card:nth-child(7) .icon{animation-delay:.94s}
 body.launch-complete .quick-wrapper .grid .card:nth-child(8) .icon{animation-delay:1.02s}
 @keyframes mainRise{0%{opacity:0;transform:translateY(18px)}100%{opacity:1;transform:translateY(0)}}
-@keyframes navRise{0%{opacity:0;transform:translate(-50%,20px)}100%{opacity:1;transform:translate(-50%,0)}}
+@keyframes navRise{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
 @keyframes cardReveal{0%{opacity:0;transform:translateY(24px) scale(.96)}60%{opacity:1;transform:translateY(-2px) scale(1.008)}100%{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes iconSettle{0%{opacity:0;transform:translateY(8px) scale(.78)}65%{opacity:1;transform:translateY(-2px) scale(1.06)}100%{opacity:1;transform:translateY(0) scale(1)}}
 
@@ -3092,6 +3288,129 @@ body.launch-complete .quick-wrapper .grid .card:nth-child(8) .icon{animation-del
 }
 @media(prefers-reduced-motion:reduce){
   .launch-project-subtitle,.launch-project-subtitle::after{animation:none !important;opacity:1 !important;transform:none !important;}
+}
+
+
+/* =========================================================
+   FINAL APP SHELL — FIXED HEADER + FIXED FOOTER
+   Only .page-scroll is allowed to scroll.
+   ========================================================= */
+html,
+body{
+  width:100%;
+  height:100%;
+  min-height:100%;
+}
+
+body{
+  overflow:hidden !important;
+  padding-bottom:0 !important;
+  overscroll-behavior:none;
+}
+
+.header{
+  position:fixed !important;
+  top:6px !important;
+  left:50% !important;
+  right:auto !important;
+  width:calc(100% - 24px) !important;
+  max-width:1400px !important;
+  min-height:78px !important;
+  margin:0 !important;
+  transform:translateX(-50%) !important;
+  z-index:99990 !important;
+}
+
+.page-scroll{
+  position:fixed !important;
+  top:92px !important;
+  right:0 !important;
+  bottom:82px !important;
+  left:0 !important;
+  width:100% !important;
+  max-width:none !important;
+  margin:0 !important;
+  padding:0 !important;
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;
+  scrollbar-gutter:stable;
+  scroll-behavior:smooth;
+  z-index:1;
+}
+
+.page-scroll > *{
+  position:relative;
+}
+
+.bottom-nav{
+  position:fixed !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  width:100% !important;
+  height:82px !important;
+  min-height:82px !important;
+  max-width:none !important;
+  margin:0 !important;
+  transform:none !important;
+  border-radius:22px 22px 0 0 !important;
+  z-index:99990 !important;
+}
+
+@media (max-width:768px){
+  .header{
+    top:3px !important;
+    width:calc(100% - 16px) !important;
+    min-height:68px !important;
+  }
+
+  .page-scroll{
+    top:77px !important;
+    bottom:70px !important;
+  }
+
+  .bottom-nav{
+    height:70px !important;
+    min-height:70px !important;
+    border-radius:18px 18px 0 0 !important;
+    padding-bottom:max(6px, env(safe-area-inset-bottom)) !important;
+  }
+}
+
+@media (max-width:420px){
+  .header{
+    top:2px !important;
+    width:calc(100% - 12px) !important;
+  }
+
+  .page-scroll{
+    top:74px !important;
+    bottom:68px !important;
+  }
+
+  .bottom-nav{
+    height:68px !important;
+    min-height:68px !important;
+  }
+}
+
+@media (max-width:768px) and (orientation:landscape){
+  .header{
+    top:2px !important;
+    min-height:58px !important;
+  }
+
+  .page-scroll{
+    top:65px !important;
+    bottom:62px !important;
+  }
+
+  .bottom-nav{
+    height:62px !important;
+    min-height:62px !important;
+  }
 }
 </style>
 
@@ -3247,7 +3566,7 @@ body.launch-complete .quick-wrapper .grid .card:nth-child(8) .icon{animation-del
 
 <!-- HEADER -->
 
-<div class="header">
+<header class="header">
 
     <div class="header-left">
         <img src="sslg-logo.png" class="logo">
@@ -3335,7 +3654,9 @@ body.launch-complete .quick-wrapper .grid .card:nth-child(8) .icon{animation-del
 
 </div>
 
-</div>
+</header>
+
+<main class="page-scroll">
 
 <!-- HERO -->
 
@@ -3417,7 +3738,9 @@ and connect with the school community.
 
 <!-- NAVIGATION -->
 
-<nav class="bottom-nav" aria-label="Primary navigation">
+</main>
+
+<footer class="bottom-nav" aria-label="Primary navigation">
     <a href="index.html" class="nav-item active"><span>Home</span></a>
     <a href="news-feed.html" class="nav-item" onclick="openProtectedNavigation(event, 'news-feed.html')"><span>News Feed</span></a>
     <a href="#" class="nav-item" onclick="openStudentVoice(event)"><span>Student Voice</span></a>
@@ -3426,7 +3749,7 @@ and connect with the school community.
         <span class="profile-nav-icon" id="profileNavPhoto" aria-hidden="true"></span>
         <span>Profile</span>
     </a>
-</nav>
+</footer>
 <script>
 
    
@@ -3460,8 +3783,10 @@ async function markNotificationsRead(){
     }
 
     try{
+        const fb = window.__cathsFirebase;
+        if(!fb) return;
         await Promise.all(unread.map(n=>
-            updateDoc(doc(db,'notifications',n.id),{read:true})
+            fb.updateDoc(fb.doc(fb.db,'notifications',n.id),{read:true})
         ));
     }catch(error){
         console.error('Mark notifications read failed:',error);
@@ -3504,18 +3829,19 @@ document.addEventListener('click', e=>{
 });
 
 function startNotificationListener(uid){
-    if(typeof db==='undefined' || typeof onSnapshot==='undefined' || typeof collection==='undefined') return;
+    const fb = window.__cathsFirebase;
+    if(!fb) return;
     if(notificationUnsubscribe) notificationUnsubscribe();
 
     // Avoid a composite-index requirement here: fetch only this user's
     // notifications and sort them in the browser.
-    const q = query(
-        collection(db,'notifications'),
-        where('recipientUid','==',uid),
-        limit(50)
+    const q = fb.query(
+        fb.collection(fb.db,'notifications'),
+        fb.where('recipientUid','==',uid),
+        fb.limit(50)
     );
 
-    notificationUnsubscribe = onSnapshot(q,snap=>{
+    notificationUnsubscribe = fb.onSnapshot(q,snap=>{
         notificationItems = snap.docs.map(d=>{
             const n=d.data()||{};
             let icon='';
@@ -3588,25 +3914,7 @@ function toggleProfileMenu(){
 
 </script>
     
-<script>
-
-const targetDate = new Date("August 15, 2026 08:00:00").getTime();
-
-setInterval(() => {
-
-const now = new Date().getTime();
-const distance = targetDate - now;
-
-const days = Math.floor(distance / (1000*60*60*24));
-const hours = Math.floor((distance % (1000*60*60*24)) / (1000*60*60));
-const minutes = Math.floor((distance % (1000*60*60)) / (1000*60));
-
-document.getElementById("countdown").innerHTML =
-days + "d " + hours + "h " + minutes + "m";
-
-},1000);
-
-</script>
+<!-- Obsolete countdown script removed: #countdown is not present on this page. -->
 
   <div id="loginModal" class="modal">
 
@@ -3693,6 +4001,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+// The notification UI lives in a classic script, so expose these helpers explicitly.
+window.__cathsFirebase = { db, collection, query, where, limit, onSnapshot, doc, updateDoc };
 
 // =========================
 // 3 LATEST ADMIN NEWS
