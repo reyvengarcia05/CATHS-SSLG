@@ -40,11 +40,43 @@ font-family:'Poppins',sans-serif;
 }
 
 body{
-background:linear-gradient(135deg,#001F54,#003DA5,#FFD700);
+background:
+  radial-gradient(900px 600px at 8% 8%, rgba(0,120,255,.28), transparent 60%),
+  radial-gradient(800px 560px at 92% 14%, rgba(255,215,0,.16), transparent 58%),
+  radial-gradient(700px 500px at 78% 92%, rgba(0,77,190,.24), transparent 62%),
+  linear-gradient(135deg, #03152f 0%, #062b68 34%, #0a4ca2 66%, #173b78 100%);
+background-attachment:fixed;
+background-size:cover;
 min-height:100vh;
 color:white;
 padding-bottom:90px;
 }
+
+body::before{
+content:"";
+position:fixed;
+inset:0;
+pointer-events:none;
+z-index:-1;
+background:
+  radial-gradient(circle at 20% 25%, rgba(100,180,255,.10) 0 1px, transparent 1.5px),
+  radial-gradient(circle at 78% 72%, rgba(255,215,0,.10) 0 1px, transparent 1.5px);
+background-size:180px 180px, 240px 240px;
+opacity:.5;
+}
+
+body::after{
+content:"";
+position:fixed;
+inset:-15%;
+pointer-events:none;
+z-index:-1;
+background:
+  linear-gradient(115deg, transparent 35%, rgba(255,255,255,.035) 48%, transparent 60%);
+transform:rotate(-4deg);
+opacity:.7;
+}
+
 
 /* HEADER */
 
@@ -131,7 +163,7 @@ font-size:14px;
 .latest-news-section{margin-top:28px}
 .latest-news-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:12px}
 .latest-news-head .section-title{margin:0}
-.latest-news-link{border:0;background:transparent;color:#ffd700;font-size:11px;font-weight:800;cursor:pointer;text-decoration:none;padding:6px 0}
+.latest-news-link{border:0;background:transparent;color:#ffffff;font-size:11px;font-weight:800;cursor:pointer;text-decoration:none;padding:6px 0}
 .latest-news-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .latest-news-card{position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.13);border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.055));backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 12px 26px rgba(0,0,0,.14);padding:15px;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;cursor:pointer}
 .latest-news-card:hover{transform:translateY(-3px);box-shadow:0 16px 30px rgba(0,0,0,.18);border-color:rgba(255,215,0,.25)}
@@ -144,7 +176,7 @@ font-size:14px;
 .latest-news-meta{font-size:8px;opacity:.58;margin-top:10px}
 .latest-news-empty{padding:18px;border:1px dashed rgba(255,255,255,.16);border-radius:16px;background:rgba(255,255,255,.045);font-size:11px;opacity:.72;text-align:center}
 @media(max-width:900px){.latest-news-grid{grid-template-columns:1fr}.latest-news-card{padding:14px}.latest-news-title{font-size:13px}.latest-news-excerpt{font-size:10px}}
-@media(max-width:420px){.latest-news-section{margin-top:24px}.latest-news-head{align-items:center}.latest-news-link{font-size:10px}.latest-news-grid{gap:11px}.latest-news-card{border-radius:16px;padding:13px}.latest-news-icon{width:38px;height:38px;font-size:20px}.latest-news-title{font-size:12.5px}.latest-news-excerpt{font-size:9.5px}}
+@media(max-width:420px){.latest-news-section{margin-top:24px}.latest-news-head{align-items:center}.latest-news-link{font-size:10px;color:#fff}.latest-news-grid{gap:11px}.latest-news-card{border-radius:16px;padding:13px}.latest-news-icon{width:38px;height:38px;font-size:20px}.latest-news-title{font-size:12.5px}.latest-news-excerpt{font-size:9.5px}}
 
 /* QUICK ACTIONS */
 
@@ -1508,7 +1540,7 @@ color:black;
     z-index:2;
 }
 
-/* Premium launch signal: steady dot + fast broadcast rings + 8 Quick Navigation emojis. */
+/* Premium launch signal — layered pulse, orbiting particles, and micro-sparks */
 .launch-dot-stage{
     position:relative;
     width:290px;
@@ -1516,27 +1548,109 @@ color:black;
     margin:0 auto;
     opacity:0;
     animation:launchFadeUp .55s cubic-bezier(.22,1,.36,1) .78s forwards;
+    isolation:isolate;
 }
 .launch-dot-stage::before{
     content:"";
     position:absolute;
     left:15px; right:15px; top:50%; height:1px;
-    background:linear-gradient(90deg,transparent,rgba(255,255,255,.14),transparent);
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.10) 18%,rgba(255,255,255,.22) 50%,rgba(255,255,255,.10) 82%,transparent);
     transform:translateY(-50%);
+    animation:signalLine 3.8s ease-in-out infinite;
+}
+.launch-dot-stage::after{
+    content:"";
+    position:absolute;
+    left:50%; top:50%;
+    width:118px; height:118px;
+    border-radius:50%;
+    border:1px dashed rgba(119,185,255,.22);
+    transform:translate(-50%,-50%);
+    animation:orbitRing 8s linear infinite;
+    box-shadow:0 0 38px rgba(63,150,255,.10), inset 0 0 26px rgba(255,255,255,.025);
 }
 .launch-dot{
     position:absolute; left:50%; top:50%;
-    width:11px; height:11px; border-radius:50%;
-    background:#FFD700;
+    width:12px; height:12px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#fff8b0 0 18%,#FFD700 32%,#f3b900 72%,#bf8400 100%);
     transform:translate(-50%,-50%);
-    box-shadow:0 0 14px rgba(255,215,0,.95), 0 0 34px rgba(255,215,0,.36);
-    z-index:8;
+    box-shadow:0 0 8px rgba(255,255,220,.95),0 0 22px rgba(255,215,0,.95),0 0 55px rgba(255,196,0,.45);
+    z-index:12;
+}
+.launch-dot::before,
+.launch-dot::after{
+    content:"";
+    position:absolute;
+    left:50%; top:50%;
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    pointer-events:none;
+}
+.launch-dot::before{
+    width:42px; height:42px;
+    background:radial-gradient(circle,rgba(255,235,125,.22) 0 24%,rgba(255,215,0,.10) 45%,transparent 72%);
+    animation:coreBloom 1.55s ease-in-out infinite;
 }
 .launch-dot::after{
-    content:""; position:absolute; inset:-7px; border-radius:50%;
-    border:1px solid rgba(255,255,255,.20);
-    animation:launchCoreHalo 1.35s ease-out infinite;
+    width:24px; height:24px;
+    border:1px solid rgba(255,244,181,.65);
+    animation:coreRing 1.8s cubic-bezier(.18,.72,.2,1) infinite;
 }
+.dot-aura{
+    position:absolute;
+    left:50%; top:50%;
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    pointer-events:none;
+    z-index:3;
+}
+.aura-1{width:42px;height:42px;border:1px solid rgba(255,215,0,.20);animation:auraExpand 2.2s ease-out infinite;}
+.aura-2{width:72px;height:72px;border:1px solid rgba(76,164,255,.14);animation:auraExpand 2.2s ease-out .72s infinite;}
+.aura-3{width:104px;height:104px;border:1px solid rgba(255,255,255,.08);animation:auraExpand 2.2s ease-out 1.44s infinite;}
+.launch-dot-stage .dot-particle{
+    position:absolute;
+    left:50%; top:50%;
+    width:4px; height:4px; margin:-2px;
+    border-radius:50%;
+    background:radial-gradient(circle,#fff 0 28%,#8fd1ff 65%,transparent 100%);
+    box-shadow:0 0 8px rgba(122,194,255,.85),0 0 16px rgba(122,194,255,.24);
+    z-index:7;
+    --r:42px;
+    --spin:0deg;
+    --delay:0s;
+    --dur:4.2s;
+    animation:particleOrbit var(--dur) linear var(--delay) infinite;
+}
+.launch-dot-stage .p1{--r:31px;--spin:0deg;--delay:-.3s;--dur:3.6s}
+.launch-dot-stage .p2{--r:52px;--spin:38deg;--delay:-1.7s;--dur:5.1s}
+.launch-dot-stage .p3{--r:66px;--spin:92deg;--delay:-2.3s;--dur:6.2s}
+.launch-dot-stage .p4{--r:46px;--spin:145deg;--delay:-.9s;--dur:4.8s}
+.launch-dot-stage .p5{--r:74px;--spin:208deg;--delay:-3.1s;--dur:6.7s}
+.launch-dot-stage .p6{--r:38px;--spin:252deg;--delay:-1.1s;--dur:4.4s}
+.launch-dot-stage .p7{--r:58px;--spin:300deg;--delay:-2.8s;--dur:5.7s}
+.launch-dot-stage .p8{--r:81px;--spin:332deg;--delay:-.4s;--dur:7.2s}
+.dot-spark{
+    position:absolute;
+    left:50%; top:50%;
+    width:2px; height:18px;
+    border-radius:999px;
+    background:linear-gradient(180deg,transparent,rgba(255,255,255,.9),rgba(82,169,255,.4),transparent);
+    transform-origin:50% 100%;
+    opacity:0;
+    z-index:5;
+}
+.s1{animation:shoot 3.8s ease-out .2s infinite;transform:translate(-50%,-50%) rotate(18deg);}
+.s2{animation:shoot 3.8s ease-out 1.3s infinite;transform:translate(-50%,-50%) rotate(108deg);}
+.s3{animation:shoot 3.8s ease-out 2.1s infinite;transform:translate(-50%,-50%) rotate(198deg);}
+.s4{animation:shoot 3.8s ease-out 2.9s infinite;transform:translate(-50%,-50%) rotate(288deg);}
+@keyframes signalLine{0%,100%{opacity:.45;transform:translateY(-50%) scaleX(.86)}50%{opacity:1;transform:translateY(-50%) scaleX(1)}}
+@keyframes orbitRing{0%{transform:translate(-50%,-50%) rotate(0deg)}100%{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes coreBloom{0%,100%{transform:translate(-50%,-50%) scale(.5);opacity:.15}50%{transform:translate(-50%,-50%) scale(1.65);opacity:.7}}
+@keyframes coreRing{0%{transform:translate(-50%,-50%) scale(.65);opacity:.9}75%{transform:translate(-50%,-50%) scale(2.3);opacity:0}100%{opacity:0}}
+@keyframes auraExpand{0%{transform:translate(-50%,-50%) scale(.38);opacity:0}18%{opacity:.65}100%{transform:translate(-50%,-50%) scale(1.22);opacity:0}}
+@keyframes particleOrbit{0%{transform:rotate(var(--spin)) translateX(var(--r)) scale(.55);opacity:0}10%{opacity:1}42%{opacity:.95}72%{opacity:.35}100%{transform:rotate(calc(var(--spin) + 360deg)) translateX(var(--r)) scale(.4);opacity:0}}
+@keyframes shoot{0%{opacity:0;transform-origin:50% 100%;transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scaleY(.1)}10%{opacity:1}34%{opacity:.85;transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scaleY(1)}55%,100%{opacity:0;transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scaleY(1.6)}}
+
 /* Clean launch presentation: no stacked rings beside the center dot.
    The white outline appears only around each Quick Navigation emoji. */
 .launch-signal{
@@ -1583,6 +1697,105 @@ color:black;
     transform:translateY(10px);
     animation:launchFadeUp .7s ease 1.38s forwards;
     color:rgba(255,255,255,.84);
+}
+
+/* ===== PREMIUM SWIPE-TO-ENTER CONTROL ===== */
+.launch-swipe-area{
+    width:min(92vw,420px);
+    margin-top:32px;
+    padding:7px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.22);
+    background:linear-gradient(135deg,rgba(255,255,255,.13),rgba(255,255,255,.055));
+    box-shadow:0 22px 55px rgba(0,10,35,.32), inset 0 1px 0 rgba(255,255,255,.16), 0 0 0 1px rgba(110,180,255,.05);
+    backdrop-filter:blur(20px) saturate(145%);
+    -webkit-backdrop-filter:blur(20px) saturate(145%);
+}
+.launch-swipe-area::before{
+    content:"";
+    position:absolute;
+    inset:-1px;
+    border-radius:inherit;
+    padding:1px;
+    background:linear-gradient(90deg,rgba(255,255,255,.18),rgba(123,190,255,.42),rgba(255,215,0,.32),rgba(255,255,255,.18));
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+    mask-composite:exclude;
+    opacity:.7;
+    pointer-events:none;
+}
+.launch-swipe-track{
+    height:64px;
+    border-radius:999px;
+    background:radial-gradient(circle at 22% 50%,rgba(118,190,255,.12),transparent 30%),linear-gradient(90deg,rgba(255,255,255,.035),rgba(255,255,255,.07),rgba(255,255,255,.035));
+    border:1px solid rgba(255,255,255,.07);
+}
+.launch-swipe-track::before{
+    content:"";
+    position:absolute;
+    left:82px; right:18px; top:50%;
+    height:2px;
+    transform:translateY(-50%);
+    background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(135,195,255,.35),rgba(255,215,0,.18),rgba(255,255,255,.03));
+    filter:blur(.2px);
+    opacity:.65;
+}
+.launch-swipe-track::after{
+    background:linear-gradient(105deg,transparent 15%,rgba(255,255,255,.035) 38%,rgba(170,215,255,.18) 50%,rgba(255,255,255,.035) 62%,transparent 85%);
+    animation:launchTrackShimmer 2.8s ease-in-out 1.6s infinite;
+}
+.launch-swipe-label{
+    position:relative;
+    z-index:1;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:2.2px;
+    color:rgba(255,255,255,.72);
+    text-shadow:0 1px 14px rgba(95,180,255,.18);
+    transform:translateX(18px);
+}
+.launch-swipe-label::after{
+    content:"";
+    display:inline-block;
+    width:24px; height:1px;
+    margin-left:10px;
+    vertical-align:middle;
+    background:linear-gradient(90deg,rgba(255,215,0,.7),transparent);
+}
+.launch-swipe-hint{
+    left:8px; top:8px;
+    width:64px; height:48px;
+    border-radius:999px;
+    background:linear-gradient(145deg,#fff7bd 0%,#ffe55a 30%,#FFD700 72%,#eebc00 100%);
+    color:#00296B;
+    border:1px solid rgba(255,255,255,.68);
+    box-shadow:0 12px 28px rgba(0,0,0,.22),0 0 0 5px rgba(255,215,0,.06),0 0 30px rgba(255,215,0,.28),inset 0 1px 0 rgba(255,255,255,.9);
+    animation:launchHintGuidePro 2.7s cubic-bezier(.65,0,.35,1) 1.9s infinite;
+}
+.launch-swipe-hint::before{
+    content:""; position:absolute; inset:4px; border-radius:inherit;
+    border:1px solid rgba(255,255,255,.42);
+    opacity:.7;
+}
+.launch-swipe-hint::after{
+    content:""; position:absolute; width:18px; height:70px;
+    left:9px; top:-10px; border-radius:50%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);
+    transform:rotate(18deg); filter:blur(5px); opacity:.55;
+    animation:swipeThumbShine 2.4s ease-in-out 2s infinite;
+}
+.launch-swipe-hint svg{width:21px;height:21px;position:relative;z-index:2;filter:drop-shadow(0 1px 2px rgba(0,0,0,.12));}
+.launch-swipe-hint.is-dragging{animation:none;box-shadow:0 12px 30px rgba(0,0,0,.24),0 0 0 6px rgba(255,215,0,.10),0 0 38px rgba(255,215,0,.42),inset 0 1px 0 rgba(255,255,255,.95);}
+.launch-swipe-area.is-complete{box-shadow:0 0 0 1px rgba(255,255,255,.25),0 0 55px rgba(255,215,0,.28),inset 0 1px 0 rgba(255,255,255,.24);}
+.launch-threshold{font-size:10px;letter-spacing:.65px;color:rgba(255,255,255,.42);}
+@keyframes launchHintGuidePro{0%,12%{transform:translateX(0)}48%{transform:translateX(var(--guide-distance,300px))}56%,100%{transform:translateX(0)}}
+@keyframes swipeThumbShine{0%,45%{transform:translateX(-8px) rotate(18deg);opacity:0}55%{opacity:.55}75%,100%{transform:translateX(46px) rotate(18deg);opacity:0}}
+@media(max-width:600px){
+ .launch-swipe-area{width:min(94vw,390px);margin-top:26px}
+ .launch-swipe-track{height:60px}
+ .launch-swipe-hint{width:60px;height:44px}
+ .launch-swipe-label{font-size:10px;letter-spacing:1.65px;transform:translateX(14px)}
+ .launch-swipe-track::before{left:76px}
 }
 .launch-swipe-area{
     position:relative;
@@ -1654,6 +1867,96 @@ color:black;
     opacity:0;
     animation:launchFadeUp .7s ease 1.72s forwards;
 }
+
+/* =========================================================
+   PROJECT SSLG REVEAL — dust converges into the core dot
+   ========================================================= */
+.launch-project-title{
+    margin-top:2px;
+    opacity:0;
+    transform:translateY(18px) scale(.92);
+    filter:blur(10px);
+    animation:projectReveal .9s cubic-bezier(.2,.85,.2,1) 2.35s forwards;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    line-height:1;
+}
+.project-kicker{
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.42em;
+    margin-left:.42em;
+    color:rgba(255,255,255,.62);
+    text-transform:uppercase;
+    margin-bottom:8px;
+}
+.project-name{
+    font-size:clamp(46px,9vw,74px);
+    font-weight:800;
+    letter-spacing:.05em;
+    background:linear-gradient(180deg,#ffffff 0%,#dcecff 45%,#83bfff 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    text-shadow:0 0 26px rgba(117,182,255,.18);
+    position:relative;
+}
+.project-name::after{
+    content:"";
+    position:absolute;
+    left:10%; right:10%; bottom:-9px;
+    height:2px;
+    border-radius:999px;
+    background:linear-gradient(90deg,transparent,rgba(255,215,0,.85),rgba(129,195,255,.9),transparent);
+    transform:scaleX(0);
+    transform-origin:center;
+    animation:projectLine .75s cubic-bezier(.2,.8,.2,1) 2.72s forwards;
+}
+.launch-project-subtitle{
+    opacity:0;
+    transform:translateY(10px);
+    filter:blur(5px);
+    animation:projectSubReveal .7s ease 2.85s forwards;
+}
+.launch-dot-stage.revealing .launch-dot{
+    animation:dotFinalBloom .9s cubic-bezier(.2,.8,.2,1) forwards;
+}
+.launch-dot-stage.revealing .dot-particle{
+    animation:particleConverge .72s cubic-bezier(.12,.9,.18,1) forwards !important;
+}
+.launch-dot-stage.revealing .dot-spark{
+    animation:convergeSpark .65s ease-out forwards !important;
+}
+.launch-dot-stage.revealing::before{ animation:signalFade .55s ease forwards; }
+.launch-dot-stage.revealing::after{ animation:revealRing .9s cubic-bezier(.2,.8,.2,1) forwards; }
+.aura-1,.aura-2,.aura-3{ transition:opacity .4s ease; }
+.launch-dot-stage.revealing .aura-1{animation:revealAura .8s ease-out forwards!important;}
+.launch-dot-stage.revealing .aura-2{animation:revealAura .95s ease-out .06s forwards!important;}
+.launch-dot-stage.revealing .aura-3{animation:revealAura 1.1s ease-out .12s forwards!important;}
+@keyframes particleConverge{
+    0%{opacity:1;transform:rotate(var(--spin)) translateX(var(--r)) scale(1)}
+    55%{opacity:1}
+    100%{opacity:0;transform:rotate(var(--spin)) translateX(0) scale(.1)}
+}
+@keyframes dotFinalBloom{
+    0%{transform:translate(-50%,-50%) scale(1);box-shadow:0 0 8px rgba(255,255,220,.95),0 0 22px rgba(255,215,0,.95),0 0 55px rgba(255,196,0,.45)}
+    35%{transform:translate(-50%,-50%) scale(1.55);box-shadow:0 0 14px rgba(255,255,255,1),0 0 42px rgba(255,215,0,1),0 0 95px rgba(99,177,255,.75)}
+    100%{transform:translate(-50%,-50%) scale(1);box-shadow:0 0 8px rgba(255,255,220,.95),0 0 28px rgba(255,215,0,.85),0 0 70px rgba(99,177,255,.3)}
+}
+@keyframes convergeSpark{0%{opacity:0;transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scaleY(.2)}35%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) rotate(var(--rot,0deg)) scaleY(0)} }
+@keyframes signalFade{to{opacity:0;transform:translateY(-50%) scaleX(.35)}}
+@keyframes revealRing{0%{opacity:.85;transform:translate(-50%,-50%) scale(.82) rotate(0)}100%{opacity:0;transform:translate(-50%,-50%) scale(2.7) rotate(240deg)}}
+@keyframes revealAura{0%{opacity:.4}100%{opacity:0;transform:translate(-50%,-50%) scale(1.7)}}
+@keyframes projectReveal{0%{opacity:0;transform:translateY(18px) scale(.92);filter:blur(10px)}60%{opacity:1;transform:translateY(-1px) scale(1.02);filter:blur(0)}100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+@keyframes projectSubReveal{from{opacity:0;transform:translateY(10px);filter:blur(5px)}to{opacity:.84;transform:translateY(0);filter:blur(0)}}
+@keyframes projectLine{to{transform:scaleX(1)}}
+@media (max-width:600px){
+ .project-kicker{font-size:8px;letter-spacing:.34em;margin-bottom:7px}
+ .project-name{font-size:48px}
+ .project-name::after{bottom:-8px}
+}
+
 .launch-screen.is-leaving{
     opacity:0;
     visibility:hidden;
@@ -1673,6 +1976,10 @@ color:black;
 @keyframes launchPulse{0%,100%{transform:scale(1);opacity:.55}50%{transform:scale(1.08);opacity:.95}}
 @keyframes launchShine{0%,52%{opacity:0;transform:translateX(-130%) rotate(-12deg)}64%{opacity:.75}78%,100%{opacity:0;transform:translateX(130%) rotate(-12deg)}}
 @keyframes launchOrbit{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes dotGlow{0%,100%{transform:scale(.8);opacity:.45}50%{transform:scale(1.45);opacity:.9}}
+@keyframes dotRipple{0%{transform:scale(.55);opacity:.75}70%{transform:scale(3.2);opacity:0}100%{transform:scale(3.2);opacity:0}}
+@keyframes dotOrbit{0%{transform:translate(-50%,-50%) scale(.72) rotate(0deg);border-color:rgba(255,255,255,.08)}50%{transform:translate(-50%,-50%) scale(1) rotate(180deg);border-color:rgba(64,153,255,.22)}100%{transform:translate(-50%,-50%) scale(.72) rotate(360deg);border-color:rgba(255,255,255,.08)}}
+@keyframes dotParticle{0%{transform:rotate(0deg) translateX(22px) scale(.7);opacity:0}20%{opacity:1}50%{transform:rotate(180deg) translateX(58px) scale(1);opacity:.9}80%{opacity:.35}100%{transform:rotate(360deg) translateX(22px) scale(.7);opacity:0}}
 @keyframes launchCoreHalo{0%{transform:scale(.72);opacity:.15}45%{transform:scale(1.15);opacity:.42}100%{transform:scale(1.42);opacity:0}}
 @keyframes launchSignalWave{
     0%{opacity:0;transform:translate(-50%,-50%) scale(.08)}
@@ -1907,6 +2214,362 @@ color:black;
     }
 }
 
+
+
+/* =========================================================
+   PREMIUM GLASS PILL NAVIGATION — INDEX ONLY
+   ========================================================= */
+.ui-svg{
+  width:20px;
+  height:20px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  flex:0 0 auto;
+}
+
+.header .login-btn{
+  width:auto;
+  min-height:42px;
+  padding:8px 14px;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:14px;
+  background:rgba(255,255,255,.11);
+  color:#fff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12), 0 8px 22px rgba(0,0,0,.12);
+  transition:transform .22s ease, background .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+.header .login-btn:hover{
+  transform:translateY(-1px);
+  background:rgba(255,255,255,.16);
+  border-color:rgba(255,255,255,.28);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16), 0 10px 26px rgba(0,0,0,.16);
+}
+.header .notification-btn{
+  display:grid;
+  place-items:center;
+  position:relative;
+}
+.header .notification-btn .ui-svg{width:19px;height:19px}
+
+/* Override the old full-width bottom bar with a centered floating pill. */
+.bottom-nav{
+  position:fixed !important;
+  left:50% !important;
+  right:auto !important;
+  bottom:18px !important;
+  transform:translateX(-50%);
+  width:min(620px, calc(100vw - 28px));
+  height:62px !important;
+  padding:6px !important;
+  gap:3px;
+  z-index:9000;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border:1px solid rgba(255,255,255,.20);
+  border-radius:999px;
+  background:rgba(15,27,54,.58);
+  background:linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.045));
+  backdrop-filter:blur(20px) saturate(135%);
+  -webkit-backdrop-filter:blur(20px) saturate(135%);
+  box-shadow:
+    0 18px 50px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.16),
+    inset 0 -1px 0 rgba(0,0,0,.10);
+  overflow:visible;
+}
+.bottom-nav::before{
+  content:"";
+  position:absolute;
+  inset:1px;
+  border-radius:inherit;
+  pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.10),transparent 38%);
+  opacity:.55;
+}
+.bottom-nav .nav-item{
+  position:relative;
+  z-index:1;
+  flex:1 1 0;
+  min-width:0;
+  max-width:none;
+  height:100%;
+  padding:0 12px !important;
+  margin:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  border-radius:999px;
+  color:rgba(255,255,255,.78) !important;
+  font-size:11px !important;
+  font-weight:500;
+  letter-spacing:.01em;
+  white-space:nowrap;
+  transition:color .22s ease, background .22s ease, box-shadow .22s ease, transform .22s ease;
+}
+.bottom-nav .nav-item:hover{
+  color:#fff !important;
+  background:rgba(255,255,255,.07);
+}
+.bottom-nav .nav-item.active{
+  color:#fff !important;
+  transform:none !important;
+  background:linear-gradient(135deg,#16c7ff 0%,#38b8ff 50%,#2ca4ff 100%);
+  box-shadow:
+    0 8px 24px rgba(21,180,255,.30),
+    0 0 26px rgba(21,180,255,.20),
+    inset 0 1px 0 rgba(255,255,255,.40);
+}
+.bottom-nav .nav-item.active::after{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  border-radius:inherit;
+  border:1px solid rgba(255,255,255,.14);
+  pointer-events:none;
+}
+.bottom-nav .profile-nav-icon{
+  display:none !important;
+}
+.bottom-nav .profile-nav-icon img{display:none !important}
+
+/* Professional, emoji-free quick-action cards. */
+.quick-wrapper .grid .card .icon,
+.card .icon{
+  width:42px;
+  height:42px;
+  margin-bottom:2px;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.13);
+  color:#7ed9ff;
+}
+.card .icon svg{
+  width:21px;
+  height:21px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.quick-wrapper .grid .card:hover .icon{
+  color:#fff;
+  background:rgba(22,199,255,.13);
+  border-color:rgba(126,217,255,.28);
+}
+.latest-news-icon{position:relative}
+.latest-news-icon span,
+.notification-icon span{
+  display:block;
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:#56c9ff;
+  box-shadow:0 0 12px rgba(86,201,255,.55);
+}
+.notification-icon{
+  display:grid !important;
+  place-items:center;
+}
+
+@media (max-width:700px){
+  .bottom-nav{
+    bottom:12px !important;
+    width:calc(100vw - 20px);
+    height:58px !important;
+    padding:5px !important;
+  }
+  .bottom-nav .nav-item{
+    padding:0 7px !important;
+    font-size:9px !important;
+  }
+}
+
+@media (max-width:380px){
+  .bottom-nav{width:calc(100vw - 14px);height:56px !important}
+  .bottom-nav .nav-item{font-size:8px !important;padding:0 4px !important}
+}
+
+
+/* ===== BEAUTIFIED LAUNCH DOT V2 ===== */
+.launch-dot-stage{
+  width:310px;
+  height:190px;
+  margin-top:4px;
+  filter:drop-shadow(0 18px 38px rgba(0,0,0,.12));
+}
+.launch-dot-stage::before{
+  left:4px; right:4px;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.05) 12%,rgba(255,255,255,.20) 32%,rgba(255,255,255,.32) 50%,rgba(255,255,255,.20) 68%,rgba(255,255,255,.05) 88%,transparent 100%);
+  filter:blur(.15px);
+  animation:signalLinePro 3.2s ease-in-out infinite;
+}
+.launch-dot-stage::after{
+  width:132px;height:132px;
+  border:1px solid rgba(255,255,255,.17);
+  border-top-color:rgba(255,215,0,.45);
+  border-right-color:rgba(107,192,255,.28);
+  box-shadow:0 0 0 8px rgba(255,255,255,.015),0 0 44px rgba(39,140,255,.12), inset 0 0 35px rgba(255,255,255,.03);
+  animation:orbitRingPro 9s linear infinite;
+}
+.launch-dot{
+  width:14px;height:14px;
+  background:radial-gradient(circle at 32% 28%,#fff 0 14%,#fff4a2 24%,#FFD700 43%,#f2b900 74%,#bd8500 100%);
+  box-shadow:0 0 7px rgba(255,255,240,.95),0 0 18px rgba(255,215,0,.95),0 0 36px rgba(255,215,0,.42),0 0 70px rgba(71,156,255,.24);
+  animation:dotHeartbeat 2.4s cubic-bezier(.37,0,.2,1) infinite;
+}
+.launch-dot::before{
+  width:54px;height:54px;
+  background:radial-gradient(circle,rgba(255,245,180,.26) 0 16%,rgba(255,215,0,.14) 34%,rgba(255,215,0,.05) 52%,transparent 74%);
+  animation:coreBloomPro 2s ease-in-out infinite;
+}
+.launch-dot::after{
+  width:28px;height:28px;
+  border:1px solid rgba(255,250,215,.72);
+  box-shadow:0 0 14px rgba(255,240,165,.25);
+  animation:coreRingPro 2.15s cubic-bezier(.16,.72,.2,1) infinite;
+}
+.aura-1{width:48px;height:48px;border:1px solid rgba(255,215,0,.28);animation:auraPro 2.8s ease-out -.2s infinite}
+.aura-2{width:86px;height:86px;border:1px solid rgba(86,174,255,.18);animation:auraPro 2.8s ease-out .72s infinite}
+.aura-3{width:124px;height:124px;border:1px solid rgba(255,255,255,.10);animation:auraPro 2.8s ease-out 1.45s infinite}
+.launch-dot-stage .dot-particle{
+  width:5px;height:5px;margin:-2.5px;
+  background:radial-gradient(circle at 35% 35%,#fff 0 25%,#a9dcff 48%,#4f9cff 75%,transparent 100%);
+  box-shadow:0 0 10px rgba(137,208,255,.95),0 0 22px rgba(84,162,255,.28);
+  animation:particleOrbitPro var(--dur) cubic-bezier(.45,.05,.55,.95) var(--delay) infinite;
+}
+.launch-dot-stage .p1{--r:34px;--spin:4deg;--dur:4.6s;--delay:-.6s}
+.launch-dot-stage .p2{--r:51px;--spin:42deg;--dur:5.6s;--delay:-2.1s}
+.launch-dot-stage .p3{--r:69px;--spin:88deg;--dur:6.6s;--delay:-3.3s}
+.launch-dot-stage .p4{--r:47px;--spin:132deg;--dur:5.1s;--delay:-1.2s}
+.launch-dot-stage .p5{--r:76px;--spin:186deg;--dur:7.1s;--delay:-4.2s}
+.launch-dot-stage .p6{--r:40px;--spin:238deg;--dur:4.9s;--delay:-2.6s}
+.launch-dot-stage .p7{--r:60px;--spin:286deg;--dur:6.2s;--delay:-1.7s}
+.launch-dot-stage .p8{--r:84px;--spin:332deg;--dur:7.6s;--delay:-5s}
+.dot-spark{width:2px;height:24px;background:linear-gradient(180deg,transparent,rgba(255,255,255,.98),rgba(113,185,255,.55),transparent);filter:drop-shadow(0 0 4px rgba(149,211,255,.6));}
+@keyframes signalLinePro{0%,100%{opacity:.32;transform:translateY(-50%) scaleX(.76)}50%{opacity:1;transform:translateY(-50%) scaleX(1)}}
+@keyframes orbitRingPro{0%{transform:translate(-50%,-50%) rotate(0deg) scale(.98)}50%{transform:translate(-50%,-50%) rotate(180deg) scale(1.025)}100%{transform:translate(-50%,-50%) rotate(360deg) scale(.98)}}
+@keyframes dotHeartbeat{0%,100%{transform:translate(-50%,-50%) scale(.92)}18%{transform:translate(-50%,-50%) scale(1)}26%{transform:translate(-50%,-50%) scale(1.16)}38%{transform:translate(-50%,-50%) scale(.98)}55%{transform:translate(-50%,-50%) scale(1.02)}}
+@keyframes coreBloomPro{0%,100%{transform:translate(-50%,-50%) scale(.5);opacity:.1}45%{transform:translate(-50%,-50%) scale(1.85);opacity:.75}70%{opacity:.28}}
+@keyframes coreRingPro{0%{transform:translate(-50%,-50%) scale(.55);opacity:1}72%{transform:translate(-50%,-50%) scale(2.45);opacity:0}100%{opacity:0}}
+@keyframes auraPro{0%{transform:translate(-50%,-50%) scale(.34);opacity:0}16%{opacity:.7}100%{transform:translate(-50%,-50%) scale(1.24);opacity:0}}
+@keyframes particleOrbitPro{0%{transform:rotate(var(--spin)) translateX(var(--r)) scale(.35);opacity:0}8%{opacity:.2}22%{opacity:1}52%{opacity:.85}82%{opacity:.25}100%{transform:rotate(calc(var(--spin) + 360deg)) translateX(var(--r)) scale(.2);opacity:0}}
+@media (max-width:560px){
+ .launch-dot-stage{width:270px;height:164px}
+ .launch-dot-stage::after{width:118px;height:118px}
+ .launch-dot-stage .p5,.launch-dot-stage .p8{--r:70px}
+}
+@media (prefers-reduced-motion:reduce){
+ .launch-dot-stage *,.launch-dot-stage::before,.launch-dot-stage::after{animation-duration:.001ms!important;animation-iteration-count:1!important}
+}
+
+
+/* =========================================================
+   EXTRA POLISH — cinematic PROJECT SSLG reveal
+   ========================================================= */
+.launch-project-title{
+  gap:10px;
+  transform-origin:center;
+  animation:projectRevealMore 1.15s cubic-bezier(.16,1,.3,1) 2.28s forwards;
+}
+.project-kicker{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  padding:6px 12px 5px;
+  margin-bottom:0;
+  border:1px solid rgba(255,255,255,.13);
+  border-radius:999px;
+  background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.025));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 8px 30px rgba(0,0,0,.14);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  color:rgba(255,255,255,.68);
+  letter-spacing:.30em;
+}
+.project-kicker i{
+  width:20px;height:1px;display:block;opacity:.65;
+  background:linear-gradient(90deg,transparent,rgba(255,215,0,.9));
+}
+.project-kicker i:last-child{transform:rotate(180deg)}
+.project-kicker b{font-size:9px;font-weight:700;line-height:1}
+.project-name{
+  display:flex;
+  gap:.025em;
+  letter-spacing:.035em;
+  line-height:.9;
+  padding:0 .12em .08em;
+  background:linear-gradient(110deg,#ffffff 0%,#eef7ff 28%,#83c4ff 48%,#ffffff 58%,#ffd95a 73%,#ffffff 88%);
+  background-size:260% 100%;
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  filter:drop-shadow(0 10px 28px rgba(62,155,255,.14));
+  animation:sslgGradient 5.5s ease-in-out 3.0s infinite alternate;
+}
+.project-name span{
+  display:inline-block;
+  opacity:0;
+  transform:translateY(26px) scale(.72) rotateX(55deg);
+  filter:blur(9px);
+  animation:letterRise .8s cubic-bezier(.16,1,.3,1) forwards;
+}
+.project-name span:nth-child(1){animation-delay:2.42s}
+.project-name span:nth-child(2){animation-delay:2.50s}
+.project-name span:nth-child(3){animation-delay:2.58s}
+.project-name span:nth-child(4){animation-delay:2.66s}
+.project-name::before{
+  content:"";position:absolute;inset:-12% -8% -2%;
+  border-radius:28px;
+  background:radial-gradient(ellipse at center,rgba(106,185,255,.12),transparent 63%);
+  filter:blur(16px);
+  opacity:0;
+  animation:titleAura 1.4s ease 2.35s forwards;
+  pointer-events:none;
+  z-index:-1;
+}
+.project-name::after{
+  bottom:-15px;
+  height:2px;
+  left:4%;right:4%;
+  background:linear-gradient(90deg,transparent,rgba(112,190,255,.2) 12%,rgba(255,255,255,.92) 35%,rgba(255,215,0,.95) 50%,rgba(255,255,255,.92) 65%,rgba(112,190,255,.2) 88%,transparent);
+  box-shadow:0 0 14px rgba(109,187,255,.45);
+  transform:scaleX(0);
+  animation:projectLineMore 1.05s cubic-bezier(.16,1,.3,1) 2.92s forwards;
+}
+.launch-project-subtitle{
+  margin-top:1px;
+  font-size:11px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:rgba(232,244,255,.58);
+  text-shadow:0 1px 14px rgba(70,156,255,.18);
+  animation:projectSubMore .85s cubic-bezier(.16,1,.3,1) 3.05s forwards;
+}
+@keyframes projectRevealMore{0%{opacity:0;transform:translateY(24px) scale(.86);filter:blur(12px)}55%{opacity:1;transform:translateY(-2px) scale(1.025);filter:blur(0)}100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+@keyframes letterRise{0%{opacity:0;transform:translateY(26px) scale(.72) rotateX(55deg);filter:blur(9px)}60%{opacity:1;transform:translateY(-4px) scale(1.08) rotateX(0);filter:blur(0)}100%{opacity:1;transform:translateY(0) scale(1) rotateX(0);filter:blur(0)}}
+@keyframes titleAura{0%{opacity:0;transform:scale(.72)}55%{opacity:1}100%{opacity:.82;transform:scale(1)}}
+@keyframes projectLineMore{0%{transform:scaleX(0);opacity:0}30%{opacity:1}100%{transform:scaleX(1);opacity:1}}
+@keyframes projectSubMore{0%{opacity:0;transform:translateY(9px);filter:blur(5px)}100%{opacity:.84;transform:translateY(0);filter:blur(0)}}
+@keyframes sslgGradient{0%{background-position:0% 50%}100%{background-position:100% 50%}}
+@media (max-width:600px){
+  .project-name{font-size:clamp(48px,15vw,66px)}
+  .project-kicker{padding:5px 10px;gap:7px;letter-spacing:.24em}
+  .project-kicker b{font-size:8px}
+  .launch-project-subtitle{font-size:9px;letter-spacing:.12em}
+}
+@media (prefers-reduced-motion:reduce){
+  .project-name span,.launch-project-title,.project-name,.project-name::before,.project-name::after,.launch-project-subtitle{animation:none!important;opacity:1!important;transform:none!important;filter:none!important}
+}
 </style>
 
   <link rel="manifest" href="manifest.json">
@@ -1915,31 +2578,315 @@ color:black;
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
+
+<style id="premium-blue-overrides">
+:root{--blue:#2f80ff;--darkblue:#061a3a;--yellow:#7db9ff;--white:#fff;--glass:rgba(255,255,255,.10)}
+body{background:
+ radial-gradient(1000px 700px at 12% 8%, rgba(62,145,255,.24), transparent 62%),
+ radial-gradient(900px 650px at 88% 28%, rgba(25,87,190,.20), transparent 64%),
+ radial-gradient(900px 700px at 50% 100%, rgba(24,64,145,.28), transparent 68%),
+ linear-gradient(135deg,#020b1b 0%,#071d3d 36%,#0b3270 68%,#061a3a 100%) !important;
+ background-attachment:fixed;background-size:cover;}
+body::before{background:
+ radial-gradient(circle at 20% 28%,rgba(117,190,255,.09),transparent 24%),
+ radial-gradient(circle at 78% 72%,rgba(52,133,255,.08),transparent 26%),
+ linear-gradient(115deg,transparent 35%,rgba(255,255,255,.025) 50%,transparent 65%) !important;opacity:1;}
+body::after{background:linear-gradient(115deg,transparent 35%,rgba(120,190,255,.035) 48%,transparent 60%) !important;opacity:.8;}
+.launch-screen{background:
+ radial-gradient(circle at 50% 42%,rgba(82,164,255,.13),transparent 21%),
+ radial-gradient(circle at 18% 20%,rgba(80,150,255,.10),transparent 24%),
+ radial-gradient(circle at 84% 76%,rgba(30,99,220,.12),transparent 28%),
+ linear-gradient(145deg,#010915 0%,#061a3a 42%,#0b3d87 72%,#061a3a 100%) !important;}
+/* Keep the reveal accent cool-blue rather than yellow. */
+.launch-dot{background:radial-gradient(circle at 35% 30%,#fff 0 15%,#b9dcff 28%,#68aeff 58%,#2f80ff 82%,#1455b8 100%) !important;box-shadow:0 0 8px rgba(235,248,255,.95),0 0 24px rgba(102,183,255,.95),0 0 60px rgba(47,128,255,.42) !important;}
+.quick-wrapper .grid .enrollment-card{background:linear-gradient(135deg,rgba(70,139,255,.24),rgba(0,61,165,.58)) !important;border-color:rgba(122,187,255,.28) !important;}
+.notification-badge{background:#5ea8ff !important;color:#04122a !important;}
+
+/* =========================================================
+   CINEMATIC INTRO ANIMATION — premium blue dust sequence
+   ========================================================= */
+.launch-screen{isolation:isolate;}
+.launch-screen .intro-ambient{position:absolute;inset:-12%;pointer-events:none;z-index:0;overflow:hidden;}
+.launch-screen .intro-ambient::before,
+.launch-screen .intro-ambient::after{content:"";position:absolute;border-radius:50%;filter:blur(60px);opacity:.7;}
+.launch-screen .intro-ambient::before{width:42vmax;height:42vmax;left:8%;top:4%;background:radial-gradient(circle,rgba(70,160,255,.24),transparent 66%);animation:ambientFloatA 11s ease-in-out infinite alternate;}
+.launch-screen .intro-ambient::after{width:48vmax;height:48vmax;right:4%;bottom:-8%;background:radial-gradient(circle,rgba(35,95,220,.22),transparent 68%);animation:ambientFloatB 14s ease-in-out infinite alternate;}
+.intro-stars{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;}
+.intro-star{position:absolute;width:3px;height:3px;border-radius:50%;background:rgba(210,238,255,.95);box-shadow:0 0 8px rgba(115,195,255,.9);opacity:0;animation:starFloat var(--sd,6s) ease-in-out var(--ss,0s) infinite;}
+.intro-star.s01{left:14%;top:22%;--sd:5.8s;--ss:-1.1s}.intro-star.s02{left:24%;top:68%;--sd:7.2s;--ss:-3s}.intro-star.s03{left:76%;top:19%;--sd:6.5s;--ss:-2.4s}.intro-star.s04{left:87%;top:61%;--sd:8s;--ss:-4.8s}.intro-star.s05{left:58%;top:10%;--sd:5.1s;--ss:-.8s}.intro-star.s06{left:39%;top:83%;--sd:7.8s;--ss:-2.2s}.intro-star.s07{left:8%;top:48%;--sd:6.8s;--ss:-5.1s}.intro-star.s08{left:94%;top:36%;--sd:5.9s;--ss:-1.7s}.intro-star.s09{left:67%;top:81%;--sd:8.6s;--ss:-4.4s}.intro-star.s10{left:31%;top:14%;--sd:6.3s;--ss:-2.8s}
+.launch-content{z-index:3;}
+.launch-dot-stage{overflow:visible;}
+.launch-dot-stage .dust-particle{position:absolute;left:50%;top:50%;width:var(--ps,4px);height:var(--ps,4px);margin:calc(var(--ps,4px)/-2);border-radius:50%;background:radial-gradient(circle,#fff 0 20%,#b9e2ff 50%,rgba(75,153,255,.15) 80%,transparent 100%);box-shadow:0 0 9px rgba(118,200,255,.8),0 0 18px rgba(63,148,255,.25);opacity:0;z-index:6;will-change:transform,opacity;animation:dustDrift var(--dd,5s) ease-in-out var(--de,0s) infinite;}
+.launch-dot-stage .d01{--dx:-125px;--dy:-52px;--dd:6.1s;--de:-3.1s;--ps:3px}.launch-dot-stage .d02{--dx:-92px;--dy:-84px;--dd:5.4s;--de:-1.4s;--ps:5px}.launch-dot-stage .d03{--dx:-42px;--dy:-106px;--dd:7s;--de:-4.8s;--ps:3px}.launch-dot-stage .d04{--dx:24px;--dy:-118px;--dd:6.6s;--de:-2.4s;--ps:4px}.launch-dot-stage .d05{--dx:88px;--dy:-88px;--dd:5.9s;--de:-3.7s;--ps:3px}.launch-dot-stage .d06{--dx:130px;--dy:-42px;--dd:7.4s;--de:-5.2s;--ps:4px}.launch-dot-stage .d07{--dx:136px;--dy:28px;--dd:6.4s;--de:-2.9s;--ps:3px}.launch-dot-stage .d08{--dx:92px;--dy:78px;--dd:5.6s;--de:-1.2s;--ps:5px}.launch-dot-stage .d09{--dx:38px;--dy:108px;--dd:7.3s;--de:-4.2s;--ps:3px}.launch-dot-stage .d10{--dx:-28px;--dy:114px;--dd:6.2s;--de:-2.1s;--ps:4px}.launch-dot-stage .d11{--dx:-88px;--dy:80px;--dd:5.8s;--de:-4.9s;--ps:3px}.launch-dot-stage .d12{--dx:-132px;--dy:30px;--dd:7.1s;--de:-1.9s;--ps:4px}
+.launch-dot-stage.revealing .dust-particle{animation:dustConverge .9s cubic-bezier(.12,.9,.12,1) forwards;animation-delay:var(--cd,0s);}
+.launch-dot-stage.revealing .d01{--cd:0ms}.launch-dot-stage.revealing .d02{--cd:35ms}.launch-dot-stage.revealing .d03{--cd:70ms}.launch-dot-stage.revealing .d04{--cd:105ms}.launch-dot-stage.revealing .d05{--cd:140ms}.launch-dot-stage.revealing .d06{--cd:175ms}.launch-dot-stage.revealing .d07{--cd:210ms}.launch-dot-stage.revealing .d08{--cd:245ms}.launch-dot-stage.revealing .d09{--cd:280ms}.launch-dot-stage.revealing .d10{--cd:315ms}.launch-dot-stage.revealing .d11{--cd:350ms}.launch-dot-stage.revealing .d12{--cd:385ms}
+.launch-dot-stage::after{transition:filter .3s ease;}
+.launch-dot-stage.revealing::after{filter:drop-shadow(0 0 12px rgba(79,165,255,.45));}
+.launch-dot-stage.revealing .launch-dot{animation:dotFinalBloomBlue 1s cubic-bezier(.18,.9,.18,1) forwards!important;}
+.launch-project-title{transform-origin:center;}
+.launch-project-title .project-kicker{animation:kickerReveal .75s cubic-bezier(.16,1,.3,1) 2.55s both;}
+.launch-project-title .project-name span{animation-duration:.95s;}
+.launch-project-title .project-name::before{animation:titleAuraBlue 1.4s ease 2.5s forwards;}
+.launch-project-subtitle{animation:projectSubMore .9s cubic-bezier(.16,1,.3,1) 3.2s forwards;}
+@keyframes ambientFloatA{from{transform:translate3d(-2%,0,0) scale(.98)}to{transform:translate3d(8%,6%,0) scale(1.08)}}
+@keyframes ambientFloatB{from{transform:translate3d(2%,2%,0) scale(1)}to{transform:translate3d(-8%,-5%,0) scale(1.1)}}
+@keyframes starFloat{0%,100%{opacity:0;transform:translateY(10px) scale(.55)}18%{opacity:.65}48%{opacity:.9;transform:translateY(-6px) scale(1)}78%{opacity:.25}92%{opacity:0;transform:translateY(-18px) scale(.8)}}
+@keyframes dustDrift{0%,100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.45)}18%{opacity:.45}45%{opacity:.85;transform:translate(calc(var(--dx)*.72),calc(var(--dy)*.72)) scale(1)}72%{opacity:.38;transform:translate(calc(var(--dx)*.92),calc(var(--dy)*.92)) scale(.72)}}
+@keyframes dustConverge{0%{opacity:.9;transform:translate(var(--dx),var(--dy)) scale(1)}45%{opacity:1;transform:translate(calc(var(--dx)*.42),calc(var(--dy)*.42)) scale(1.15)}100%{opacity:0;transform:translate(0,0) scale(.05)}}
+@keyframes dotFinalBloomBlue{0%{transform:translate(-50%,-50%) scale(1);box-shadow:0 0 8px rgba(235,248,255,.95),0 0 24px rgba(102,183,255,.95),0 0 60px rgba(47,128,255,.42)}28%{transform:translate(-50%,-50%) scale(2.15);box-shadow:0 0 18px #fff,0 0 52px rgba(119,201,255,1),0 0 130px rgba(54,137,255,.72)}58%{transform:translate(-50%,-50%) scale(1.25);box-shadow:0 0 12px #fff,0 0 34px rgba(95,182,255,.9),0 0 90px rgba(54,137,255,.45)}100%{transform:translate(-50%,-50%) scale(1);box-shadow:0 0 8px rgba(235,248,255,.95),0 0 26px rgba(102,183,255,.95),0 0 78px rgba(47,128,255,.35)}}
+@keyframes kickerReveal{0%{opacity:0;transform:translateY(8px) scale(.9);filter:blur(6px)}100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+@keyframes titleAuraBlue{0%{opacity:0;transform:scale(.6)}55%{opacity:1}100%{opacity:.9;transform:scale(1)}}
+@media (max-width:600px){
+  .launch-dot-stage .dust-particle{transform:scale(.9);}
+  .intro-star{width:2px;height:2px;}
+}
+@media (prefers-reduced-motion:reduce){
+  .intro-ambient::before,.intro-ambient::after,.intro-star,.dust-particle{animation:none!important;opacity:.3!important;}
+}
+
+/* =========================================================
+   FINAL POLISH — sky-blue SSLG + smooth post-swipe reveal
+   ========================================================= */
+.project-name{
+  background:linear-gradient(110deg,#ffffff 0%,#e8f7ff 22%,#7dd3fc 45%,#38bdf8 58%,#dff6ff 76%,#ffffff 100%) !important;
+  background-size:220% 100% !important;
+  color:transparent !important;
+  -webkit-background-clip:text !important;
+  background-clip:text !important;
+  filter:drop-shadow(0 10px 30px rgba(56,189,248,.22)) !important;
+}
+.project-name::after{
+  background:linear-gradient(90deg,transparent,rgba(125,211,252,.25) 12%,rgba(255,255,255,.92) 35%,rgba(56,189,248,.98) 50%,rgba(255,255,255,.92) 65%,rgba(125,211,252,.25) 88%,transparent) !important;
+  box-shadow:0 0 18px rgba(56,189,248,.38) !important;
+}
+.project-kicker i{background:linear-gradient(90deg,transparent,rgba(125,211,252,.95)) !important;}
+
+/* Remove blur from the visible SSLG text reveal: motion + opacity only. */
+.project-name span{filter:none !important;}
+@keyframes letterRiseClean{
+  0%{opacity:0;transform:translateY(24px) scale(.86);}
+  62%{opacity:1;transform:translateY(-4px) scale(1.035);}
+  100%{opacity:1;transform:translateY(0) scale(1);}
+}
+.project-name span:nth-child(1){animation:letterRiseClean .82s cubic-bezier(.16,1,.3,1) 2.42s both !important}
+.project-name span:nth-child(2){animation:letterRiseClean .82s cubic-bezier(.16,1,.3,1) 2.50s both !important}
+.project-name span:nth-child(3){animation:letterRiseClean .82s cubic-bezier(.16,1,.3,1) 2.58s both !important}
+.project-name span:nth-child(4){animation:letterRiseClean .82s cubic-bezier(.16,1,.3,1) 2.66s both !important}
+
+/* Premium Quick Actions */
+.quick-wrapper .grid .card{
+  min-height:124px;
+  padding:22px 18px !important;
+  border-radius:22px !important;
+  background:linear-gradient(145deg,rgba(12,74,150,.72),rgba(5,35,90,.52)) !important;
+  border:1px solid rgba(143,211,255,.20) !important;
+  box-shadow:0 14px 34px rgba(0,20,70,.22),inset 0 1px 0 rgba(255,255,255,.18) !important;
+  transform:translateZ(0);
+  will-change:transform,opacity;
+  transition:transform .48s cubic-bezier(.16,1,.3,1),box-shadow .48s cubic-bezier(.16,1,.3,1),border-color .38s ease,background .38s ease !important;
+}
+.quick-wrapper .grid .card::before{
+  width:180px !important;height:180px !important;top:-105px !important;right:-72px !important;
+  background:radial-gradient(circle,rgba(120,210,255,.16),transparent 66%) !important;
+  filter:blur(1px) !important;
+  transition:transform .65s cubic-bezier(.16,1,.3,1),opacity .45s ease !important;
+}
+.quick-wrapper .grid .card::after{
+  bottom:-64px !important;height:110px !important;
+  background:radial-gradient(ellipse,rgba(24,160,255,.20),transparent 70%) !important;
+  filter:blur(24px) !important;
+}
+.quick-wrapper .grid .card .icon{
+  width:46px !important;height:46px !important;border-radius:15px !important;
+  background:linear-gradient(145deg,rgba(150,220,255,.16),rgba(255,255,255,.055)) !important;
+  border:1px solid rgba(155,222,255,.18) !important;
+  color:#8bd8ff !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 8px 20px rgba(0,0,0,.10) !important;
+  transition:transform .48s cubic-bezier(.16,1,.3,1),background .35s ease,color .35s ease,box-shadow .35s ease !important;
+}
+.quick-wrapper .grid .card h3{font-size:14px !important;font-weight:700 !important;letter-spacing:.01em !important;transition:transform .48s cubic-bezier(.16,1,.3,1),color .3s ease !important;}
+.quick-wrapper .grid .card:hover{
+  transform:translateY(-7px) scale(1.012) !important;
+  border-color:rgba(145,220,255,.38) !important;
+  background:linear-gradient(145deg,rgba(18,91,178,.80),rgba(5,38,95,.58)) !important;
+  box-shadow:0 22px 44px rgba(0,20,70,.28),0 0 0 1px rgba(100,190,255,.08),inset 0 1px 0 rgba(255,255,255,.22) !important;
+}
+.quick-wrapper .grid .card:hover::before{transform:scale(1.15);opacity:1;}
+.quick-wrapper .grid .card:hover .icon{transform:translateY(-3px) scale(1.045);color:#e8f8ff !important;background:linear-gradient(145deg,rgba(80,190,255,.22),rgba(255,255,255,.08)) !important;box-shadow:0 10px 24px rgba(38,160,255,.18),inset 0 1px 0 rgba(255,255,255,.22) !important;}
+.quick-wrapper .grid .card:hover h3{transform:translateY(-1px);color:#fff !important;}
+
+/* Staggered, crisp reveal after swipe */
+body.launch-complete .header,
+body.launch-complete .hero,
+body.launch-complete .latest-news-section,
+body.launch-complete .section,
+body.launch-complete .bottom-nav{animation-fill-mode:both;}
+body.launch-complete .header{animation:mainRise .72s cubic-bezier(.16,1,.3,1) .08s both;}
+body.launch-complete .hero{animation:mainRise .78s cubic-bezier(.16,1,.3,1) .14s both;}
+body.launch-complete .latest-news-section{animation:mainRise .78s cubic-bezier(.16,1,.3,1) .20s both;}
+body.launch-complete .section{animation:mainRise .78s cubic-bezier(.16,1,.3,1) .24s both;}
+body.launch-complete .bottom-nav{animation:navRise .78s cubic-bezier(.16,1,.3,1) .28s both;}
+body.launch-complete .quick-wrapper .grid .card{opacity:0;animation:cardReveal .72s cubic-bezier(.16,1,.3,1) both;}
+body.launch-complete .quick-wrapper .grid .card:nth-child(1){animation-delay:.34s}
+body.launch-complete .quick-wrapper .grid .card:nth-child(2){animation-delay:.42s}
+body.launch-complete .quick-wrapper .grid .card:nth-child(3){animation-delay:.50s}
+body.launch-complete .quick-wrapper .grid .card:nth-child(4){animation-delay:.58s}
+body.launch-complete .quick-wrapper .grid .card:nth-child(5){animation-delay:.66s}
+body.launch-complete .quick-wrapper .grid .card:nth-child(6){animation-delay:.74s}
+body.launch-complete .quick-wrapper .grid .card:nth-child(7){animation-delay:.82s}
+body.launch-complete .quick-wrapper .grid .card:nth-child(8){animation-delay:.90s}
+body.launch-complete .quick-wrapper .grid .card .icon{animation:iconSettle .72s cubic-bezier(.16,1,.3,1) both;}
+body.launch-complete .quick-wrapper .grid .card:nth-child(1) .icon{animation-delay:.46s}
+body.launch-complete .quick-wrapper .grid .card:nth-child(2) .icon{animation-delay:.54s}
+body.launch-complete .quick-wrapper .grid .card:nth-child(3) .icon{animation-delay:.62s}
+body.launch-complete .quick-wrapper .grid .card:nth-child(4) .icon{animation-delay:.70s}
+body.launch-complete .quick-wrapper .grid .card:nth-child(5) .icon{animation-delay:.78s}
+body.launch-complete .quick-wrapper .grid .card:nth-child(6) .icon{animation-delay:.86s}
+body.launch-complete .quick-wrapper .grid .card:nth-child(7) .icon{animation-delay:.94s}
+body.launch-complete .quick-wrapper .grid .card:nth-child(8) .icon{animation-delay:1.02s}
+@keyframes mainRise{0%{opacity:0;transform:translateY(18px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes navRise{0%{opacity:0;transform:translate(-50%,20px)}100%{opacity:1;transform:translate(-50%,0)}}
+@keyframes cardReveal{0%{opacity:0;transform:translateY(24px) scale(.96)}60%{opacity:1;transform:translateY(-2px) scale(1.008)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes iconSettle{0%{opacity:0;transform:translateY(8px) scale(.78)}65%{opacity:1;transform:translateY(-2px) scale(1.06)}100%{opacity:1;transform:translateY(0) scale(1)}}
+
+/* More professional swipe control — sky-blue, no yellow */
+.launch-swipe-area{
+  border-color:rgba(145,220,255,.24) !important;
+  background:linear-gradient(135deg,rgba(255,255,255,.11),rgba(45,125,210,.09)) !important;
+  box-shadow:0 24px 60px rgba(0,10,35,.34),inset 0 1px 0 rgba(255,255,255,.18),0 0 0 1px rgba(94,190,255,.07) !important;
+}
+.launch-swipe-area::before{
+  background:linear-gradient(90deg,rgba(255,255,255,.18),rgba(125,211,252,.55),rgba(56,189,248,.68),rgba(255,255,255,.18)) !important;
+  opacity:.82 !important;
+}
+.launch-swipe-track{
+  background:radial-gradient(circle at 20% 50%,rgba(92,190,255,.16),transparent 30%),linear-gradient(90deg,rgba(255,255,255,.028),rgba(70,160,235,.08),rgba(255,255,255,.025)) !important;
+}
+.launch-swipe-track::before{background:linear-gradient(90deg,rgba(255,255,255,.04),rgba(125,211,252,.42),rgba(56,189,248,.22),rgba(255,255,255,.03)) !important;}
+.launch-swipe-label{color:rgba(232,248,255,.80) !important;text-shadow:0 1px 16px rgba(81,180,255,.25) !important;}
+.launch-swipe-label::after{background:linear-gradient(90deg,rgba(125,211,252,.8),transparent) !important;}
+.launch-swipe-hint{
+  background:linear-gradient(145deg,#effaff 0%,#b8e8ff 28%,#6fd0ff 65%,#219de8 100%) !important;
+  color:#063b67 !important;
+  box-shadow:0 14px 32px rgba(0,0,0,.23),0 0 0 5px rgba(86,194,255,.08),0 0 34px rgba(77,184,255,.30),inset 0 1px 0 rgba(255,255,255,.95) !important;
+}
+.launch-swipe-hint.is-dragging{box-shadow:0 14px 34px rgba(0,0,0,.25),0 0 0 6px rgba(86,194,255,.12),0 0 44px rgba(77,184,255,.46),inset 0 1px 0 rgba(255,255,255,.98) !important;}
+.launch-threshold{color:rgba(206,237,255,.50) !important;}
+@media (prefers-reduced-motion:reduce){
+  body.launch-complete .header,body.launch-complete .hero,body.launch-complete .latest-news-section,body.launch-complete .section,body.launch-complete .bottom-nav,body.launch-complete .quick-wrapper .grid .card,body.launch-complete .quick-wrapper .grid .card .icon{animation:none!important;opacity:1!important;transform:none!important}
+}
+</style>
+
+<style id="final-user-polish-2">
+/* =========================================================
+   FINAL USER POLISH 2
+   - Clean subtitle/line spacing
+   - Crisp subtitle reveal (no text blur)
+   - Messages card matches the other quick-navigation cards
+   ========================================================= */
+.launch-project-subtitle{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:0 !important;
+  margin-top:2px !important;
+  color:rgba(232,246,255,.78) !important;
+  text-shadow:0 1px 14px rgba(70,156,255,.18) !important;
+  filter:none !important;
+}
+.launch-project-subtitle::after{
+  content:"";
+  width:118px;
+  height:2px;
+  margin-top:14px;
+  border-radius:999px;
+  background:linear-gradient(90deg,transparent,rgba(125,211,252,.20) 10%,rgba(125,211,252,.95) 50%,rgba(125,211,252,.20) 90%,transparent);
+  box-shadow:0 0 16px rgba(56,189,248,.30),0 0 30px rgba(56,189,248,.10);
+  opacity:0;
+  transform:scaleX(.55);
+  animation:subtitleLineIn .65s cubic-bezier(.16,1,.3,1) 3.32s both;
+}
+/* Remove the older line directly under SSLG so the visual hierarchy is cleaner. */
+.project-name::after{display:none !important;}
+/* Crisp text reveal: position/opacity only, no blur. */
+@keyframes subtitleCleanIn{
+  0%{opacity:0;transform:translateY(8px)}
+  70%{opacity:1;transform:translateY(-1px)}
+  100%{opacity:.84;transform:translateY(0)}
+}
+@keyframes subtitleLineIn{
+  0%{opacity:0;transform:scaleX(.55)}
+  100%{opacity:1;transform:scaleX(1)}
+}
+.launch-project-subtitle{
+  animation:subtitleCleanIn .72s cubic-bezier(.16,1,.3,1) 3.05s both !important;
+}
+/* Keep the distance from the subtitle/line to the swipe control balanced. */
+.launch-swipe-area{margin-top:27px !important;}
+.launch-threshold{margin-top:10px !important;}
+
+/* Messages should use the exact same visual structure as the other cards:
+   icon on top, label underneath. */
+.quick-wrapper .grid .open-messages-card{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  justify-content:center !important;
+  gap:0 !important;
+  text-align:left !important;
+  padding:22px 18px !important;
+}
+.quick-wrapper .grid .open-messages-card .icon{
+  margin-bottom:9px !important;
+  flex:0 0 auto !important;
+}
+.quick-wrapper .grid .open-messages-card h3{
+  margin:0 !important;
+  width:100%;
+  text-align:left !important;
+}
+.quick-wrapper .grid .open-messages-card:hover .icon{
+  transform:translateY(-3px) scale(1.045) !important;
+}
+@media(max-width:768px){
+  .launch-project-subtitle::after{width:96px;margin-top:12px;}
+  .launch-swipe-area{margin-top:25px !important;}
+}
+@media(prefers-reduced-motion:reduce){
+  .launch-project-subtitle,.launch-project-subtitle::after{animation:none !important;opacity:1 !important;transform:none !important;}
+}
+</style>
+
 </head>
 
 <body>
 
 <!-- APP / WEBSITE LAUNCH EXPERIENCE -->
 <div id="launchScreen" class="launch-screen" aria-label="CATHS-MAIN Student Voice launch screen">
+  <div class="intro-ambient" aria-hidden="true"></div>
+  <div class="intro-stars" aria-hidden="true"><span class="intro-star s01"></span><span class="intro-star s02"></span><span class="intro-star s03"></span><span class="intro-star s04"></span><span class="intro-star s05"></span><span class="intro-star s06"></span><span class="intro-star s07"></span><span class="intro-star s08"></span><span class="intro-star s09"></span><span class="intro-star s10"></span></div>
   <div class="launch-content" id="launchContent">
     <div class="launch-logo-wrap">
       <img src="sslg-logo.png" class="launch-logo" alt="CATHS-MAIN SSLG logo">
     </div>
 
     <div class="launch-dot-stage" aria-hidden="true">
+      <span class="dot-aura aura-1"></span>
+      <span class="dot-aura aura-2"></span>
+      <span class="dot-aura aura-3"></span>
       <span class="launch-dot"></span>
-      <span class="launch-signal"></span><span class="launch-signal-emoji">📢</span>
-      <span class="launch-signal"></span><span class="launch-signal-emoji">📰</span>
-      <span class="launch-signal"></span><span class="launch-signal-emoji">👥</span>
-      <span class="launch-signal"></span><span class="launch-signal-emoji">🏆</span>
-      <span class="launch-signal"></span><span class="launch-signal-emoji">🗣️</span>
-      <span class="launch-signal"></span><span class="launch-signal-emoji">💬</span>
-      <span class="launch-signal"></span><span class="launch-signal-emoji">🧑‍🏫</span>
-      <span class="launch-signal"></span><span class="launch-signal-emoji">🎓</span>
+      <span class="dot-particle p1"></span><span class="dot-particle p2"></span>
+      <span class="dot-particle p3"></span><span class="dot-particle p4"></span>
+      <span class="dot-particle p5"></span><span class="dot-particle p6"></span>
+      <span class="dot-particle p7"></span><span class="dot-particle p8"></span>
+      <span class="dot-spark s1"></span><span class="dot-spark s2"></span>
+      <span class="dot-spark s3"></span><span class="dot-spark s4"></span>
+      <span class="dust-particle d01"></span><span class="dust-particle d02"></span><span class="dust-particle d03"></span><span class="dust-particle d04"></span><span class="dust-particle d05"></span><span class="dust-particle d06"></span><span class="dust-particle d07"></span><span class="dust-particle d08"></span><span class="dust-particle d09"></span><span class="dust-particle d10"></span><span class="dust-particle d11"></span><span class="dust-particle d12"></span>
     </div>
 
-    <div class="launch-title">CATHS-MAIN Student Voice</div>
-    <div class="launch-subtitle">Official SSLG Communication Platform</div>
+    <div class="launch-title launch-project-title"><span class="project-kicker"><i></i><b>PROJECT SSLG</b><i></i></span><span class="project-name" aria-label="SSLG"><span>S</span><span>S</span><span>L</span><span>G</span></span></div>
+    <div class="launch-subtitle launch-project-subtitle">Student Leadership • Voice • Service</div>
 
     <div id="launchSwipeArea" class="launch-swipe-area" role="presentation" aria-label="Swipe right to enter">
       <div class="launch-swipe-track">
@@ -1963,22 +2910,13 @@ color:black;
   const hint = document.getElementById('launchSwipeHint');
   if(!screen || !swipeArea || !hint) return;
 
-  // Show the intro only once per app/browser session.
-  // sessionStorage survives navigation/back to index.html in the same tab/session,
-  // but resets when the app is launched as a fresh session.
-  const INTRO_SEEN_KEY = 'cathsStudentVoiceIntroSeen';
-  let introAlreadySeen = false;
-  try {
-    introAlreadySeen = sessionStorage.getItem(INTRO_SEEN_KEY) === '1';
-  } catch (err) {
-    introAlreadySeen = false;
-  }
+  // Always show the full intro animation whenever index.html is opened/reloaded.
+  // No sessionStorage skip is used, so the launch experience is visible every time.
 
-  if(introAlreadySeen){
-    document.body.classList.add('launch-complete');
-    screen.remove();
-    return;
-  }
+  const launchDotStage = document.querySelector('.launch-dot-stage');
+  window.setTimeout(() => {
+    launchDotStage?.classList.add('revealing');
+  }, 2050);
 
   let completed = false;
   let dragging = false;
@@ -1987,10 +2925,15 @@ color:black;
   let pointerId = null;
 
   const maxDistance = () => Math.max(0, swipeArea.clientWidth - hint.offsetWidth - 16);
+  const updateGuideDistance = () => swipeArea.style.setProperty('--guide-distance', `${maxDistance()}px`);
+  updateGuideDistance();
+  window.addEventListener('resize', updateGuideDistance);
 
   function setHintX(distance){
-    const d = Math.max(0, Math.min(distance, maxDistance()));
+    const max = maxDistance();
+    const d = Math.max(0, Math.min(distance, max));
     hint.style.transform = `translateX(${d}px)`;
+    swipeArea.style.setProperty('--guide-distance', `${max}px`);
   }
 
   function resetHint(){
@@ -2003,13 +2946,6 @@ color:black;
   function enterApp(){
     if(completed) return;
     completed = true;
-
-    // Remember that this app session has already completed the intro.
-    try {
-      sessionStorage.setItem(INTRO_SEEN_KEY, '1');
-    } catch (err) {
-      // Ignore storage errors; the intro can still complete normally.
-    }
 
     screen.classList.add('is-leaving');
     document.body.classList.add('launch-complete');
@@ -2043,7 +2979,8 @@ color:black;
 
     if(delta >= required){
       setHintX(maxDistance());
-      window.setTimeout(enterApp, 120);
+      swipeArea.classList.add('is-complete');
+      window.setTimeout(enterApp, 180);
     }else{
       resetHint();
     }
@@ -2079,7 +3016,7 @@ color:black;
    <div class="header-right">
     <div class="notification-wrap">
         <button id="notificationBtn" class="notification-btn" type="button" aria-label="Notifications" onclick="toggleNotifications()">
-            🔔
+            <svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
             <span id="notificationBadge" class="notification-badge">0</span>
         </button>
         <div id="notificationPanel" class="notification-panel">
@@ -2097,8 +3034,8 @@ color:black;
     id="headerLoginBtn" 
     class="login-btn" 
     onclick="openLogin(false)">
-
-    👤 <span>Login</span>
+    <svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8m7-4h5m-2-3 3 3-3 3"/></svg>
+    <span>Login</span>
 </button>
 
     <div id="logoutMenu" class="profile-menu">
@@ -2121,17 +3058,17 @@ color:black;
         <div class="profile-nav">
 
             <a href="profile.html" class="profile-nav-item">
-                <span class="profile-nav-icon">👤</span>
+                <span class="profile-nav-icon" aria-hidden="true"></span>
                 <span>Profile</span>
             </a>
 
             <a href="friends.html" class="profile-nav-item">
-                <span class="profile-nav-icon">👥</span>
+                <span class="profile-nav-icon" aria-hidden="true"></span>
                 <span>Add Friends</span>
             </a>
 
             <a href="voice.html" class="profile-nav-item">
-                <span class="profile-nav-icon">🗣️</span>
+                <span class="profile-nav-icon" aria-hidden="true"></span>
                 <span>Your Concern</span>
             </a>
 
@@ -2144,7 +3081,7 @@ color:black;
             class="logout-button"
             onclick="logoutUser()">
 
-            🚪 Log Out
+            Log Out
 
         </button>
 
@@ -2178,42 +3115,42 @@ and connect with the school community.
 
 <div class="grid">
 <a href="news.html" class="card" onclick="openProtectedNavigation(event, 'news.html')">
-<div class="icon">📢</div>
+<div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 11h4l10-5v12L7 13H3zm4 2v5a2 2 0 0 0 2 2h1l1-7"/></svg></div>
 <h3>News</h3>
 </a>
 
 <a href="news-feed.html" class="card" onclick="openProtectedNavigation(event, 'news-feed.html')">
-<div class="icon">📰</div>
+<div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg></div>
 <h3>News Feed</h3>
 </a>
 
 <a href="friends.html" class="card" onclick="openProtectedNavigation(event, 'friends.html')">
-<div class="icon">👥</div>
+<div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8m6.5-7.5a4 4 0 0 1 0 7.7M17 15h1a4 4 0 0 1 4 4v2"/></svg></div>
 <h3>Add Friends</h3>
 </a>
 
 <a href="leaders.html" class="card" onclick="openProtectedNavigation(event, 'leaders.html')">
-<div class="icon">🤝</div>
+<div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 15 3 3 6-6M4 7h6M4 11h6M4 15h5M14 4l2 2 4-4"/></svg></div>
 <h3>Leaders</h3>
 </a>
 
 <a href="#" class="card" onclick="openStudentVoice(event)">
-<div class="icon">🗣️</div>
+<div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 5h14v10H9l-4 4V5zM8 9h8M8 12h5"/></svg></div>
 <h3>Student Voice</h3>
 </a>
 
 <a href="messages.html" class="card open-messages-card" onclick="openProtectedNavigation(event, 'messages.html')">
-<div class="icon">💬</div>
-<h3>Open Messages</h3>
+<div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v12H8l-4 4V5zM8 9h8M8 13h5"/></svg></div>
+<h3>Messages</h3>
 </a>
 
 <a href="Guidance.html" class="card guidance-card" onclick="openProtectedNavigation(event, 'Guidance.html')">
-<div class="icon">🧑‍🏫</div>
+<div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M5 21a7 7 0 0 1 14 0M17 5h4v4M19 9l-2 2"/></svg></div>
 <h3>Guidance Councilor</h3>
 </a>
 
 <a href="student-information.html" class="card enrollment-card" onclick="openProtectedNavigation(event, 'student-information.html')">
-<div class="icon">🎓</div>
+<div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 9 9-5 9 5-9 5-9-5zm4 3v4c3 2 7 2 10 0v-4M21 9v7"/></svg></div>
 <h3>Enrollment</h3>
 </a>
 
@@ -2228,40 +3165,22 @@ and connect with the school community.
     <a class="latest-news-link" href="news.html" onclick="openProtectedNavigation(event, 'news.html')">View all →</a>
   </div>
   <div id="latestNewsGrid" class="latest-news-grid">
-    <div class="latest-news-empty">📰 Loading the latest admin announcements…</div>
+    <div class="latest-news-empty">Loading the latest admin announcements…</div>
   </div>
 </section>
 
 <!-- NAVIGATION -->
 
-<div class="bottom-nav">
-
-    <a href="index.html" class="nav-item active">
-        <div>🏠</div>
-        <span>Home</span>
-    </a>
-
-    <a href="news-feed.html" class="nav-item" onclick="openProtectedNavigation(event, 'news-feed.html')">
-        <div>📰</div>
-        <span>News Feed</span>
-    </a>
-
-    <a href="#" class="nav-item" onclick="openStudentVoice(event)">
-        <div>🗣️</div>
-        <span>Student Voice</span>
-    </a>
-
-    <a href="friends.html" class="nav-item" onclick="openFriendsNavigation(event)">
-        <div>👥</div>
-        <span>Friends</span>
-    </a>
-
+<nav class="bottom-nav" aria-label="Primary navigation">
+    <a href="index.html" class="nav-item active"><span>Home</span></a>
+    <a href="news-feed.html" class="nav-item" onclick="openProtectedNavigation(event, 'news-feed.html')"><span>News Feed</span></a>
+    <a href="#" class="nav-item" onclick="openStudentVoice(event)"><span>Student Voice</span></a>
+    <a href="friends.html" class="nav-item" onclick="openFriendsNavigation(event)"><span>Friends</span></a>
     <a href="profile.html" class="nav-item" onclick="openProtectedNavigation(event, 'profile.html')">
-        <div class="profile-nav-icon" id="profileNavPhoto">👤</div>
+        <span class="profile-nav-icon" id="profileNavPhoto" aria-hidden="true"></span>
         <span>Profile</span>
     </a>
-
-</div>
+</nav>
 <script>
 
    
@@ -2321,7 +3240,7 @@ function renderNotifications(){
     }
     list.innerHTML = notificationItems.slice(0,50).map(n=>`
         <div class="notification-item ${n.read?'':'unread'}">
-            <div class="notification-icon">${n.icon||'🔔'}</div>
+            <div class="notification-icon"><span></span></div>
             <div class="notification-content">
                 <strong>${escapeNotificationText(n.title||'Notification')}</strong>
                 <p>${escapeNotificationText(n.text||'')}</p>
@@ -2353,12 +3272,8 @@ function startNotificationListener(uid){
     notificationUnsubscribe = onSnapshot(q,snap=>{
         notificationItems = snap.docs.map(d=>{
             const n=d.data()||{};
-            let icon='🔔';
-            if(n.type==='reaction' || n.type==='like') icon='❤️';
-            else if(n.type==='comment') icon='💬';
-            else if(n.type==='share') icon='↗️';
-            else if(n.type==='message') icon='✉️';
-            else if(n.type==='friend_request' || n.type==='friend_accepted') icon='👥';
+            let icon='';
+            
 
             return {
                 id:d.id,
@@ -2567,18 +3482,18 @@ function renderLatestNews(items){
     const box=document.getElementById('latestNewsGrid');
     if(!box) return;
     if(!items.length){
-        box.innerHTML='<div class="latest-news-empty">📰 No public news posts have been published yet.</div>';
+        box.innerHTML='<div class="latest-news-empty">No public news posts have been published yet.</div>';
         return;
     }
     box.innerHTML=items.map(item=>{
         const id=encodeURIComponent(String(item.id||''));
-        const icon=safeNewsText(item.icon,'📰');
+        const icon='';
         const title=safeNewsText(item.title,'Untitled News');
         const excerpt=safeNewsText(item.excerpt,item.body||'');
         const tag=safeNewsText(item.tag,'News');
         const date=safeNewsText(item.date,'School Update');
         return `<article class="latest-news-card" role="button" tabindex="0" data-news-id="${id}">
-          <div class="latest-news-top"><div class="latest-news-icon">${icon}</div><div class="latest-news-tag">${tag}</div></div>
+          <div class="latest-news-top"><div class="latest-news-icon" aria-hidden="true"><span></span></div><div class="latest-news-tag">${tag}</div></div>
           <h3 class="latest-news-title">${title}</h3>
           <p class="latest-news-excerpt">${excerpt||'Tap to read the latest announcement.'}</p>
           <div class="latest-news-meta">${date}</div>
@@ -2614,11 +3529,11 @@ function loadLatestNews(){
             renderLatestNews(items.slice(0,3));
         }, (error)=>{
             console.error('Latest news listener failed:',error);
-            box.innerHTML='<div class="latest-news-empty">⚠️ Unable to load the latest news right now.</div>';
+            box.innerHTML='<div class="latest-news-empty">Unable to load the latest news right now.</div>';
         });
     }catch(error){
         console.error('Latest news setup failed:',error);
-        box.innerHTML='<div class="latest-news-empty">⚠️ Unable to load the latest news right now.</div>';
+        box.innerHTML='<div class="latest-news-empty">Unable to load the latest news right now.</div>';
     }
 }
 
@@ -2881,7 +3796,7 @@ onAuthStateChanged(auth, (user) => {
         } else {
 
             if (profileNavPhoto) {
-                profileNavPhoto.innerHTML = "👤";
+                profileNavPhoto.innerHTML = "";
             }
 
         }
@@ -2913,7 +3828,7 @@ onAuthStateChanged(auth, (user) => {
             } else {
 
                 headerBtn.innerHTML = `
-                    👤
+                    <svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/></svg>
                     <span>
                         ${user.displayName || "User"}
                     </span>
@@ -2936,7 +3851,7 @@ onAuthStateChanged(auth, (user) => {
         if (headerBtn) {
 
             headerBtn.innerHTML =
-                "👤 Login";
+                '<svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/></svg><span>Login</span>';
 
             headerBtn.onclick = () => {
                 openLogin();
@@ -2945,7 +3860,7 @@ onAuthStateChanged(auth, (user) => {
         }
 
         if (profileNavPhoto) {
-            profileNavPhoto.innerHTML = "👤";
+            profileNavPhoto.innerHTML = "";
         }
 
     }
