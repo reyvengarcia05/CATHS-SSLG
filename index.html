@@ -3414,6 +3414,203 @@ body{
 }
 </style>
 
+
+<style>
+/* =========================================================
+   FINAL PROFESSIONAL POLISH — HEADER / NOTIFICATIONS / FOOTER
+   ========================================================= */
+.header{
+  top:2px !important;
+  min-height:76px !important;
+  box-shadow:0 16px 34px rgba(0,8,30,.20), inset 0 1px 0 rgba(255,255,255,.18) !important;
+}
+
+/* Make the notification control feel like a true app control. */
+.header .notification-wrap{
+  position:relative !important;
+  display:flex !important;
+  align-items:center !important;
+}
+.header .notification-btn{
+  width:46px !important;
+  height:46px !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:1px solid rgba(255,255,255,.17) !important;
+  border-radius:50% !important;
+  background:linear-gradient(145deg,rgba(255,255,255,.15),rgba(255,255,255,.07)) !important;
+  color:#fff !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 8px 20px rgba(0,0,0,.14) !important;
+}
+.header .notification-btn:hover{
+  transform:translateY(-1px) !important;
+  border-color:rgba(255,255,255,.30) !important;
+  background:linear-gradient(145deg,rgba(255,255,255,.19),rgba(255,255,255,.09)) !important;
+}
+.header .notification-btn:active{transform:scale(.96) !important}
+.header .notification-btn .ui-svg{
+  width:21px !important;
+  height:21px !important;
+  stroke-width:1.9 !important;
+}
+.notification-badge{
+  top:-2px !important;
+  right:-2px !important;
+  min-width:19px !important;
+  height:19px !important;
+  padding:0 5px !important;
+  border:2px solid #10295c !important;
+  background:linear-gradient(135deg,#ffe66a,#ffd21f) !important;
+  color:#17315e !important;
+  font-size:8px !important;
+  font-weight:800 !important;
+  box-shadow:0 4px 12px rgba(0,0,0,.20) !important;
+}
+
+/* Professional notification dropdown. */
+.notification-panel{
+  width:340px !important;
+  max-width:calc(100vw - 24px) !important;
+  top:56px !important;
+  right:0 !important;
+  left:auto !important;
+  border:1px solid rgba(255,255,255,.22) !important;
+  border-radius:20px !important;
+  background:rgba(248,250,255,.98) !important;
+  box-shadow:0 20px 50px rgba(0,0,0,.28),0 3px 12px rgba(0,0,0,.10) !important;
+  overflow:hidden !important;
+}
+.notification-head{
+  padding:15px 16px !important;
+  min-height:52px !important;
+  background:linear-gradient(180deg,#fff,#f7f9ff) !important;
+}
+.notification-head strong{font-size:14px !important;color:#0f274f !important}
+.notification-head button{
+  color:#2a5ea8 !important;
+  font-size:10px !important;
+  font-weight:800 !important;
+  padding:7px 8px !important;
+  border-radius:8px !important;
+}
+.notification-head button:hover{background:#edf3ff !important}
+.notification-list{max-height:370px !important;background:#fff !important}
+.notification-item{
+  gap:11px !important;
+  padding:12px 14px !important;
+  border-bottom:1px solid #edf1f7 !important;
+  transition:background .18s ease !important;
+}
+.notification-item:hover{background:#f8fbff !important}
+.notification-item.unread{background:#fffaf0 !important}
+.notification-icon{
+  width:38px !important;
+  height:38px !important;
+  flex:0 0 38px !important;
+  border-radius:12px !important;
+  background:linear-gradient(145deg,#eef4ff,#e5edfb) !important;
+  border:1px solid #dce6f7 !important;
+}
+.notification-icon span{
+  width:8px !important;
+  height:8px !important;
+  background:#4d98ff !important;
+  box-shadow:0 0 10px rgba(77,152,255,.35) !important;
+}
+.notification-content strong{font-size:11px !important;color:#152a4d !important}
+.notification-content p{font-size:10px !important;color:#6a7890 !important}
+.notification-empty{padding:34px 18px !important;color:#718096 !important}
+
+/* Footer: keep the profile image as the ONLY profile icon; never squeeze it. */
+.bottom-nav .nav-item:nth-child(5)::before{
+  content:none !important;
+  display:none !important;
+}
+.bottom-nav .nav-item:nth-child(5){
+  gap:4px !important;
+}
+.bottom-nav .nav-item:nth-child(5) .profile-nav-icon{
+  width:34px !important;
+  height:34px !important;
+  min-width:34px !important;
+  min-height:34px !important;
+  max-width:34px !important;
+  max-height:34px !important;
+  margin:0 !important;
+  padding:2px !important;
+  display:grid !important;
+  place-items:center !important;
+  border-radius:50% !important;
+  overflow:hidden !important;
+  background:rgba(255,255,255,.10) !important;
+  border:1px solid rgba(255,255,255,.18) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12) !important;
+}
+.bottom-nav .nav-item:nth-child(5) .profile-nav-icon img,
+.bottom-nav .nav-item:nth-child(5) #profileNavPhoto img{
+  width:30px !important;
+  height:30px !important;
+  min-width:30px !important;
+  min-height:30px !important;
+  max-width:30px !important;
+  max-height:30px !important;
+  display:block !important;
+  flex:none !important;
+  object-fit:cover !important;
+  object-position:center !important;
+  border-radius:50% !important;
+}
+.bottom-nav .nav-item:nth-child(5) .profile-nav-icon:empty{
+  border:1px solid rgba(255,255,255,.16) !important;
+}
+
+.bottom-nav .nav-item{
+  transition:background .20s ease, color .20s ease, transform .20s ease !important;
+}
+.bottom-nav .nav-item.active::after{bottom:3px !important}
+
+@media(max-width:768px){
+  .header{
+    top:1px !important;
+    min-height:66px !important;
+  }
+  .header .notification-btn{
+    width:40px !important;
+    height:40px !important;
+  }
+  .header .notification-btn .ui-svg{
+    width:19px !important;
+    height:19px !important;
+  }
+  .notification-panel{
+    position:fixed !important;
+    top:72px !important;
+    right:10px !important;
+    left:auto !important;
+    width:min(330px,calc(100vw - 20px)) !important;
+    max-width:none !important;
+  }
+  .bottom-nav .nav-item:nth-child(5) .profile-nav-icon{
+    width:30px !important;
+    height:30px !important;
+    min-width:30px !important;
+    min-height:30px !important;
+    max-width:30px !important;
+    max-height:30px !important;
+    padding:2px !important;
+  }
+  .bottom-nav .nav-item:nth-child(5) .profile-nav-icon img,
+  .bottom-nav .nav-item:nth-child(5) #profileNavPhoto img{
+    width:26px !important;
+    height:26px !important;
+    min-width:26px !important;
+    min-height:26px !important;
+    max-width:26px !important;
+    max-height:26px !important;
+  }
+}
+</style>
+
 </head>
 
 <body>
