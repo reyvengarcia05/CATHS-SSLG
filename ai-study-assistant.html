@@ -1237,7 +1237,7 @@ async function loadCurrentUserXP(user){
     const savedLocal=Number(localStorage.getItem(getUserXPKey(user.uid))||0);
     const savedRemote=xpSnap.exists()?Number(xpSnap.data()?.xp||0):0;
     currentUserSection=userSnap.exists()?String(userSnap.data()?.section||'').trim():String(xpSnap.data()?.section||'').trim();
-    currentUserGrade=gradeFromSection(currentUserSection)||String(xpSnap.data()?.grade||'').trim();
+    currentUserGrade=gradeFromSection(currentUserSection)||String(userSnap.data()?.grade||'').trim()||String(xpSnap.data()?.grade||'').trim();
 
     if(currentUserGrade&&(selectedGradeFilter==='all'||!selectedGradeFilter)){
       selectedGradeFilter=currentUserGrade;
@@ -1483,14 +1483,42 @@ document.addEventListener('keydown',(event)=>{
 async function getLeaderboardRows(){
   if(!window.studyFirebase) return [];
   const {db,collection,query,orderBy,getDocs}=window.studyFirebase;
-  const snap=await getDocs(query(collection(db,'studyProfiles'),orderBy('xp','desc')));
+
+  // IMPORTANT: profile.html stores the official Grade & Section in users/{uid}.
+  // The leaderboard uses that value as the source of truth. XP is stored in
+  // studyProfiles/{uid}. This prevents stale cached grade data from putting a
+  // student in the wrong grade leaderboard.
+  const [xpSnap, usersSnap] = await Promise.all([
+    getDocs(query(collection(db,'studyProfiles'),orderBy('xp','desc'))),
+    getDocs(collection(db,'users'))
+  ]);
+
+  const usersByUid=new Map();
+  usersSnap.forEach(d=>usersByUid.set(d.id,d.data()||{}));
+
   const rows=[];
-  snap.forEach(d=>{
+  xpSnap.forEach(d=>{
     const data=d.data()||{};
-    const rowGrade=String(data.grade||gradeFromSection(data.section||'')).trim();
+    const profile=usersByUid.get(d.id)||{};
+    const section=String(profile.section||'').trim() || String(data.section||'').trim();
+    const grade=gradeFromSection(section) || String(profile.grade||'').trim() || String(data.grade||'').trim();
     const rowXP=Number(data.xp||0);
-    if(rowXP>0) rows.push({id:d.id,...data,grade:rowGrade,xp:rowXP});
+
+    // Every student with XP above zero is ranked.
+    if(rowXP>0){
+      rows.push({
+        id:d.id,
+        ...data,
+        displayName:profile.displayName||profile.name||data.displayName||'Student',
+        email:profile.email||data.email||'',
+        photoURL:profile.photoURL||data.photoURL||'',
+        section,
+        grade,
+        xp:rowXP
+      });
+    }
   });
+
   rows.sort((a,b)=>{
     const xpDiff=Number(b.xp||0)-Number(a.xp||0);
     if(xpDiff!==0)return xpDiff;
