@@ -4232,3 +4232,211 @@ onAuthStateChanged(auth,async user=>{
 
 </body>
 </html>
+<style id="final-v6-other-user-layout">
+/* =========================================================
+   V6 — FINAL MESSAGE CONTROL LAYOUT
+   Incoming : Avatar → Message → Emoji → ⋯
+   Mine     : ⋯ → Emoji → Message
+   Controls stay hidden until the message is hovered/focused/clicked.
+========================================================= */
+.message-row{overflow:visible !important;}
+.message-row .bubble-wrap{overflow:visible !important;}
+
+/* Show incoming avatar at all sizes. */
+.message-sender-avatar{
+  display:flex !important;
+  flex:0 0 32px !important;
+}
+
+.message-content-line{
+  display:flex !important;
+  flex-direction:row !important;
+  align-items:flex-end !important;
+  gap:7px !important;
+  width:auto !important;
+  max-width:100% !important;
+  overflow:visible !important;
+}
+
+/* The controls must be a sibling of the bubble, never inside it. */
+.message-row:not(.mine) .message-quick-actions{
+  order:3 !important;
+  flex:0 0 auto !important;
+  width:62px !important;
+  min-width:62px !important;
+  display:flex !important;
+  flex-direction:row !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  gap:4px !important;
+  margin:0 0 2px 0 !important;
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
+
+.message-row:not(.mine):hover .message-quick-actions,
+.message-row:not(.mine).message-action-visible .message-quick-actions,
+.message-row:not(.mine):focus-within .message-quick-actions{
+  opacity:1 !important;
+  visibility:visible !important;
+  pointer-events:auto !important;
+}
+
+/* Incoming exact order: avatar, bubble, emoji, more. */
+.message-row:not(.mine) .message-content-line .message-sender-avatar{order:1 !important;}
+.message-row:not(.mine) .message-content-line .bubble{order:2 !important;}
+.message-row:not(.mine) .message-content-line .message-quick-actions{order:3 !important;}
+.message-row:not(.mine) .message-quick-actions .message-reaction-trigger{order:1 !important;}
+.message-row:not(.mine) .message-quick-actions .message-tools-btn{order:2 !important;}
+
+/* Own exact order: more, emoji, bubble. */
+.message-row.mine .bubble-wrap{
+  display:flex !important;
+  flex-direction:row !important;
+  align-items:flex-end !important;
+  justify-content:flex-end !important;
+  gap:7px !important;
+  max-width:100% !important;
+}
+.message-row.mine .message-quick-actions{
+  order:1 !important;
+  display:flex !important;
+  flex-direction:row !important;
+  align-items:center !important;
+  gap:4px !important;
+  flex:0 0 62px !important;
+  width:62px !important;
+  min-width:62px !important;
+  margin:0 0 2px 0 !important;
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
+.message-row.mine:hover .message-quick-actions,
+.message-row.mine.message-action-visible .message-quick-actions,
+.message-row.mine:focus-within .message-quick-actions{
+  opacity:1 !important;
+  visibility:visible !important;
+  pointer-events:auto !important;
+}
+.message-row.mine .message-quick-actions .message-tools-btn{order:1 !important;}
+.message-row.mine .message-quick-actions .message-reaction-trigger{order:2 !important;}
+.message-row.mine .bubble{order:2 !important;}
+
+/* Small plain emoji reaction button. */
+.message-reaction-trigger{
+  width:28px !important;
+  height:28px !important;
+  min-width:28px !important;
+  min-height:28px !important;
+  max-width:28px !important;
+  max-height:28px !important;
+  padding:0 !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  border-radius:8px !important;
+  border:1px solid rgba(24,60,140,.14) !important;
+  background:#fff !important;
+  color:#183c8c !important;
+  font:400 18px/1 Arial,Helvetica,sans-serif !important;
+  box-shadow:0 4px 10px rgba(0,0,0,.08) !important;
+}
+.message-tools-btn{
+  width:28px !important;
+  height:28px !important;
+  min-width:28px !important;
+  min-height:28px !important;
+  max-width:28px !important;
+  max-height:28px !important;
+  padding:0 !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  border-radius:8px !important;
+  border:1px solid rgba(24,60,140,.14) !important;
+  background:#fff !important;
+  color:#183c8c !important;
+  font-size:18px !important;
+  box-shadow:0 4px 10px rgba(0,0,0,.08) !important;
+}
+
+/* Reaction area takes no room unless a chip actually exists. */
+.bubble .message-reactions:not(.has-reaction){
+  display:none !important;
+  height:0 !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+}
+.bubble .message-reactions.has-reaction{
+  display:flex !important;
+  min-height:26px !important;
+  margin-top:6px !important;
+}
+
+/* Phone-specific polish. */
+@media(max-width:800px){
+  .message-content-line{gap:5px !important;}
+  .message-sender-avatar{
+    width:29px !important;
+    height:29px !important;
+    min-width:29px !important;
+    min-height:29px !important;
+  }
+  .message-row:not(.mine) .message-quick-actions,
+  .message-row.mine .message-quick-actions{
+    width:60px !important;
+    min-width:60px !important;
+    flex-basis:60px !important;
+    gap:4px !important;
+  }
+  .message-row:not(.mine) .message-content-line .bubble{
+    max-width:calc(100vw - 116px) !important;
+  }
+  .message-row.mine .bubble{
+    max-width:calc(100vw - 86px) !important;
+  }
+  .message-reaction-trigger,.message-tools-btn{
+    width:27px !important;
+    height:27px !important;
+    min-width:27px !important;
+    min-height:27px !important;
+    max-width:27px !important;
+    max-height:27px !important;
+    font-size:17px !important;
+  }
+}
+@media(max-width:380px){
+  .message-sender-avatar{
+    width:27px !important;height:27px !important;min-width:27px !important;min-height:27px !important;
+  }
+  .message-row:not(.mine) .message-content-line .bubble{max-width:calc(100vw - 108px) !important;}
+  .message-row.mine .bubble{max-width:calc(100vw - 80px) !important;}
+}
+</style>
+<script id="final-v6-interaction-fix">
+(function(){
+  function activateRow(row){
+    if(!row)return;
+    document.querySelectorAll('.message-row.message-action-visible').forEach(r=>{
+      if(r!==row)r.classList.remove('message-action-visible');
+    });
+    row.classList.add('message-action-visible');
+  }
+  function clearRows(except){
+    document.querySelectorAll('.message-row.message-action-visible').forEach(r=>{
+      if(!except || r!==except)r.classList.remove('message-action-visible');
+    });
+  }
+  document.addEventListener('pointerdown',function(e){
+    const row=e.target.closest('.message-row');
+    if(row)activateRow(row); else clearRows();
+  },true);
+  document.addEventListener('click',function(e){
+    const row=e.target.closest('.message-row');
+    if(row)activateRow(row); else clearRows();
+  },true);
+})();
+</script>
