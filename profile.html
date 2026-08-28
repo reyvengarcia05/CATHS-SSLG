@@ -27,7 +27,7 @@ body{
         135deg,
         #00296B,
         #003DA5,
-        #FFD700
+        #77c4ff
     );
 }
 
@@ -124,7 +124,7 @@ body{
             135deg,
             rgba(0,41,107,.9),
             rgba(0,61,165,.8),
-            rgba(255,215,0,.55)
+            rgba(119,196,255,.24)
         );
 
     position:relative;
@@ -217,7 +217,7 @@ body{
 .edit-btn{
     border:none;
 
-    background:#FFD93D;
+    background:#4E9EFF;
     color:#0d2c7a;
 
     padding:12px 20px;
@@ -234,7 +234,7 @@ body{
 
 .edit-btn:hover{
     transform:translateY(-2px);
-    background:#FFE66D;
+    background:#77c4ff;
 }
 
 /* =========================
@@ -315,7 +315,7 @@ async function openReactions(postId){
 
         list.innerHTML=rows.map(r=>`
           <div class="reaction-user-row">
-            <div class="reaction-user-avatar">${r.photo ? `<img src="${escapePostHtml(r.photo)}" alt="">` : '👤'}</div>
+            <div class="reaction-user-avatar">${r.photo ? `<img src="${escapePostHtml(r.photo)}" alt="">` : '<span class="pro-icon pro-user" aria-hidden="true"></span>'}</div>
             <div class="reaction-user-info">
               <strong>${escapePostHtml(r.name)}${verifiedBadgeHtml(r)}</strong>
               <small>${r.username ? '@'+escapePostHtml(r.username) : 'Student'}</small>
@@ -426,7 +426,7 @@ window.addFriendFromReaction=addFriendFromReaction;
 }
 
 .tab.active{
-    color:#FFD93D;
+    color:#4E9EFF;
 }
 
 .tab.active::after{
@@ -442,7 +442,7 @@ window.addFriendFromReaction=addFriendFromReaction;
 
     border-radius:10px;
 
-    background:#FFD93D;
+    background:#4E9EFF;
 }
 
 /* =========================
@@ -487,7 +487,7 @@ window.addFriendFromReaction=addFriendFromReaction;
 .friends-panel{padding:22px 0 5px;text-align:left}
 .friends-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
 .friends-panel-title{font-size:18px;font-weight:800}
-.friends-panel-count{font-size:11px;padding:5px 10px;border-radius:999px;background:#FFD93D;color:#183c8c;font-weight:800}
+.friends-panel-count{font-size:11px;padding:5px 10px;border-radius:999px;background:#4E9EFF;color:#183c8c;font-weight:800}
 .friends-list{display:flex;flex-direction:column;gap:10px}
 .friend-profile-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:10px}
 .friend-profile-link{display:flex;align-items:center;gap:10px;flex:1;min-width:0;text-decoration:none;color:#fff}
@@ -499,105 +499,52 @@ window.addFriendFromReaction=addFriendFromReaction;
 .friend-profile-username{display:block;font-size:10px;opacity:.7;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .friend-profile-actions{display:flex;gap:7px;flex:0 0 auto}
 .friend-profile-actions button{border:none;border-radius:10px;padding:8px 10px;font-size:10px;font-weight:800;cursor:pointer;transition:.2s}
-.friend-message-btn{background:#FFD93D;color:#183c8c}
+.friend-message-btn{background:#4E9EFF;color:#183c8c}
 .friend-unfriend-btn{background:rgba(255,255,255,.12);color:#fff}
 .friend-profile-actions button:hover{transform:translateY(-1px)}
 .friends-loading{padding:22px 8px;text-align:center;opacity:.85}
-.friends-spinner{width:30px;height:30px;margin:0 auto 9px;border:3px solid rgba(255,255,255,.25);border-top-color:#FFD93D;border-radius:50%;animation:friendsSpin .8s linear infinite}
+.friends-spinner{width:30px;height:30px;margin:0 auto 9px;border:3px solid rgba(255,255,255,.25);border-top-color:#4E9EFF;border-radius:50%;animation:friendsSpin .8s linear infinite}
 .friends-loading-text{font-size:12px}
 .friends-empty{padding:22px 8px;text-align:center;opacity:.78;font-size:12px}
 @keyframes friendsSpin{to{transform:rotate(360deg)}}
 @media(max-width:768px){.friend-profile-row{align-items:flex-start}.friend-profile-actions{flex-direction:column}.friend-profile-actions button{width:80px}.friend-profile-avatar{width:42px;height:42px;flex-basis:42px}}
 
 /* =========================
-   BOTTOM NAV
+   BOTTOM NAV — MATCH voice.html
 ========================= */
-
 .bottom-nav{
-    position:fixed;
-
-    bottom:0;
-    left:0;
-    right:0;
-
-    height:85px;
-
-    background:
-        linear-gradient(
-            90deg,
-            #1e3a8a,
-            #b59f1a
-        );
-
-    display:flex;
-
-    justify-content:space-around;
-    align-items:center;
-
-    z-index:9999;
+    position:fixed;left:0;right:0;bottom:0;width:100%;height:76px;
+    padding:5px 16px;display:flex;align-items:center;justify-content:center;gap:8px;
+    border-top:1px solid rgba(255,255,255,.16);border-radius:19px 19px 0 0;
+    background:linear-gradient(180deg,rgba(7,25,58,.94),rgba(2,13,32,.99));
+    backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);
+    box-shadow:0 -12px 30px rgba(0,8,30,.24);z-index:99990;
+    animation:navIn .65s cubic-bezier(.16,1,.3,1) .15s both
 }
-
+.bottom-nav::after{
+    content:"";position:absolute;left:0;right:0;top:-1px;height:2px;
+    background:linear-gradient(90deg,transparent 3%,rgba(119,196,255,.18) 15%,#77c4ff 50%,rgba(119,196,255,.18) 85%,transparent 97%);
+    box-shadow:0 0 14px rgba(119,196,255,.28)
+}
 .nav-item{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-
-    text-decoration:none;
-
-    color:white;
-
-    font-size:11px;
-
-    min-width:60px;
-
-    transition:.2s;
+    position:relative;flex:1;max-width:190px;height:60px;padding:6px 8px;border-radius:14px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    color:rgba(255,255,255,.72);font-size:10px;font-weight:600;text-decoration:none;
+    transition:.2s
 }
-
-.nav-item div{
-    font-size:24px;
-
-    margin-bottom:4px;
-
-    height:28px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
+.nav-item:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav-item.active{color:#fff!important;background:linear-gradient(180deg,rgba(87,169,255,.19),rgba(87,169,255,.07))!important;transform:none!important}
+.nav-item.active::after{
+    content:"";position:absolute;left:50%;top:3px;width:30px;height:3px;transform:translateX(-50%);
+    border-radius:999px;background:#77c4ff;box-shadow:0 0 12px rgba(119,196,255,.7)
 }
-
-.nav-item:hover{
-    transform:translateY(-2px);
+.professional-nav-icon{width:28px;height:25px;display:flex;align-items:center;justify-content:center}
+.pro-icon{width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;position:relative;flex:none}
+.profile-nav-icon#profileNavPhoto{
+    width:32px;height:32px;display:grid;place-items:center;border-radius:50%;
+    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);overflow:hidden
 }
-
-.nav-item.active{
-    color:#FFD700;
-    transform:translateY(-7px) scale(1.08);
-    font-weight:700;
-}
-
-.nav-item.active div{
-    font-size:28px;
-    margin-bottom:5px;
-}
-
-.nav-item.active:hover{
-    transform:translateY(-8px) scale(1.09);
-}
-
-@media(max-width:768px){
-    .photo-picker{flex-direction:column;align-items:flex-start;}
-    .photo-picker-content{width:100%;}
-    .change-photo-btn{width:100%;}
-
-    .nav-item.active{
-        transform:translateY(-6px) scale(1.06);
-    }
-
-    .nav-item.active div{
-        font-size:24px;
-    }
-}
-
+.profile-nav-icon#profileNavPhoto img{width:28px;height:28px;border-radius:50%;object-fit:cover}
 /* PROFILE NAV PHOTO */
 
 #profileNavPhoto{
@@ -624,6 +571,16 @@ window.addFriendFromReaction=addFriendFromReaction;
     object-fit:cover;
 
     border-radius:50%;
+}
+
+/* Keep bottom-nav labels slightly lower for a cleaner visual balance. */
+.bottom-nav .nav-item > span {
+    margin-top: 5px !important;
+    transform: translateY(2px);
+}
+#profileNavText {
+    margin-top: 7px !important;
+    transform: translateY(2px);
 }
 
 
@@ -663,7 +620,7 @@ window.addFriendFromReaction=addFriendFromReaction;
 .post-actions{display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.10);padding-top:12px}
 .post-action{border:none;background:rgba(255,255,255,.09);color:#fff;border-radius:11px;padding:8px 11px;font-size:12px;cursor:pointer;transition:.2s}
 .post-action:hover{background:rgba(255,255,255,.16);transform:translateY(-1px)}
-.post-action.active{background:#FFD93D;color:#183c8c;font-weight:700}
+.post-action.active{background:#4E9EFF;color:#183c8c;font-weight:700}
 .reaction-wrap{position:relative}
 .reaction-picker{
     display:none;position:absolute;bottom:calc(100% + 8px);left:0;
@@ -841,7 +798,7 @@ window.addFriendFromReaction=addFriendFromReaction;
     border:none;
     border-radius:15px;
 
-    background:#FFD93D;
+    background:#4E9EFF;
 
     color:#0d2c7a;
 
@@ -855,7 +812,7 @@ window.addFriendFromReaction=addFriendFromReaction;
 
 .google-btn:hover{
     transform:translateY(-2px);
-    background:#FFE66D;
+    background:#77c4ff;
 }
 
 /* =========================
@@ -1093,15 +1050,15 @@ window.addFriendFromReaction=addFriendFromReaction;
     margin:0 0 18px;
     padding:13px 14px;
     border-radius:16px;
-    background:linear-gradient(135deg,#fff7d6,#fff1b8);
-    border:1px solid rgba(255,193,7,.35);
-    color:#6b5200;
+    background:linear-gradient(135deg,rgba(119,196,255,.16),rgba(78,158,255,.08));
+    border:1px solid rgba(119,196,255,.30);
+    color:#dbeeff;
 }
 .profile-setup-required-icon{
     width:34px;
     height:34px;
     border-radius:11px;
-    background:rgba(255,193,7,.18);
+    background:rgba(119,196,255,.14);
     display:flex;
     align-items:center;
     justify-content:center;
@@ -1384,8 +1341,8 @@ window.addFriendFromReaction=addFriendFromReaction;
   .profile-remove-actions button{padding:13px}
 }
 
-.pinned-post-badge{display:inline-flex;align-items:center;gap:5px;margin:0 0 8px;padding:5px 9px;border-radius:999px;background:#fff7cc;color:#8a6500;font-size:10px;font-weight:800;border:1px solid rgba(255,215,0,.45)}
-.post-card.is-pinned{border:2px solid rgba(255,215,0,.65)!important}
+.pinned-post-badge{display:inline-flex;align-items:center;gap:5px;margin:0 0 8px;padding:5px 9px;border-radius:999px;background:rgba(119,196,255,.14);color:#dbeeff;font-size:10px;font-weight:800;border:1px solid rgba(119,196,255,.30)}
+.post-card.is-pinned{border:2px solid rgba(119,196,255,.45)!important}
 .verified-badge{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;margin-left:6px;border-radius:50%;background:#1d9bf0;color:#fff;font-size:12px;font-weight:900;line-height:1;vertical-align:middle;box-shadow:0 2px 5px rgba(29,155,240,.25)}
 .profile-name .verified-badge{transform:translateY(-2px)}
 .friend-profile-name .verified-badge,.post-author .verified-badge{margin-left:4px;width:14px;height:14px;font-size:9px}
@@ -1532,12 +1489,12 @@ window.addFriendFromReaction=addFriendFromReaction;
     height:75px;
     margin:0 auto 18px;
     border-radius:50%;
-    background:rgba(255,215,0,.15);
+    background:rgba(119,196,255,.15);
     display:flex;
     align-items:center;
     justify-content:center;
     font-size:40px;
-    box-shadow:0 0 0 8px rgba(255,215,0,.05);
+    box-shadow:0 0 0 8px rgba(119,196,255,.05);
 }
 .profile-section-error-popup h2{
     color:#fff;
@@ -1555,7 +1512,7 @@ window.addFriendFromReaction=addFriendFromReaction;
     height:55px;
     border:none;
     border-radius:15px;
-    background:#FFD93D;
+    background:#4E9EFF;
     color:#0d2c7a;
     font-size:16px;
     font-weight:700;
@@ -1564,7 +1521,7 @@ window.addFriendFromReaction=addFriendFromReaction;
 }
 .profile-section-try-btn:hover{
     transform:translateY(-2px);
-    background:#FFE66D;
+    background:#77c4ff;
     box-shadow:0 8px 20px rgba(255,217,61,.25);
 }
 .profile-section-try-btn:active{transform:scale(.97)}
@@ -1589,6 +1546,233 @@ window.addFriendFromReaction=addFriendFromReaction;
         padding:13px;
     }
     .profile-section-search-wrapper .section-option{font-size:13px}
+}
+
+
+/* ===== VOICE DESIGN SYSTEM APPLIED TO PROFILE ===== */
+:root{--voice-blue:#77c4ff;--voice-blue-2:#4e9eff;--voice-deep:#03152f;--voice-panel:rgba(255,255,255,.085)}
+html,body{width:100%;min-height:100%;background:#03152f}
+body{overflow-x:hidden;color:#fff;background:
+radial-gradient(900px 600px at 8% 8%,rgba(0,120,255,.24),transparent 60%),
+radial-gradient(800px 560px at 92% 14%,rgba(77,169,255,.12),transparent 58%),
+radial-gradient(700px 500px at 78% 92%,rgba(0,77,190,.24),transparent 62%),
+linear-gradient(135deg,#03152f 0%,#062b68 34%,#0a4ca2 66%,#173b78 100%);background-attachment:fixed}
+.header{position:fixed;top:6px;left:50%;transform:translateX(-50%);width:calc(100% - 28px);max-width:1400px;height:82px;padding:9px 14px;border:1px solid rgba(255,255,255,.20);border-radius:20px;background:linear-gradient(135deg,rgba(255,255,255,.13),rgba(255,255,255,.055));backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%);box-shadow:0 16px 36px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.16);animation:headerIn .65s cubic-bezier(.16,1,.3,1) both}
+.header::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(90deg,rgba(77,169,255,.08),transparent 28%,transparent 72%,rgba(77,169,255,.08))}
+.logo-group{width:220px;min-width:220px;display:flex;align-items:center;gap:7px;z-index:2}.logo,.caths-logo{width:52px;height:52px;object-fit:contain;display:block}
+.header-center{max-width:50%;z-index:3}.header-center h1{font-size:18px;line-height:1.15}.header-center p{font-size:11px;line-height:1.2;margin-top:3px}
+.container{position:fixed;top:100px;left:0;right:0;bottom:76px;padding:18px 20px 50px;overflow-x:hidden;overflow-y:auto;scroll-behavior:smooth}
+.profile-card{background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.055));border:1px solid rgba(255,255,255,.15);border-radius:25px;box-shadow:0 18px 45px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.10);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);animation:cardIn .75s cubic-bezier(.16,1,.3,1) .12s both}
+.cover{background:radial-gradient(600px 260px at 15% 30%,rgba(119,196,255,.24),transparent 62%),linear-gradient(135deg,rgba(3,21,47,.96),rgba(9,76,162,.88),rgba(119,196,255,.28));position:relative}
+.profile-main>*{animation:itemIn .55s cubic-bezier(.16,1,.3,1) both}.profile-picture-wrapper{animation:itemIn .55s .08s cubic-bezier(.16,1,.3,1) both}.profile-name-row{animation:itemIn .55s .14s cubic-bezier(.16,1,.3,1) both}.stats{animation:itemIn .55s .20s cubic-bezier(.16,1,.3,1) both}.tabs{animation:itemIn .55s .26s cubic-bezier(.16,1,.3,1) both}.tab-content{animation:itemIn .55s .32s cubic-bezier(.16,1,.3,1) both}
+.edit-btn,.friend-message-btn,.save-btn,.profile-section-try-btn,.publish-btn{background:linear-gradient(135deg,#4e9eff,#1762d2)!important;color:#fff!important;box-shadow:0 10px 24px rgba(30,118,220,.22);transition:transform .22s ease,box-shadow .22s ease,filter .22s ease}.edit-btn:hover,.friend-message-btn:hover,.save-btn:hover,.profile-section-try-btn:hover,.publish-btn:hover{transform:translateY(-2px);filter:brightness(1.05);box-shadow:0 14px 28px rgba(30,118,220,.30)}
+.tab.active{color:#77c4ff!important}.tab.active::after{background:#77c4ff!important;box-shadow:0 0 12px rgba(119,196,255,.7)}
+.stats,.content-box,.post-composer-card,.post-card,.friend-profile-row{background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.045));border:1px solid rgba(255,255,255,.12);box-shadow:0 14px 34px rgba(0,0,0,.13),inset 0 1px 0 rgba(255,255,255,.08)}
+.friends-panel-count{background:rgba(119,196,255,.16)!important;color:#fff!important;border:1px solid rgba(119,196,255,.30)}
+.friends-spinner{border-top-color:#77c4ff!important}.reaction-emoji:hover{background:rgba(119,196,255,.10)}
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;width:100%;height:76px;padding:5px 16px;display:flex;align-items:center;justify-content:center;gap:8px;border-top:1px solid rgba(255,255,255,.16);border-radius:19px 19px 0 0;background:linear-gradient(180deg,rgba(7,25,58,.94),rgba(2,13,32,.99));backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);box-shadow:0 -12px 30px rgba(0,8,30,.24);z-index:99990;animation:navIn .65s cubic-bezier(.16,1,.3,1) .15s both}
+.bottom-nav::after{content:"";position:absolute;left:0;right:0;top:-1px;height:2px;background:linear-gradient(90deg,transparent 3%,rgba(119,196,255,.18) 15%,#77c4ff 50%,rgba(119,196,255,.18) 85%,transparent 97%);box-shadow:0 0 14px rgba(119,196,255,.28)}
+.nav-item{position:relative;flex:1;max-width:190px;height:60px;padding:6px 8px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:rgba(255,255,255,.72);font-size:10px;font-weight:600;text-decoration:none;transition:.2s}.nav-item:hover{background:rgba(255,255,255,.07);color:#fff}.nav-item.active{color:#fff!important;background:linear-gradient(180deg,rgba(87,169,255,.19),rgba(87,169,255,.07))!important;transform:none!important}.nav-item.active::after{content:"";position:absolute;left:50%;top:3px;width:30px;height:3px;transform:translateX(-50%);border-radius:999px;background:#77c4ff;box-shadow:0 0 12px rgba(119,196,255,.7)}
+.professional-nav-icon,.pro-icon{width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;position:relative;flex:none}.pro-icon::before,.professional-nav-icon::before{content:"";width:17px;height:17px;display:block;border:1.8px solid currentColor;border-radius:5px;opacity:.95}.pro-user::before{border-radius:50%;width:15px;height:15px}.pro-edit::before{transform:rotate(-45deg);border-radius:3px}.pro-chat::before{border-radius:6px}.pro-users::before{border-radius:50%}.pro-lock::before{border-radius:4px}.pro-save::before{border-radius:3px}.pro-warning::before{border-radius:50%}.pro-like::before{border-radius:50%}.pro-voice::before{border-radius:8px}.pro-home::before{border-radius:3px;transform:rotate(45deg) scale(.82)}.pro-news::before{border-radius:2px}.pro-share::before{border-radius:3px;transform:rotate(45deg) scale(.82)}.pro-doc::before{border-radius:3px}.pro-icon{vertical-align:middle;margin-right:6px}.empty-icon .pro-icon{width:52px;height:52px}.reaction-label{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:#183c8c;font-weight:700}.reaction-dot-icon{width:10px;height:10px;border-radius:50%;display:inline-block;border:2px solid currentColor}.profile-picture-placeholder{font-size:0}.profile-picture-placeholder .pro-icon{width:68px;height:68px}.profile-picture-placeholder .pro-icon::before{width:40px;height:40px}
+@keyframes headerIn{from{opacity:0;transform:translateX(-50%) translateY(-18px) scale(.98)}to{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
+@keyframes cardIn{from{opacity:0;transform:translateY(28px) scale(.975)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes itemIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes navIn{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:768px){.header{top:5px;width:calc(100% - 14px);height:68px;padding:7px 9px;border-radius:17px}.logo-group{width:90px;min-width:90px;gap:4px}.logo,.caths-logo{width:38px;height:38px}.header-center{max-width:46%}.header-center h1{font-size:14px}.header-center p{font-size:8px}.container{top:82px;bottom:68px;padding:12px 12px 34px}.profile-card{border-radius:21px}.bottom-nav{height:68px;padding:4px 5px;border-radius:16px 16px 0 0}.nav-item{height:56px;padding:4px 3px;border-radius:12px;font-size:8px}.pro-icon{width:22px;height:22px}.pro-icon::before{width:15px;height:15px}}
+
+/* FINAL NAV OVERRIDE — exact voice.html geometry */
+.nav-symbol{font-family:Arial,Helvetica,sans-serif;font-size:25px;line-height:1;font-weight:400;color:currentColor;text-align:center}
+.nav-item.active .nav-symbol{font-size:27px}
+@media(max-width:768px){.nav-symbol{font-size:21px}.nav-item.active .nav-symbol{font-size:23px}}
+@media(max-width:420px){.nav-symbol{font-size:20px}.nav-item.active .nav-symbol{font-size:22px}}
+@keyframes navIn{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
+
+
+/* Professional replacements for emoji-based UI */
+.reaction-prof-icon{width:17px;height:17px;display:inline-flex;align-items:center;justify-content:center;position:relative;flex:0 0 17px}
+.reaction-prof-icon::before{content:"";width:13px;height:13px;border:1.7px solid currentColor;border-radius:4px}
+.reaction-like::before{border-radius:50% 50% 4px 4px;transform:rotate(-8deg)}
+.reaction-love::before{border-radius:50%;width:10px;height:10px;transform:rotate(45deg)}
+.reaction-laugh::before{border-radius:50%}
+.reaction-wow::before{border-radius:50%;box-shadow:inset 0 0 0 2px rgba(255,255,255,.12)}
+.reaction-sad::before{border-radius:50%}
+.pro-pin::before{border-radius:2px;transform:rotate(45deg) scale(.82)}
+.pro-eye::before{width:18px;height:11px;border-radius:50%/60%;}
+.pro-trash::before{border-radius:3px;width:12px;height:14px}
+.profile-remove-icon,.success-icon,.profile-section-error-icon{color:#77c4ff}
+.profile-setup-required-icon{color:#77c4ff}
+
+
+/* FINAL USER REQUEST OVERRIDES */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;background:transparent;border:0;border-radius:0;overflow:visible;box-shadow:none}
+.stat{padding:14px 10px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.18);border-radius:12px;box-shadow:0 8px 22px rgba(0,0,0,.10);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.stat:hover{background:rgba(255,255,255,.09);border-color:rgba(119,196,255,.38)}
+.tabs{display:flex;gap:8px;margin-top:22px;border-bottom:0;overflow-x:auto;padding-bottom:2px}
+.tab{flex:1;min-width:120px;padding:10px 12px;border:1px solid rgba(255,255,255,.16);border-radius:11px;background:rgba(255,255,255,.045);color:rgba(255,255,255,.76);font-size:12px;font-weight:700;cursor:pointer;position:relative;transition:.2s}
+.tab:hover{background:rgba(255,255,255,.08);border-color:rgba(119,196,255,.30)}
+.tab.active{color:#fff!important;background:rgba(119,196,255,.13)!important;border-color:rgba(119,196,255,.42)!important}
+.tab.active::after{display:none}
+
+/* Bottom navigation: clean, flat, professional */
+.bottom-nav{height:76px!important;padding:5px 16px!important;gap:4px!important;border-radius:18px 18px 0 0!important;background:linear-gradient(180deg,rgba(7,25,58,.96),rgba(2,13,32,.99))!important}
+.nav-item{height:60px!important;padding:6px 8px!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;max-width:190px!important;color:rgba(255,255,255,.72)!important}
+.nav-item:hover,.nav-item.active{background:transparent!important}
+.nav-item.active{color:#fff!important}
+
+.professional-nav-icon{width:24px!important;height:24px!important}
+.nav-symbol{font-size:25px!important}
+.nav-svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.profile-nav-icon#profileNavPhoto{background:transparent!important;border:0!important;width:auto!important;height:auto!important;display:flex!important;align-items:center!important;justify-content:center!important}
+.profile-nav-icon#profileNavPhoto img{width:30px!important;height:30px!important;border:0!important;object-fit:cover!important;border-radius:50%!important}
+
+/* Compact login modal */
+.login-overlay{padding:16px!important}
+.login-box{width:min(100%,340px)!important;max-width:340px!important;padding:24px 22px!important;border-radius:18px!important;background:rgba(10,27,58,.96)!important;border:1px solid rgba(119,196,255,.24);box-shadow:0 24px 60px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.08);animation:loginPop .28s ease-out both}
+.login-icon{display:flex;align-items:center;justify-content:center;width:44px;height:44px;margin:0 auto 13px;border-radius:12px;background:rgba(119,196,255,.10);border:1px solid rgba(119,196,255,.22);font-size:0;color:#bfe0ff}
+.login-icon::before{content:"";width:20px;height:20px;border:1.8px solid currentColor;border-radius:5px;box-shadow:0 -6px 0 -4px currentColor}
+.login-box h2{font-size:22px!important;margin-bottom:6px!important}
+.login-box p{font-size:12px!important;line-height:1.55;margin:0 auto 18px!important;max-width:270px}
+.google-btn{height:46px!important;border-radius:11px!important;font-size:13px!important;background:linear-gradient(135deg,#4e9eff,#1762d2)!important;color:#fff!important;box-shadow:0 8px 20px rgba(30,118,220,.20)}
+.google-btn:hover{background:linear-gradient(135deg,#63aaff,#2b73dc)!important;transform:translateY(-1px)}
+@keyframes loginPop{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:768px){.stats{gap:7px}.stat{padding:12px 6px}.tab{min-width:100px;padding:9px 8px}.bottom-nav{height:68px!important;padding:4px 5px!important}.nav-item{height:56px!important;padding:4px 3px!important}.nav-svg{width:19px;height:19px}.login-box{padding:22px 18px!important}}
+
+
+
+/* BOTTOM NAV SYMBOLS — requested glyphs */
+.bottom-nav .nav-item {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+}
+.bottom-nav .nav-item:hover,
+.bottom-nav .nav-item.active {
+    background: transparent !important;
+}
+.bottom-nav .nav-symbol {
+    font-family: Arial, "Segoe UI Symbol", sans-serif;
+    font-size: 25px;
+    line-height: 1;
+    font-weight: 400;
+    color: currentColor;
+    width: auto;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0 3px;
+}
+.bottom-nav .nav-item.active .nav-symbol {
+    font-size: 27px;
+}
+.profile-nav-fallback {
+    width: auto;
+    height: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    color: rgba(255,255,255,.84);
+    font-size: 13px;
+    line-height: 1;
+}
+#profileNavPhotoImg {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+@media (max-width: 768px) {
+    .bottom-nav .nav-symbol { font-size: 21px; }
+    .bottom-nav .nav-item.active .nav-symbol { font-size: 23px; }
+    .profile-nav-fallback { font-size: 12px; }
+    #profileNavPhotoImg { width: 28px; height: 28px; border:0; }
+}
+@media (max-width: 420px) {
+    .bottom-nav .nav-symbol { font-size: 20px; }
+    .bottom-nav .nav-item.active .nav-symbol { font-size: 22px; }
+}
+
+/* FINAL BOTTOM NAV — CLEAN, NO NAV ITEM SHAPES */
+.bottom-nav{
+    height:76px !important;
+    padding:6px 18px !important;
+    gap:8px !important;
+    border-radius:0 !important;
+    border-top:1px solid rgba(255,255,255,.12) !important;
+    background:rgba(3,16,38,.96) !important;
+    box-shadow:0 -8px 24px rgba(0,0,0,.18) !important;
+}
+.bottom-nav::after{display:none !important;}
+.bottom-nav .nav-item,
+.bottom-nav .nav-item:hover,
+.bottom-nav .nav-item.active{
+    background:transparent !important;
+    border:0 !important;
+    border-radius:0 !important;
+    box-shadow:none !important;
+    transform:none !important;
+}
+.bottom-nav .nav-item{
+    height:64px !important;
+    padding:0 6px !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:6px !important;
+}
+.bottom-nav .nav-item.active::after{display:none !important;}
+.bottom-nav .nav-symbol{
+    margin:0 !important;
+    width:auto !important;
+    height:auto !important;
+    font-family:Arial,"Segoe UI Symbol",sans-serif !important;
+    font-size:25px !important;
+    line-height:1 !important;
+    font-weight:400 !important;
+}
+.bottom-nav .nav-item.active .nav-symbol{font-size:25px !important;}
+.bottom-nav .nav-item > span{
+    margin:0 !important;
+    transform:none !important;
+    line-height:1.15 !important;
+    font-size:10px !important;
+    font-weight:500 !important;
+}
+#profileNavText{
+    margin:0 !important;
+    transform:none !important;
+    line-height:1.15 !important;
+}
+.profile-nav-icon#profileNavPhoto,
+#profileNavPhoto{
+    width:30px !important;
+    height:30px !important;
+    padding:0 !important;
+    margin:0 !important;
+    border:0 !important;
+    border-radius:50% !important;
+    background:transparent !important;
+    box-shadow:none !important;
+    overflow:hidden !important;
+}
+.profile-nav-icon#profileNavPhoto img,
+#profileNavPhotoImg{
+    width:30px !important;
+    height:30px !important;
+    display:block;
+    border:0 !important;
+    border-radius:50% !important;
+    object-fit:cover !important;
+}
+@media(max-width:768px){
+    .bottom-nav{height:68px !important;padding:4px 5px !important;gap:4px !important;}
+    .bottom-nav .nav-item{height:60px !important;padding:0 3px !important;gap:5px !important;}
+    .bottom-nav .nav-symbol,.bottom-nav .nav-item.active .nav-symbol{font-size:21px !important;}
+    .bottom-nav .nav-item > span{font-size:8px !important;}
+    .profile-nav-icon#profileNavPhoto,#profileNavPhoto,#profileNavPhotoImg{width:25px !important;height:25px !important;}
 }
 
 </style>
@@ -1660,7 +1844,7 @@ window.addFriendFromReaction=addFriendFromReaction;
                 <div
                     id="profilePlaceholder"
                     class="profile-picture-placeholder">
-                    👤
+                    <span class="pro-icon pro-user" aria-hidden="true"></span>
                 </div>
 
             </div>
@@ -1688,7 +1872,7 @@ window.addFriendFromReaction=addFriendFromReaction;
                     class="edit-btn"
                     onclick="openEditProfile()">
 
-                    ✏️ Edit Profile
+                    <span class="pro-icon pro-edit" aria-hidden="true"></span> Edit Profile
 
                 </button>
 
@@ -1699,7 +1883,7 @@ window.addFriendFromReaction=addFriendFromReaction;
                 id="profileBio"
                 class="profile-bio">
 
-                Welcome to your CATHS-MAIN Student Voice profile. 🎓
+                Welcome to your CATHS-MAIN Student Voice profile. 
 
             </div>
 
@@ -1764,7 +1948,7 @@ window.addFriendFromReaction=addFriendFromReaction;
                     data-tab="posts"
                     onclick="showTab('posts')">
 
-                    📝 Posts
+                    <span class="pro-icon pro-doc" aria-hidden="true"></span> Posts
 
                 </button>
 
@@ -1773,7 +1957,7 @@ window.addFriendFromReaction=addFriendFromReaction;
                     data-tab="feedbacks"
                     onclick="showTab('feedbacks')">
 
-                    💬 Feedbacks
+                    <span class="pro-icon pro-chat" aria-hidden="true"></span> Feedbacks
 
                 </button>
 
@@ -1782,7 +1966,7 @@ window.addFriendFromReaction=addFriendFromReaction;
                     data-tab="friends"
                     onclick="showTab('friends')">
 
-                    👥 Friends
+                    <span class="pro-icon pro-users" aria-hidden="true"></span> Friends
 
                 </button>
 
@@ -1796,14 +1980,14 @@ window.addFriendFromReaction=addFriendFromReaction;
                 <div id="postsTab">
 
     <div class="post-composer-card">
-        <h3>📝 Share something</h3>
-        <p>Post a text update, message, or emoji. No photo uploads required.</p>
-        <button class="post-open-btn" type="button" onclick="openPostComposer()">✏️ Create Post</button>
+        <h3><span class="pro-icon pro-doc" aria-hidden="true"></span> Share something</h3>
+        <p>Post a text update or message. No photo uploads required.</p>
+        <button class="post-open-btn" type="button" onclick="openPostComposer()"><span class="pro-icon pro-edit" aria-hidden="true"></span> Create Post</button>
     </div>
 
     <div id="postsList" class="posts-list">
         <div class="empty-posts">
-            <div class="empty-icon">📝</div>
+            <div class="empty-icon"><span class="pro-icon pro-doc pro-empty" aria-hidden="true"></span></div>
             <h3>No Posts Yet</h3>
             <p>Your future posts will appear here.</p>
         </div>
@@ -1817,9 +2001,7 @@ window.addFriendFromReaction=addFriendFromReaction;
                     class="content-box"
                     style="display:none;">
 
-                    <div class="empty-icon">
-                        💬
-                    </div>
+                    <div class="empty-icon"><span class="pro-icon pro-chat" aria-hidden="true"></span></div>
 
                     <h3>
                         No Feedbacks Yet
@@ -1839,7 +2021,7 @@ window.addFriendFromReaction=addFriendFromReaction;
 
                     <div class="friends-panel">
                         <div class="friends-panel-head">
-                            <div class="friends-panel-title">👥 My Friends</div>
+                            <div class="friends-panel-title"><span class="pro-icon pro-users" aria-hidden="true"></span> My Friends</div>
                             <div class="friends-panel-count" id="friendsTabCount">0 Friends</div>
                         </div>
                         <div id="profileFriendsList" class="friends-list">
@@ -1871,9 +2053,7 @@ window.addFriendFromReaction=addFriendFromReaction;
 
     <div class="login-box">
 
-        <div class="login-icon">
-            🔐
-        </div>
+        <div class="login-icon" aria-hidden="true"></div>
 
         <h2>
             Login Required
@@ -1908,11 +2088,11 @@ window.addFriendFromReaction=addFriendFromReaction;
     <div class="edit-box">
 
         <h2>
-            ✏️ Edit Profile
+            <span class="pro-icon pro-edit" aria-hidden="true"></span> Edit Profile
         </h2>
 
         <div id="profileSetupRequiredNotice" class="profile-setup-required-notice" style="display:none;">
-            <div class="profile-setup-required-icon">⚠️</div>
+            <div class="profile-setup-required-icon"><span class="pro-icon pro-warning" aria-hidden="true"></span></div>
             <div>
                 <strong>Complete your profile first</strong>
                 <span>Your profile must be completed before this window can be closed.</span>
@@ -1923,11 +2103,11 @@ window.addFriendFromReaction=addFriendFromReaction;
         <div class="form-group">
             <label>Profile Picture</label>
             <div class="photo-picker coming-soon-card">
-                <div class="photo-picker-preview">🖼️</div>
+                <div class="photo-picker-preview">Image</div>
                 <div class="photo-picker-content">
                     <div class="photo-picker-title">Change Profile Picture</div>
                     <div class="photo-picker-subtitle">Custom profile picture uploads are currently unavailable.</div>
-                    <div class="coming-soon-badge">✨ Coming Soon</div>
+                    <div class="coming-soon-badge">Coming Soon</div>
                 </div>
             </div>
         </div>
@@ -1957,7 +2137,7 @@ window.addFriendFromReaction=addFriendFromReaction;
                 <input
                     type="text"
                     id="editSectionSearch"
-                    placeholder="🔍 Search and select your section..."
+                    placeholder="Search and select your section..."
                     autocomplete="off"
                 >
 
@@ -1968,7 +2148,7 @@ window.addFriendFromReaction=addFriendFromReaction;
 
             <div id="editSectionVerification" class="profile-section-verification" style="display:none;">
                 <label for="editVerificationCode">
-                    🔐 Section Verification Code
+                    <span class="pro-icon pro-lock" aria-hidden="true"></span> Section Verification Code
                 </label>
 
                 <input
@@ -1984,7 +2164,7 @@ window.addFriendFromReaction=addFriendFromReaction;
                     class="save-btn profile-verify-btn"
                     onclick="verifyProfileSectionCode()"
                 >
-                    🔐 Verify Section
+                    <span class="pro-icon pro-lock" aria-hidden="true"></span> Verify Section
                 </button>
 
                 <div id="editVerificationMessage" class="profile-verification-message"></div>
@@ -2010,7 +2190,7 @@ window.addFriendFromReaction=addFriendFromReaction;
             class="save-btn"
             onclick="saveProfile()">
 
-            💾 Save Changes
+            <span class="pro-icon pro-save" aria-hidden="true"></span> Save Changes
 
         </button>
 
@@ -2042,7 +2222,7 @@ window.addFriendFromReaction=addFriendFromReaction;
 <!-- SECTION REQUIRED POPUP -->
 <div id="profileSectionRequiredPopup" class="profile-section-required-modal">
     <div class="profile-section-error-popup">
-        <div class="profile-section-error-icon">⚠️</div>
+        <div class="profile-section-error-icon"><span class="pro-icon pro-warning" aria-hidden="true"></span></div>
         <h2>Section Required</h2>
         <p>Please select your section from the list.</p>
         <button type="button" class="profile-section-try-btn" onclick="closeProfileSectionRequiredPopup()">Try Again</button>
@@ -2052,7 +2232,7 @@ window.addFriendFromReaction=addFriendFromReaction;
 <!-- SECTION VERIFICATION REQUIRED POPUP -->
 <div id="profileSectionVerificationPopup" class="profile-section-verification-modal">
     <div class="profile-section-error-popup">
-        <div class="profile-section-error-icon">🔐</div>
+        <div class="profile-section-error-icon"><span class="pro-icon pro-lock" aria-hidden="true"></span></div>
         <h2>Verification Required</h2>
         <p>Please verify your section first.</p>
         <button type="button" class="profile-section-try-btn" onclick="closeProfileSectionVerificationPopup()">Try Again</button>
@@ -2063,16 +2243,16 @@ window.addFriendFromReaction=addFriendFromReaction;
 
 <!-- POST PRIVACY / DELETE MODALS -->
 <div id="privacyModal" class="privacy-modal"><div class="privacy-box">
-  <div class="post-modal-head"><h3>👁️ Who can see this?</h3><button class="modal-x" type="button" onclick="closePrivacyModal()">✕</button></div>
+  <div class="post-modal-head"><h3>Who can see this?</h3><button class="modal-x" type="button" onclick="closePrivacyModal()"><span aria-hidden="true">×</span></button></div>
   <p>Choose who can see this post. The change is saved immediately.</p>
   <div class="privacy-option-list">
-    <button class="privacy-option" data-visibility="public" type="button" onclick="savePostVisibility('public')"><span>🌍 Public</span><span>Everyone</span></button>
-    <button class="privacy-option" data-visibility="friends" type="button" onclick="savePostVisibility('friends')"><span>👥 Friends Only</span><span>Your friends</span></button>
-    <button class="privacy-option" data-visibility="onlyMe" type="button" onclick="savePostVisibility('onlyMe')"><span>🔒 Only Me</span><span>Private</span></button>
+    <button class="privacy-option" data-visibility="public" type="button" onclick="savePostVisibility('public')"><span><span class="pro-icon pro-news" aria-hidden="true"></span> Public</span><span>Everyone</span></button>
+    <button class="privacy-option" data-visibility="friends" type="button" onclick="savePostVisibility('friends')"><span><span class="pro-icon pro-users" aria-hidden="true"></span> Friends Only</span><span>Your friends</span></button>
+    <button class="privacy-option" data-visibility="onlyMe" type="button" onclick="savePostVisibility('onlyMe')"><span><span class="pro-icon pro-lock" aria-hidden="true"></span> Only Me</span><span>Private</span></button>
   </div>
 </div></div>
 <div id="deletePostModal" class="manage-modal"><div class="manage-box">
-  <div class="post-modal-head"><h3>🗑️ Delete Post?</h3><button class="modal-x" type="button" onclick="closeDeletePostModal()">✕</button></div>
+  <div class="post-modal-head"><h3>Delete Post?</h3><button class="modal-x" type="button" onclick="closeDeletePostModal()"><span aria-hidden="true">×</span></button></div>
   <p>This post will be permanently removed from your profile. This action cannot be undone.</p>
   <div class="manage-actions"><button class="manage-cancel" type="button" onclick="closeDeletePostModal()">Cancel</button><button id="confirmDeletePostBtn" class="manage-danger" type="button" onclick="confirmDeletePost()">Delete Post</button></div>
 </div></div>
@@ -2085,18 +2265,18 @@ window.addFriendFromReaction=addFriendFromReaction;
 <div id="postModal" class="post-modal">
   <div class="post-modal-box">
     <div class="post-modal-head">
-      <h3>✏️ Create Post</h3>
-      <button class="modal-x" type="button" onclick="closePostComposer()">✕</button>
+      <h3><span class="pro-icon pro-edit" aria-hidden="true"></span> Create Post</h3>
+      <button class="modal-x" type="button" onclick="closePostComposer()"><span aria-hidden="true">×</span></button>
     </div>
-    <textarea id="postText" class="post-textarea" maxlength="500" placeholder="What’s on your mind? 😊"></textarea>
+    <textarea id="postText" class="post-textarea" maxlength="500" placeholder="What’s on your mind?"></textarea>
     <div class="char-count"><span id="postCharCount">0</span>/500</div>
     <div class="post-options">
       <div>
         <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px;">Who can see this?</label>
         <select id="postVisibility" class="post-select">
-          <option value="public">🌍 Public</option>
-          <option value="friends">👥 Friends Only</option>
-          <option value="onlyMe">🔒 Only Me</option>
+          <option value="public">Public</option>
+          <option value="friends"><span class="pro-icon pro-users" aria-hidden="true"></span> Friends Only</option>
+          <option value="onlyMe">Only Me</option>
         </select>
       </div>
     </div>
@@ -2110,8 +2290,8 @@ window.addFriendFromReaction=addFriendFromReaction;
 <div id="commentsModal" class="comments-modal">
   <div class="comments-modal-box">
     <div class="comments-head">
-      <h3>💬 Comments</h3>
-      <button class="modal-x" type="button" onclick="closeComments()">✕</button>
+      <h3><span class="pro-icon pro-chat" aria-hidden="true"></span> Comments</h3>
+      <button class="modal-x" type="button" onclick="closeComments()"><span aria-hidden="true">×</span></button>
     </div>
     <div id="commentsList" class="comments-list"></div>
     <div class="comment-form">
@@ -2127,8 +2307,8 @@ window.addFriendFromReaction=addFriendFromReaction;
 <div id="reactionsModal" class="comments-modal">
   <div class="comments-modal-box">
     <div class="comments-head">
-      <h3>👍 People who reacted</h3>
-      <button class="modal-x" type="button" onclick="closeReactions()">✕</button>
+      <h3><span class="pro-icon pro-like" aria-hidden="true"></span> People who reacted</h3>
+      <button class="modal-x" type="button" onclick="closeReactions()"><span aria-hidden="true">×</span></button>
     </div>
     <div id="reactionsList" class="reactions-list"></div>
   </div>
@@ -2153,89 +2333,35 @@ window.addFriendFromReaction=addFriendFromReaction;
 ========================= -->
 
 <div class="bottom-nav">
-
-    <a
-        href="index.html"
-        class="nav-item">
-
-        <div>
-            🏠
-        </div>
-
-        <span>
-            Home
-        </span>
-
+    <a href="index.html" class="nav-item">
+        <div class="nav-symbol" aria-hidden="true">⌂</div>
+        <span>Home</span>
     </a>
-
-
-    <a
-        href="news-feed.html"
-        class="nav-item">
-
-        <div>
-            📰
-        </div>
-
-        <span>
-            News Feed
-        </span>
-
+    <a href="news-feed.html" class="nav-item">
+        <div class="nav-symbol" aria-hidden="true">▤</div>
+        <span>News Feed</span>
     </a>
-
-
-    <a
-        href="voice.html"
-        class="nav-item">
-
-        <div>
-            🗣️
-        </div>
-
-        <span>
-            Student Voice
-        </span>
-
+    <a href="voice.html" class="nav-item">
+        <div class="nav-symbol" aria-hidden="true">◉</div>
+        <span>Student Voice</span>
     </a>
-
-
-    <a
-        href="friends.html"
-        class="nav-item">
-
-        <div>
-            👥
-        </div>
-
-        <span>
-            Friends
-        </span>
-
+    <a href="friends.html" class="nav-item">
+        <div class="nav-symbol" aria-hidden="true">◎</div>
+        <span>Friends</span>
     </a>
-
-
-    <a
-        href="profile.html"
-        class="nav-item active">
-
-        <div id="profileNavPhoto">
-            👤
+    <a href="profile.html" class="nav-item active">
+        <div class="profile-nav-icon" id="profileNavPhoto" aria-label="Profile picture">
+            <img id="profileNavPhotoImg" alt="Profile picture" style="display:none;" />
         </div>
-
-        <span>
-            Profile
-        </span>
-
+        <span id="profileNavText">Profile</span>
     </a>
-
 </div>
-
 
 
 <!-- PROFILE UNFRIEND CONFIRMATION -->
 <div id="profileRemoveFriendModal" class="profile-remove-modal" aria-hidden="true">
   <div class="profile-remove-dialog" role="dialog" aria-modal="true" aria-labelledby="profileRemoveFriendTitle">
-    <div class="profile-remove-icon">👥</div>
+    <div class="profile-remove-icon"><span class="pro-icon pro-users" aria-hidden="true"></span></div>
     <h3 id="profileRemoveFriendTitle">Unfriend?</h3>
     <p>This person will be removed from your friends list. You can send a new friend request later.</p>
     <div id="profileRemoveFriendPreview" class="profile-remove-preview"></div>
@@ -2334,6 +2460,17 @@ function escapePostHtml(value){
 }
 const VERIFIED_ADMIN_EMAILS = new Set(['reyvengarcia15@gmail.com', 'reyvenbermudo091@gmail.com', 'reyvengarcia05@gmail.com', 'chezcadc14@gmail.com', 'nathanielgarc679@gmail.com', 'marteena.133@gmail.com', 'gabbicastillo0126@gmail.com', 'leddadanielle91@gmail.com', 'jennapastor062@gmail.com', 'dhenmark1313@gmail.com', 'christianangelointes0@gmail.com', 'alexaislacruz@gmail.com', 'galangjullianne016@gmail.com', 'vanessajotic2403@gmail.com', 'aquinobernardjr0@gmail.com', 'angellyar0909@gmail.com', 'vhergelnarciso@gmail.com', 'sicatmadisson487@gmail.com']);
 function isVerifiedAdminEmail(email){return VERIFIED_ADMIN_EMAILS.has(String(email||'').trim().toLowerCase());}
+function reactionIconHtml(label){
+    const map={
+        Like:'<span class="reaction-prof-icon reaction-like" aria-hidden="true"></span>',
+        Love:'<span class="reaction-prof-icon reaction-love" aria-hidden="true"></span>',
+        Laugh:'<span class="reaction-prof-icon reaction-laugh" aria-hidden="true"></span>',
+        Wow:'<span class="reaction-prof-icon reaction-wow" aria-hidden="true"></span>',
+        Sad:'<span class="reaction-prof-icon reaction-sad" aria-hidden="true"></span>'
+    };
+    return map[label]||'<span class="reaction-prof-icon" aria-hidden="true"></span>';
+}
+
 function verifiedBadgeHtml(userOrEmail){const email=typeof userOrEmail==='string'?userOrEmail:(userOrEmail?.email||'');return isVerifiedAdminEmail(email)?'<span class="verified-badge" title="Verified admin" aria-label="Verified admin">✓</span>':'';}
 
 
@@ -2348,12 +2485,13 @@ function postTimeLabel(ts){
 function postAvatarHtml(url){
     return url
       ? `<div class="post-avatar"><img src="${escapePostHtml(url)}" alt=""></div>`
-      : `<div class="post-avatar">👤</div>`;
+      : `<div class="post-avatar"><span class="pro-icon pro-user" aria-hidden="true"></span></div>`;
 }
 
 function openPostComposer(){
     if(!auth.currentUser){
-        document.getElementById('loginOverlay').style.display='flex';
+        const loginOverlay = document.getElementById('loginOverlay');
+        if(loginOverlay) loginOverlay.style.display='flex';
         return;
     }
     document.getElementById('postText').value='';
@@ -2378,7 +2516,11 @@ async function publishPost(){
     const text = document.getElementById('postText').value.trim();
     const visibility = document.getElementById('postVisibility').value;
     const btn = document.getElementById('publishPostBtn');
-    if(!user){ document.getElementById('loginOverlay').style.display='flex'; return; }
+    if(!user){
+        const loginOverlay = document.getElementById('loginOverlay');
+        if(loginOverlay) loginOverlay.style.display='flex';
+        return;
+    }
     if(!text){ alert('Please write something first.'); return; }
     if(text.length > 500){ alert('Your post is too long.'); return; }
 
@@ -2431,7 +2573,7 @@ async function loadPosts(){
         });
         document.getElementById('postsCount').textContent = String(posts.length);
         if(!posts.length){
-            list.innerHTML = `<div class="empty-posts"><div class="empty-icon">📝</div><h3>No Posts Yet</h3><p>Your future posts will appear here.</p></div>`;
+            list.innerHTML = `<div class="empty-posts"><div class="empty-icon"><span class="pro-icon pro-doc pro-empty" aria-hidden="true"></span></div><h3>No Posts Yet</h3><p>Your future posts will appear here.</p></div>`;
             return;
         }
         list.innerHTML='';
@@ -2448,10 +2590,10 @@ async function loadPosts(){
 window.loadPosts = loadPosts;
 
 function renderPost(post){
-    const visibilityLabel = post.visibility === 'friends' ? '👥 Friends Only' : post.visibility === 'onlyMe' ? '🔒 Only Me' : '🌍 Public';
+    const visibilityLabel = post.visibility === 'friends' ? '<span class="pro-icon pro-users" aria-hidden="true"></span> Friends Only' : post.visibility === 'onlyMe' ? '<span class="pro-icon pro-lock" aria-hidden="true"></span> Only Me' : '<span class="pro-icon pro-news" aria-hidden="true"></span> Public';
     const sharedContext = post.isShared && post.originalAuthorName ? `
       <div class="share-context">
-        <div class="share-context-label">↗ Shared post</div>
+        <div class="share-context-label"><span class="pro-icon pro-share" aria-hidden="true"></span> Shared post</div>
         <div class="share-context-author">Original post by ${escapePostHtml(post.originalAuthorName || 'User')}</div>
         <div class="share-context-text">${escapePostHtml(post.originalText || post.text || '')}</div>
       </div>` : '';
@@ -2469,24 +2611,24 @@ function renderPost(post){
             <button class="post-manage-btn" type="button" onclick="togglePostMenu('${escapePostHtml(post.id)}',event)">⋯</button>
             <div class="post-menu-backdrop" id="menu-backdrop-${escapePostHtml(post.id)}" onclick="closePostMenu('${escapePostHtml(post.id)}',event)">
               <div class="post-menu" onclick="event.stopPropagation()">
-                <button type="button" onclick="openPrivacyModal('${escapePostHtml(post.id)}','${escapePostHtml(post.visibility)}')">👁️ Who can see this?</button>
-                <button class="pin" type="button" onclick="togglePinPost('${escapePostHtml(post.id)}',${post.pinned===true})">${post.pinned===true?'📌 Unpin from top':'📌 Pin to the top'}</button>
-                <button class="danger" type="button" onclick="openDeletePostModal('${escapePostHtml(post.id)}')">🗑️ Delete</button>
+                <button type="button" onclick="openPrivacyModal('${escapePostHtml(post.id)}','${escapePostHtml(post.visibility)}')"><span class="pro-icon pro-eye" aria-hidden="true"></span> Who can see this?</button>
+                <button class="pin" type="button" onclick="togglePinPost('${escapePostHtml(post.id)}',${post.pinned===true})"><span class="pro-icon pro-pin" aria-hidden="true"></span>${post.pinned===true?'Unpin from top':'Pin to the top'}</button>
+                <button class="danger" type="button" onclick="openDeletePostModal('${escapePostHtml(post.id)}')"><span class="pro-icon pro-trash" aria-hidden="true"></span> Delete</button>
               </div>
             </div>
           </div>` : ''}
         </div>
         ${post.isShared ? '' : `<div class="post-text">${escapePostHtml(post.text)}</div>`}
-        ${post.pinned===true ? `<div class="pinned-post-badge">📌 Pinned Post</div>` : ""}
+        ${post.pinned===true ? `<div class="pinned-post-badge"><span class="pro-icon pro-pin" aria-hidden="true"></span> Pinned Post</div>` : ""}
         ${sharedContext}
         <div class="post-counts" id="counts-${escapePostHtml(post.id)}">Loading reactions...</div>
         <div class="post-actions">
           <div class="reaction-wrap">
             <button class="post-action" id="react-btn-${escapePostHtml(post.id)}" type="button" onclick="toggleReactionPicker('${escapePostHtml(post.id)}', event)">React</button>
-            <div class="reaction-picker" id="picker-${escapePostHtml(post.id)}">${['👍','❤️','😂','😮','😢'].map(e=>`<button class="reaction-emoji" type="button" onclick="reactToPost('${escapePostHtml(post.id)}','${e}',event)">${e}</button>`).join('')}</div>
+            <div class="reaction-picker" id="picker-${escapePostHtml(post.id)}">${[['Like','👍'],['Love','❤️'],['Laugh','😂'],['Wow','😮'],['Sad','😢']].map(([label,e])=>`<button class="reaction-emoji reaction-label" type="button" aria-label="${label}" onclick="reactToPost('${escapePostHtml(post.id)}','${e}',event)"><span class="reaction-dot-icon"></span>${label}</button>`).join('')}</div>
           </div>
-          <button class="post-action" type="button" onclick="openComments('${escapePostHtml(post.id)}')">💬 Comment</button>
-          <button class="post-action" type="button" onclick="sharePost('${escapePostHtml(post.id)}')">↗ Share</button>
+          <button class="post-action" type="button" onclick="openComments('${escapePostHtml(post.id)}')"><span class="pro-icon pro-chat" aria-hidden="true"></span> Comment</button>
+          <button class="post-action" type="button" onclick="sharePost('${escapePostHtml(post.id)}')"><span class="pro-icon pro-share" aria-hidden="true"></span> Share</button>
         </div>
       </article>`;
 }
@@ -2539,7 +2681,7 @@ async function refreshPostCounts(postId){
         const reactionSummary=parts.length?parts.join(' · '):`<button type="button" class="reaction-summary" onclick="openReactions('${escapePostHtml(postId)}')">No reactions yet</button>`;
         const shareCount=postSnap.exists()?Number(postSnap.data()?.shareCount||0):0;
         const countsEl=document.getElementById('counts-'+postId);
-        if(countsEl)countsEl.innerHTML=`${reactionSummary} <span>· 💬 ${commentsSnap.size}</span> <span>· ↗ ${shareCount}</span>`;
+        if(countsEl)countsEl.innerHTML=`${reactionSummary} <span>· Comments ${commentsSnap.size}</span> <span>· Shares ${shareCount}</span>`;
         const btn=document.getElementById('react-btn-'+postId);
         if(btn&&auth.currentUser){
             const mine=reactionsSnap.docs.find(d=>d.id===auth.currentUser.uid)?.data()?.emoji;
@@ -2578,7 +2720,7 @@ async function confirmDeletePost(){
         document.querySelector(`.post-card[data-post-id="${CSS.escape(postId)}"]`)?.remove();
         const count=document.getElementById('postsCount');if(count)count.textContent=String(document.querySelectorAll('.post-card').length);
         closeDeletePostModal();document.getElementById('deleteSuccessOverlay')?.classList.add('open');
-        if(!document.querySelector('.post-card'))document.getElementById('postsList').innerHTML='<div class="empty-posts"><div class="empty-icon">📝</div><h3>No Posts Yet</h3><p>Your future posts will appear here.</p></div>';
+        if(!document.querySelector('.post-card'))document.getElementById('postsList').innerHTML='<div class="empty-posts"><div class="empty-icon"><span class="pro-icon pro-doc pro-empty" aria-hidden="true"></span></div><h3>No Posts Yet</h3><p>Your future posts will appear here.</p></div>';
     }catch(e){console.error(e);alert(e.message||'Could not delete post.');}
     finally{if(btn){btn.disabled=false;btn.textContent='Delete Post';}}
 }
@@ -2608,7 +2750,7 @@ async function savePostVisibility(visibility){
         if(!snap.exists()||snap.data()?.authorUid!==user.uid)throw new Error('You can only change your own post privacy.');
         await updateDoc(ref,{visibility});
         const card=document.querySelector(`.post-card[data-post-id="${CSS.escape(postId)}"]`);
-        const badge=card?.querySelector('.post-visibility');if(badge)badge.textContent=visibility==='friends'?'👥 Friends Only':visibility==='onlyMe'?'🔒 Only Me':'🌍 Public';
+        const badge=card?.querySelector('.post-visibility');if(badge)badge.innerHTML=visibility==='friends'?'<span class="pro-icon pro-users" aria-hidden="true"></span> Friends Only':visibility==='onlyMe'?'<span class="pro-icon pro-lock" aria-hidden="true"></span> Only Me':'<span class="pro-icon pro-news" aria-hidden="true"></span> Public';
         closePrivacyModal();document.getElementById('privacySuccessOverlay')?.classList.add('open');
     }catch(e){console.error(e);alert(e?.code==='permission-denied'?'Firestore is blocking the privacy change.':'Could not change who can see this post.');}
     finally{document.querySelectorAll('.privacy-option').forEach(b=>b.disabled=false);}
@@ -2708,7 +2850,11 @@ window.submitComment=submitComment;
 
 async function sharePost(postId){
     const user=auth.currentUser;
-    if(!user){ document.getElementById('loginOverlay').style.display='flex'; return; }
+    if(!user){
+        const loginOverlay = document.getElementById('loginOverlay');
+        if(loginOverlay) loginOverlay.style.display='flex';
+        return;
+    }
     try{
         const originalSnap=await getDoc(doc(db,'posts',postId));
         if(!originalSnap.exists()){ alert('This post no longer exists.'); return; }
@@ -2804,7 +2950,7 @@ async function refreshSharedPosts(){
     try{ await loadPosts(); }catch(e){ console.warn('Shared post refresh failed',e); }
 }
 function startSharedPostWatcher(){
-    clearInterval(sharedPostRefreshTimer);
+    if(sharedPostRefreshTimer) clearInterval(sharedPostRefreshTimer);
     sharedPostRefreshTimer=setInterval(refreshSharedPosts,12000);
 }
 
@@ -2831,6 +2977,11 @@ onAuthStateChanged(
         }
 
         loginOverlay.style.display = "none";
+
+        // Keep the signed-in account identity synchronized across the other pages.
+        localStorage.setItem("userName", user.displayName || "User");
+        localStorage.setItem("userPhoto", user.photoURL || "");
+        localStorage.setItem("userEmail", user.email || "");
 
         document.getElementById("profileName").innerHTML =
             escapePostHtml(user.displayName || "User") + verifiedBadgeHtml(user.email);
@@ -2909,9 +3060,17 @@ function applyProfilePhoto(photoUrl){
         placeholder.style.display = "none";
 
         if(navPhoto){
-            navPhoto.innerHTML = `
-                <img src="${escapePostHtml(finalPhotoUrl)}" alt="Profile" loading="eager" decoding="async" style="filter:none;-webkit-filter:none;">
-            `;
+            navPhoto.innerHTML = '';
+            const navImg = document.createElement('img');
+            navImg.id = 'profileNavPhotoImg';
+            navImg.src = finalPhotoUrl;
+            navImg.alt = 'Profile';
+            navImg.loading = 'eager';
+            navImg.decoding = 'async';
+            navImg.referrerPolicy = 'no-referrer';
+            navImg.style.filter = 'none';
+            navImg.style.webkitFilter = 'none';
+            navPhoto.appendChild(navImg);
         }
     }else{
         picture.removeAttribute("src");
@@ -2919,7 +3078,9 @@ function applyProfilePhoto(photoUrl){
         placeholder.style.display = "flex";
 
         if(navPhoto){
-            navPhoto.innerHTML = "👤";
+            // Keep the profile navigation clean when no photo is available.
+            // A real account photo is inserted above as soon as Firebase auth/profile data loads.
+            navPhoto.innerHTML = '';
         }
     }
 }
@@ -3053,7 +3214,7 @@ async function loadProfileFriends(){
                     </div>
                 </a>
                 <div class="friend-profile-actions">
-                    <button class="friend-message-btn" type="button" onclick="messageFriend('${escapePostHtml(friendId)}')">💬 Message</button>
+                    <button class="friend-message-btn" type="button" onclick="messageFriend('${escapePostHtml(friendId)}')"><span class="pro-icon pro-chat" aria-hidden="true"></span> Message</button>
                     <button class="friend-unfriend-btn" type="button" onclick="unfriendProfileFriend('${escapePostHtml(friendId)}', this)">Unfriend</button>
                 </div>
             </div>`;
@@ -3207,7 +3368,7 @@ function resetProfileSectionVerification(hideBox = true){
     }
     if(editVerifySectionBtn){
         editVerifySectionBtn.disabled = false;
-        editVerifySectionBtn.textContent = "🔐 Verify Section";
+        editVerifySectionBtn.innerHTML = '<span class="pro-icon pro-lock" aria-hidden="true"></span> Verify Section';
         editVerifySectionBtn.style.background = "#1e3a8a";
         editVerifySectionBtn.style.color = "white";
     }
@@ -3288,9 +3449,9 @@ window.verifyProfileSectionCode = function(){
     if(!code){
         if(editVerificationMessage){
             editVerificationMessage.style.display = "block";
-            editVerificationMessage.style.background = "#fff3cd";
-            editVerificationMessage.style.color = "#856404";
-            editVerificationMessage.textContent = "🔐 Please enter your section verification code.";
+            editVerificationMessage.style.background = "rgba(119,196,255,.14)";
+            editVerificationMessage.style.color = "#dbeeff";
+            editVerificationMessage.textContent = "Please enter your section verification code.";
         }
         return;
     }
@@ -3304,7 +3465,7 @@ window.verifyProfileSectionCode = function(){
             editVerificationMessage.style.display = "block";
             editVerificationMessage.style.background = "#ffe5e5";
             editVerificationMessage.style.color = "#b00020";
-            editVerificationMessage.textContent = "❌ Section code is not configured.";
+            editVerificationMessage.textContent = "Section code is not configured.";
         }
         return;
     }
@@ -3317,11 +3478,11 @@ window.verifyProfileSectionCode = function(){
             editVerificationMessage.style.display = "block";
             editVerificationMessage.style.background = "#d4edda";
             editVerificationMessage.style.color = "#155724";
-            editVerificationMessage.textContent = "✅ Section verified successfully!";
+            editVerificationMessage.textContent = "Section verified successfully!";
         }
 
         if(editVerifySectionBtn){
-            editVerifySectionBtn.textContent = "✅ Section Verified";
+            editVerifySectionBtn.textContent = "Section Verified";
             editVerifySectionBtn.style.background = "#28a745";
             editVerifySectionBtn.style.color = "white";
             editVerifySectionBtn.disabled = true;
@@ -3340,12 +3501,12 @@ window.verifyProfileSectionCode = function(){
         editVerificationMessage.style.display = "block";
         editVerificationMessage.style.background = "#ffe5e5";
         editVerificationMessage.style.color = "#b00020";
-        editVerificationMessage.textContent = "❌ Incorrect section verification code.";
+        editVerificationMessage.textContent = "Incorrect section verification code.";
     }
 
     if(editVerifySectionBtn){
         editVerifySectionBtn.disabled = false;
-        editVerifySectionBtn.textContent = "🔐 Verify Section";
+        editVerifySectionBtn.innerHTML = '<span class="pro-icon pro-lock" aria-hidden="true"></span> Verify Section';
     }
 };
 
@@ -3377,9 +3538,18 @@ window.saveProfile = async function(){
     const user = auth.currentUser;
     if(!user) return;
 
-    const name = document.getElementById("editName").value.trim();
-    const section = document.getElementById("editSection").value.trim();
-    const bio = document.getElementById("editBio").value.trim();
+    const editName = document.getElementById("editName");
+    const editSection = document.getElementById("editSection");
+    const editBio = document.getElementById("editBio");
+    if(!editName || !editSection || !editBio){
+        console.error("Profile editor elements are missing from the page.");
+        alert("The profile editor could not be loaded correctly. Please refresh the page.");
+        return;
+    }
+
+    const name = editName.value.trim();
+    const section = editSection.value.trim();
+    const bio = editBio.value.trim();
 
     if(!section){
         openProfileSectionRequiredPopup();
@@ -3409,7 +3579,7 @@ window.saveProfile = async function(){
             displayName: name || user.displayName || existing.displayName || "User",
             name: name || user.displayName || existing.name || "User",
             section: section,
-            bio: bio || "Welcome to my CATHS-MAIN Student Voice profile. 🎓",
+            bio: bio || "Welcome to my CATHS-MAIN Student Voice profile. ",
             // Keep the current saved/Google photo. Custom uploads are Coming Soon.
             photoURL: existing.photoURL || user.photoURL || "",
             updatedAt: new Date().toISOString()
@@ -3438,11 +3608,11 @@ window.saveProfile = async function(){
         if(error?.code === "permission-denied") {
             message = "Firestore permission is blocking the profile save. Check your Firestore Rules.";
         }
-        alert("❌ " + message);
+        alert(message);
     }finally{
         if(saveButton){
             saveButton.disabled = false;
-            saveButton.textContent = "💾 Save Changes";
+            saveButton.innerHTML = '<span class="pro-icon pro-save" aria-hidden="true"></span> Save Changes';
         }
     }
 
@@ -3467,7 +3637,8 @@ window.openEditProfile = async function(){
     const user = auth.currentUser;
 
     if(!user){
-        document.getElementById("loginOverlay").style.display = "flex";
+        const loginOverlay = document.getElementById("loginOverlay");
+        if(loginOverlay) loginOverlay.style.display = "flex";
         return;
     }
 
@@ -3487,24 +3658,33 @@ window.openEditProfile = async function(){
         }
     }
 
-    document.getElementById("editName").value =
+    const editName = document.getElementById("editName");
+    const editSection = document.getElementById("editSection");
+    const editBio = document.getElementById("editBio");
+    const editOverlay = document.getElementById("editOverlay");
+    if(!editName || !editSection || !editBio || !editOverlay){
+        console.error("Required profile editor elements are missing.");
+        return;
+    }
+
+    editName.value =
         data.name || data.displayName || user.displayName || "";
 
     resetProfileSectionVerification(true);
 
     const savedSection = String(data.section || "").trim();
-    document.getElementById("editSection").value = savedSection;
+    editSection.value = savedSection;
 
     if(editSectionSearch){
         editSectionSearch.value = savedSection;
     }
 
-    document.getElementById("editBio").value =
+    editBio.value =
         data.bio || "";
 
     profileSetupRequired = !isProfileSetupComplete(data, user);
     updateProfileSetupNotice();
-    document.getElementById("editOverlay").style.display = "flex";
+    editOverlay.style.display = "flex";
 
 };
 
@@ -3516,10 +3696,8 @@ window.closeEditProfile = function(){
         return;
     }
 
-    document.getElementById(
-        "editOverlay"
-    ).style.display =
-        "none";
+    const editOverlay = document.getElementById("editOverlay");
+    if(editOverlay) editOverlay.style.display = "none";
 
     resetProfileSectionVerification(true);
     editSectionSuggestions?.classList.remove("show");
@@ -3612,11 +3790,8 @@ document.addEventListener(
         }
 
 
-        if(event.target === login){
-
-            login.style.display =
-                "none";
-
+        if(event.target === login && login){
+            login.style.display = "none";
         }
 
         const postModal = document.getElementById("postModal");
@@ -3624,20 +3799,28 @@ document.addEventListener(
         if(event.target === postModal) closePostComposer();
         if(event.target === commentsModal) closeComments();
 
-        if(event.target === success){
+        if(event.target === success && success){
             success.style.display = "none";
         }
 
-        if(event.target === profileSectionRequired){
+        if(event.target === profileSectionRequired && profileSectionRequired){
             profileSectionRequired.style.display = "none";
         }
 
-        if(event.target === profileSectionVerification){
+        if(event.target === profileSectionVerification && profileSectionVerification){
             profileSectionVerification.style.display = "none";
         }
 
     }
 );
+
+window.addEventListener("error", event => {
+    console.error("Profile page error:", event.error || event.message);
+});
+
+window.addEventListener("unhandledrejection", event => {
+    console.error("Profile page async error:", event.reason);
+});
 
 document.addEventListener("keydown", e => {
     if(e.key === "Escape"){
