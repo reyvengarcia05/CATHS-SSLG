@@ -1155,6 +1155,8 @@ let xp=Number(localStorage.getItem(guestXPKey)||0);
 let currentUser=null;
 let authResolved=false;
 let profileSyncInFlight=false;
+let xpSyncPromise=null;
+let xpSyncDirty=false;
 function getUserXPKey(uid){ return 'cathsStudyXP:'+uid; }
 
 const xpValue=document.getElementById('xpValue');
@@ -1186,37 +1188,85 @@ function showXPPop(amount){
   const pop=document.createElement('div'); pop.className='xp-pop'; pop.textContent='+'+amount+' XP'; document.body.appendChild(pop); setTimeout(()=>pop.remove(),950);
 }
 async function saveXP(){
+  const targetXP=Math.max(0,Number(xp)||0);
   if(currentUser){
-    localStorage.setItem(getUserXPKey(currentUser.uid),String(xp));
+    localStorage.setItem(getUserXPKey(currentUser.uid),String(targetXP));
   }else{
-    localStorage.setItem(guestXPKey,String(xp));
+    localStorage.setItem(guestXPKey,String(targetXP));
   }
   updateXPUI();
-  if(!currentUser||!window.studyFirebase||profileSyncInFlight)return;
-  try{
+  if(!currentUser||!window.studyFirebase)return;
+
+  // Serialize cloud XP writes so rapid rewards cannot be lost.
+  if(xpSyncPromise){xpSyncDirty=true;return xpSyncPromise;}
+  xpSyncDirty=false;
+  xpSyncPromise=(async()=>{
     const {db,doc,getDoc,setDoc,serverTimestamp}=window.studyFirebase;
     profileSyncInFlight=true;
-    let section=currentUserSection;
-    if(!section){
-      const userSnap=await getDoc(doc(db,'users',currentUser.uid));
-      section=userSnap.exists() ? String(userSnap.data()?.section||'').trim() : '';
-      currentUserSection=section;
+    try{
+      let section=currentUserSection;
+      if(!section){
+        const userSnap=await getDoc(doc(db,'users',currentUser.uid));
+        section=userSnap.exists()?String(userSnap.data()?.section||'').trim():'';
+        currentUserSection=section;
+      }
+      const grade=gradeFromSection(section)||currentUserGrade||'';
+      const profileRef=doc(db,'studyProfiles',currentUser.uid);
+      const snap=await getDoc(profileRef);
+      const remoteXP=snap.exists()?Math.max(0,Number(snap.data()?.xp||0)):0;
+      const desiredXP=Math.max(remoteXP,targetXP);
+
+      // Firestore rules cap XP growth to +150 per update. Catch up in safe chunks.
+      let syncedXP=remoteXP;
+      while(syncedXP<desiredXP){
+        const nextXP=Math.min(desiredXP,syncedXP+150);
+        await setDoc(profileRef,{
+          uid:currentUser.uid,
+          displayName:currentUser.displayName||'Student',
+          email:currentUser.email||'',
+          photoURL:currentUser.photoURL||'',
+          section,
+          grade,
+          xp:nextXP,
+          updatedAt:serverTimestamp()
+        },{merge:true});
+        syncedXP=nextXP;
+      }
+
+      // Ensure profile exists even when XP did not change yet.
+      if(!snap.exists() || !snap.data()?.grade || snap.data()?.section!==section){
+        await setDoc(profileRef,{
+          uid:currentUser.uid,
+          displayName:currentUser.displayName||'Student',
+          email:currentUser.email||'',
+          photoURL:currentUser.photoURL||'',
+          section,
+          grade,
+          xp:syncedXP,
+          updatedAt:serverTimestamp()
+        },{merge:true});
+      }
+
+      if(xp<syncedXP)xp=syncedXP;
+      localStorage.setItem(getUserXPKey(currentUser.uid),String(syncedXP));
+      updateXPUI();
+      updateGradePill(section);
+      return syncedXP;
+    }catch(e){
+      console.warn('Leaderboard sync failed:',e);
+      throw e;
+    }finally{
+      profileSyncInFlight=false;
+      const rerun=xpSyncDirty;
+      xpSyncDirty=false;
+      xpSyncPromise=null;
+      // If XP changed while this sync was running, immediately run another sync.
+      if(currentUser && rerun){
+        void saveXP().catch(()=>{});
+      }
     }
-    const grade=gradeFromSection(section);
-    await setDoc(doc(db,'studyProfiles',currentUser.uid),{
-      uid:currentUser.uid,
-      displayName:currentUser.displayName||'Student',
-      email:currentUser.email||'',
-      photoURL:currentUser.photoURL||'',
-      section,
-      grade,
-      xp,
-      updatedAt:serverTimestamp()
-    },{merge:true});
-    updateGradePill(section);
-    await loadLeaderboard();
-  }catch(e){console.warn('Leaderboard sync failed:',e);}
-  finally{profileSyncInFlight=false;}
+  })();
+  return xpSyncPromise;
 }
 async function loadCurrentUserXP(user){
   if(!user||!window.studyFirebase)return;
@@ -1241,12 +1291,12 @@ async function loadCurrentUserXP(user){
     localStorage.setItem(getUserXPKey(user.uid),String(xp));
     updateXPUI();
     updateGradePill(currentUserSection);
-    if(savedLocal!==xp || !xpSnap.exists() || !xpSnap.data()?.grade || xpSnap.data()?.section!==currentUserSection){await saveXP();}
+    if(savedLocal!==xp || !xpSnap.exists() || !xpSnap.data()?.grade || xpSnap.data()?.section!==currentUserSection){try{await saveXP();}catch(e){}}
   }catch(e){
     console.warn('Could not load saved study XP:',e);
   }
 }
-function addXP(amount){xp+=amount;saveXP();showXPPop(amount);}
+function addXP(amount){const n=Math.max(0,Number(amount)||0);if(!n)return;xp+=n;void saveXP().catch(()=>{});showXPPop(n);}
 
 function getCount(){
   let n=parseInt(itemCount.value,10)||1;
@@ -1429,10 +1479,11 @@ playGameTool?.addEventListener('click',()=>{
   if(gameModal) gameModal.classList.remove('hidden');
 });
 
-function openLeaderboardModal(){
+async function openLeaderboardModal(){
   leaderboardPanel.classList.remove('hidden');
   document.body.classList.add('leaderboard-open');
-  loadLeaderboard();
+  if(currentUser){try{await saveXP();}catch(e){}}
+  await loadLeaderboard();
 }
 function closeLeaderboardModal(){
   leaderboardPanel.classList.add('hidden');
@@ -1453,7 +1504,7 @@ async function loadLeaderboard(){
   try{
     const {db,collection,query,orderBy,limit,getDocs}=window.studyFirebase;
     // Pull a broader set so grade filters work across the whole school.
-    const snap=await getDocs(query(collection(db,'studyProfiles'),orderBy('xp','desc'),limit(200)));
+    const snap=await getDocs(query(collection(db,'studyProfiles'),orderBy('xp','desc'),limit(1000)));
     leaderboardRows=[];
     snap.forEach(d=>{
       const data=d.data()||{};
