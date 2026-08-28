@@ -792,6 +792,8 @@ main{
 .profile-btn:hover{background:rgba(255,255,255,.22)}
 
 .verified-badge{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;margin-left:5px;border-radius:50%;background:#1d9bf0;color:#fff;font-size:10px;font-weight:900;line-height:1;vertical-align:middle;box-shadow:0 1px 3px rgba(29,155,240,.28)}
+.admin-badge{display:inline-flex;align-items:center;gap:5px;margin-left:7px;padding:3px 8px;border-radius:999px;background:linear-gradient(135deg,#eaf5ff,#d9ecff);color:#135ca8;border:1px solid #c5e2ff;font-size:9px;font-weight:800;letter-spacing:.55px;line-height:1;vertical-align:middle;box-shadow:0 2px 7px rgba(19,92,168,.10)}
+.admin-badge .admin-check{width:13px;height:13px;border-radius:50%;display:grid;place-items:center;background:#1d9bf0;color:#fff;font-size:8px;font-weight:900;line-height:1;box-shadow:0 1px 3px rgba(29,155,240,.25)}
 
 
 /* =========================================================
@@ -852,7 +854,7 @@ body::after{
   box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 8px 20px rgba(0,0,0,.12) !important;
 }
 .login-btn img{width:34px !important;height:34px !important;border-radius:50% !important;object-fit:cover !important}
-.login-icon{font-size:18px;line-height:1}
+.login-icon{font-size:18px;line-height:1}.profile-chevron{display:inline-grid;place-items:center;width:14px;height:14px}.profile-chevron svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .header .notification-wrap{position:relative !important;display:flex !important;align-items:center !important}
 .header .notification-btn{
   width:46px !important;height:46px !important;margin:0 !important;padding:0 !important;
@@ -908,7 +910,7 @@ body::after{
   box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 8px 22px rgba(20,120,255,.12) !important;transform:none !important
 }
 .bottom-nav .nav-item.active::after{
-  content:"";position:absolute;left:50%;bottom:4px;width:24px;height:3px;border-radius:999px;transform:translateX(-50%);
+  content:"";position:absolute;left:50%;top:4px;bottom:auto;width:24px;height:3px;border-radius:999px;transform:translateX(-50%);
   background:#77c4ff;box-shadow:0 0 12px rgba(119,196,255,.65)
 }
 .bottom-nav .nav-item .nav-icon-placeholder{display:none !important}
@@ -1008,7 +1010,7 @@ body{
     </div>
 
     <button id="headerLoginBtn" class="login-btn" type="button" onclick="toggleHeaderProfile()">
-      <span class="login-icon" aria-hidden="true">👤</span>
+      <span class="login-icon" aria-hidden="true">U</span>
       <span>Login</span>
     </button>
 
@@ -1021,11 +1023,11 @@ body{
         </div>
       </div>
       <div class="profile-divider"></div>
-      <a href="profile.html" class="profile-link">👤 Profile</a>
-      <a href="friends.html" class="profile-link">👥 Friends</a>
-      <a href="voice.html" class="profile-link">🗣️ Your Concern</a>
+      <a href="profile.html" class="profile-link">Profile</a>
+      <a href="friends.html" class="profile-link">Friends</a>
+      <a href="voice.html" class="profile-link">Your Concern</a>
       <div class="profile-divider"></div>
-      <button class="logout-button" type="button" onclick="logoutUser()">🚪 Log Out</button>
+      <button class="logout-button" type="button" onclick="logoutUser()">Log Out</button>
     </div>
   </div>
 
@@ -1033,21 +1035,21 @@ body{
 
 <main class="container">
   <div class="page-title">
-    <h2>👥 Friends</h2>
+    <h2>Friends</h2>
     <p>Find classmates using their username or nickname.</p>
   </div>
 
   <section class="card" id="profileSetupCard">
-    <h3>✨ Create your username</h3>
+    <h3>Create your username</h3>
     <div class="sub">Your username and nickname are what other students will use to find you.</div>
 
     <div class="profile-grid">
-      <div id="setupAvatar" class="avatar fallback-avatar">👤</div>
+      <div id="setupAvatar" class="avatar fallback-avatar">U</div>
       <div>
         <div class="field-row">
           <div>
             <label for="usernameInput">Username</label>
-            <input id="usernameInput" maxlength="20" placeholder="e.g. Reyven015" autocomplete="off">
+            <input id="usernameInput" maxlength="30" placeholder="e.g. reyven123" autocomplete="off">
             <div class="helper">3–20 characters. Letters, numbers, periods and underscores only.</div>
           </div>
           <div>
@@ -1063,10 +1065,10 @@ body{
   </section>
 
   <section class="card">
-    <h3>🔎 Find Friends</h3>
+    <h3>Find Friends</h3>
     <div class="sub">Search by username or nickname.</div>
     <div class="search-box">
-      <span class="search-icon">🔍</span>
+      <span class="search-icon"></span>
       <input id="searchInput" placeholder="Search username or nickname..." autocomplete="off">
     </div>
     <div id="searchResults" class="results">
@@ -1076,7 +1078,7 @@ body{
 
   <section class="card">
     <div class="section-head">
-      <h3>🔔 Friend Requests</h3>
+      <h3>Friend Requests</h3>
       <span class="count-badge" id="requestCount">0</span>
     </div>
     <div id="requestsList" class="list">
@@ -1086,7 +1088,7 @@ body{
 
   <section class="card">
     <div class="section-head">
-      <h3>📨 Sent Friend Requests</h3>
+      <h3>Sent Friend Requests</h3>
       <span class="count-badge" id="sentRequestCount">0</span>
     </div>
     <div class="sub">See the students you have requested to add.</div>
@@ -1097,7 +1099,7 @@ body{
 
   <section class="card">
     <div class="section-head">
-      <h3>👥 My Friends</h3>
+      <h3>My Friends</h3>
       <span class="count-badge" id="friendCount">0</span>
     </div>
     <div id="friendsList" class="list">
@@ -1129,7 +1131,7 @@ body{
   </a>
 
   <a href="profile.html" class="nav-item">
-    <div class="profile-nav-icon" id="profileNavPhoto">👤</div>
+    <div class="profile-nav-icon" id="profileNavPhoto">U</div>
     <span>Profile</span>
   </a>
 
@@ -1138,7 +1140,7 @@ body{
 
 <div id="removeFriendModal" class="remove-modal" aria-hidden="true">
   <div class="remove-dialog" role="dialog" aria-modal="true" aria-labelledby="removeFriendTitle">
-    <div class="remove-icon">👥</div>
+    <div class="remove-icon"></div>
     <h3 id="removeFriendTitle">Remove Friend?</h3>
     <p>This person will be removed from your friends list. You can send a new friend request later.</p>
     <div id="removeFriendPreview" class="remove-friend-preview"></div>
@@ -1153,7 +1155,7 @@ body{
 
 <div id="loginOverlay" class="overlay">
   <div class="login-popup">
-    <button class="login-close" type="button" onclick="closeLoginDialog()">✕</button>
+    <button class="login-close" type="button" onclick="closeLoginDialog()"></button>
 
     <h2>Welcome Back</h2>
 
@@ -1270,8 +1272,28 @@ let searchTimer = null;
 const $ = (id) => document.getElementById(id);
 const VERIFIED_ADMIN_EMAILS = new Set(['reyvengarcia15@gmail.com','reyvenbermudo091@gmail.com','reyvengarcia05@gmail.com','chezcadc14@gmail.com','nathanielgarc679@gmail.com','marteena.133@gmail.com','gabbicastillo0126@gmail.com','leddadanielle91@gmail.com','jennapastor062@gmail.com','dhenmark1313@gmail.com','christianangelointes0@gmail.com','alexaislacruz@gmail.com','galangjullianne016@gmail.com','vanessajotic2403@gmail.com','aquinobernardjr0@gmail.com','angellyar0909@gmail.com','vhergelnarciso@gmail.com','sicatmadisson487@gmail.com']);
 function isVerifiedAdminEmail(email){return VERIFIED_ADMIN_EMAILS.has(String(email||'').trim().toLowerCase());}
-function verifiedBadgeHtml(userOrEmail){const email=typeof userOrEmail==='string'?userOrEmail:(userOrEmail?.email||'');return isVerifiedAdminEmail(email)?'<span class="verified-badge" title="Verified admin" aria-label="Verified admin">✓</span>':'';}
-function verifiedNameHtml(user){return `${escapeHtml(user?.nickname||user?.name||user?.displayName||user||'Student')}${verifiedBadgeHtml(user)}`;}
+function isVerifiedAdminUser(user){
+  if(!user) return false;
+  if(user.isAdmin === true || String(user.role||'').toLowerCase() === 'admin' || user.admin === true) return true;
+  return isVerifiedAdminEmail(user.email || user.fromEmail || user.toEmail || '');
+}
+function verifiedBadgeHtml(userOrEmail){
+  const admin = typeof userOrEmail === 'string' ? isVerifiedAdminEmail(userOrEmail) : isVerifiedAdminUser(userOrEmail);
+  return admin ? '<span class="verified-badge" title="Verified admin" aria-label="Verified admin">✓</span><span class="admin-badge"><span class="admin-check">✓</span>ADMIN</span>' : '';
+}
+function verifiedNameHtml(user){
+  const name = typeof user === 'string' ? user : (user?.nickname||user?.name||user?.displayName||'Student');
+  return `${escapeHtml(name)}${verifiedBadgeHtml(user)}`;
+}
+async function enrichUser(uid, base={}){
+  if(!uid) return base;
+  if(base.email || base.isAdmin === true || String(base.role||'').toLowerCase() === 'admin' || base.admin === true) return base;
+  try{
+    const snap = await getDoc(doc(db,'users',uid));
+    if(snap.exists()) return {...base,...snap.data(),id:uid,uid};
+  }catch(error){ console.warn('Could not load user verification data:',error); }
+  return {...base,id:uid,uid};
+}
 
 
 function escapeHtml(value=''){
@@ -1313,8 +1335,8 @@ function setHeaderUser(user, profile){
   const nav = $('profileNavPhoto');
   if(user){
     btn.innerHTML = user.photoURL
-      ? `<img src="${escapeHtml(user.photoURL)}" alt=""> <span>${escapeHtml(user.displayName || 'User')}</span><span aria-hidden="true">▼</span>`
-      : `<span class="login-icon" aria-hidden="true">👤</span><span>${escapeHtml(user.displayName || 'User')}</span><span aria-hidden="true">▼</span>`;
+      ? `<img src="${escapeHtml(user.photoURL)}" alt=""> <span>${escapeHtml(user.displayName || 'User')}</span><span class="profile-chevron" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg></span>`
+      : `<span class="login-icon" aria-hidden="true">U</span><span>${escapeHtml(user.displayName || 'User')}</span><span class="profile-chevron" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg></span>`;
     $('menuName').textContent = profile?.nickname || user.displayName || 'User';
     $('menuUsername').textContent = profile?.username ? '@' + profile.username : '@username';
     if(user.photoURL){
@@ -1322,11 +1344,11 @@ function setHeaderUser(user, profile){
       nav.innerHTML = `<img src="${escapeHtml(user.photoURL)}" alt="Profile">`;
     }else{
       photo.src = '';
-      nav.textContent = '👤';
+      nav.textContent = 'U';
     }
   }else{
-    btn.innerHTML = '<span class="login-icon" aria-hidden="true">👤</span><span>Login</span>';
-    nav.textContent = '🔐';
+    btn.innerHTML = '<span class="login-icon" aria-hidden="true">U</span><span>Login</span>';
+    nav.textContent = 'Login';
   }
 }
 
@@ -1523,7 +1545,7 @@ function renderSearchResults(users){
     const messageLink = document.createElement('a');
     messageLink.className = 'btn message-btn';
     messageLink.href = `messages.html?uid=${encodeURIComponent(user.id)}`;
-    messageLink.textContent = '💬 Message';
+    messageLink.innerHTML = '<span class="button-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 5.5h14v10H10l-5 3v-3H5z"></path></svg></span>Message';
     messageLink.title = `Message ${user.nickname || user.username || 'student'}`;
     row.appendChild(messageLink);
 
@@ -1576,7 +1598,7 @@ async function areFriends(otherUid){
 async function refreshRelationshipButton(otherUid, button){
   try{
     if(await areFriends(otherUid)){
-      button.textContent = '✓ Friends';
+      button.textContent = 'Friends';
       button.disabled = true;
       button.className = 'btn btn-success';
       return;
@@ -1600,7 +1622,7 @@ async function handleRelationshipAction(user, button){
   if(!(await ensureSignedIn())) return;
   try{
     if(await areFriends(user.id)){
-      button.textContent = '✓ Friends';
+      button.textContent = 'Friends';
       button.disabled = true;
       button.className = 'btn btn-success';
       return;
@@ -1662,10 +1684,12 @@ async function sendFriendRequest(user){
       fromUsername: currentProfile.username,
       fromNickname: currentProfile.nickname,
       fromPhotoURL: firebaseUser.photoURL || '',
+      fromEmail: firebaseUser.email || '',
       to: user.id,
       toUsername: user.username,
       toNickname: user.nickname,
       toPhotoURL: user.photoURL || '',
+      toEmail: user.email || '',
       status: 'pending',
       createdAt: serverTimestamp()
     });
@@ -1714,25 +1738,32 @@ async function loadRequests(){
     }
 
     $('requestsList').innerHTML = '';
-    snap.docs.forEach(d=>{
+    for(const d of snap.docs){
       const req = {id:d.id,...d.data()};
+      const sender = await enrichUser(req.from, {
+        uid:req.from,
+        email:req.fromEmail || '',
+        nickname:req.fromNickname,
+        username:req.fromUsername,
+        photoURL:req.fromPhotoURL
+      });
       const row = document.createElement('div');
       row.className = 'request-row';
       row.innerHTML = `
-        ${avatarHtml({photoURL:req.fromPhotoURL,nickname:req.fromNickname,username:req.fromUsername})}
+        ${avatarHtml(sender)}
         <div class="row-info">
-          <strong>${verifiedNameHtml(req.fromNickname || req.fromUsername || 'Student')}</strong>
-          <small>@${escapeHtml(req.fromUsername || '')} sent you a friend request.</small>
+          <strong>${verifiedNameHtml(sender)}</strong>
+          <small>@${escapeHtml(sender.username || req.fromUsername || '')} sent you a friend request.</small>
         </div>
         <div class="actions">
-          <button class="btn btn-success">Accept</button>
-          <button class="btn btn-danger">Reject</button>
+          <button class="btn btn-success"><span class="button-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"></path></svg></span>Accept</button>
+          <button class="btn btn-danger"><span class="button-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"></path></svg></span>Reject</button>
         </div>
       `;
       row.querySelector('.btn-success').addEventListener('click',()=>acceptRequest(req,row));
       row.querySelector('.btn-danger').addEventListener('click',()=>rejectRequest(req,row));
       $('requestsList').appendChild(row);
-    });
+    }
   }catch(error){
     console.error(error);
     $('requestsList').innerHTML = '<div class="empty">Could not load requests. Check Firestore rules.</div>';
@@ -1746,6 +1777,7 @@ async function acceptRequest(req,row){
       username:req.fromUsername || '',
       nickname:req.fromNickname || '',
       photoURL:req.fromPhotoURL || '',
+      email:req.fromEmail || '',
       since:serverTimestamp()
     });
     await setDoc(doc(db,'friends',req.from,'list',firebaseUser.uid), {
@@ -1753,6 +1785,7 @@ async function acceptRequest(req,row){
       username:currentProfile.username,
       nickname:currentProfile.nickname,
       photoURL:firebaseUser.photoURL || '',
+      email:firebaseUser.email || '',
       since:serverTimestamp()
     });
     await updateDoc(doc(db,'friendRequests',req.id), {status:'accepted',respondedAt:serverTimestamp()});
@@ -1825,22 +1858,19 @@ async function loadSentRequests(){
 
     $('sentRequestsList').innerHTML = '';
 
-    requests.forEach(req=>{
+    for(const req of requests){
+      const target = await enrichUser(req.to, {uid:req.to,email:req.toEmail || '',nickname:req.toNickname,username:req.toUsername,photoURL:req.toPhotoURL});
       const row = document.createElement('div');
       row.className = 'sent-request-row';
 
       row.innerHTML = `
-        ${avatarHtml({
-          photoURL:req.toPhotoURL,
-          nickname:req.toNickname,
-          username:req.toUsername
-        })}
+        ${avatarHtml(target)}
         <div class="row-info">
-          <strong>${verifiedNameHtml(req.toNickname || req.toUsername || 'Student')}</strong>
+          <strong>${verifiedNameHtml(target)}</strong>
           <small>@${escapeHtml(req.toUsername || '')} • Request pending</small>
         </div>
         <div class="actions">
-          <button class="btn btn-secondary">Cancel</button>
+          <button class="btn btn-secondary"><span class="button-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"></path></svg></span>Cancel</button>
         </div>
       `;
 
@@ -1848,13 +1878,9 @@ async function loadSentRequests(){
       profileLink.href = `user-profile.html?uid=${encodeURIComponent(req.to)}`;
       profileLink.className = 'friend-profile-link';
       profileLink.innerHTML = `
-        ${avatarHtml({
-          photoURL:req.toPhotoURL,
-          nickname:req.toNickname,
-          username:req.toUsername
-        })}
+        ${avatarHtml(target)}
         <div class="row-info">
-          <strong>${verifiedNameHtml(req.toNickname || req.toUsername || 'Student')}</strong>
+          <strong>${verifiedNameHtml(target)}</strong>
           <small>@${escapeHtml(req.toUsername || '')} • Request pending</small>
         </div>
       `;
@@ -1908,7 +1934,8 @@ async function loadFriends(){
     friends.sort((a,b)=>String(a.nickname||a.username||'').localeCompare(String(b.nickname||b.username||'')));
     $('friendsList').innerHTML = '';
 
-    friends.forEach(friend=>{
+    for(const rawFriend of friends){
+      const friend = await enrichUser(rawFriend.uid || rawFriend.id, rawFriend);
       const row = document.createElement('div');
       row.className = 'friend-row';
       row.innerHTML = `
@@ -1920,21 +1947,21 @@ async function loadFriends(){
           </div>
         </a>
         <div class="actions">
-          <button class="btn btn-danger">Remove Friend</button>
+          <button class="btn btn-danger"><span class="button-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 7h14M9 7V4h6v3M8 10v7M12 10v7M16 10v7"></path><path d="M6 7l1 13h10l1-13"></path></svg></span>Remove Friend</button>
         </div>
       `;
       row.querySelector('.btn-danger').addEventListener('click',()=>openRemoveFriendModal(friend,row));
             const messageLink = document.createElement('a');
       messageLink.className = 'btn message-btn';
       messageLink.href = `messages.html?uid=${encodeURIComponent(friend.uid)}`;
-      messageLink.textContent = '💬 Message';
+      messageLink.innerHTML = '<span class="button-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 5.5h14v10H10l-5 3v-3H5z"></path></svg></span>Message';
       messageLink.title = `Message ${friend.nickname || friend.username || 'friend'}`;
       const actions = row.querySelector('.actions');
       if(actions) actions.prepend(messageLink);
       else row.appendChild(messageLink);
 
 $('friendsList').appendChild(row);
-    });
+    }
   }catch(error){
     console.error(error);
     $('friendsList').innerHTML = '<div class="empty">Could not load friends. Check Firestore rules.</div>';
@@ -2044,7 +2071,7 @@ onAuthStateChanged(auth, async (user)=>{
     currentProfile = null;
     setHeaderUser(null,null);
     $('profileSetupCard').innerHTML = `
-      <h3>🔐 Login to use Friends</h3>
+      <h3>Login to use Friends</h3>
       <div class="sub">Sign in with Google first, then create your username/nickname.</div>
       <button class="btn btn-primary" onclick="googleLogin()">Continue with Google</button>
     `;
@@ -2055,10 +2082,10 @@ onAuthStateChanged(auth, async (user)=>{
   }
 
   $('profileSetupCard').innerHTML = `
-    <h3>✨ Your Friends Profile</h3>
+    <h3> Your Friends Profile</h3>
     <div class="sub">Choose the username and nickname that other students will search for.</div>
     <div class="profile-grid">
-      <div id="setupAvatar" class="avatar fallback-avatar">👤</div>
+      <div id="setupAvatar" class="avatar fallback-avatar">U</div>
       <div>
         <div class="field-row">
           <div>
