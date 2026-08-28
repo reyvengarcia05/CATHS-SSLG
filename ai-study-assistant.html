@@ -632,11 +632,15 @@ const provider = new GoogleAuthProvider();
 
 // Use the same persistent Firebase login storage as the other CATHS-MAIN pages.
 // This lets a Google account signed in on index/friends/profile remain signed in here.
-setPersistence(auth, browserLocalPersistence).catch(error => {
-  console.warn("Auth persistence setup failed:", error);
-});
-
 window.studyFirebase = { auth, db, provider, signInWithPopup, onAuthStateChanged, setPersistence, browserLocalPersistence, doc, getDoc, setDoc, addDoc, serverTimestamp, collection, query, orderBy, limit, getDocs };
+
+// Keep Firebase Auth persistence identical across every CATHS-MAIN HTML page.
+// We explicitly wait for persistence setup before attaching the auth listener so
+// an existing Google session has a chance to restore cleanly on page load.
+window.studyAuthReady = setPersistence(auth, browserLocalPersistence).catch(error => {
+  console.warn("Auth persistence setup failed:", error);
+  return null;
+});
 </script>
 </head>
 <body>
@@ -1128,10 +1132,22 @@ function updateUserStatusUI(user){
   }
 }
 
-if(window.studyFirebase){
+async function initializeStudyAuth(){
+  if(!window.studyFirebase){
+    updateUserStatusUI(null);
+    return;
+  }
+
+  try{
+    await window.studyAuthReady;
+  }catch(e){
+    console.warn('Study auth persistence initialization:',e);
+  }
+
   window.studyFirebase.onAuthStateChanged(window.studyFirebase.auth,async user=>{
     currentUser=user||null;
     updateUserStatusUI(currentUser);
+
     if(user){
       signinBtn.classList.add('hidden');
       leaderboardStatus.textContent='Signed in as '+(user.displayName||'Student')+'.';
@@ -1145,9 +1161,9 @@ if(window.studyFirebase){
       updateXPUI();
     }
   });
-}else{
-  updateUserStatusUI(null);
 }
+
+initializeStudyAuth();
 
 const gameModal=document.getElementById('gameModal');const gameModalClose=document.getElementById('gameModalClose');const gameModalBackdrop=document.getElementById('gameModalBackdrop');const gameToast=document.getElementById('gameToast');const gameChoiceGrid=document.getElementById('gameChoiceGrid');const friendsInviteList=document.getElementById('friendsInviteList');const gameModalTitle=document.getElementById('gameModalTitle');const gameModalSubtitle=document.getElementById('gameModalSubtitle');
 function openGameModal(){resetGameModal();gameModal.classList.remove('hidden');document.body.classList.add('modal-open');}
