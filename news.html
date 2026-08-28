@@ -1660,6 +1660,44 @@ body{
 }
 
 </style>
+
+<style id="final-news-layout-fix">
+/* FINAL VISUAL FIXES
+   1) Bring Latest News & Updates directly under the fixed header.
+   2) Hide the content scrollbar while keeping the content scrollable.
+   3) Let the profile dropdown escape the header and render fully in front.
+*/
+.header{
+  overflow:visible !important;
+}
+.header .header-right{
+  z-index:100005 !important;
+}
+.header #profileMenu{
+  z-index:100006 !important;
+}
+.container{
+  padding-top:14px !important;
+  scrollbar-width:none !important;
+  -ms-overflow-style:none !important;
+}
+.container::-webkit-scrollbar{
+  width:0 !important;
+  height:0 !important;
+  display:none !important;
+}
+@media(max-width:768px){
+  .container{
+    padding-top:14px !important;
+  }
+}
+@media(max-width:420px){
+  .container{
+    padding-top:12px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <header class="header">
