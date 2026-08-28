@@ -791,6 +791,25 @@ body.leaderboard-open{overflow:hidden !important;}
   .leaderboard-card .signin-btn{width:calc(100% - 24px) !important;margin:7px 12px 5px !important;}
   .leaderboard-card .leaderboard-list{padding:5px 12px 12px !important;}
 }
+
+/* ===== FOOD STALL QUIZ GAME ===== */
+.food-stall-modal{position:fixed;inset:0;z-index:1000020;display:flex;align-items:center;justify-content:center;padding:14px;background:rgba(2,8,20,.84);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.food-stall-modal.hidden{display:none!important}
+.food-stall-card{position:relative;width:min(96vw,980px);max-height:94vh;overflow:hidden;border-radius:26px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(180deg,#163b61 0%,#082440 58%,#05172a 100%);box-shadow:0 30px 100px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.12);animation:foodStallIn .4s cubic-bezier(.16,1,.3,1)}
+.food-stall-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.09);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.025))}
+.food-stall-brand{display:flex;align-items:center;gap:10px}.food-stall-sign{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,#5baeff,#2f80ff);font-size:24px;box-shadow:0 8px 24px rgba(47,128,255,.25)}
+.food-stall-head h4{font-size:15px;font-weight:800}.food-stall-head small{display:block;font-size:7.5px;color:rgba(255,255,255,.62);margin-top:3px}
+.food-stall-close{width:34px;height:34px;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#fff;font-size:21px;cursor:pointer}.food-stall-hud{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:10px;padding:11px 16px}.stall-hud-box{padding:9px 11px;border-radius:12px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08);text-align:center}.stall-hud-box span{display:block;font-size:6.5px;letter-spacing:.7px;text-transform:uppercase;color:rgba(255,255,255,.55)}.stall-hud-box strong{display:block;font-size:12px;margin-top:2px}.stall-progress{height:5px;margin-top:5px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}.stall-progress i{display:block;width:0;height:100%;background:linear-gradient(90deg,#a9dcff,#5baeff);transition:width .2s ease}
+.food-stall-scene{position:relative;min-height:500px;margin:0 14px 14px;border-radius:20px;overflow:auto;background:linear-gradient(180deg,#6fc7ff 0%,#b8e6ff 44%,#c4a17b 45%,#8b6646 100%);border:1px solid rgba(255,255,255,.14)}
+.food-stall-sky{position:absolute;inset:0 0 52% 0;background:radial-gradient(circle at 12% 26%,rgba(255,255,255,.8) 0 18px,transparent 19px),radial-gradient(circle at 18% 23%,rgba(255,255,255,.65) 0 25px,transparent 26px),radial-gradient(circle at 83% 20%,rgba(255,255,255,.72) 0 20px,transparent 21px);opacity:.45;pointer-events:none}
+.food-stall-counter{position:absolute;left:50%;bottom:55px;transform:translateX(-50%);width:min(74%,700px);min-height:170px;border-radius:18px 18px 10px 10px;background:linear-gradient(180deg,#e7b873,#b36e3a);border:5px solid #744225;box-shadow:0 18px 30px rgba(57,31,15,.28);z-index:2}.food-stall-counter:before{content:"";position:absolute;left:0;right:0;top:-72px;height:82px;border-radius:18px 18px 8px 8px;background:repeating-linear-gradient(90deg,#fff 0 42px,#e85d52 42px 84px);border:5px solid #744225;border-bottom-width:7px;box-shadow:0 10px 18px rgba(57,31,15,.22)}
+.food-stall-signboard{position:absolute;left:50%;top:-126px;transform:translateX(-50%);padding:11px 25px;border-radius:14px;background:#153c67;border:4px solid #f3d49b;box-shadow:0 8px 20px rgba(24,44,65,.25);font-size:15px;font-weight:900;letter-spacing:.5px;white-space:nowrap;z-index:4}.food-stall-signboard span{color:#fbd67c}
+.stall-counter-top{position:absolute;inset:14px 18px auto 18px;display:flex;align-items:center;justify-content:center;min-height:58px;border-radius:12px;background:rgba(255,248,225,.22);border:1px solid rgba(255,255,255,.22);color:#4e2f1c;font-weight:900;font-size:14px;text-align:center;padding:10px}.stall-order-card{position:absolute;left:50%;top:78px;transform:translateX(-50%);width:min(78%,500px);padding:10px 14px;border-radius:14px;background:rgba(4,24,42,.82);border:1px solid rgba(255,255,255,.16);text-align:center;z-index:3}.stall-order-card small{display:block;font-size:7px;color:#bfe4ff;letter-spacing:.8px;text-transform:uppercase}.stall-order-card strong{display:block;font-size:15px;margin-top:4px;line-height:1.35}.stall-order-card em{display:block;font-size:7px;color:rgba(255,255,255,.64);font-style:normal;margin-top:3px}
+.stall-customer{position:absolute;right:8%;bottom:66px;display:flex;flex-direction:column;align-items:center;gap:4px;z-index:5;animation:customerBob 1.8s ease-in-out infinite}.stall-customer-face{width:92px;height:92px;border-radius:50%;display:grid;place-items:center;font-size:58px;background:rgba(255,255,255,.55);border:5px solid rgba(255,255,255,.82);box-shadow:0 12px 22px rgba(24,45,66,.22)}.stall-customer-bubble{max-width:190px;padding:8px 10px;border-radius:12px 12px 3px 12px;background:rgba(255,255,255,.92);color:#17324d;font-size:7.5px;text-align:center;box-shadow:0 7px 18px rgba(0,0,0,.14)}
+.stall-answer-tray{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);width:min(86%,760px);display:grid;grid-template-columns:repeat(2,1fr);gap:8px;z-index:8}.stall-answer-btn{min-height:56px;padding:10px;border-radius:14px;border:2px solid rgba(255,255,255,.7);background:linear-gradient(145deg,rgba(255,255,255,.96),rgba(238,248,255,.91));color:#18354f;font-size:9px;font-weight:800;cursor:pointer;box-shadow:0 8px 18px rgba(26,58,87,.16);transition:.2s ease}.stall-answer-btn:hover{transform:translateY(-3px)}.stall-answer-btn.correct{background:#c9f7d9;border-color:#51be79;color:#174c2d;animation:servePop .34s ease}.stall-answer-btn.wrong{background:#ffd4d4;border-color:#e07272;color:#6c2424;animation:shake .34s ease}.stall-answer-btn.disabled{pointer-events:none;opacity:.74}.stall-banner{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%) scale(.9);padding:14px 20px;border-radius:16px;background:rgba(3,19,34,.9);border:1px solid rgba(255,255,255,.14);font-size:13px;font-weight:900;z-index:20;opacity:0;pointer-events:none}.stall-banner.show{animation:stallBanner .65s ease forwards}.stall-banner.good{color:#aaf6c8}.stall-banner.bad{color:#ffbebe}
+.food-stall-result{position:absolute;inset:0;display:none;place-items:center;background:rgba(4,18,31,.72);backdrop-filter:blur(5px);z-index:30}.food-stall-result.show{display:grid}.stall-result-box{width:min(90%,480px);padding:25px;border-radius:22px;background:linear-gradient(145deg,rgba(14,49,82,.98),rgba(3,22,40,.99));border:1px solid rgba(161,220,255,.2);box-shadow:0 22px 70px rgba(0,0,0,.36);text-align:center;animation:foodStallIn .38s cubic-bezier(.16,1,.3,1)}.stall-result-box h3{font-size:20px}.stall-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}.stall-result-stat{padding:10px;border-radius:12px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08)}.stall-result-stat span{display:block;font-size:6.5px;color:var(--muted);text-transform:uppercase}.stall-result-stat strong{display:block;margin-top:3px;font-size:12px}.stall-result-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.stall-result-actions button{border:0;border-radius:12px;padding:11px;font-size:9px;font-weight:800;cursor:pointer;background:linear-gradient(135deg,#a9dcff,#5baeff);color:#031225}.stall-result-actions button+button{background:rgba(255,255,255,.07);color:#fff;border:1px solid rgba(255,255,255,.12)}
+@keyframes foodStallIn{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes customerBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}@keyframes servePop{50%{transform:scale(1.05)}}@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}@keyframes stallBanner{0%{opacity:0;transform:translate(-50%,-50%) scale(.86)}20%,70%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.02)}}
+@media(max-width:680px){.food-stall-card{border-radius:19px}.food-stall-scene{min-height:620px;margin:0 8px 8px}.stall-customer{right:5%;bottom:130px}.stall-customer-face{width:70px;height:70px;font-size:44px}.stall-customer-bubble{max-width:150px;font-size:6.5px}.food-stall-counter{width:90%;bottom:86px;min-height:175px}.food-stall-signboard{font-size:11px;top:-106px}.stall-order-card{top:75px;width:86%}.stall-order-card strong{font-size:12px}.stall-answer-tray{grid-template-columns:1fr 1fr;width:96%;bottom:9px}.stall-answer-btn{min-height:60px;font-size:8px}.stall-result-grid{grid-template-columns:1fr 1fr}.stall-result-actions{grid-template-columns:1fr}.food-stall-hud{padding:8px}.food-stall-head{padding:12px}.food-stall-head h4{font-size:13px}}
 </style>
 
 <script type="module">
@@ -996,6 +1015,9 @@ window.studyAuthReady = (async () => {
           <svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a1 1 0 0 1 1 1v11"/></svg>
           <span>🃏 Flashcard Game</span><small>Play using your saved flashcards</small>
         </button>
+        <button class="game-choice" type="button" data-real-game="food-stall" data-game-type="food">
+          <span style="font-size:22px">🍔</span><span>Food Stall Game</span><small>Serve the correct definition to animal customers</small>
+        </button>
       </div>
       <div class="friends-invite-list hidden" id="friendsInviteList"></div>
       <div class="reviewer-select-list hidden" id="reviewerSelectList"></div>
@@ -1036,6 +1058,44 @@ window.studyAuthReady = (async () => {
     </div>
   </section>
 
+
+  <section class="food-stall-modal hidden" id="foodStallModal" role="dialog" aria-modal="true" aria-labelledby="foodStallTitle">
+    <div class="food-stall-card">
+      <div class="food-stall-head">
+        <div class="food-stall-brand"><div class="food-stall-sign">🍔</div><div><h4 id="foodStallTitle">Food Stall Quiz</h4><small id="foodStallReviewer">Serve the correct definition to each customer</small></div></div>
+        <button class="food-stall-close" id="foodStallClose" type="button" aria-label="Close Food Stall Quiz">×</button>
+      </div>
+      <div class="food-stall-hud">
+        <div class="stall-hud-box"><span>Served</span><strong id="stallServed">0</strong></div>
+        <div class="stall-hud-box"><span>Progress</span><strong id="stallQuestionNum">1 / 10</strong><div class="stall-progress"><i id="stallProgressBar"></i></div></div>
+        <div class="stall-hud-box"><span>XP</span><strong id="stallXP">+0</strong></div>
+      </div>
+      <div class="food-stall-scene" id="foodStallScene">
+        <div class="food-stall-sky"></div>
+        <div class="food-stall-counter">
+          <div class="food-stall-signboard">🐾 <span>CATHS FOOD STALL</span> 🍽️</div>
+          <div class="stall-counter-top">Serve the correct definition!</div>
+          <div class="stall-order-card"><small id="stallCustomerName">Customer order</small><strong id="stallOrderTerm">Loading…</strong><em>Select the definition that matches the order.</em></div>
+        </div>
+        <div class="stall-customer"><div class="stall-customer-face" id="stallCustomerFace">🐶</div><div class="stall-customer-bubble" id="stallCustomerBubble">“Hi! I would like my order, please!”</div></div>
+        <div class="stall-answer-tray" id="stallAnswerTray"></div>
+        <div class="stall-banner" id="stallBanner"></div>
+        <div class="food-stall-result" id="foodStallResult">
+          <div class="stall-result-box">
+            <h3>Order Service Complete! 🍽️</h3>
+            <p style="color:var(--muted);font-size:9px;margin-top:5px">Great job serving the customers.</p>
+            <div class="stall-result-grid">
+              <div class="stall-result-stat"><span>Score</span><strong id="stallFinalScore">0</strong></div>
+              <div class="stall-result-stat"><span>Accuracy</span><strong id="stallFinalAccuracy">0%</strong></div>
+              <div class="stall-result-stat"><span>XP Earned</span><strong id="stallFinalXP">+0</strong></div>
+              <div class="stall-result-stat"><span>Served</span><strong id="stallFinalServed">0</strong></div>
+            </div>
+            <div class="stall-result-actions"><button id="stallReplayBtn" type="button">Play Again</button><button id="stallBackBtn" type="button">Back to Study Tools</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
   <section class="manual-flashcard-modal hidden" id="manualFlashcardModal" aria-label="Make your own flashcard">
     <div class="manual-flashcard-backdrop" id="manualFlashcardBackdrop"></div>
     <div class="manual-flashcard-card">
@@ -1784,9 +1844,15 @@ async function openReviewerSelection(gameId){
   renderReviewerChoices(docs);
 }
 async function startSoloGameFromMaterial(item){
-  if(!item)return;selectedStudyMaterial=item;const game=selectedGame;closeGameModal();if(game==='quiz-battle'){openQuizShooting(item);}else{showGameToast('That solo game is not available yet.');}
+  if(!item)return;
+  selectedStudyMaterial=item;
+  const game=selectedGame;
+  closeGameModal();
+  if(game==='quiz-battle') openQuizShooting(item);
+  else if(game==='food-stall') openFoodStallGame(item);
+  else showGameToast('That solo game is not available yet.');
 }
-function chooseGame(gameId){selectedGame=gameId;if(selectedFriend){const title=gameId==='quiz-battle'?'Quiz Shooting':'Flashcard Race';sendGameInvite(selectedFriend.uid,title);}else{openReviewerSelection(gameId);}}
+function chooseGame(gameId){selectedGame=gameId;if(selectedFriend){const title=gameId==='quiz-battle'?'Quiz Shooting':gameId==='food-stall'?'Food Stall Game':'Flashcard Race';sendGameInvite(selectedFriend.uid,title);}else{openReviewerSelection(gameId);}}
 async function sendGameInvite(friendUid,gameName){if(!currentUser||!window.studyFirebase)return;try{const {db,addDoc,collection,serverTimestamp}=window.studyFirebase;await addDoc(collection(db,'notifications'),{recipientUid:friendUid,actorUid:currentUser.uid,actorName:currentUser.displayName||'A CATHS student',actorPhotoURL:currentUser.photoURL||'',type:'game_invite',title:(currentUser.displayName||'A friend')+' invited you to play',text:`You were invited to play ${gameName} in CATHS AI Study Assistant.`,read:false,gameId:selectedGame||'study-game',gameName,createdAt:serverTimestamp()});gameSelectGrid.classList.add('hidden');showGameToast(`Game invite sent to ${selectedFriend?.displayName||'your friend'}! ${gameName} selected.`);}catch(e){console.error('Game invite failed:',e);showGameToast('Could not send the invite. Your Firestore notifications permission may need to allow this write.');}}
 document.getElementById('playGameBtn')?.addEventListener('click',openGameModal);gameModalClose?.addEventListener('click',closeGameModal);gameModalBackdrop?.addEventListener('click',closeGameModal);document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!gameModal.classList.contains('hidden'))closeGameModal();if(e.key==='Escape'&&!manualFlashcardModal?.classList.contains('hidden'))closeManualFlashcardCreator();});inviteFriendBtn?.addEventListener('click',openFriendInvites);playSoloBtn?.addEventListener('click',openSoloGameSelection);gameSelectGrid?.querySelectorAll('[data-real-game]').forEach(btn=>btn.addEventListener('click',()=>chooseGame(btn.dataset.realGame)));
 
@@ -1871,6 +1937,64 @@ qsBackBtn?.addEventListener('click',closeQuizShooting);
 quizShootModal?.addEventListener('click',e=>{if(e.target===quizShootModal)closeQuizShooting();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!quizShootModal?.classList.contains('hidden'))closeQuizShooting();});
 
+
+/* =========================================================
+   FOOD STALL QUIZ — SOLO GAME
+   ========================================================= */
+const foodStallModal=document.getElementById('foodStallModal');
+const foodStallClose=document.getElementById('foodStallClose');
+const stallServed=document.getElementById('stallServed');
+const stallQuestionNum=document.getElementById('stallQuestionNum');
+const stallProgressBar=document.getElementById('stallProgressBar');
+const stallXP=document.getElementById('stallXP');
+const stallOrderTerm=document.getElementById('stallOrderTerm');
+const stallCustomerName=document.getElementById('stallCustomerName');
+const stallCustomerFace=document.getElementById('stallCustomerFace');
+const stallCustomerBubble=document.getElementById('stallCustomerBubble');
+const stallAnswerTray=document.getElementById('stallAnswerTray');
+const stallBanner=document.getElementById('stallBanner');
+const foodStallResult=document.getElementById('foodStallResult');
+const stallFinalScore=document.getElementById('stallFinalScore');
+const stallFinalAccuracy=document.getElementById('stallFinalAccuracy');
+const stallFinalXP=document.getElementById('stallFinalXP');
+const stallFinalServed=document.getElementById('stallFinalServed');
+const stallReplayBtn=document.getElementById('stallReplayBtn');
+const stallBackBtn=document.getElementById('stallBackBtn');
+const foodStallReviewer=document.getElementById('foodStallReviewer');
+let stallCards=[];let stallIndex=0;let stallCorrect=0;let stallScore=0;let stallXPearned=0;let stallLocked=false;
+const stallAnimals=[['🐶','Dog'],['🐱','Cat'],['🐰','Rabbit'],['🐼','Panda'],['🦊','Fox'],['🐻','Bear'],['🐨','Koala'],['🐵','Monkey'],['🐯','Tiger'],['🐸','Frog']];
+function buildFoodStallCards(material){
+  const c=material?.content||{};let cards=[];
+  if(Array.isArray(c.cards)){cards=c.cards.map(x=>({term:String(x.front||'').trim(),definition:String(x.back||'').trim()})).filter(x=>x.term&&x.definition);}
+  if(!cards.length&&Array.isArray(c.questions)){cards=c.questions.map(x=>({term:String(x.question||'').trim(),definition:String(x.correct||x.answer||'').trim()})).filter(x=>x.term&&x.definition);}
+  if(!cards.length&&Array.isArray(c.points)){cards=c.points.map(x=>({term:String(x).trim(),definition:String(x).trim()})).filter(x=>x.term);}
+  return cards.slice(0,30);
+}
+function openFoodStallGame(material){
+  stallCards=shuffle(buildFoodStallCards(material));
+  if(!stallCards.length){showGameToast('This reviewer does not contain term-and-definition pairs yet. Try a saved flashcard set.');return;}
+  stallIndex=0;stallCorrect=0;stallScore=0;stallXPearned=0;stallLocked=false;
+  foodStallReviewer.textContent=(material?.topic||'Selected reviewer')+' • Serve each animal customer';
+  foodStallResult.classList.remove('show');foodStallModal.classList.remove('hidden');document.body.classList.add('modal-open');renderFoodStallQuestion();
+}
+function closeFoodStallGame(){foodStallModal?.classList.add('hidden');document.body.classList.remove('modal-open');}
+function renderFoodStallQuestion(){
+  stallLocked=false;const q=stallCards[stallIndex];if(!q){finishFoodStallGame();return;}
+  const animal=stallAnimals[stallIndex%stallAnimals.length];stallCustomerFace.textContent=animal[0];stallCustomerName.textContent=animal[1]+' customer order';stallCustomerBubble.textContent=`“Hi! I would like ${q.term}!”`;stallOrderTerm.textContent=q.term;
+  stallServed.textContent=String(stallIndex);stallQuestionNum.textContent=`${stallIndex+1} / ${stallCards.length}`;stallProgressBar.style.width=(stallIndex/Math.max(1,stallCards.length))*100+'%';stallXP.textContent='+'+stallXPearned;stallAnswerTray.innerHTML='';
+  const distractors=shuffle(stallCards.filter((_,i)=>i!==stallIndex).map(x=>x.definition)).slice(0,3);const options=shuffle([q.definition,...distractors]);while(options.length<4)options.push('A different definition from the lesson.');
+  options.slice(0,4).forEach(opt=>{const b=document.createElement('button');b.type='button';b.className='stall-answer-btn';b.textContent=opt;b.addEventListener('click',()=>serveFoodAnswer(b,opt));stallAnswerTray.appendChild(b);});
+}
+function showStallBanner(text,good){stallBanner.textContent=text;stallBanner.className='stall-banner show '+(good?'good':'bad');setTimeout(()=>stallBanner.className='stall-banner',700);}
+function serveFoodAnswer(btn,opt){if(stallLocked)return;stallLocked=true;const q=stallCards[stallIndex];const good=String(opt)===String(q.definition);stallAnswerTray.querySelectorAll('button').forEach(b=>b.classList.add('disabled'));btn.classList.add(good?'correct':'wrong');if(!good){const correct=[...stallAnswerTray.children].find(b=>String(b.textContent)===String(q.definition));if(correct)correct.classList.add('correct');}
+  if(good){stallCorrect++;stallScore+=100;stallXPearned+=10;showStallBanner('🍽️ Order served! +10 XP',true);addXP(10);}else{stallScore=Math.max(0,stallScore-20);showStallBanner('❌ Wrong definition',false);}
+  stallXP.textContent='+'+stallXPearned;setTimeout(()=>{stallIndex++;renderFoodStallQuestion();},560);
+}
+async function finishFoodStallGame(){
+  stallProgressBar.style.width='100%';const total=stallCards.length;const accuracy=total?Math.round(stallCorrect/total*100):0;stallFinalScore.textContent=stallScore.toLocaleString();stallFinalAccuracy.textContent=accuracy+'%';stallFinalXP.textContent='+'+stallXPearned;stallFinalServed.textContent=stallCorrect+' / '+total;foodStallResult.classList.add('show');
+  if(currentUser&&window.studyFirebase){try{const {db,collection,addDoc,serverTimestamp}=window.studyFirebase;await addDoc(collection(db,'studyActivity'),{ownerUid:currentUser.uid,type:'game',topic:selectedStudyMaterial?.topic||'Food Stall Game',createdAt:serverTimestamp(),action:'completed',gameId:'food-stall',gameName:'Food Stall Game',score:stallScore,correct:stallCorrect,total,accuracy,xpEarned:stallXPearned,mode:'solo',sourceMaterialId:selectedStudyMaterial?.id||''});}catch(e){console.warn('Food stall activity save failed:',e);}}
+}
+foodStallClose?.addEventListener('click',closeFoodStallGame);stallReplayBtn?.addEventListener('click',()=>openFoodStallGame(selectedStudyMaterial));stallBackBtn?.addEventListener('click',closeFoodStallGame);foodStallModal?.addEventListener('click',e=>{if(e.target===foodStallModal)closeFoodStallGame();});
 updateXPUI(); updateCountControl();
 </script>
 
