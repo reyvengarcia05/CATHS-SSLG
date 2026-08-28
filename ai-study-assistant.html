@@ -599,6 +599,26 @@ body.leaderboard-open{overflow:hidden;}
 }
 
 
+
+/* ===== QUIZ SHOOTING GAME ===== */
+.quiz-shoot-modal{position:fixed;inset:0;z-index:1000010;display:flex;align-items:center;justify-content:center;background:rgba(1,6,20,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:16px}
+.quiz-shoot-modal.hidden{display:none!important}
+.quiz-shoot-card{position:relative;width:min(94vw,920px);height:min(92dvh,760px);border:1px solid rgba(153,215,255,.28);border-radius:28px;overflow:hidden;background:radial-gradient(circle at 50% 8%,rgba(69,157,255,.2),transparent 28%),linear-gradient(160deg,#071a37,#020a18 72%);box-shadow:0 32px 100px rgba(0,0,0,.62),inset 0 1px 0 rgba(255,255,255,.1);display:flex;flex-direction:column}
+.quiz-shoot-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 18px;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.12)}
+.quiz-shoot-brand{display:flex;align-items:center;gap:10px;min-width:0}.quiz-shoot-brand .mini-game-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(145deg,rgba(81,167,255,.25),rgba(0,44,102,.5));border:1px solid rgba(151,219,255,.2)}.quiz-shoot-brand h4{margin:0;font-size:14px}.quiz-shoot-brand small{display:block;color:var(--muted);font-size:7px;margin-top:2px}
+.quiz-shoot-close{width:34px;height:34px;border:1px solid rgba(255,255,255,.1);border-radius:10px;background:rgba(255,255,255,.05);color:#fff;font-size:20px;cursor:pointer}
+.quiz-shoot-hud{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;padding:10px 16px;background:rgba(255,255,255,.025);border-bottom:1px solid rgba(255,255,255,.06)}
+.qs-stat{font-size:8px;color:var(--muted)}.qs-stat strong{display:block;color:#fff;font-size:14px;margin-top:2px}.qs-stat.right{text-align:right}.qs-progress{height:6px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}.qs-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8ad5ff,#4d99ff);transition:width .25s ease}
+.quiz-shoot-stage{position:relative;flex:1;overflow:hidden;cursor:crosshair;touch-action:none;background:radial-gradient(circle at 50% 55%,rgba(76,153,255,.1),transparent 40%),linear-gradient(180deg,rgba(11,37,76,.3),rgba(0,9,22,.15));}
+.quiz-shoot-question{position:absolute;left:50%;top:18px;transform:translateX(-50%);width:min(88%,760px);text-align:center;padding:14px 18px;border:1px solid rgba(155,218,255,.14);border-radius:17px;background:rgba(4,17,35,.84);box-shadow:0 10px 30px rgba(0,0,0,.22);z-index:3}.quiz-shoot-question small{display:block;color:#91caef;font-size:7px;text-transform:uppercase;letter-spacing:.12em;margin-bottom:5px}.quiz-shoot-question strong{font-size:14px;line-height:1.35}
+.qs-targets{position:absolute;inset:125px 24px 24px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:center;justify-items:center}.qs-target{position:relative;width:min(32vw,300px);min-width:170px;height:115px;border-radius:22px;border:2px solid rgba(161,220,255,.24);background:linear-gradient(145deg,rgba(69,145,227,.17),rgba(255,255,255,.045));color:#fff;padding:18px 16px;font-size:11px;font-weight:800;line-height:1.35;cursor:crosshair;box-shadow:0 16px 28px rgba(0,0,0,.2);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,opacity .18s ease;overflow:hidden}.qs-target::before,.qs-target::after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(161,220,255,.18);inset:12px;pointer-events:none}.qs-target::after{inset:28px}.qs-target:hover{transform:translateY(-3px) scale(1.02);border-color:rgba(170,224,255,.5);box-shadow:0 18px 38px rgba(41,124,220,.2)}.qs-target.correct{animation:qsHit .34s ease forwards;border-color:#a8e1ff;background:linear-gradient(145deg,rgba(79,191,255,.55),rgba(21,85,142,.6))}.qs-target.wrong{animation:qsMiss .28s ease}.qs-target.disabled{pointer-events:none}
+@keyframes qsHit{50%{transform:scale(1.08);box-shadow:0 0 38px rgba(102,198,255,.55)}100%{opacity:0;transform:scale(.82)}}
+@keyframes qsMiss{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}100%{transform:translateX(0)}}
+.qs-crosshair{position:absolute;width:34px;height:34px;border:1px solid rgba(185,231,255,.65);border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:4;opacity:.55}.qs-crosshair::before,.qs-crosshair::after{content:"";position:absolute;left:50%;top:50%;background:rgba(185,231,255,.75);transform:translate(-50%,-50%)}.qs-crosshair::before{width:54px;height:1px}.qs-crosshair::after{width:1px;height:54px}
+.qs-result{position:absolute;inset:0;z-index:10;display:none;align-items:center;justify-content:center;background:rgba(2,10,24,.78);backdrop-filter:blur(7px)}.qs-result.show{display:flex}.qs-result-box{width:min(88%,460px);text-align:center;padding:28px;border-radius:24px;border:1px solid rgba(163,220,255,.23);background:linear-gradient(145deg,rgba(10,33,69,.97),rgba(2,11,24,.98));box-shadow:0 25px 80px rgba(0,0,0,.5)}.qs-result-box h3{margin:0 0 8px;font-size:22px}.qs-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:18px 0}.qs-result-stat{padding:12px 8px;border-radius:13px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.07)}.qs-result-stat span{display:block;color:var(--muted);font-size:7px}.qs-result-stat strong{display:block;font-size:15px;margin-top:4px}.qs-result-actions{display:flex;gap:8px}.qs-result-actions button{flex:1;border:1px solid rgba(146,214,255,.22);border-radius:11px;padding:11px;background:linear-gradient(145deg,rgba(67,151,255,.24),rgba(0,41,107,.42));color:#fff;font-weight:800;font-size:8.5px;cursor:pointer}
+.qs-banner{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.9);font-size:17px;font-weight:900;opacity:0;pointer-events:none;z-index:8}.qs-banner.show{animation:qsBanner .72s ease}.qs-banner.good{color:#b9eaff}.qs-banner.bad{color:#ffb3b3}@keyframes qsBanner{0%{opacity:0;transform:translate(-50%,-50%) scale(.8)}20%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-60%) scale(1.12)}}
+@media(max-width:640px){.quiz-shoot-modal{padding:8px}.quiz-shoot-card{width:100%;height:calc(100dvh - 16px);border-radius:20px}.quiz-shoot-head{padding:11px 12px}.quiz-shoot-brand h4{font-size:11px}.quiz-shoot-hud{grid-template-columns:1fr 1.2fr 1fr;padding:8px 11px}.qs-stat strong{font-size:12px}.quiz-shoot-question{top:12px;padding:11px 12px}.quiz-shoot-question strong{font-size:11px}.qs-targets{inset:108px 12px 18px;gap:10px}.qs-target{min-width:0;width:100%;height:98px;padding:12px;font-size:9px;border-radius:17px}.qs-result-grid{gap:6px}.qs-result-box{padding:22px 16px}.qs-crosshair{display:none}}
+
 /* ===== FINAL MOBILE LEADERBOARD POLISH ===== */
 .leaderboard-panel{
   width:min(92vw,560px) !important;
@@ -961,7 +981,7 @@ window.studyAuthReady = (async () => {
       <div class="game-choice-grid hidden" id="gameSelectGrid">
         <button class="game-choice" type="button" data-real-game="quiz-battle">
           <svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4zM8 9h8M8 13h5M8 17h3"/></svg>
-          <span>Quiz Challenge</span><small>Compete through practice questions</small>
+          <span>Quiz Shooting</span><small>Shoot the correct answers before time runs out</small>
         </button>
         <button class="game-choice" type="button" data-real-game="flashcard-race">
           <svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a1 1 0 0 1 1 1v11"/></svg>
@@ -972,6 +992,39 @@ window.studyAuthReady = (async () => {
       <div class="game-toast hidden" id="gameToast"></div>
     </div>
   </div>
+
+
+  <section class="quiz-shoot-modal hidden" id="quizShootModal" role="dialog" aria-modal="true" aria-labelledby="quizShootTitle">
+    <div class="quiz-shoot-card">
+      <div class="quiz-shoot-head">
+        <div class="quiz-shoot-brand"><div class="mini-game-icon">🎯</div><div><h4 id="quizShootTitle">Quiz Shooting</h4><small>Hit the correct answer before time runs out</small></div></div>
+        <button class="quiz-shoot-close" id="quizShootClose" type="button" aria-label="Close Quiz Shooting">×</button>
+      </div>
+      <div class="quiz-shoot-hud">
+        <div class="qs-stat"><span>Score</span><strong id="qsScore">0</strong></div>
+        <div><div class="qs-stat" style="text-align:center"><span>Question</span><strong id="qsQuestionNum">1 / 10</strong></div><div class="qs-progress"><i id="qsProgressBar"></i></div></div>
+        <div class="qs-stat right"><span>Time</span><strong id="qsTime">10</strong></div>
+      </div>
+      <div class="quiz-shoot-stage" id="quizShootStage">
+        <div class="quiz-shoot-question"><small>SHOOT THE CORRECT ANSWER</small><strong id="qsQuestionText">Loading question…</strong></div>
+        <div class="qs-targets" id="qsTargets"></div>
+        <div class="qs-crosshair"></div>
+        <div class="qs-banner" id="qsBanner"></div>
+        <div class="qs-result" id="qsResult">
+          <div class="qs-result-box">
+            <h3>Game Complete! 🎯</h3>
+            <p style="color:var(--muted);font-size:9px;margin:0">Great work. Your result has been added to your study activity.</p>
+            <div class="qs-result-grid">
+              <div class="qs-result-stat"><span>Score</span><strong id="qsFinalScore">0</strong></div>
+              <div class="qs-result-stat"><span>Accuracy</span><strong id="qsFinalAccuracy">0%</strong></div>
+              <div class="qs-result-stat"><span>XP Earned</span><strong id="qsFinalXP">+0</strong></div>
+            </div>
+            <div class="qs-result-actions"><button id="qsReplayBtn" type="button">Play Again</button><button id="qsBackBtn" type="button">Back to Study Tools</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <section class="manual-flashcard-modal hidden" id="manualFlashcardModal" aria-label="Make your own flashcard">
     <div class="manual-flashcard-backdrop" id="manualFlashcardBackdrop"></div>
@@ -1591,9 +1644,97 @@ function selectFriendAndChooseGame(friendUid,friends){
   friendsInviteList.classList.add('hidden');gameSelectGrid.classList.remove('hidden');gameModalTitle.textContent='Choose a Game';gameModalSubtitle.textContent=`Playing with ${selectedFriend.displayName}. Pick a game to continue.`;gameToast.classList.add('hidden');
 }
 function openSoloGameSelection(){selectedFriend=null;selectedGame=null;gameChoiceGrid.classList.add('hidden');friendsInviteList.classList.add('hidden');gameSelectGrid.classList.remove('hidden');gameModalTitle.textContent='Choose a Game';gameModalSubtitle.textContent='Play solo and practice at your own pace.';gameToast.classList.add('hidden');}
-function chooseGame(gameId){selectedGame=gameId;const title=gameId==='quiz-battle'?'Quiz Challenge':'Flashcard Race';if(selectedFriend){sendGameInvite(selectedFriend.uid,title);}else{showGameToast(`${title} selected. Solo mode is ready to launch here.`);}}
+function chooseGame(gameId){selectedGame=gameId;const title=gameId==='quiz-battle'?'Quiz Shooting':'Flashcard Race';if(selectedFriend){sendGameInvite(selectedFriend.uid,title);}else{if(gameId==='quiz-battle'){closeGameModal();openQuizShooting();}else{showGameToast(`${title} selected. This game mode will be added next.`);}}}
 async function sendGameInvite(friendUid,gameName){if(!currentUser||!window.studyFirebase)return;try{const {db,addDoc,collection,serverTimestamp}=window.studyFirebase;await addDoc(collection(db,'notifications'),{recipientUid:friendUid,actorUid:currentUser.uid,actorName:currentUser.displayName||'A CATHS student',actorPhotoURL:currentUser.photoURL||'',type:'game_invite',title:(currentUser.displayName||'A friend')+' invited you to play',text:`You were invited to play ${gameName} in CATHS AI Study Assistant.`,read:false,gameId:selectedGame||'study-game',gameName,createdAt:serverTimestamp()});gameSelectGrid.classList.add('hidden');showGameToast(`Game invite sent to ${selectedFriend?.displayName||'your friend'}! ${gameName} selected.`);}catch(e){console.error('Game invite failed:',e);showGameToast('Could not send the invite. Your Firestore notifications permission may need to allow this write.');}}
 document.getElementById('playGameBtn')?.addEventListener('click',openGameModal);gameModalClose?.addEventListener('click',closeGameModal);gameModalBackdrop?.addEventListener('click',closeGameModal);document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!gameModal.classList.contains('hidden'))closeGameModal();if(e.key==='Escape'&&!manualFlashcardModal?.classList.contains('hidden'))closeManualFlashcardCreator();});inviteFriendBtn?.addEventListener('click',openFriendInvites);playSoloBtn?.addEventListener('click',openSoloGameSelection);gameSelectGrid?.querySelectorAll('[data-real-game]').forEach(btn=>btn.addEventListener('click',()=>chooseGame(btn.dataset.realGame)));
+
+/* =========================================================
+   QUIZ SHOOTING — SOLO GAME
+   ========================================================= */
+const quizShootModal=document.getElementById('quizShootModal');
+const quizShootClose=document.getElementById('quizShootClose');
+const quizShootStage=document.getElementById('quizShootStage');
+const qsTargets=document.getElementById('qsTargets');
+const qsQuestionText=document.getElementById('qsQuestionText');
+const qsScoreEl=document.getElementById('qsScore');
+const qsQuestionNum=document.getElementById('qsQuestionNum');
+const qsTimeEl=document.getElementById('qsTime');
+const qsProgressBar=document.getElementById('qsProgressBar');
+const qsBanner=document.getElementById('qsBanner');
+const qsResult=document.getElementById('qsResult');
+const qsFinalScore=document.getElementById('qsFinalScore');
+const qsFinalAccuracy=document.getElementById('qsFinalAccuracy');
+const qsFinalXP=document.getElementById('qsFinalXP');
+const qsReplayBtn=document.getElementById('qsReplayBtn');
+const qsBackBtn=document.getElementById('qsBackBtn');
+let qsQuestions=[];let qsIndex=0;let qsScore=0;let qsCorrect=0;let qsTimeLeft=10;let qsTimer=null;let qsLocked=false;let qsStartedFrom='notes';
+function shuffle(a){return [...a].sort(()=>Math.random()-.5);}
+function buildQuizShootingQuestions(){
+  const out=[];
+  // Prefer the user's currently generated quiz questions when available.
+  const savedQuiz=outputBox.querySelectorAll('.quiz-q');
+  if(currentType==='quiz' && savedQuiz.length){
+    savedQuiz.forEach((el,i)=>{
+      const q=el.querySelector('strong')?.textContent?.replace(/^\d+\.\s*/,'')||`Question ${i+1}`;
+      const answers=[...el.querySelectorAll('label')].map(x=>x.textContent.trim()).filter(Boolean);
+      const hidden=el.querySelector(`#correct${i}`)?.value||answers[0]||'Correct answer';
+      const opts=shuffle([...new Set([hidden,...answers,'Not supported by the lesson.','An unrelated idea.'])]).slice(0,4);
+      while(opts.length<4) opts.push(`Option ${opts.length+1}`);
+      out.push({question:q,correct:hidden,options:opts});
+    });
+  }
+  // Otherwise use the user's generated/saved flashcards currently loaded in the assistant.
+  if(!out.length && Array.isArray(flashCardsData) && flashCardsData.length){
+    const all=flashCardsData.slice(0,30);
+    all.forEach((c,i)=>{const correct=String(c.back||'').trim()||'Review the card definition.';const distractors=all.filter((_,j)=>j!==i).map(x=>String(x.back||'').trim()).filter(Boolean).slice(0,3);const opts=shuffle([correct,...distractors]);while(opts.length<4)opts.push('Another concept from the lesson.');out.push({question:`Which definition best matches: ${String(c.front||'Study term')}`,correct,options:opts.slice(0,4)});});
+  }
+  // Fallback: build answer-target questions from the user's notes.
+  if(!out.length){
+    const sentences=notesInput.value.split(/[.!?]+/).map(s=>s.trim()).filter(Boolean);
+    const source=sentences.length?sentences:['Review the main idea from your lesson.'];
+    source.slice(0,20).forEach((correct,i)=>{const distractors=source.filter((_,j)=>j!==i).slice(0,3);const opts=shuffle([correct,...distractors,'An unrelated statement.']).slice(0,4);while(opts.length<4)opts.push('A different idea.');out.push({question:`Which statement is supported by your notes?`,correct,options:opts});});
+  }
+  return out.length?out:[{question:'What should you do to study effectively?',correct:'Review and practice the lesson.',options:shuffle(['Review and practice the lesson.','Ignore the lesson.','Skip all practice.','Do not read your notes.'])}];
+}
+function openQuizShooting(){
+  qsQuestions=buildQuizShootingQuestions();
+  // Keep the game reasonably short while allowing up to 20 questions.
+  qsQuestions=shuffle(qsQuestions).slice(0,Math.min(20,qsQuestions.length));
+  qsIndex=0;qsScore=0;qsCorrect=0;qsStartedFrom=currentType;qsResult.classList.remove('show');qsScoreEl.textContent='0';quizShootModal.classList.remove('hidden');document.body.classList.add('modal-open');renderQuizShootQuestion();
+}
+function closeQuizShooting(){clearInterval(qsTimer);qsTimer=null;quizShootModal.classList.add('hidden');document.body.classList.remove('modal-open');}
+function showQsBanner(text,good){qsBanner.textContent=text;qsBanner.className='qs-banner show '+(good?'good':'bad');setTimeout(()=>qsBanner.className='qs-banner',650);}
+function renderQuizShootQuestion(){
+  clearInterval(qsTimer);qsLocked=false;qsTimeLeft=10;qsTimeEl.textContent='10';
+  const q=qsQuestions[qsIndex];if(!q){finishQuizShooting();return;}
+  qsQuestionNum.textContent=`${qsIndex+1} / ${qsQuestions.length}`;qsProgressBar.style.width=((qsIndex)/Math.max(1,qsQuestions.length))*100+'%';qsQuestionText.textContent=q.question;qsTargets.innerHTML='';
+  q.options.forEach((opt,i)=>{const btn=document.createElement('button');btn.type='button';btn.className='qs-target';btn.textContent=opt;btn.addEventListener('click',()=>shootQuizAnswer(btn,opt));qsTargets.appendChild(btn);});
+  qsTimer=setInterval(()=>{qsTimeLeft--;qsTimeEl.textContent=String(qsTimeLeft);if(qsTimeLeft<=0){clearInterval(qsTimer);shootQuizAnswer(null,null,true);}},1000);
+}
+function shootQuizAnswer(btn,opt,timedOut=false){
+  if(qsLocked)return;qsLocked=true;clearInterval(qsTimer);
+  const q=qsQuestions[qsIndex];const isCorrect=!timedOut&&String(opt)===String(q.correct);
+  qsTargets.querySelectorAll('.qs-target').forEach(b=>b.classList.add('disabled'));
+  if(btn) btn.classList.add(isCorrect?'correct':'wrong');
+  if(!isCorrect && !timedOut){const correctBtn=[...qsTargets.children].find(b=>String(b.textContent)===String(q.correct));if(correctBtn)correctBtn.classList.add('correct');}
+  if(isCorrect){qsCorrect++;const bonus=100+Math.max(0,qsTimeLeft)*5;qsScore+=bonus;showQsBanner(`+${bonus} • HIT!`,true);addXP(10);}else{qsScore=Math.max(0,qsScore-25);showQsBanner(timedOut?'TIME!':'MISS!',false);}
+  qsScoreEl.textContent=String(qsScore);
+  setTimeout(()=>{qsIndex++;renderQuizShootQuestion();},520);
+}
+async function finishQuizShooting(){
+  clearInterval(qsTimer);qsTimer=null;qsProgressBar.style.width='100%';
+  const total=qsQuestions.length;const accuracy=total?Math.round((qsCorrect/total)*100):0;const earned=Math.max(0,qsCorrect*10);
+  qsFinalScore.textContent=qsScore.toLocaleString();qsFinalAccuracy.textContent=accuracy+'%';qsFinalXP.textContent='+'+earned;qsResult.classList.add('show');
+  if(currentUser&&window.studyFirebase){
+    try{const {db,collection,addDoc,serverTimestamp}=window.studyFirebase;await addDoc(collection(db,'studyActivity'),{ownerUid:currentUser.uid,type:'game',topic:topicInput.value.trim()||'Quiz Shooting',createdAt:serverTimestamp(),action:'completed',gameId:'quiz-battle',gameName:'Quiz Shooting',score:qsScore,correct:qsCorrect,total,accuracy,xpEarned:earned,mode:'solo'});}catch(e){console.warn('Quiz shooting activity save failed:',e);}
+  }
+}
+quizShootClose?.addEventListener('click',closeQuizShooting);
+qsReplayBtn?.addEventListener('click',openQuizShooting);
+qsBackBtn?.addEventListener('click',closeQuizShooting);
+quizShootModal?.addEventListener('click',e=>{if(e.target===quizShootModal)closeQuizShooting();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!quizShootModal?.classList.contains('hidden'))closeQuizShooting();});
+
 updateXPUI(); updateCountControl();
 </script>
 
