@@ -548,11 +548,11 @@ body.leaderboard-open{overflow:hidden;}
 .study-library-icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(145deg,rgba(76,163,255,.22),rgba(0,49,111,.45));border:1px solid rgba(143,211,255,.18)}
 .study-library-icon svg{width:19px;height:19px;fill:none;stroke:#cfeeff;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .study-library-copy{min-width:0}.study-library-copy strong{display:block;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.study-library-copy small{display:block;margin-top:3px;font-size:7px;color:var(--muted)}
-.study-library-open{border:1px solid rgba(143,211,255,.2);background:linear-gradient(145deg,rgba(67,151,255,.24),rgba(0,41,107,.42));color:#fff;border-radius:10px;padding:8px 10px;font-size:8px;font-weight:800;cursor:pointer}
+.study-library-open{border:1px solid rgba(143,211,255,.2);background:linear-gradient(145deg,rgba(67,151,255,.24),rgba(0,41,107,.42));color:#fff;border-radius:10px;padding:8px 10px;font-size:8px;font-weight:800;cursor:pointer}.study-library-actions{display:flex;align-items:center;gap:6px;white-space:nowrap}.study-library-delete{border:1px solid rgba(255,133,133,.18);background:rgba(255,93,93,.09);color:#ffd4d4;border-radius:10px;padding:8px 10px;font-size:8px;font-weight:800;cursor:pointer}.study-library-delete:hover{background:rgba(255,93,93,.15);border-color:rgba(255,160,160,.28)}.study-library-delete:disabled{opacity:.55;cursor:wait}
 .study-library-empty{padding:30px 16px;text-align:center;color:var(--muted);font-size:8.5px;line-height:1.55}
 @keyframes libraryBackdropIn{from{opacity:0}to{opacity:1}}
 @keyframes libraryCardIn{from{opacity:0;transform:translateY(18px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
-@media(max-width:640px){.study-library-panel{padding:10px}.study-library-card{width:calc(100vw - 20px);max-height:calc(100dvh - 20px);border-radius:22px}.study-library-head{padding:15px 14px 11px}.study-library-head h4{font-size:12px}.study-library-head p{font-size:7px}.study-library-list{padding:12px 10px 16px}.study-library-item{grid-template-columns:36px minmax(0,1fr) auto;padding:9px}.study-library-icon{width:36px;height:36px;border-radius:10px}.study-library-copy strong{font-size:8.5px}.study-library-copy small{font-size:6.5px}.study-library-open{font-size:7px;padding:7px 8px}}
+@media(max-width:640px){.study-library-panel{padding:10px}.study-library-card{width:calc(100vw - 20px);max-height:calc(100dvh - 20px);border-radius:22px}.study-library-head{padding:15px 14px 11px}.study-library-head h4{font-size:12px}.study-library-head p{font-size:7px}.study-library-list{padding:12px 10px 16px}.study-library-item{grid-template-columns:36px minmax(0,1fr) auto;padding:9px}.study-library-icon{width:36px;height:36px;border-radius:10px}.study-library-copy strong{font-size:8.5px}.study-library-copy small{font-size:6.5px}.study-library-open,.study-library-delete{font-size:7px;padding:7px 8px}.study-library-actions{gap:4px}}
 
 /* Play a Game — animated Study Tools card */
 .game-tool-card{
@@ -791,6 +791,27 @@ body.leaderboard-open{overflow:hidden !important;}
   .leaderboard-card .signin-btn{width:calc(100% - 24px) !important;margin:7px 12px 5px !important;}
   .leaderboard-card .leaderboard-list{padding:5px 12px 12px !important;}
 }
+
+/* ===== Animated Delete Confirmation ===== */
+.delete-confirm-modal{position:fixed;inset:0;z-index:1000010;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(0,5,18,.70);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);animation:deleteBackdropIn .22s ease both}
+.delete-confirm-modal.hidden{display:none!important}
+.delete-confirm-card{position:relative;width:min(92vw,410px);padding:25px 22px 20px;border-radius:24px;border:1px solid rgba(255,165,165,.22);background:radial-gradient(circle at 50% 0%,rgba(255,104,104,.12),transparent 38%),linear-gradient(145deg,rgba(20,35,65,.98),rgba(5,16,35,.995));box-shadow:0 30px 90px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.12);animation:deleteCardIn .36s cubic-bezier(.16,1,.3,1) both;overflow:hidden}
+.delete-confirm-card::before{content:"";position:absolute;width:180px;height:180px;left:50%;top:-125px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,110,110,.20),transparent 68%);pointer-events:none}
+.delete-confirm-icon{position:relative;width:58px;height:58px;margin:0 auto 13px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(145deg,rgba(255,103,103,.18),rgba(110,20,28,.26));border:1px solid rgba(255,158,158,.20);box-shadow:0 10px 30px rgba(90,8,18,.22)}
+.delete-confirm-icon svg{width:28px;height:28px;fill:none;stroke:#ffdada;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 4px 10px rgba(255,115,115,.20))}
+.delete-confirm-title{font-size:15px;font-weight:800;text-align:center;position:relative}
+.delete-confirm-text{margin:7px auto 0;max-width:330px;text-align:center;color:rgba(255,255,255,.67);font-size:8.5px;line-height:1.6;position:relative}
+.delete-confirm-name{display:block;margin:8px auto 0;max-width:320px;padding:8px 10px;border-radius:11px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08);color:#fff;font-size:9px;font-weight:700;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:relative}
+.delete-confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:17px;position:relative}
+.delete-confirm-btn{border:0;border-radius:12px;padding:11px 12px;font-size:8.5px;font-weight:800;cursor:pointer;transition:transform .18s ease,filter .18s ease,background .18s ease}
+.delete-confirm-btn:hover{transform:translateY(-2px)}
+.delete-confirm-cancel{color:#fff;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10)}
+.delete-confirm-cancel:hover{background:rgba(255,255,255,.11)}
+.delete-confirm-delete{color:#fff;background:linear-gradient(135deg,#e85b67,#b52e3c);box-shadow:0 10px 24px rgba(170,35,48,.22)}
+.delete-confirm-delete:hover{filter:brightness(1.07)}
+@keyframes deleteBackdropIn{from{opacity:0}to{opacity:1}}
+@keyframes deleteCardIn{from{opacity:0;transform:translateY(18px) scale(.94)}45%{opacity:1;transform:translateY(-2px) scale(1.01)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:640px){.delete-confirm-modal{padding:12px}.delete-confirm-card{width:100%;max-width:360px;padding:21px 16px 16px;border-radius:20px}.delete-confirm-icon{width:52px;height:52px;border-radius:16px}.delete-confirm-icon svg{width:25px;height:25px}.delete-confirm-title{font-size:13px}.delete-confirm-text{font-size:7.8px}.delete-confirm-name{font-size:8.5px}.delete-confirm-btn{padding:10px;font-size:8px}}
 </style>
 
 <script type="module">
@@ -799,7 +820,7 @@ import {
   getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, setPersistence, browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 import {
-  getFirestore, doc, getDoc, setDoc, addDoc, serverTimestamp, collection, query, orderBy, limit, getDocs, where
+  getFirestore, doc, getDoc, setDoc, addDoc, deleteDoc, serverTimestamp, collection, query, orderBy, limit, getDocs, where
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -819,7 +840,7 @@ const provider = new GoogleAuthProvider();
 
 // IMPORTANT: all CATHS-MAIN pages use the same Firebase project and LOCAL persistence.
 // Firebase then restores the Google session automatically when this page opens.
-window.studyFirebase = { auth, db, provider, signInWithPopup, onAuthStateChanged, setPersistence, browserLocalPersistence, doc, getDoc, setDoc, addDoc, serverTimestamp, collection, query, orderBy, limit, getDocs, where };
+window.studyFirebase = { auth, db, provider, signInWithPopup, onAuthStateChanged, setPersistence, browserLocalPersistence, doc, getDoc, setDoc, addDoc, deleteDoc, serverTimestamp, collection, query, orderBy, limit, getDocs, where };
 
 window.studyAuthReady = (async () => {
   try {
@@ -1099,6 +1120,19 @@ window.studyAuthReady = (async () => {
     </div>
   </section>
 </main>
+
+<div class="delete-confirm-modal hidden" id="deleteConfirmModal" role="dialog" aria-modal="true" aria-labelledby="deleteConfirmTitle">
+  <div class="delete-confirm-card">
+    <div class="delete-confirm-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/></svg></div>
+    <div class="delete-confirm-title" id="deleteConfirmTitle">Are you sure you want to delete this reviewer?</div>
+    <div class="delete-confirm-text">This study material will be removed from your Study Library.</div>
+    <div class="delete-confirm-name" id="deleteConfirmName"></div>
+    <div class="delete-confirm-actions">
+      <button class="delete-confirm-btn delete-confirm-cancel" id="deleteConfirmCancel" type="button">Cancel</button>
+      <button class="delete-confirm-btn delete-confirm-delete" id="deleteConfirmDelete" type="button">Delete</button>
+    </div>
+  </div>
+
 
 <script>
 const toolCards=[...document.querySelectorAll('.tool-card:not(#viewLibraryTool):not(#ownFlashcardTool)')];
@@ -1594,8 +1628,62 @@ async function loadStudyLibrary(){
 }
 function materialSavedDate(item){return materialDate(item.createdAt)||(item.savedAt?new Date(item.savedAt).toLocaleString():'Saved');}
 function renderStudyLibraryItems(docs){
-  studyLibraryList.innerHTML=docs.map(item=>`<div class="study-library-item"><div class="study-library-icon">${materialIcon(item.type)}</div><div class="study-library-copy"><strong>${esc(item.topic||'Untitled Study Material')}</strong><small>${esc(materialDisplayLabel(item))} • ${esc(materialSavedDate(item))}</small></div><button class="study-library-open" type="button" data-open-id="${esc(item.id)}">Open</button></div>`).join('');
-  studyLibraryList.querySelectorAll('[data-open-id]').forEach(btn=>btn.onclick=()=>openSavedStudyMaterial(docs.find(x=>x.id===btn.dataset.openId)));
+  studyLibraryList.innerHTML=docs.map(item=>`<div class="study-library-item"><div class="study-library-icon">${materialIcon(item.type)}</div><div class="study-library-copy"><strong>${esc(item.topic||'Untitled Study Material')}</strong><small>${esc(materialDisplayLabel(item))} • ${esc(materialSavedDate(item))}</small></div><div class="study-library-actions"><button class="study-library-open" type="button" data-open-id="${esc(item.id)}">Open</button><button class="study-library-delete" type="button" data-delete-id="${esc(item.id)}">Delete</button></div></div>`).join('');
+  studyLibraryList.querySelectorAll('[data-open-id]').forEach(btn=>btn.onclick=()=>openSavedStudyMaterial(docs.find(x=>String(x.id)===String(btn.dataset.openId))));
+  studyLibraryList.querySelectorAll('[data-delete-id]').forEach(btn=>btn.onclick=()=>deleteStudyMaterial(docs.find(x=>String(x.id)===String(btn.dataset.deleteId)),btn));
+}
+
+const deleteConfirmModal=document.getElementById('deleteConfirmModal');
+const deleteConfirmName=document.getElementById('deleteConfirmName');
+const deleteConfirmCancel=document.getElementById('deleteConfirmCancel');
+const deleteConfirmDelete=document.getElementById('deleteConfirmDelete');
+let pendingDeleteItem=null;
+let pendingDeleteButton=null;
+let deleteConfirmResolver=null;
+function closeDeleteConfirm(result=false){
+  if(!deleteConfirmModal)return;
+  deleteConfirmModal.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+  const resolve=deleteConfirmResolver; deleteConfirmResolver=null;
+  pendingDeleteItem=null; pendingDeleteButton=null;
+  if(resolve)resolve(result);
+}
+function askDeleteConfirmation(item,btn){
+  return new Promise(resolve=>{
+    pendingDeleteItem=item; pendingDeleteButton=btn; deleteConfirmResolver=resolve;
+    if(deleteConfirmName)deleteConfirmName.textContent=item?.topic||'Untitled Study Material';
+    deleteConfirmModal?.classList.remove('hidden');
+    document.body.classList.add('modal-open');
+    setTimeout(()=>deleteConfirmCancel?.focus(),40);
+  });
+}
+deleteConfirmCancel?.addEventListener('click',()=>closeDeleteConfirm(false));
+deleteConfirmDelete?.addEventListener('click',()=>closeDeleteConfirm(true));
+deleteConfirmModal?.addEventListener('click',e=>{if(e.target===deleteConfirmModal)closeDeleteConfirm(false);});
+document.addEventListener('keydown',e=>{if(deleteConfirmModal&&!deleteConfirmModal.classList.contains('hidden')&&e.key==='Escape'){e.preventDefault();closeDeleteConfirm(false);}});
+
+async function deleteStudyMaterial(item,btn){
+  if(!item)return;
+  const confirmed=await askDeleteConfirmation(item,btn);
+  if(!confirmed)return;
+  if(btn){btn.disabled=true;btn.textContent='Deleting…';}
+  try{
+    const storageKey=currentUser?('cathsStudyMaterials:'+currentUser.uid):'cathsStudyMaterials:guest';
+    if(currentUser&&window.studyFirebase&&item.id&&!String(item.id).startsWith('local-')){
+      const {db,doc,deleteDoc}=window.studyFirebase;
+      await deleteDoc(doc(db,'studyMaterials',String(item.id)));
+    }
+    try{
+      const localItems=JSON.parse(localStorage.getItem(storageKey)||'[]');
+      localStorage.setItem(storageKey,JSON.stringify(localItems.filter(x=>String(x.id)!==String(item.id))));
+    }catch(localErr){console.warn('Local study material cleanup failed:',localErr);}
+    showGameToast?.('Study material deleted successfully.');
+    await loadStudyLibrary();
+  }catch(e){
+    console.error('Study material delete failed:',e);
+    if(btn){btn.disabled=false;btn.textContent='Delete';}
+    showGameToast?.('Could not delete this material. Check your Firestore studyMaterials delete rule.');
+  }
 }
 
 function openSavedStudyMaterial(item){
@@ -1740,5 +1828,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!quizShootModal?.cl
 updateXPUI(); updateCountControl();
 </script>
 
+
+</div>
 </body>
 </html>
