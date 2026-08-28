@@ -1721,6 +1721,187 @@ body{scroll-padding-top:96px !important}
   .header{height:62px !important;min-height:62px !important}
   .container{padding-top:80px !important}
 }
+
+/* ===== COMPACT CREATE POST MODAL =====
+   Reduced size so the composer stays comfortably between
+   the fixed header and bottom navigation. */
+#postModal{
+  padding:12px !important;
+}
+
+#postModal .post-modal-box{
+  width:min(600px, calc(100vw - 32px)) !important;
+  max-width:600px !important;
+  max-height:calc(100vh - 150px) !important;
+  overflow-y:auto !important;
+  border-radius:22px !important;
+}
+
+#postModal .post-modal-head{
+  padding:16px 19px 13px !important;
+}
+
+#postModal .post-modal-mark{
+  width:36px !important;
+  height:36px !important;
+  flex-basis:36px !important;
+  border-radius:11px !important;
+  font-size:16px !important;
+}
+
+#postModal .post-modal-head h3{
+  font-size:20px !important;
+}
+
+#postModal .post-modal-kicker{
+  font-size:8px !important;
+}
+
+#postModal .post-modal-close{
+  width:34px !important;
+  height:34px !important;
+  flex-basis:34px !important;
+  font-size:16px !important;
+}
+
+#postModal .post-modal-subtitle{
+  padding:11px 19px 6px !important;
+  font-size:10px !important;
+}
+
+#postModal .post-modal-author{
+  margin:2px 19px 9px !important;
+  padding:8px 10px !important;
+  border-radius:13px !important;
+}
+
+#postModal .post-composer-field{
+  margin:0 19px !important;
+}
+
+#postModal .post-textarea{
+  height:135px !important;
+  min-height:135px !important;
+  padding:12px !important;
+  border-radius:14px !important;
+  font-size:12px !important;
+}
+
+#postModal .post-meta-row-polished{
+  margin:7px 19px 0 !important;
+}
+
+#postModal .post-visibility-card{
+  margin:10px 19px 0 !important;
+}
+
+#postModal .post-modal-footer{
+  padding:12px 19px 15px !important;
+}
+
+@media(max-width:768px){
+  #postModal{
+    padding:10px !important;
+  }
+
+  #postModal .post-modal-box{
+    width:min(560px, calc(100vw - 20px)) !important;
+    max-width:560px !important;
+    max-height:calc(100vh - 125px) !important;
+    border-radius:19px !important;
+  }
+
+  #postModal .post-modal-head{
+    padding:14px 16px 11px !important;
+  }
+
+  #postModal .post-modal-head h3{
+    font-size:18px !important;
+  }
+
+  #postModal .post-modal-subtitle{
+    padding:9px 16px 5px !important;
+  }
+
+  #postModal .post-modal-author{
+    margin:2px 16px 8px !important;
+  }
+
+  #postModal .post-composer-field{
+    margin:0 16px !important;
+  }
+
+  #postModal .post-textarea{
+    height:120px !important;
+    min-height:120px !important;
+  }
+
+  #postModal .post-meta-row-polished{
+    margin:6px 16px 0 !important;
+  }
+
+  #postModal .post-visibility-card{
+    margin:9px 16px 0 !important;
+  }
+
+  #postModal .post-modal-footer{
+    padding:11px 16px 13px !important;
+  }
+}
+
+@media(max-width:420px){
+  #postModal .post-modal-box{
+    width:calc(100vw - 14px) !important;
+    max-width:none !important;
+    max-height:calc(100vh - 105px) !important;
+    border-radius:17px !important;
+  }
+
+  #postModal .post-modal-head{
+    padding:12px 14px 10px !important;
+  }
+
+  #postModal .post-modal-mark{
+    width:32px !important;
+    height:32px !important;
+    flex-basis:32px !important;
+  }
+
+  #postModal .post-modal-head h3{
+    font-size:16px !important;
+  }
+
+  #postModal .post-modal-subtitle{
+    padding:8px 14px 4px !important;
+  }
+
+  #postModal .post-modal-author{
+    margin:2px 14px 7px !important;
+    padding:7px 8px !important;
+  }
+
+  #postModal .post-composer-field{
+    margin:0 14px !important;
+  }
+
+  #postModal .post-textarea{
+    height:105px !important;
+    min-height:105px !important;
+  }
+
+  #postModal .post-meta-row-polished{
+    margin:5px 14px 0 !important;
+  }
+
+  #postModal .post-visibility-card{
+    margin:8px 14px 0 !important;
+  }
+
+  #postModal .post-modal-footer{
+    padding:9px 14px 11px !important;
+  }
+}
+
 </style>
 
 </head>
