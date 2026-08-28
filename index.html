@@ -1347,6 +1347,35 @@ color:black;
 
 
 /* =========================================================
+   AI STUDY ASSISTANT — QUICK ACTION CARD
+   ========================================================= */
+.quick-wrapper .grid .ai-study-card{
+    background:linear-gradient(135deg,rgba(34,116,255,.78),rgba(0,41,107,.52)) !important;
+    border-color:rgba(151,211,255,.34) !important;
+}
+.quick-wrapper .grid .ai-study-card .icon svg{
+    width:23px;
+    height:23px;
+    stroke-width:1.7;
+}
+.quick-wrapper .grid .ai-study-card:hover{
+    border-color:rgba(151,211,255,.58) !important;
+}
+@media(max-width:768px){
+    .quick-wrapper .grid .ai-study-card h3{
+        line-height:1.25;
+        max-width:100%;
+        overflow-wrap:anywhere;
+    }
+}
+@media(max-width:380px){
+    .quick-wrapper .grid .ai-study-card .icon svg{
+        width:21px;
+        height:21px;
+    }
+}
+
+/* =========================================================
    QUICK NAVIGATION — BLUE GLASSMORPHISM
    ========================================================= */
 .quick-wrapper .grid .card{
@@ -3611,6 +3640,61 @@ body{
 }
 </style>
 
+
+<style id="final-mobile-intro-alignment">
+/* FINAL MOBILE INTRO ALIGNMENT
+   Keep the intro's particle geometry centered on the core dot across phones.
+   The stage stays on one fixed coordinate system; only the whole stage scales.
+*/
+@media (max-width:600px){
+  .launch-content{overflow:visible;}
+  .launch-dot-stage{
+    width:290px !important;
+    height:175px !important;
+    flex:0 0 175px !important;
+    margin:0 auto 6px !important;
+    transform:scale(.82) !important;
+    transform-origin:center center !important;
+  }
+
+  /* One centered coordinate system for every moving element. */
+  .launch-dot-stage,
+  .launch-dot-stage::before,
+  .launch-dot-stage::after,
+  .launch-dot-stage .launch-dot,
+  .launch-dot-stage .dot-aura,
+  .launch-dot-stage .dot-particle,
+  .launch-dot-stage .dot-spark,
+  .launch-dot-stage .dust-particle{
+    box-sizing:border-box;
+  }
+
+  .launch-dot-stage .dust-particle{will-change:transform,opacity;}
+  .launch-dot-stage .dot-particle{will-change:transform,opacity;}
+
+  /* Prevent the central ring from appearing visually offset on narrow screens. */
+  .launch-dot-stage::after{
+    left:50% !important;
+    top:50% !important;
+    transform:translate(-50%,-50%) !important;
+    transform-origin:center center !important;
+  }
+
+  .launch-dot{
+    left:50% !important;
+    top:50% !important;
+    transform-origin:center center !important;
+  }
+}
+
+@media (max-width:380px){
+  .launch-dot-stage{
+    transform:scale(.70) !important;
+    margin:0 auto 0 !important;
+  }
+}
+</style>
+
 </head>
 
 <body>
@@ -3906,6 +3990,17 @@ and connect with the school community.
 <a href="messages.html" class="card open-messages-card" onclick="openProtectedNavigation(event, 'messages.html')">
 <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v12H8l-4 4V5zM8 9h8M8 13h5"/></svg></div>
 <h3>Messages</h3>
+</a>
+
+<a href="ai-study-assistant.html" class="card ai-study-card" onclick="openProtectedNavigation(event, 'ai-study-assistant.html')">
+<div class="icon" aria-hidden="true">
+<svg viewBox="0 0 24 24" role="img" aria-label="Robot head">
+<path d="M9 3h6a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4Z"/>
+<path d="M12 3V1.5M9 11h.01M15 11h.01M9 15h6M5 9H3M21 9h-2"/>
+<path d="M8 7.5h8"/>
+</svg>
+</div>
+<h3>AI Study Assistant</h3>
 </a>
 
 <a href="Guidance.html" class="card guidance-card" onclick="openProtectedNavigation(event, 'Guidance.html')">
