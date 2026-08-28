@@ -1955,6 +1955,101 @@ html body{--chat-ui-version:5}
 /* Strong outside-click close for message options and reaction pickers. */
 </style>
 
+
+/* FINAL V5 — PC breathing room */
+@media(min-width:801px){
+  .container{
+    left:104px !important;
+    right:0 !important;
+    top:92px !important;
+    bottom:84px !important;
+    padding:16px 46px 24px 34px !important;
+  }
+  .messenger{
+    width:calc(100% - 28px) !important;
+    max-width:1240px !important;
+    height:calc(100vh - 144px) !important;
+    margin:0 auto !important;
+    border-radius:24px !important;
+  }
+  .chat-panel{
+    margin-right:10px !important;
+    margin-bottom:8px !important;
+  }
+}
+
+
+<style id="message-hover-focus-v5">
+/* Message actions hidden by default on PC + phone */
+.message-row .message-quick-actions{
+  opacity:0 !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+  transition:opacity .16s ease,visibility .16s ease !important;
+}
+.message-row:hover .message-quick-actions,
+.message-row.message-action-visible .message-quick-actions,
+.message-row:focus-within .message-quick-actions{
+  opacity:1 !important;
+  visibility:visible !important;
+  pointer-events:auto !important;
+}
+@media(max-width:800px){
+  .message-row.message-action-visible .message-quick-actions{
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:auto !important;
+  }
+}
+</style>
+
+
+<style id="reaction-button-v5">
+.message-quick-actions{
+  z-index:999 !important;
+}
+.message-quick-actions .message-reaction-trigger{
+  display:inline-flex !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  pointer-events:auto !important;
+}
+.message-quick-actions .message-tools-btn{
+  display:inline-flex !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  pointer-events:auto !important;
+}
+@media(max-width:800px){
+  .message-row .message-quick-actions{
+    min-width:62px !important;
+    width:auto !important;
+  }
+  .message-row:not(.mine) .message-quick-actions{
+    flex-direction:row !important;
+  }
+  .message-row.mine .message-quick-actions{
+    flex-direction:row !important;
+  }
+}
+</style>
+
+
+<style id="reaction-space-css-v5">
+.message-reactions:not(.has-reaction){
+  display:none !important;
+  margin:0 !important;
+  min-height:0 !important;
+  height:0 !important;
+  padding:0 !important;
+}
+.message-reactions.has-reaction{
+  display:flex !important;
+  margin-top:7px !important;
+  min-height:29px !important;
+}
+</style>
+
 </head>
 <body>
 <header class="header">
@@ -4027,6 +4122,111 @@ onAuthStateChanged(auth,async user=>{
     ev.stopPropagation();
     toggleReactionPicker(messageId, ev);
   }, true);
+})();
+</script>
+
+
+<script id="reaction-space-v5">
+(function installReactionSpaceGuard(){
+  function updateReactionContainers(root=document){
+    root.querySelectorAll('.message-reactions').forEach(el=>{
+      const hasChip = !!el.querySelector('.message-reaction-chip');
+      el.classList.toggle('has-reaction', hasChip);
+      if(!hasChip){
+        el.style.display='none';
+        el.style.marginTop='0';
+        el.style.minHeight='0';
+        el.style.padding='0';
+      }else{
+        el.style.display='flex';
+        el.style.marginTop='7px';
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>updateReactionContainers());
+  const observer=new MutationObserver(()=>updateReactionContainers());
+  observer.observe(document.body,{subtree:true,childList:true});
+})();
+</script>
+
+
+<script id="message-interaction-v5">
+(function installMessageInteraction(){
+  function hideAll(except){
+    document.querySelectorAll('.message-row.message-action-visible').forEach(row=>{
+      if(!except || row!==except) row.classList.remove('message-action-visible');
+    });
+    document.querySelectorAll('.message-actions.open').forEach(menu=>{
+      if(!except || !menu.closest('.message-row') || menu.closest('.message-row')!==except){
+        menu.classList.remove('open');
+      }
+    });
+  }
+
+  document.addEventListener('pointerover', ev=>{
+    const row=ev.target.closest('.message-row');
+    if(!row) return;
+    hideAll(row);
+    row.classList.add('message-action-visible');
+  });
+
+  document.addEventListener('click', ev=>{
+    const row=ev.target.closest('.message-row');
+    if(row){
+      hideAll(row);
+      row.classList.add('message-action-visible');
+      return;
+    }
+    hideAll(null);
+  }, true);
+
+  document.addEventListener('pointerdown', ev=>{
+    const row=ev.target.closest('.message-row');
+    if(row){
+      row.classList.add('message-action-visible');
+    }else{
+      hideAll(null);
+    }
+  }, true);
+})();
+</script>
+
+
+<script id="settings-fix-v5">
+(function(){
+  function getSettingsButton(){
+    return document.getElementById('settingsBtn') ||
+           document.querySelector('[data-action="settings"]') ||
+           document.querySelector('.settings-btn');
+  }
+  function getSettingsMenu(){
+    return document.getElementById('settingsMenu') ||
+           document.querySelector('.settings-menu');
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    const btn=getSettingsButton(), menu=getSettingsMenu();
+    if(!btn || !menu) return;
+
+    btn.addEventListener('click', ev=>{
+      ev.preventDefault();
+      ev.stopPropagation();
+      const open = menu.classList.toggle('open');
+      menu.style.display = open ? 'block' : 'none';
+      menu.setAttribute('aria-hidden', open ? 'false' : 'true');
+    });
+
+    menu.addEventListener('click', ev=>ev.stopPropagation());
+
+    document.addEventListener('click',()=>{
+      if(menu.classList.contains('open')){
+        menu.classList.remove('open');
+        menu.style.display='none';
+        menu.setAttribute('aria-hidden','true');
+      }
+    });
+  });
 })();
 </script>
 
