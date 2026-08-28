@@ -145,10 +145,13 @@ select option{background:#061a3a;color:#fff}
 }
 @media(max-width:640px){
   .page{padding:10px 11px 30px}
-  .topbar{grid-template-columns:auto 1fr auto;gap:7px;min-height:60px;margin-bottom:12px}
+  .topbar{grid-template-columns:auto minmax(0,1fr) auto;gap:8px;min-height:64px;margin-bottom:13px;align-items:center}
   .brand{gap:5px}.brand img{width:31px;height:31px}.brand .school-logo{width:33px;height:33px}
-  .title h1{font-size:13px;white-space:nowrap}.title p{font-size:6.8px;letter-spacing:1.2px}
-  .back-btn{padding:8px 10px;border-radius:11px;font-size:9px;gap:5px}.back-btn svg{width:15px;height:15px}
+  .title{min-width:0;padding:0 2px}.title h1{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.title p{font-size:6.8px;letter-spacing:1.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .back-wrap{justify-self:end}
+  .back-btn{min-height:38px;padding:8px 11px;border-radius:13px;font-size:9px;gap:5px;white-space:nowrap;background:linear-gradient(145deg,rgba(255,255,255,.15),rgba(255,255,255,.07));border-color:rgba(154,215,255,.22);box-shadow:0 7px 18px rgba(0,12,40,.18),inset 0 1px 0 rgba(255,255,255,.14);-webkit-tap-highlight-color:transparent}
+  .back-btn:active{transform:scale(.96);background:rgba(255,255,255,.18)}
+  .back-btn svg{width:15px;height:15px;flex:0 0 15px;transition:transform .2s ease}.back-btn:hover svg{transform:translateX(-2px)}
   .hero{border-radius:20px;padding:18px}.hero-grid{grid-template-columns:auto 1fr;gap:13px}
   .robot{width:56px;height:56px;border-radius:17px}.robot svg{width:33px;height:33px}.hero h2{font-size:20px}.hero p{font-size:9.5px;line-height:1.55}
   .tools{margin-top:15px}.section-head{margin-bottom:9px}.section-head h3{font-size:13px}.section-head span{font-size:8px}
@@ -159,6 +162,7 @@ select option{background:#061a3a;color:#fff}
 }
 @media(max-width:380px){
   .title h1{font-size:12px}.hero-grid{gap:10px}.robot{width:50px;height:50px}.hero h2{font-size:18px}.hero p{font-size:9px}.tool-card{padding:10px}.tool-card strong{font-size:9px}.tool-card small{font-size:7px}
+  .back-btn{min-height:36px;padding:7px 9px;border-radius:12px;font-size:8.5px}.back-btn svg{width:14px;height:14px;flex-basis:14px}
 }
 
 .section-svg{width:18px;height:18px;display:inline-block;vertical-align:-4px;margin-right:7px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.xp-icon .ui-svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.play-game-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 12px;padding:11px 14px;border:1px solid rgba(142,211,255,.26);border-radius:14px;background:linear-gradient(135deg,rgba(76,160,255,.26),rgba(0,57,132,.42));color:#fff;cursor:pointer;font-size:9.5px;font-weight:800;transition:.2s ease}.play-game-btn:hover{transform:translateY(-2px);border-color:rgba(175,226,255,.48)}.play-game-btn .ui-svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.game-modal{position:fixed;inset:0;z-index:1000000;display:grid;place-items:center;padding:18px}.game-modal.hidden{display:none}.game-modal-backdrop{position:absolute;inset:0;background:rgba(0,7,22,.66);backdrop-filter:blur(10px)}.game-modal-card{position:relative;z-index:1;width:min(92vw,430px);padding:22px;border-radius:24px;border:1px solid rgba(165,222,255,.22);background:linear-gradient(145deg,rgba(9,37,79,.96),rgba(3,19,44,.97));box-shadow:0 28px 80px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.12)}.game-modal-close{position:absolute;right:12px;top:10px;width:34px;height:34px;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#fff;font-size:22px;cursor:pointer}.game-modal-icon{width:52px;height:52px;display:grid;place-items:center;border-radius:16px;margin-bottom:12px;background:linear-gradient(145deg,rgba(75,161,255,.18),rgba(255,255,255,.05));border:1px solid rgba(151,213,255,.2)}.game-modal-icon .ui-svg{width:25px;height:25px;fill:none;stroke:#dff4ff;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.game-modal-title{font-size:18px;font-weight:800}.game-modal-subtitle{margin-top:5px;color:var(--muted);font-size:9px;line-height:1.55}.game-choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.game-choice{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;padding:14px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.055);color:#fff;cursor:pointer;transition:.2s ease}.game-choice:hover{transform:translateY(-3px);border-color:rgba(155,218,255,.34);background:rgba(82,163,255,.10)}.game-choice .ui-svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.game-choice span{font-size:10px;font-weight:800}.game-choice small{font-size:7.5px;color:var(--muted);line-height:1.4}.game-toast{margin-top:12px;padding:10px 12px;border-radius:12px;background:rgba(83,161,255,.10);border:1px solid rgba(126,198,255,.18);font-size:8.5px;color:#d9efff}.game-toast.hidden{display:none}.friends-invite-list{display:grid;gap:8px;margin-top:14px;max-height:290px;overflow:auto;padding-right:2px}.friend-invite-row{display:flex;align-items:center;gap:10px;padding:10px;border-radius:14px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09)}.friend-avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;display:block;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}.friend-avatar-fallback{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,rgba(81,166,255,.24),rgba(0,41,107,.42));border:1px solid rgba(152,214,255,.18);font-weight:800;font-size:12px;flex:0 0 38px}.friend-copy{min-width:0;flex:1}.friend-copy strong{display:block;font-size:9.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.friend-copy small{display:block;color:var(--muted);font-size:7.5px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.friend-invite-action{border:1px solid rgba(143,211,255,.22);background:linear-gradient(145deg,rgba(67,151,255,.23),rgba(0,41,107,.42));color:#fff;border-radius:10px;padding:8px 10px;font-size:8px;font-weight:800;cursor:pointer;white-space:nowrap}.friend-invite-action.sent{background:rgba(63,167,107,.18);border-color:rgba(128,221,166,.25);color:#d9ffe8;cursor:default}.friends-back-btn{width:100%;margin-top:10px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.055);color:#fff;border-radius:11px;padding:9px;font-size:8.5px;font-weight:800;cursor:pointer}@media(max-width:640px){.game-modal{padding:12px}.game-modal-card{width:100%;max-width:390px;padding:18px;border-radius:20px}.game-modal-title{font-size:16px}.game-choice-grid{grid-template-columns:1fr;gap:8px}.game-choice{padding:13px}.play-game-btn{font-size:9px;padding:10px}.section-svg{width:16px;height:16px}}
@@ -223,7 +227,7 @@ select option{background:#061a3a;color:#fff}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import {
-  getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged
+  getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, setPersistence, browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 import {
   getFirestore, doc, getDoc, setDoc, addDoc, serverTimestamp, collection, query, orderBy, limit, getDocs
@@ -244,7 +248,13 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-window.studyFirebase = { auth, db, provider, signInWithPopup, onAuthStateChanged, doc, getDoc, setDoc, addDoc, serverTimestamp, collection, query, orderBy, limit, getDocs };
+// Use the same persistent Firebase login storage as the other CATHS-MAIN pages.
+// This lets a Google account signed in on index/friends/profile remain signed in here.
+setPersistence(auth, browserLocalPersistence).catch(error => {
+  console.warn("Auth persistence setup failed:", error);
+});
+
+window.studyFirebase = { auth, db, provider, signInWithPopup, onAuthStateChanged, setPersistence, browserLocalPersistence, doc, getDoc, setDoc, addDoc, serverTimestamp, collection, query, orderBy, limit, getDocs };
 </script>
 </head>
 <body>
