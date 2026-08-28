@@ -887,6 +887,82 @@ body::after{
   .bottom-nav{height:68px !important;min-height:68px !important}
   .bottom-nav .nav-item{font-size:7.5px !important}
 }
+
+/* INDEX-STYLE BOTTOM NAVIGATION — exact visual language */
+.bottom-nav{
+  position:fixed !important;
+  left:0 !important; right:0 !important; bottom:0 !important;
+  width:100% !important; max-width:none !important;
+  height:82px !important; min-height:82px !important;
+  margin:0 !important;
+  padding:8px 16px calc(8px + env(safe-area-inset-bottom)) !important;
+  display:flex !important; align-items:center !important; justify-content:center !important;
+  gap:8px !important; transform:none !important;
+  border:0 !important; border-top:1px solid rgba(255,255,255,.18) !important;
+  border-radius:22px 22px 0 0 !important;
+  background:linear-gradient(180deg,rgba(5,22,52,.93),rgba(2,13,32,.98)) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(150%) !important;
+  backdrop-filter:blur(22px) saturate(150%) !important;
+  box-shadow:0 -14px 35px rgba(0,8,30,.22),inset 0 1px 0 rgba(255,255,255,.10) !important;
+  z-index:99990 !important; overflow:visible !important;
+}
+.bottom-nav::before{
+  content:"" !important; position:absolute !important; inset:0 !important;
+  border-radius:inherit !important; pointer-events:none !important;
+  background:linear-gradient(90deg,rgba(77,169,255,.06),transparent 25%,transparent 75%,rgba(77,169,255,.06)) !important;
+}
+.bottom-nav .nav-item{
+  position:relative !important; z-index:1 !important;
+  flex:1 1 0 !important; width:auto !important; max-width:180px !important; min-width:0 !important;
+  height:62px !important; margin:0 !important; padding:7px 10px !important;
+  border-radius:16px !important; display:flex !important; flex-direction:column !important;
+  align-items:center !important; justify-content:center !important; gap:4px !important;
+  text-align:center !important; white-space:nowrap !important;
+  color:rgba(255,255,255,.72) !important; font-size:10px !important; font-weight:600 !important;
+  text-decoration:none !important; transform:none !important;
+  transition:background .20s ease,color .20s ease,transform .20s ease !important;
+}
+.bottom-nav .nav-item:hover{ color:#fff !important; background:rgba(255,255,255,.07) !important; transform:translateY(-2px) !important; }
+.bottom-nav .nav-item.active{
+  color:#8fd0ff !important;
+  background:linear-gradient(180deg,rgba(87,169,255,.19),rgba(87,169,255,.07)) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 8px 22px rgba(20,120,255,.12) !important;
+  transform:none !important; font-weight:600 !important;
+}
+.bottom-nav .nav-item.active::after{
+  content:"" !important; position:absolute !important; left:50% !important; bottom:4px !important;
+  width:24px !important; height:3px !important; border-radius:999px !important;
+  transform:translateX(-50%) !important; background:#77c4ff !important;
+  box-shadow:0 0 12px rgba(119,196,255,.65) !important;
+}
+.bottom-nav .nav-item::before{
+  font-size:20px !important; line-height:1 !important; opacity:.92 !important; margin:0 !important;
+}
+.bottom-nav .nav-item:nth-child(1)::before{content:"⌂" !important}
+.bottom-nav .nav-item:nth-child(2)::before{content:"◫" !important}
+.bottom-nav .nav-item:nth-child(3)::before{content:"◌" !important}
+.bottom-nav .nav-item:nth-child(4)::before{content:"◉" !important}
+.bottom-nav .nav-item:nth-child(5)::before{content:"◎" !important}
+.bottom-nav .profile-nav-icon{
+  width:25px !important; height:25px !important; display:flex !important; align-items:center !important; justify-content:center !important;
+  margin:0 !important; background:rgba(255,255,255,.08) !important; border-radius:50% !important; overflow:hidden !important;
+}
+.bottom-nav .profile-nav-icon img, .bottom-nav #profileNavPhoto img{
+  display:block !important; width:25px !important; height:25px !important;
+  min-width:25px !important; min-height:25px !important; max-width:25px !important; max-height:25px !important;
+  object-fit:cover !important; border-radius:50% !important;
+}
+body{padding-bottom:106px !important; overflow-x:hidden !important; scroll-padding-bottom:106px !important}
+@media(max-width:768px){
+  .bottom-nav{height:74px !important; min-height:74px !important; padding:6px 6px calc(6px + env(safe-area-inset-bottom)) !important; gap:2px !important; border-radius:18px 18px 0 0 !important;}
+  .bottom-nav .nav-item{height:58px !important; padding:5px 3px !important; border-radius:13px !important; gap:3px !important; font-size:8.5px !important;}
+  .bottom-nav .nav-item::before{font-size:17px !important}
+  .bottom-nav .profile-nav-icon, .bottom-nav .profile-nav-icon img, .bottom-nav #profileNavPhoto img{width:23px !important;height:23px !important;min-width:23px !important;min-height:23px !important;max-width:23px !important;max-height:23px !important;}
+}
+@media(max-width:420px){
+  .bottom-nav{height:68px !important; min-height:68px !important}
+  .bottom-nav .nav-item{font-size:7.5px !important}
+}
 </style>
 
 </head>
@@ -951,13 +1027,16 @@ body::after{
   </section>
 </main>
 
-<nav class="bottom-nav" aria-label="Primary navigation">
-  <a href="index.html" class="nav-item"><div class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10M9 20v-6h6v6"/></svg></div><span>Home</span></a>
-  <a href="news-feed.html" class="nav-item active"><div class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M7 8h6M7 11h10M7 14h7"/></svg></div><span>News Feed</span></a>
-  <a href="voice.html" class="nav-item"><div class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg></div><span>Student Voice</span></a>
-  <a href="friends.html" class="nav-item"><div class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0M15 6.5a3 3 0 0 1 0 5.8M17 15a4.5 4.5 0 0 1 3.5 4.2"/></svg></div><span>Friends</span></a>
-  <a href="profile.html" class="nav-item"><div class="nav-icon" id="profileNavPhoto" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></div><span>Profile</span></a>
-</nav>
+<footer class="bottom-nav" aria-label="Primary navigation">
+    <a href="index.html" class="nav-item"><span>Home</span></a>
+    <a href="news-feed.html" class="nav-item active"><span>News Feed</span></a>
+    <a href="#" class="nav-item" onclick="openStudentVoice(event)"><span>Student Voice</span></a>
+    <a href="friends.html" class="nav-item" onclick="openFriendsNavigation(event)"><span>Friends</span></a>
+    <a href="profile.html" class="nav-item" onclick="openProtectedNavigation(event, 'profile.html')">
+        <span class="profile-nav-icon" id="profileNavPhoto" aria-hidden="true"></span>
+        <span>Profile</span>
+    </a>
+</footer>
 
 <div id="toast" class="toast"></div>
 
