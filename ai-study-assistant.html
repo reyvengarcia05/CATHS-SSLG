@@ -46,8 +46,12 @@ body::after{background:linear-gradient(115deg,transparent 35%,rgba(120,190,255,.
 .title h1{font-size:19px;line-height:1.2;font-weight:800;letter-spacing:.1px}
 .title p{font-size:9px;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);margin-top:3px}
 .back-wrap{display:flex;justify-content:flex-end;align-items:center;gap:8px;min-width:0}
+.back-wrap .user-status{flex:0 1 auto}
+.back-wrap .back-btn{flex:0 0 auto}
 .user-status{display:flex;align-items:center;gap:7px;max-width:180px;min-width:0;padding:6px 9px;border-radius:13px;color:#fff;text-decoration:none;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.10);backdrop-filter:blur(14px);transition:.2s ease}
 .user-status:hover{transform:translateY(-2px);background:rgba(255,255,255,.13)}
+.user-status.signed-user{cursor:pointer}
+.user-status.signed-user .user-status-copy small{color:rgba(255,255,255,.72)}
 .user-avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;display:block;flex:0 0 28px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08)}
 .user-avatar-fallback{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;flex:0 0 28px;background:linear-gradient(145deg,rgba(76,160,255,.38),rgba(0,41,107,.66));border:1px solid rgba(155,216,255,.18);font-size:9px;font-weight:800}
 .user-status-copy{min-width:0;line-height:1.1}
@@ -158,7 +162,7 @@ select option{background:#061a3a;color:#fff}
   .topbar{grid-template-columns:auto minmax(0,1fr) auto;gap:8px;min-height:64px;margin-bottom:13px;align-items:center}
   .brand{gap:5px}.brand img{width:31px;height:31px}.brand .school-logo{width:33px;height:33px}
   .title{min-width:0;padding:0 2px}.title h1{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.title p{font-size:6.8px;letter-spacing:1.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .back-wrap{justify-self:end;gap:6px;min-width:0}
+  .back-wrap{justify-self:end;gap:6px;min-width:0;max-width:100%}
   .user-status{max-width:112px;padding:5px 7px;border-radius:11px;gap:5px}
   .user-avatar,.user-avatar-fallback{width:24px;height:24px;flex-basis:24px}
   .user-status-copy strong{font-size:7.5px;max-width:64px}
@@ -737,13 +741,10 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-// Use the same persistent Firebase login storage as the other CATHS-MAIN pages.
-// This lets a Google account signed in on index/friends/profile remain signed in here.
+// IMPORTANT: all CATHS-MAIN pages use the same Firebase project and LOCAL persistence.
+// Firebase then restores the Google session automatically when this page opens.
 window.studyFirebase = { auth, db, provider, signInWithPopup, onAuthStateChanged, setPersistence, browserLocalPersistence, doc, getDoc, setDoc, addDoc, serverTimestamp, collection, query, orderBy, limit, getDocs };
 
-// Keep Firebase Auth persistence identical across every CATHS-MAIN HTML page.
-// We explicitly wait for persistence setup before attaching the auth listener so
-// an existing Google session has a chance to restore cleanly on page load.
 window.studyAuthReady = (async () => {
   try {
     await setPersistence(auth, browserLocalPersistence);
@@ -766,14 +767,14 @@ window.studyAuthReady = (async () => {
       <p>Learn smarter • Study better</p>
     </div>
     <div class="back-wrap">
-      <div class="user-status guest" id="userStatus" aria-live="polite" title="Login status">
+      <a class="user-status guest" id="userStatus" href="profile.html" aria-live="polite" title="Open your profile">
         <span class="user-avatar-fallback" id="userAvatarFallback">G</span>
         <img class="user-avatar hidden" id="userAvatar" alt="Profile photo">
         <span class="user-status-copy">
           <strong id="userStatusName">Guest</strong>
           <small><span class="user-status-dot" id="userStatusDot"></span><span id="userStatusText">Not signed in</span></small>
         </span>
-      </div>
+      </a>
       <a class="back-btn" href="index.html">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
         <span>Back to Home</span>
@@ -1223,6 +1224,7 @@ function updateUserStatusUI(user){
   if(!wrap||!name||!status||!avatar||!fallback)return;
   if(user){
     wrap.classList.remove('guest');
+    wrap.classList.add('signed-user');
     name.textContent=user.displayName||'Student';
     status.textContent='Signed in';
     if(user.photoURL){
@@ -1236,6 +1238,7 @@ function updateUserStatusUI(user){
       fallback.textContent=(user.displayName||'Student').trim().charAt(0).toUpperCase()||'S';
     }
   }else{
+    wrap.classList.remove('signed-user');
     wrap.classList.add('guest');
     name.textContent='Guest';
     status.textContent='Not signed in';
@@ -1246,8 +1249,16 @@ function updateUserStatusUI(user){
 }
 
 async function initializeStudyAuth(){
-  if(!window.studyFirebase){
+  // Show the cached Google profile immediately while Firebase restores the real session.
+  const cachedName=localStorage.getItem('userName')||'';
+  const cachedPhoto=localStorage.getItem('userPhoto')||'';
+  if(cachedName){
+    updateUserStatusUI({displayName:cachedName,photoURL:cachedPhoto||null});
+  }else{
     updateUserStatusUI(null);
+  }
+
+  if(!window.studyFirebase){
     return;
   }
 
@@ -1262,6 +1273,9 @@ async function initializeStudyAuth(){
     updateUserStatusUI(currentUser);
 
     if(user){
+      localStorage.setItem('userName',user.displayName||'Student');
+      localStorage.setItem('userPhoto',user.photoURL||'');
+      localStorage.setItem('userEmail',user.email||'');
       signinBtn.classList.add('hidden');
       leaderboardStatus.textContent='Signed in as '+(user.displayName||'Student')+'.';
       await loadCurrentUserXP(user);
