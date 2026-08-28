@@ -679,12 +679,12 @@ body::after{
 
 .header{
   position:sticky !important;
-  top:10px !important;
+  top:0 !important;
   z-index:9990 !important;
   width:calc(100% - 24px) !important;
   max-width:1400px !important;
   min-height:78px !important;
-  margin:10px auto 0 !important;
+  margin:0 auto !important;
   padding:12px 18px !important;
   display:grid !important;
   grid-template-columns:220px 1fr 220px !important;
@@ -692,7 +692,7 @@ body::after{
   gap:15px !important;
   border:1px solid rgba(255,255,255,.20) !important;
   border-radius:22px !important;
-  background:linear-gradient(135deg,rgba(255,255,255,.13),rgba(255,255,255,.055)) !important;
+  background:linear-gradient(180deg,#101f3d 0%,#0a1730 100%) !important;
   -webkit-backdrop-filter:blur(22px) saturate(145%) !important;
   backdrop-filter:blur(22px) saturate(145%) !important;
   box-shadow:0 14px 35px rgba(0,8,30,.22),inset 0 1px 0 rgba(255,255,255,.16) !important;
@@ -864,7 +864,7 @@ body::after{
 @media(max-width:768px){
   body{padding-bottom:82px !important}
   .header{
-    top:3px !important;
+    top:0 !important;
     width:calc(100% - 16px) !important;
     min-height:68px !important;
     padding:9px 10px !important;
@@ -883,7 +883,7 @@ body::after{
   .bottom-nav .nav-item.active .nav-icon svg{width:23px !important;height:23px !important}
 }
 @media(max-width:420px){
-  .header{top:2px !important;width:calc(100% - 12px) !important}
+  .header{top:0 !important;width:calc(100% - 12px) !important}
   .bottom-nav{height:68px !important;min-height:68px !important}
   .bottom-nav .nav-item{font-size:7.5px !important}
 }
@@ -930,7 +930,7 @@ body::after{
   transform:none !important; font-weight:600 !important;
 }
 .bottom-nav .nav-item.active::after{
-  content:"" !important; position:absolute !important; left:50% !important; bottom:4px !important;
+  content:"" !important; position:absolute !important; left:50% !important; top:0 !important;
   width:24px !important; height:3px !important; border-radius:999px !important;
   transform:translateX(-50%) !important; background:#77c4ff !important;
   box-shadow:0 0 12px rgba(119,196,255,.65) !important;
@@ -962,6 +962,764 @@ body{padding-bottom:106px !important; overflow-x:hidden !important; scroll-paddi
 @media(max-width:420px){
   .bottom-nav{height:68px !important; min-height:68px !important}
   .bottom-nav .nav-item{font-size:7.5px !important}
+}
+</style>
+
+
+<style id="newsfeed-enhanced-ui">
+/* =========================================================
+   NEWS FEED ENHANCEMENT LAYER
+   ========================================================= */
+.feed-tools{
+  margin:0 0 16px;
+  padding:12px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:20px;
+  background:rgba(255,255,255,.085);
+  -webkit-backdrop-filter:blur(18px) saturate(140%);
+  backdrop-filter:blur(18px) saturate(140%);
+  box-shadow:0 14px 35px rgba(0,8,30,.14), inset 0 1px 0 rgba(255,255,255,.10);
+}
+.feed-tools-top{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.feed-tabs{display:flex;align-items:center;gap:5px;min-width:0;overflow:auto;scrollbar-width:none;}
+.feed-tabs::-webkit-scrollbar{display:none}
+.feed-tab{
+  border:1px solid transparent;background:transparent;color:rgba(255,255,255,.70);
+  padding:8px 12px;border-radius:12px;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;
+  transition:background .18s ease,color .18s ease,transform .18s ease,border-color .18s ease;
+}
+.feed-tab:hover{color:#fff;background:rgba(255,255,255,.07)}
+.feed-tab.active{color:#082b61;background:linear-gradient(135deg,#dff4ff,#a9ddff);border-color:rgba(255,255,255,.32);box-shadow:0 7px 18px rgba(43,158,255,.15)}
+.feed-tool-actions{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+.feed-tool-btn,.feed-sort{
+  min-height:34px;border:1px solid rgba(255,255,255,.12);border-radius:11px;background:rgba(255,255,255,.08);
+  color:#fff;font-size:9px;font-weight:700;cursor:pointer;transition:.18s ease;
+}
+.feed-tool-btn{display:flex;align-items:center;gap:5px;padding:0 10px}
+.feed-tool-btn:hover,.feed-sort:hover{background:rgba(255,255,255,.14)}
+.feed-tool-btn.loading span:first-child{animation:spin .8s linear infinite;display:inline-block}
+.feed-sort{padding:0 8px;outline:none}
+.feed-sort option{color:#17315e;background:#fff}
+.feed-search-wrap{position:relative;margin-top:10px}
+.feed-search{
+  width:100%;height:40px;padding:0 36px 0 34px;border:1px solid rgba(255,255,255,.10);border-radius:12px;
+  background:rgba(255,255,255,.92);color:#193463;outline:none;font-size:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,.65);
+}
+.feed-search::placeholder{color:#7b8aa4}
+.feed-search:focus{border-color:#8bcfff;box-shadow:0 0 0 3px rgba(102,184,255,.17)}
+.feed-search-icon{position:absolute;left:12px;top:50%;transform:translateY(-52%);color:#51729f;font-size:18px;line-height:1;z-index:1;pointer-events:none}
+.feed-search-clear{position:absolute;right:7px;top:50%;transform:translateY(-50%);width:28px;height:28px;border:0;border-radius:9px;background:transparent;color:#6480a7;font-size:18px;cursor:pointer;display:none}
+.feed-search-wrap.has-value .feed-search-clear{display:block}
+.feed-search-clear:hover{background:#eef4ff;color:#244a83}
+.feed-status-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;padding:0 2px;color:rgba(255,255,255,.56);font-size:8.5px;font-weight:600}
+
+.post-card{transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.post-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.18);box-shadow:0 20px 48px rgba(0,8,30,.20)}
+.post-card:target{border-color:rgba(127,205,255,.52);box-shadow:0 0 0 3px rgba(127,205,255,.10),0 20px 48px rgba(0,8,30,.20)}
+.post-head{align-items:flex-start}
+.post-author{padding-top:1px}
+.post-head-badges{margin-left:auto;display:flex;align-items:center;justify-content:flex-end;gap:5px;flex-wrap:wrap;max-width:50%}
+.post-head-badges .post-visibility{margin-left:0}
+.pinned-badge{display:inline-flex;align-items:center;gap:3px;padding:5px 7px;border-radius:999px;background:rgba(255,220,120,.13);border:1px solid rgba(255,220,120,.20);color:#ffe7a4;font-size:8px;font-weight:800;white-space:nowrap}
+.edited-mark{opacity:.55;font-size:.9em}
+
+.post-meta{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.post-visibility{margin-left:auto}
+.post-menu-btn{transition:background .18s ease,transform .18s ease}
+.post-menu-btn:hover{background:rgba(255,255,255,.16);transform:scale(1.04)}
+.post-text a,.share-context a,.comment-item a{color:#2a78dd;font-weight:700;text-decoration:none}
+
+/* The active state intentionally uses the top indicator shown in the reference. */
+.bottom-nav{
+  position:fixed !important;
+  left:50% !important;
+  right:auto !important;
+  bottom:16px !important;
+  width:min(640px,calc(100vw - 22px)) !important;
+  height:70px !important;
+  min-height:70px !important;
+  padding:6px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:4px !important;
+  transform:translateX(-50%) !important;
+  border:1px solid rgba(255,255,255,.16) !important;
+  border-radius:22px !important;
+  background:linear-gradient(135deg,rgba(11,30,66,.84),rgba(3,16,38,.92)) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(145%) !important;
+  backdrop-filter:blur(22px) saturate(145%) !important;
+  box-shadow:0 18px 50px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.12) !important;
+  z-index:99990 !important;
+  overflow:visible !important;
+}
+.bottom-nav::before{content:"" !important;position:absolute !important;inset:0 !important;border-radius:inherit !important;pointer-events:none !important;background:linear-gradient(180deg,rgba(255,255,255,.08),transparent 36%) !important}
+.bottom-nav .nav-item{
+  position:relative !important;z-index:1 !important;flex:1 1 0 !important;min-width:0 !important;max-width:none !important;height:100% !important;
+  margin:0 !important;padding:6px 6px !important;border-radius:18px !important;display:flex !important;flex-direction:column !important;
+  align-items:center !important;justify-content:center !important;gap:3px !important;color:rgba(255,255,255,.68) !important;
+  font-size:9px !important;font-weight:650 !important;line-height:1.05 !important;text-decoration:none !important;transform:none !important;
+  transition:background .2s ease,color .2s ease,transform .2s ease !important;
+}
+.bottom-nav .nav-item:hover{color:#fff !important;background:rgba(255,255,255,.055) !important;transform:none !important}
+.bottom-nav .nav-item.active{
+  color:#a8d9ff !important;
+  background:linear-gradient(180deg,rgba(38,91,153,.42),rgba(11,37,78,.74)) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 8px 20px rgba(0,11,36,.24) !important;
+  transform:none !important;font-weight:800 !important;
+}
+.bottom-nav .nav-item.active::after{
+  content:"" !important;position:absolute !important;top:0 !important;bottom:auto !important;left:50% !important;width:38px !important;height:4px !important;
+  border-radius:999px !important;transform:translateX(-50%) !important;background:#9bd5ff !important;box-shadow:0 0 14px rgba(155,213,255,.72) !important;
+}
+.bottom-nav .nav-item::before{font-size:19px !important;line-height:1 !important;opacity:.92 !important;margin:0 !important}
+.bottom-nav .nav-item:nth-child(1)::before{content:"⌂" !important}
+.bottom-nav .nav-item:nth-child(2)::before{content:"◫" !important}
+.bottom-nav .nav-item:nth-child(3)::before{content:"◌" !important}
+.bottom-nav .nav-item:nth-child(4)::before{content:"◉" !important}
+.bottom-nav .nav-item:nth-child(5)::before{content:"◎" !important}
+.bottom-nav .nav-item:nth-child(5)::before{content:"" !important}
+.bottom-nav .nav-item:nth-child(5) .profile-nav-icon{
+  width:26px !important;height:26px !important;min-width:26px !important;min-height:26px !important;max-width:26px !important;max-height:26px !important;
+  margin:0 !important;padding:1px !important;display:grid !important;place-items:center !important;border-radius:50% !important;overflow:hidden !important;
+  background:rgba(255,255,255,.09) !important;border:1px solid rgba(255,255,255,.14) !important;
+}
+.bottom-nav .nav-item:nth-child(5) .profile-nav-icon img,.bottom-nav .nav-item:nth-child(5) #profileNavPhoto img{width:24px !important;height:24px !important;min-width:24px !important;min-height:24px !important;max-width:24px !important;max-height:24px !important;object-fit:cover !important;border-radius:50% !important;display:block !important}
+body{padding-bottom:108px !important}
+
+.manage-menu{border:1px solid #dfe7f4 !important;box-shadow:0 22px 60px rgba(0,15,45,.25) !important}
+.manage-menu button{min-height:42px !important;border-radius:11px !important;font-size:11px !important}
+.manage-menu button:hover{background:#eef5ff !important}
+.manage-menu button.danger:hover{background:#fff0f0 !important}
+
+@media(max-width:768px){
+  .container{padding:14px 12px 118px !important}
+  .feed-tools-top{align-items:flex-start}
+  .feed-tool-actions{gap:5px}
+  .feed-tool-btn span:last-child{display:none}
+  .feed-tool-btn{width:34px;justify-content:center;padding:0}
+  .bottom-nav{bottom:8px !important;width:calc(100vw - 14px) !important;height:68px !important;min-height:68px !important;padding:5px !important;border-radius:20px !important}
+  .bottom-nav .nav-item{height:58px !important;font-size:8px !important;border-radius:16px !important;gap:2px !important}
+  .bottom-nav .nav-item::before{font-size:17px !important}
+  .bottom-nav .nav-item.active::after{width:36px !important;height:3px !important}
+  .bottom-nav .nav-item:nth-child(5) .profile-nav-icon{width:24px !important;height:24px !important;min-width:24px !important;min-height:24px !important;max-width:24px !important;max-height:24px !important}
+  .bottom-nav .nav-item:nth-child(5) .profile-nav-icon img,.bottom-nav .nav-item:nth-child(5) #profileNavPhoto img{width:22px !important;height:22px !important;min-width:22px !important;min-height:22px !important;max-width:22px !important;max-height:22px !important}
+}
+@media(max-width:420px){
+  .feed-tools{padding:9px}
+  .feed-tab{padding:7px 9px;font-size:9px}
+  .feed-sort{font-size:8px;min-height:32px}
+  .feed-search{height:38px;font-size:9px}
+  .feed-status-row{font-size:7.5px}
+  .bottom-nav{height:66px !important;min-height:66px !important;bottom:6px !important}
+  .bottom-nav .nav-item{height:56px !important;font-size:7px !important}
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+
+
+<style id="final-index-shell-alignment">
+/* FINAL SHELL ALIGNMENT — match index.html viewport behavior */
+html, body{min-height:100%;}
+body{
+  padding-bottom:96px !important;
+  overflow-x:hidden !important;
+}
+
+.header{
+  position:fixed !important;
+  top:0 !important;
+  left:50% !important;
+  right:auto !important;
+  width:calc(100% - 24px) !important;
+  max-width:1400px !important;
+  min-height:76px !important;
+  margin:0 !important;
+  transform:translateX(-50%) !important;
+  z-index:99990 !important;
+  background:linear-gradient(145deg,#0b1832 0%,#102951 100%) !important;
+  border:1px solid rgba(255,255,255,.16) !important;
+  border-radius:22px !important;
+  box-shadow:0 14px 34px rgba(0,8,30,.28),inset 0 1px 0 rgba(255,255,255,.10) !important;
+}
+.header::before{
+  background:linear-gradient(90deg,rgba(90,170,255,.07),transparent 28%,transparent 72%,rgba(90,170,255,.07)) !important;
+}
+
+.container{
+  padding-top:100px !important;
+  padding-bottom:118px !important;
+}
+
+.bottom-nav{
+  position:fixed !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  width:100vw !important;
+  max-width:none !important;
+  height:82px !important;
+  min-height:82px !important;
+  margin:0 !important;
+  transform:none !important;
+  padding:6px 10px calc(6px + env(safe-area-inset-bottom)) !important;
+  border:1px solid rgba(255,255,255,.12) !important;
+  border-bottom:0 !important;
+  border-radius:22px 22px 0 0 !important;
+  background:linear-gradient(145deg,rgba(7,21,46,.98),rgba(4,16,36,.99)) !important;
+  box-shadow:0 -12px 34px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.08) !important;
+  z-index:99990 !important;
+}
+.bottom-nav::before{
+  background:linear-gradient(180deg,rgba(255,255,255,.08),transparent 36%) !important;
+}
+.bottom-nav .nav-item{
+  border-radius:18px !important;
+}
+.bottom-nav .nav-item.active{
+  background:linear-gradient(180deg,rgba(38,79,131,.54),rgba(10,29,61,.78)) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.11),0 8px 18px rgba(0,11,36,.22) !important;
+}
+/* Active indicator must stay on TOP for News Feed, same as the reference. */
+.bottom-nav .nav-item.active::after{
+  top:0 !important;
+  bottom:auto !important;
+  left:50% !important;
+  transform:translateX(-50%) !important;
+  width:38px !important;
+  height:4px !important;
+  border-radius:999px !important;
+  background:#9bd5ff !important;
+  box-shadow:0 0 14px rgba(155,213,255,.72) !important;
+}
+
+@media (max-width:768px){
+  body{padding-bottom:76px !important;}
+  .header{
+    top:1px !important;
+    width:calc(100% - 16px) !important;
+    min-height:66px !important;
+    border-radius:18px !important;
+  }
+  .container{padding-top:80px !important;padding-bottom:102px !important;}
+  .bottom-nav{
+    width:100vw !important;
+    height:70px !important;
+    min-height:70px !important;
+    padding:5px 6px calc(5px + env(safe-area-inset-bottom)) !important;
+    border-radius:18px 18px 0 0 !important;
+  }
+  .bottom-nav .nav-item{height:58px !important;border-radius:16px !important;}
+  .bottom-nav .nav-item.active::after{width:36px !important;height:3px !important;}
+}
+
+@media (max-width:420px){
+  .header{top:0 !important;width:calc(100% - 12px) !important;}
+  .container{padding-top:76px !important;padding-bottom:98px !important;}
+  .bottom-nav{height:68px !important;min-height:68px !important;border-radius:16px 16px 0 0 !important;}
+  .bottom-nav .nav-item{height:56px !important;font-size:7.5px !important;}
+}
+</style>
+
+
+<style id="index-header-and-post-modal-refinement">
+/* =========================================================
+   INDEX-STYLE HEADER REFERENCE + REFINED CREATE POST MODAL
+   ========================================================= */
+.header{
+  position:sticky !important;
+  top:8px !important;
+  z-index:9990 !important;
+  width:calc(100% - 48px) !important;
+  max-width:2000px !important;
+  min-height:126px !important;
+  margin:0 auto !important;
+  padding:18px 26px !important;
+  display:grid !important;
+  grid-template-columns:250px 1fr 290px !important;
+  align-items:center !important;
+  gap:24px !important;
+  border:1px solid rgba(255,255,255,.22) !important;
+  border-radius:30px !important;
+  background:
+    linear-gradient(100deg,rgba(58,80,128,.98) 0%,rgba(45,64,109,.98) 48%,rgba(43,69,136,.98) 100%) !important;
+  -webkit-backdrop-filter:none !important;
+  backdrop-filter:none !important;
+  box-shadow:0 11px 28px rgba(0,8,30,.17),inset 0 1px 0 rgba(255,255,255,.18) !important;
+  overflow:hidden !important;
+}
+.header::before{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  border-radius:inherit !important;
+  pointer-events:none !important;
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.06),transparent 22%,transparent 78%,rgba(255,255,255,.04)) !important;
+}
+.header::after{
+  content:"" !important;
+  position:absolute !important;
+  left:18px !important;
+  right:18px !important;
+  bottom:8px !important;
+  height:1px !important;
+  background:rgba(255,255,255,.08) !important;
+  pointer-events:none !important;
+}
+.header > *{position:relative !important;z-index:1 !important}
+.logo-group{gap:10px !important}
+.logo,.caths-logo{width:66px !important;height:66px !important;flex-basis:66px !important}
+.header-center h1{font-size:29px !important;font-weight:800 !important;line-height:1.08 !important}
+.header-center p{font-size:17px !important;line-height:1.25 !important;opacity:.93 !important;margin-top:6px !important}
+.header-right{gap:14px !important}
+.header-profile-btn{
+  min-height:54px !important;
+  padding:10px 17px !important;
+  border-radius:17px !important;
+  background:rgba(255,255,255,.14) !important;
+  border:1px solid rgba(255,255,255,.18) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12) !important;
+}
+
+/* Create-post modal */
+.post-modal-box{
+  max-width:650px !important;
+  border-radius:28px !important;
+  padding:0 !important;
+  overflow:hidden !important;
+  background:#f8fbff !important;
+  border:1px solid rgba(255,255,255,.92) !important;
+  box-shadow:0 32px 90px rgba(0,20,65,.42),0 0 0 1px rgba(0,61,165,.05) !important;
+}
+.post-modal-head{
+  margin:0 !important;
+  padding:21px 23px 17px !important;
+  color:#fff !important;
+  background:linear-gradient(135deg,#12376f 0%,#1d4e9b 58%,#2c6ec2 100%) !important;
+}
+.post-modal-title-wrap{display:flex;align-items:center;gap:13px;min-width:0}
+.post-modal-mark{
+  width:42px;height:42px;display:grid;place-items:center;flex:0 0 42px;
+  border-radius:14px;
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.20);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14);
+  font-size:18px;font-weight:800;
+}
+.post-modal-kicker{display:block;font-size:9px;letter-spacing:.16em;text-transform:uppercase;font-weight:800;opacity:.72;margin-bottom:2px}
+.post-modal-head h3{font-size:23px !important;font-weight:800 !important;line-height:1.15 !important;color:#fff !important}
+.post-modal-close{
+  width:38px !important;height:38px !important;flex:0 0 38px !important;
+  background:rgba(255,255,255,.12) !important;color:#fff !important;
+  border:1px solid rgba(255,255,255,.18) !important;
+  box-shadow:none !important;
+}
+.post-modal-close:hover{background:rgba(255,255,255,.20) !important;transform:rotate(3deg)}
+.post-modal-subtitle{
+  margin:0 !important;padding:16px 24px 8px !important;
+  font-size:11px !important;line-height:1.5 !important;color:#6b7890 !important;
+}
+.post-modal-author{
+  display:flex;align-items:center;gap:11px;margin:2px 24px 12px;padding:10px 11px;
+  border:1px solid #e4ebf5;border-radius:16px;background:#fff;
+}
+.post-modal-avatar{
+  width:42px;height:42px;flex:0 0 42px;border-radius:50%;display:grid;place-items:center;
+  overflow:hidden;background:linear-gradient(135deg,#d7e8ff,#9fc7ff);color:#12376f;font-size:16px;font-weight:800;
+}
+.post-modal-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.post-modal-author-copy{min-width:0;display:flex;flex-direction:column;gap:2px}
+.post-modal-author-copy strong{font-size:12px;color:#173a76;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.post-modal-author-copy span{font-size:9px;color:#7a879b}
+.post-composer-field{margin:0 24px !important;position:relative}
+.post-textarea{
+  height:190px !important;min-height:190px !important;
+  border:1px solid #dbe6f4 !important;
+  border-radius:18px !important;
+  background:#fff !important;
+  box-shadow:inset 0 1px 0 rgba(20,68,130,.02) !important;
+  padding:16px 17px !important;
+  font-size:13px !important;line-height:1.65 !important;color:#14243f !important;
+}
+.post-textarea::placeholder{color:#98a5b8}
+.post-textarea:focus{
+  border-color:#76a7e6 !important;
+  box-shadow:0 0 0 4px rgba(44,110,194,.10) !important;
+}
+.post-meta-row-polished{margin:9px 24px 0 !important}
+.post-char-pill{
+  padding:5px 9px;border-radius:999px;background:#eef5ff;color:#42618d;
+  font-weight:700;border:1px solid #dbe8f8
+}
+.post-meta-hint{font-size:9px;color:#94a0b2}
+.post-visibility-card{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  margin:14px 24px 0;padding:12px 12px 12px 13px;
+  border:1px solid #e0e9f5;border-radius:17px;background:#fff;
+}
+.post-visibility-copy{display:flex;align-items:center;gap:10px;min-width:0}
+.post-visibility-icon{
+  width:34px;height:34px;flex:0 0 34px;border-radius:11px;display:grid;place-items:center;
+  background:#eef5ff;color:#2f64a9;font-size:14px;font-weight:800;
+}
+.post-visibility-copy div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.post-visibility-copy strong{font-size:11px;color:#183c73}
+.post-visibility-copy span{font-size:9px;color:#8794a8}
+.post-select-polished{
+  width:auto !important;min-width:190px !important;margin:0 !important;
+  padding:10px 30px 10px 11px !important;border-radius:12px !important;
+  border:1px solid #d7e3f1 !important;background:#f7faff !important;
+  color:#214d8d !important;font-size:10px !important;font-weight:700 !important;
+}
+.post-modal-footer{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:17px 24px 22px;margin-top:14px;
+  border-top:1px solid #e7edf5;
+}
+.post-footer-note{font-size:9px;line-height:1.45;color:#7f8da0;max-width:290px}
+.post-footer-note span{
+  display:inline-grid;place-items:center;width:18px;height:18px;margin-right:4px;vertical-align:-5px;
+  border-radius:50%;background:#e8f4ff;color:#2d68ad;font-weight:800;
+}
+.post-publish-btn{
+  width:auto !important;min-width:116px !important;margin:0 !important;
+  display:inline-flex !important;align-items:center;justify-content:center;gap:10px !important;
+  padding:12px 17px !important;border-radius:13px !important;
+  background:linear-gradient(135deg,#0e3676,#1e5bb7) !important;
+  box-shadow:0 10px 22px rgba(20,78,153,.22) !important;
+}
+.post-publish-btn:hover{transform:translateY(-1px);box-shadow:0 13px 25px rgba(20,78,153,.27) !important}
+
+@media(max-width:900px){
+  .header{width:calc(100% - 28px) !important;min-height:108px !important;grid-template-columns:180px 1fr 220px !important;padding:15px 18px !important;border-radius:24px !important}
+  .logo,.caths-logo{width:54px !important;height:54px !important;flex-basis:54px !important}
+  .header-center h1{font-size:23px !important}.header-center p{font-size:13px !important}
+}
+
+@media(max-width:768px){
+  .header{
+    top:6px !important;width:calc(100% - 14px) !important;min-height:68px !important;
+    padding:8px 10px !important;grid-template-columns:auto minmax(0,1fr) auto !important;gap:8px !important;
+    border-radius:18px !important;
+  }
+  .logo,.caths-logo{width:39px !important;height:39px !important;flex-basis:39px !important}
+  .header-center h1{font-size:14px !important}.header-center p{font-size:8px !important;margin-top:2px !important}
+  .header-profile-btn{min-height:38px !important;font-size:10px !important;padding:7px 9px !important;border-radius:12px !important}
+  .post-modal-box{max-width:calc(100vw - 20px) !important;border-radius:23px !important}
+  .post-modal-head{padding:17px 17px 14px !important}
+  .post-modal-title-wrap{gap:10px !important}.post-modal-mark{width:38px;height:38px;flex-basis:38px;border-radius:12px}
+  .post-modal-head h3{font-size:19px !important}.post-modal-kicker{font-size:8px !important}
+  .post-modal-subtitle{padding:13px 17px 7px !important;font-size:10px !important}
+  .post-modal-author{margin:2px 17px 11px !important}
+  .post-composer-field{margin:0 17px !important}
+  .post-textarea{height:165px !important;min-height:165px !important;font-size:12px !important}
+  .post-meta-row-polished{margin:8px 17px 0 !important}.post-meta-hint{display:none !important}
+  .post-visibility-card{margin:12px 17px 0 !important;align-items:stretch !important;flex-direction:column !important}
+  .post-select-polished{width:100% !important;min-width:0 !important}
+  .post-modal-footer{padding:14px 17px 17px !important;align-items:flex-end !important}
+  .post-footer-note{max-width:190px !important}.post-publish-btn{min-width:105px !important}
+}
+
+@media(max-width:420px){
+  .header{top:4px !important;width:calc(100% - 10px) !important;border-radius:16px !important}
+  .post-modal-box{max-width:calc(100vw - 12px) !important}
+  .post-modal-author-copy span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .post-footer-note{display:none !important}
+  .post-modal-footer{justify-content:flex-end !important}
+}
+</style>
+
+<style id="professional-compact-shell-animations">
+/* =========================================================
+   PROFESSIONAL COMPACT HEADER + SMOOTH UI MOTION
+   ========================================================= */
+.header{
+  position:fixed !important;
+  top:8px !important;
+  left:50% !important;
+  width:calc(100% - 20px) !important;
+  max-width:none !important;
+  min-height:76px !important;
+  height:76px !important;
+  margin:0 !important;
+  padding:10px 20px !important;
+  transform:translateX(-50%) !important;
+  display:grid !important;
+  grid-template-columns:minmax(150px,220px) 1fr minmax(210px,250px) !important;
+  gap:18px !important;
+  align-items:center !important;
+  border:1px solid rgba(255,255,255,.16) !important;
+  border-radius:20px !important;
+  background:#0b1832 !important;
+  box-shadow:0 14px 32px rgba(0,8,30,.28),inset 0 1px 0 rgba(255,255,255,.08) !important;
+  overflow:hidden !important;
+  animation:headerReveal .55s cubic-bezier(.2,.8,.2,1) both;
+}
+.header::before{
+  background:linear-gradient(90deg,rgba(88,165,255,.065),transparent 24%,transparent 76%,rgba(88,165,255,.065)) !important;
+}
+.header::after{bottom:0 !important;left:18px !important;right:18px !important;}
+.logo-group{gap:8px !important}
+.logo,.caths-logo{
+  width:50px !important;height:50px !important;flex:0 0 50px !important;
+  filter:drop-shadow(0 4px 7px rgba(0,0,0,.15));
+}
+.header-center h1{font-size:22px !important;line-height:1.08 !important}
+.header-center p{font-size:10px !important;opacity:.78 !important;margin-top:3px !important}
+.header-right{gap:10px !important}
+.header-profile-btn{
+  min-height:46px !important;
+  padding:7px 12px !important;
+  border-radius:14px !important;
+  transition:transform .22s ease,background .22s ease,box-shadow .22s ease !important;
+}
+.header-profile-btn:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(0,0,0,.16)}
+.header-profile-btn:active{transform:scale(.98)}
+
+/* Keep the shell proportions close to the bottom navigation: compact, wide, balanced. */
+.bottom-nav{
+  animation:navReveal .58s cubic-bezier(.2,.8,.2,1) .05s both;
+}
+.bottom-nav .nav-item{
+  transition:transform .22s cubic-bezier(.2,.8,.2,1),background .22s ease,color .22s ease !important;
+}
+.bottom-nav .nav-item:hover{transform:translateY(-1px) !important}
+.bottom-nav .nav-item:active{transform:scale(.96) !important}
+.bottom-nav .nav-item.active::after{
+  animation:indicatorGlow 2.4s ease-in-out infinite;
+}
+.bottom-nav .nav-item.active::before{transform:translateY(-1px);}
+
+/* Feed content enters softly without distracting the user. */
+.feed-list .post-card,
+.feed-list .state-card{
+  animation:feedRise .45s cubic-bezier(.2,.8,.2,1) both;
+}
+.feed-list .post-card:nth-child(1){animation-delay:.04s}
+.feed-list .post-card:nth-child(2){animation-delay:.08s}
+.feed-list .post-card:nth-child(3){animation-delay:.12s}
+.feed-list .post-card:nth-child(4){animation-delay:.16s}
+.feed-list .post-card:nth-child(5){animation-delay:.20s}
+.composer-shortcut,
+.feed-tools,
+.feed-top{
+  animation:feedRise .46s cubic-bezier(.2,.8,.2,1) .08s both;
+}
+.post-top-btn,
+.composer-action,
+.post-action,
+.feed-tool-btn,
+.close-btn,
+.publish-btn,
+.comment-send{
+  transition:transform .2s ease,box-shadow .2s ease,background .2s ease !important;
+}
+.post-top-btn:hover,.composer-action:hover,.post-action:hover,.feed-tool-btn:hover,.close-btn:hover,.publish-btn:hover,.comment-send:hover{
+  transform:translateY(-1px);
+}
+.post-top-btn:active,.composer-action:active,.post-action:active,.feed-tool-btn:active,.close-btn:active,.publish-btn:active,.comment-send:active{
+  transform:scale(.97);
+}
+
+/* Create-post modal: refined entrance, less bulky, cleaner motion. */
+.modal.open .post-modal-box{animation:modalSpring .34s cubic-bezier(.16,1,.3,1) both !important}
+.modal.open{animation:modalFade .22s ease both}
+.post-modal-close{transition:transform .2s ease,background .2s ease !important}
+.post-visibility-card{transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease}
+.post-visibility-card:focus-within{border-color:#b8cdec;box-shadow:0 8px 22px rgba(23,69,130,.08);transform:translateY(-1px)}
+
+@keyframes headerReveal{
+  from{opacity:0;transform:translate(-50%,-14px)}
+  to{opacity:1;transform:translate(-50%,0)}
+}
+@keyframes navReveal{
+  from{opacity:0;transform:translateY(18px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes feedRise{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes modalFade{from{opacity:0}to{opacity:1}}
+@keyframes modalSpring{
+  0%{opacity:0;transform:translateY(12px) scale(.965)}
+  60%{opacity:1;transform:translateY(-2px) scale(1.006)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes indicatorGlow{
+  0%,100%{box-shadow:0 0 10px rgba(155,213,255,.46)}
+  50%{box-shadow:0 0 18px rgba(155,213,255,.84)}
+}
+
+@media(max-width:900px){
+  .header{
+    top:6px !important;
+    width:calc(100% - 16px) !important;
+    height:70px !important;min-height:70px !important;
+    padding:8px 14px !important;
+    grid-template-columns:160px 1fr 200px !important;
+    border-radius:18px !important;
+  }
+  .logo,.caths-logo{width:46px !important;height:46px !important;flex-basis:46px !important}
+  .header-center h1{font-size:19px !important}
+  .header-center p{font-size:9px !important}
+}
+
+@media(max-width:768px){
+  .header{
+    top:5px !important;
+    width:calc(100% - 12px) !important;
+    height:62px !important;min-height:62px !important;
+    padding:7px 9px !important;
+    grid-template-columns:auto minmax(0,1fr) auto !important;
+    gap:7px !important;
+    border-radius:16px !important;
+  }
+  .logo,.caths-logo{width:36px !important;height:36px !important;flex-basis:36px !important}
+  .header-center h1{font-size:14px !important}
+  .header-center p{font-size:7px !important;margin-top:2px !important}
+  .header-profile-btn{min-height:37px !important;padding:6px 8px !important;font-size:9px !important;border-radius:11px !important}
+  .bottom-nav{height:70px !important;min-height:70px !important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .header,.bottom-nav,.feed-list .post-card,.feed-list .state-card,.composer-shortcut,.feed-tools,.feed-top,.modal.open,.modal.open .post-modal-box,
+  .bottom-nav .nav-item.active::after{animation:none !important}
+  *,*::before,*::after{scroll-behavior:auto !important;transition-duration:0.01ms !important}
+}
+</style>
+
+
+
+
+<style id="stable-header-polish">
+/* =========================================================
+   STABLE FULL-WIDTH HEADER — OPAQUE BACKPLATE, COMPACT SCALE
+   Keeps the header flush to the viewport top without changing
+   the working feed layout or navigation structure.
+   ========================================================= */
+.header{
+  position:fixed !important;
+  top:0 !important;
+  left:0 !important;
+  right:0 !important;
+  width:100% !important;
+  max-width:none !important;
+  height:78px !important;
+  min-height:78px !important;
+  margin:0 !important;
+  padding:10px 24px !important;
+  transform:none !important;
+  z-index:100000 !important;
+  display:grid !important;
+  grid-template-columns:minmax(190px,240px) 1fr minmax(220px,280px) !important;
+  align-items:center !important;
+  gap:18px !important;
+  border:0 !important;
+  border-bottom:1px solid rgba(255,255,255,.14) !important;
+  border-radius:0 0 22px 22px !important;
+  background:#0b1832 !important;
+  background-image:linear-gradient(180deg,#0c1b39 0%,#09162c 100%) !important;
+  box-shadow:0 10px 28px rgba(0,0,0,.32), inset 0 -1px 0 rgba(255,255,255,.05) !important;
+  overflow:hidden !important;
+  isolation:isolate !important;
+}
+.header::before{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  z-index:0 !important;
+  pointer-events:none !important;
+  background:
+    linear-gradient(90deg,rgba(89,170,255,.07),transparent 25%,transparent 75%,rgba(89,170,255,.07)),
+    linear-gradient(180deg,rgba(255,255,255,.035),transparent 55%) !important;
+}
+.header::after{
+  content:"" !important;
+  position:absolute !important;
+  left:5% !important;
+  right:5% !important;
+  bottom:0 !important;
+  height:1px !important;
+  pointer-events:none !important;
+  background:linear-gradient(90deg,transparent,rgba(125,203,255,.42),transparent) !important;
+}
+.header > *{position:relative !important;z-index:1 !important}
+.header .logo-group{gap:8px !important}
+.header .logo,
+.header .caths-logo{
+  width:50px !important;
+  height:50px !important;
+  flex:0 0 50px !important;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,.18));
+}
+.header .header-center h1{
+  font-size:21px !important;
+  line-height:1.1 !important;
+  font-weight:800 !important;
+  white-space:nowrap !important;
+}
+.header .header-center p{
+  font-size:10px !important;
+  line-height:1.2 !important;
+  margin-top:4px !important;
+  opacity:.78 !important;
+  white-space:nowrap !important;
+}
+.header .header-profile-btn{
+  min-height:46px !important;
+  padding:7px 12px !important;
+  border-radius:14px !important;
+  background:rgba(255,255,255,.11) !important;
+  border:1px solid rgba(255,255,255,.15) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08) !important;
+}
+/* reserve room so fixed header never covers the first feed controls */
+.container{padding-top:100px !important}
+body{scroll-padding-top:96px !important}
+
+/* requested active-nav indicator: on TOP of the selected tab */
+.bottom-nav .nav-item.active::after{
+  top:0 !important;
+  bottom:auto !important;
+  height:3px !important;
+  width:30px !important;
+  box-shadow:0 0 14px rgba(119,196,255,.70) !important;
+}
+
+@media(max-width:900px){
+  .header{
+    height:72px !important;
+    min-height:72px !important;
+    padding:9px 16px !important;
+    grid-template-columns:minmax(150px,190px) 1fr minmax(180px,220px) !important;
+  }
+  .header .logo,.header .caths-logo{width:45px !important;height:45px !important;flex-basis:45px !important}
+  .header .header-center h1{font-size:19px !important}
+  .header .header-center p{font-size:9px !important}
+  .container{padding-top:92px !important}
+}
+
+@media(max-width:768px){
+  .header{
+    height:64px !important;
+    min-height:64px !important;
+    padding:7px 10px !important;
+    grid-template-columns:auto minmax(0,1fr) auto !important;
+    gap:7px !important;
+    border-radius:0 0 16px 16px !important;
+  }
+  .header .logo,.header .caths-logo{width:36px !important;height:36px !important;flex-basis:36px !important}
+  .header .header-center h1{font-size:14px !important}
+  .header .header-center p{font-size:7px !important;margin-top:2px !important}
+  .header .header-profile-btn{min-height:37px !important;padding:6px 8px !important;font-size:9px !important;border-radius:11px !important}
+  .container{padding-top:82px !important}
+}
+
+@media(max-width:420px){
+  .header{height:62px !important;min-height:62px !important}
+  .container{padding-top:80px !important}
 }
 </style>
 
@@ -1014,8 +1772,36 @@ body{padding-bottom:106px !important; overflow-x:hidden !important; scroll-paddi
   <div class="composer-shortcut" onclick="openPostComposer()">
     <div id="composerAvatar" class="composer-avatar"></div>
     <div class="composer-input">What's on your mind? Share an update…</div>
-    <button class="composer-action" type="button" onclick="event.stopPropagation();openPostComposer()">＋</button>
+    <button class="composer-action" type="button" aria-label="Create a post" onclick="event.stopPropagation();openPostComposer()">＋</button>
   </div>
+
+  <section class="feed-tools" aria-label="News Feed controls">
+    <div class="feed-tools-top">
+      <div class="feed-tabs" role="tablist" aria-label="Feed filters">
+        <button class="feed-tab active" type="button" data-filter="all" onclick="setFeedFilter('all')" role="tab" aria-selected="true">All</button>
+        <button class="feed-tab" type="button" data-filter="friends" onclick="setFeedFilter('friends')" role="tab" aria-selected="false">Friends</button>
+        <button class="feed-tab" type="button" data-filter="mine" onclick="setFeedFilter('mine')" role="tab" aria-selected="false">My Posts</button>
+      </div>
+      <div class="feed-tool-actions">
+        <button id="refreshFeedBtn" class="feed-tool-btn" type="button" onclick="refreshFeed()" aria-label="Refresh feed" title="Refresh feed">
+          <span aria-hidden="true">↻</span><span>Refresh</span>
+        </button>
+        <select id="feedSort" class="feed-sort" aria-label="Sort feed" onchange="setFeedSort(this.value)">
+          <option value="latest">Latest</option>
+          <option value="oldest">Oldest</option>
+        </select>
+      </div>
+    </div>
+    <div id="feedSearchWrap" class="feed-search-wrap">
+      <span class="feed-search-icon" aria-hidden="true">⌕</span>
+      <input id="feedSearch" class="feed-search" type="search" placeholder="Search posts, names, or @username…" autocomplete="off" aria-label="Search news feed">
+      <button id="clearFeedSearch" class="feed-search-clear" type="button" aria-label="Clear search" onclick="clearFeedSearch()">×</button>
+    </div>
+    <div class="feed-status-row">
+      <span id="feedStatus">Showing the latest posts</span>
+      <span id="feedCount">0 posts</span>
+    </div>
+  </section>
 
   <section id="feedList" class="feed-list">
     <div class="state-card">
@@ -1030,7 +1816,7 @@ body{padding-bottom:106px !important; overflow-x:hidden !important; scroll-paddi
 <footer class="bottom-nav" aria-label="Primary navigation">
     <a href="index.html" class="nav-item"><span>Home</span></a>
     <a href="news-feed.html" class="nav-item active"><span>News Feed</span></a>
-    <a href="#" class="nav-item" onclick="openStudentVoice(event)"><span>Student Voice</span></a>
+    <a href="voice.html" class="nav-item" onclick="openStudentVoice(event)"><span>Student Voice</span></a>
     <a href="friends.html" class="nav-item" onclick="openFriendsNavigation(event)"><span>Friends</span></a>
     <a href="profile.html" class="nav-item" onclick="openProtectedNavigation(event, 'profile.html')">
         <span class="profile-nav-icon" id="profileNavPhoto" aria-hidden="true"></span>
@@ -1042,26 +1828,57 @@ body{padding-bottom:106px !important; overflow-x:hidden !important; scroll-paddi
 
 <!-- CREATE POST -->
 <div id="postModal" class="modal">
-  <div class="modal-box">
-    <div class="modal-head">
-      <h3>Create Post</h3>
-      <button class="close-btn" type="button" onclick="closePostComposer()">✕</button>
+  <div class="modal-box post-modal-box">
+    <div class="modal-head post-modal-head">
+      <div class="post-modal-title-wrap">
+        <div class="post-modal-mark" aria-hidden="true">✦</div>
+        <div>
+          <span class="post-modal-kicker">CATHS-MAIN</span>
+          <h3>Create Post</h3>
+        </div>
+      </div>
+      <button class="close-btn post-modal-close" type="button" onclick="closePostComposer()" aria-label="Close create post">✕</button>
     </div>
 
-    <div class="mention-wrap post-mention-wrap"><textarea id="postText" class="post-textarea" maxlength="10000" placeholder="What's on your mind? "></textarea><div id="postMentionBox" class="mention-box"></div></div>
+    <p class="post-modal-subtitle">Share an update with your school community.</p>
 
-    <div class="post-meta-row">
-      <span class="char-count"><span id="postCharCount">0</span>/10,000</span>
-      <span style="font-size:10px;color:#64748b">Choose who can see this.</span>
+    <div class="post-modal-author">
+      <div id="postModalAvatar" class="post-modal-avatar"></div>
+      <div class="post-modal-author-copy">
+        <strong id="postModalUserName">You</strong>
+        <span>Posting to your CATHS-MAIN community</span>
+      </div>
     </div>
 
-    <select id="postVisibility" class="post-select">
-      <option value="public">Public — Everyone</option>
-      <option value="friends">Friends Only — Your friends</option>
-      <option value="onlyMe">Only Me — Private</option>
-    </select>
+    <div class="mention-wrap post-mention-wrap post-composer-field">
+      <textarea id="postText" class="post-textarea" maxlength="10000" placeholder="What's on your mind?"></textarea>
+      <div id="postMentionBox" class="mention-box"></div>
+    </div>
 
-    <button id="publishPostBtn" class="publish-btn" type="button" onclick="publishPost()">Post</button>
+    <div class="post-meta-row post-meta-row-polished">
+      <span class="char-count post-char-pill"><span id="postCharCount">0</span>/10,000</span>
+      <span class="post-meta-hint">You can mention students with @username</span>
+    </div>
+
+    <div class="post-visibility-card">
+      <div class="post-visibility-copy">
+        <span class="post-visibility-icon" aria-hidden="true">◉</span>
+        <div>
+          <strong>Who can see this?</strong>
+          <span>Choose your audience</span>
+        </div>
+      </div>
+      <select id="postVisibility" class="post-select post-select-polished" aria-label="Choose post visibility">
+        <option value="public">Public — Everyone</option>
+        <option value="friends">Friends Only — Your friends</option>
+        <option value="onlyMe">Only Me — Private</option>
+      </select>
+    </div>
+
+    <div class="post-modal-footer">
+      <div class="post-footer-note"><span aria-hidden="true">✓</span> Be respectful and keep posts school-appropriate.</div>
+      <button id="publishPostBtn" class="publish-btn post-publish-btn" type="button" onclick="publishPost()"><span>Post</span><span aria-hidden="true">→</span></button>
+    </div>
   </div>
 </div>
 
@@ -1122,6 +1939,7 @@ body{padding-bottom:106px !important; overflow-x:hidden !important; scroll-paddi
 <!-- OWN POST MENU -->
 <div id="manageMenuBackdrop" class="manage-menu-backdrop" onclick="closeManageMenu(event)">
   <div class="manage-menu" onclick="event.stopPropagation()">
+    <button type="button" onclick="openEditPost()">✎ Edit Post</button>
     <button type="button" onclick="openPrivacyForPost()">👁️ Change Privacy</button>
     <button type="button" onclick="togglePinFromMenu()">📌 Pin / Unpin Post</button>
     <button class="danger" type="button" onclick="deletePostFromMenu()">🗑️ Delete Post</button>
@@ -1185,6 +2003,10 @@ let activeManagePostId = null;
 let activePrivacyPostId = null;
 let mentionableFriends = [];
 let activeSharePostId = null;
+let activeEditPostId = null;
+let activeFeedFilter = 'all';
+let activeFeedSort = 'latest';
+let feedSearchTerm = '';
 
 const $ = id => document.getElementById(id);
 
@@ -1329,21 +2151,46 @@ window.logoutUser = async function(){
   }
 };
 
-window.openPostComposer = function(){
+window.openPostComposer = function(postId=null){
   if(!auth.currentUser){
     window.location.href='profile.html';
     return;
   }
-  $('postText').value='';
-  $('postVisibility').value='public';
-  $('postCharCount').textContent='0';
+
+  activeEditPostId = postId || null;
+  const post = postId ? allFeedPosts.find(p=>p.id===postId) : null;
+  $('postText').value = post ? String(post.text || '') : '';
+  $('postVisibility').value = post?.visibility || 'public';
+  $('postCharCount').textContent = String($('postText').value.length);
   $('postMentionBox').classList.remove('open');
+  const modalAvatar = $('postModalAvatar');
+  const modalUserName = $('postModalUserName');
+  const currentUser = auth.currentUser;
+  if(modalAvatar){
+    modalAvatar.innerHTML = $('composerAvatar')?.innerHTML || '';
+    if(!modalAvatar.innerHTML && currentUser){
+      const fallback = (currentUser.displayName || currentUser.email || 'Y').trim().charAt(0).toUpperCase() || 'Y';
+      modalAvatar.textContent = fallback;
+    }
+  }
+  if(modalUserName){
+    modalUserName.textContent = currentUser?.displayName || currentUser?.email?.split('@')[0] || 'You';
+  }
   $('postModal').classList.add('open');
+  const heading = $('postModal')?.querySelector('.modal-head h3');
+  if(heading) heading.textContent = post ? 'Edit Post' : 'Create Post';
+  const publishBtn = $('publishPostBtn');
+  if(publishBtn) publishBtn.textContent = post ? 'Save Changes' : 'Post';
   setTimeout(()=>$('postText').focus(),50);
 };
 
 window.closePostComposer = function(){
   $('postModal').classList.remove('open');
+  activeEditPostId = null;
+  const heading = $('postModal')?.querySelector('.modal-head h3');
+  if(heading) heading.textContent = 'Create Post';
+  const publishBtn = $('publishPostBtn');
+  if(publishBtn) publishBtn.textContent = 'Post';
 };
 
 
@@ -1375,36 +2222,56 @@ window.publishPost = async function(){
   if(text.length>10000){ showToast('Your post is too long. Maximum is 10,000 characters.'); return; }
 
   const btn = $('publishPostBtn');
+  const editingId = activeEditPostId;
   btn.disabled=true;
-  btn.textContent='⏳ Posting...';
+  btn.textContent=editingId ? '⏳ Saving...' : '⏳ Posting...';
 
   try{
     const snap = await getDoc(doc(db,'users',user.uid));
     const profile = snap.exists() ? (snap.data()||{}) : {};
+    const mentions = extractMentionUids(text);
 
-    await addDoc(collection(db,'posts'),{
-      authorUid:user.uid,
-      authorName:profile.name || profile.nickname || profile.displayName || user.displayName || 'User',
-      username:profile.username || '',
-      photoURL:profile.photoURL || user.photoURL || '',
-      text,
-      visibility,
-      audienceUids: visibility==='friends' ? Array.from(friendIds) : [],
-      mentions: extractMentionUids(text),
-      createdAt:serverTimestamp(),
-      likeCount:0,
-      commentCount:0,
-      shareCount:0
-    });
-
-    closePostComposer();
-    showToast('Post published!');
+    if(editingId){
+      const postRef = doc(db,'posts',editingId);
+      const postSnap = await getDoc(postRef);
+      if(!postSnap.exists()) throw new Error('Post not found.');
+      if(postSnap.data()?.authorUid !== user.uid) throw new Error('Not your post.');
+      await updateDoc(postRef,{
+        authorName:profile.name || profile.nickname || profile.displayName || user.displayName || 'User',
+        username:profile.username || '',
+        photoURL:profile.photoURL || user.photoURL || '',
+        text,
+        visibility,
+        audienceUids: visibility==='friends' ? Array.from(friendIds) : [],
+        mentions,
+        updatedAt:serverTimestamp()
+      });
+      closePostComposer();
+      showToast('Post updated.');
+    }else{
+      await addDoc(collection(db,'posts'),{
+        authorUid:user.uid,
+        authorName:profile.name || profile.nickname || profile.displayName || user.displayName || 'User',
+        username:profile.username || '',
+        photoURL:profile.photoURL || user.photoURL || '',
+        text,
+        visibility,
+        audienceUids: visibility==='friends' ? Array.from(friendIds) : [],
+        mentions,
+        createdAt:serverTimestamp(),
+        likeCount:0,
+        commentCount:0,
+        shareCount:0
+      });
+      closePostComposer();
+      showToast('Post published!');
+    }
     await loadFeed();
   }catch(e){
     console.error(e);
     showToast(e?.code==='permission-denied'
-      ? 'Firestore rules are blocking posts.'
-      : 'Could not publish the post.');
+      ? 'Firestore rules are blocking this post change.'
+      : (e?.message==='Not your post.' ? 'You can only edit your own post.' : 'Could not save the post.'));
   }finally{
     btn.disabled=false;
     btn.textContent='Post';
@@ -1657,6 +2524,7 @@ async function loadFeed(){
             <div class="state-icon"></div>
             <h3>Your feed is empty</h3>
             <p>Public posts and posts shared by your friends will appear here.</p>
+            <button class="post-top-btn" type="button" onclick="openPostComposer()" style="margin-top:12px">Create the first post</button>
           </div>`;
       }
       return;
@@ -1667,14 +2535,8 @@ async function loadFeed(){
     const authorUids=[...new Set(posts.map(p=>p.authorUid).filter(Boolean))];
     await Promise.all(authorUids.map(uid=>getVerifiedEmailForUid(uid)));
 
-    // Render whatever was successfully loaded immediately. A failing optional
-    // friends/own query no longer wipes out the public feed.
-    list.innerHTML=posts.map(renderPost).join('');
-
-    // Counts are non-critical UI; don't block the feed itself on them.
-    await Promise.all(posts.map(post=>refreshPostCounts(post.id).catch(err=>{
-      console.error('Post counts failed:',post.id,err);
-    })));
+    // Render the complete feed, then apply the local filter/search/sort controls.
+    renderFeedView();
   }catch(e){
     console.error('Feed load error',e);
     list.innerHTML=`
@@ -1687,6 +2549,94 @@ async function loadFeed(){
       </div>`;
   }
 }
+
+function getFilteredFeedPosts(){
+  const q = String(feedSearchTerm || '').trim().toLowerCase();
+  let posts = allFeedPosts.filter(post=>{
+    if(activeFeedFilter==='friends'){
+      if(!firebaseUser || post.authorUid===firebaseUser.uid || !friendIds.has(post.authorUid)) return false;
+    }else if(activeFeedFilter==='mine'){
+      if(!firebaseUser || post.authorUid!==firebaseUser.uid) return false;
+    }
+    if(!q) return true;
+    const haystack = [
+      post.authorName, post.username, post.text, post.originalAuthorName, post.originalText
+    ].filter(Boolean).join(' ').toLowerCase();
+    return haystack.includes(q);
+  });
+
+  posts.sort((a,b)=>{
+    if(Boolean(a.pinned)!==Boolean(b.pinned)) return a.pinned ? -1 : 1;
+    const at=a.createdAt?.toMillis?a.createdAt.toMillis():0;
+    const bt=b.createdAt?.toMillis?b.createdAt.toMillis():0;
+    return activeFeedSort==='oldest' ? at-bt : bt-at;
+  });
+  return posts;
+}
+
+function renderFeedView(){
+  const list=$('feedList');
+  if(!list) return;
+  const posts=getFilteredFeedPosts();
+  const count=$('feedCount');
+  const status=$('feedStatus');
+  if(count) count.textContent=`${posts.length} ${posts.length===1?'post':'posts'}`;
+  if(status){
+    const filterLabel=activeFeedFilter==='friends'?'friends':activeFeedFilter==='mine'?'your posts':'all posts';
+    const searchLabel=feedSearchTerm?` matching “${feedSearchTerm.slice(0,30)}${feedSearchTerm.length>30?'…':''}”`:'';
+    status.textContent=`Showing ${filterLabel}${searchLabel}`;
+  }
+
+  if(!posts.length){
+    list.innerHTML=`<div class="state-card filter-empty-card">
+      <div class="state-icon">⌕</div>
+      <h3>No posts found</h3>
+      <p>${feedSearchTerm ? 'Try another search or clear the search box.' : 'There are no posts in this filter yet.'}</p>
+      ${feedSearchTerm ? '<button class="post-top-btn" type="button" onclick="clearFeedSearch()" style="margin-top:12px">Clear Search</button>' : ''}
+    </div>`;
+    return;
+  }
+  list.innerHTML=posts.map(renderPost).join('');
+  posts.forEach(post=>refreshPostCounts(post.id).catch(err=>console.error('Post counts failed:',post.id,err)));
+}
+
+window.setFeedFilter=function(filter){
+  activeFeedFilter = ['all','friends','mine'].includes(filter) ? filter : 'all';
+  document.querySelectorAll('.feed-tab').forEach(tab=>{
+    const active=tab.dataset.filter===activeFeedFilter;
+    tab.classList.toggle('active',active);
+    tab.setAttribute('aria-selected',active?'true':'false');
+  });
+  renderFeedView();
+};
+
+window.setFeedSort=function(sort){
+  activeFeedSort = sort==='oldest' ? 'oldest' : 'latest';
+  renderFeedView();
+};
+
+window.clearFeedSearch=function(){
+  const input=$('feedSearch');
+  if(input) input.value='';
+  feedSearchTerm='';
+  $('feedSearchWrap')?.classList.remove('has-value');
+  renderFeedView();
+};
+
+window.refreshFeed=async function(){
+  const btn=$('refreshFeedBtn');
+  if(btn?.classList.contains('loading')) return;
+  btn?.classList.add('loading');
+  if(btn) btn.disabled=true;
+  try{
+    await loadFeed();
+    showToast('News Feed refreshed.');
+  }finally{
+    btn?.classList.remove('loading');
+    if(btn) btn.disabled=false;
+  }
+};
+
 function renderPost(post){
   const own = firebaseUser?.uid === post.authorUid;
   const visibilityLabel =
@@ -1707,11 +2657,14 @@ function renderPost(post){
         <a class="post-author-link" href="user-profile.html?uid=${encodeURIComponent(post.authorUid || '')}" onclick="event.stopPropagation()">
           <div class="post-author">
             <strong>${esc(post.authorName || 'User')}${verifiedEmailCache.get(post.authorUid)?`<span class="verified-badge" title="Verified Admin" aria-label="Verified Admin">✓</span>`:''}</strong>
-            <div class="post-meta">${post.username ? '@'+esc(post.username)+' · ' : ''}<span title="${esc(formatExactTime(post.createdAt))}">${esc(formatTime(post.createdAt))}</span></div>
+            <div class="post-meta">${post.username ? '@'+esc(post.username)+' · ' : ''}<span title="${esc(formatExactTime(post.updatedAt || post.createdAt))}">${esc(formatTime(post.updatedAt || post.createdAt))}</span>${post.updatedAt ? '<span class="edited-mark" title="Edited">· edited</span>' : ''}</div>
           </div>
         </a>
-        <span class="post-visibility">${visibilityLabel}</span>
-        ${own ? `<button class="post-menu-btn" type="button" onclick="openManageMenu('${esc(post.id)}',${post.pinned===true})">⋯</button>` : ''}
+        <div class="post-head-badges">
+          ${post.pinned ? '<span class="pinned-badge" title="Pinned post">📌 Pinned</span>' : ''}
+          <span class="post-visibility">${visibilityLabel}</span>
+        </div>
+        ${own ? `<button class="post-menu-btn" type="button" aria-label="Post options" onclick="openManageMenu('${esc(post.id)}',${post.pinned===true})">⋯</button>` : ''}
       </div>
 
       ${post.isShared ? '' : `<div class="post-text">${esc(post.text || '')}</div>`}
@@ -1723,13 +2676,23 @@ function renderPost(post){
         <div class="reaction-wrap">
           <button id="react-btn-${esc(post.id)}" class="post-action" type="button" onclick="toggleReactionPicker('${esc(post.id)}',event)">React</button>
           <div id="picker-${esc(post.id)}" class="reaction-picker">
-            ${['Like','Like','😂','😮','😢'].map(e=>`<button class="reaction-emoji" type="button" onclick="reactToPost('${esc(post.id)}','${e}',event)">${e}</button>`).join('')}
+            ${['👍','❤️','😂','😮','😢'].map(e=>`<button class="reaction-emoji" type="button" onclick="reactToPost('${esc(post.id)}','${e}',event)">${e}</button>`).join('')}
           </div>
         </div>
         <button class="post-action" type="button" onclick="openComments('${esc(post.id)}')">💬 Comment</button>
         <button class="post-action" type="button" onclick="sharePost('${esc(post.id)}')">↗ Share</button>
       </div>
     </article>`;
+}
+
+
+const feedSearchInput=$('feedSearch');
+if(feedSearchInput){
+  feedSearchInput.addEventListener('input',()=>{
+    feedSearchTerm=feedSearchInput.value.trim();
+    feedSearchInput.parentElement?.classList.toggle('has-value',!!feedSearchTerm);
+    renderFeedView();
+  });
 }
 
 window.toggleReactionPicker=function(postId,event){
@@ -1801,7 +2764,7 @@ async function refreshPostCounts(postId){
       getDoc(doc(db,'posts',postId))
     ]);
 
-    const tally={'Like':0,'Like':0,'😂':0,'😮':0,'😢':0};
+    const tally={'👍':0,'❤️':0,'😂':0,'😮':0,'😢':0};
     reactionsSnap.docs.forEach(d=>{
       const e=d.data()?.emoji||'Like';
       tally[e]=(tally[e]||0)+1;
@@ -2032,7 +2995,10 @@ window.shareAsMessage=async function(friendUid){
 
   try{
     const cid=[user.uid,friendUid].sort().join('_');
-    const text=`↗ Shared post\n\nOriginal post by ${original.authorName||'Student'}:\n${String(original.text||'').slice(0,900)}`;
+    const text=`↗ Shared post
+
+Original post by ${original.authorName||'Student'}:
+${String(original.text||'').slice(0,900)}`;
 
     await addDoc(collection(db,'conversations',cid,'messages'),{
       senderUid:user.uid,
@@ -2068,6 +3034,13 @@ window.shareAsMessage=async function(friendUid){
       ? 'Firestore blocked the message share.'
       : 'Could not share as a message.');
   }
+};
+
+window.openEditPost=function(){
+  const postId=activeManagePostId;
+  $('manageMenuBackdrop').classList.remove('open');
+  if(!postId) return;
+  openPostComposer(postId);
 };
 
 window.openManageMenu=function(postId,pinned){
@@ -2140,6 +3113,11 @@ window.togglePinFromMenu=async function(){
   }
 };
 
+window.openStudentVoice = function(event){
+  if(event) event.preventDefault();
+  window.location.href = 'voice.html';
+};
+
 window.deletePostFromMenu=async function(){
   const user=auth.currentUser;
   const postId=activeManagePostId;
@@ -2174,6 +3152,11 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
     document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open'));
     $('manageMenuBackdrop')?.classList.remove('open');
+    activeEditPostId=null;
+    const heading = $('postModal')?.querySelector('.modal-head h3');
+    if(heading) heading.textContent='Create Post';
+    const publishBtn = $('publishPostBtn');
+    if(publishBtn) publishBtn.textContent='Post';
   }
 });
 
