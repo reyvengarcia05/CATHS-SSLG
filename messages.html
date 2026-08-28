@@ -1135,6 +1135,226 @@ body{overflow:hidden!important;}
 }
 </style>
 
+
+
+<style id="final-chat-ui-v5">
+/* =========================================================
+   FINAL CHAT UI V5
+   PC + MOBILE: message controls beside bubble; reaction chips
+   live inside bubble below message; compact PC drawer navigation.
+========================================================= */
+
+/* Message row: keep controls beside the bubble, never inside it. */
+.message-row{width:100%!important;display:flex!important;position:relative!important;overflow:visible!important}
+.message-row:not(.mine){justify-content:flex-start!important}
+.message-row.mine{justify-content:flex-end!important}
+.bubble-wrap{
+  position:relative!important;
+  display:flex!important;
+  align-items:flex-end!important;
+  gap:7px!important;
+  max-width:min(88%,760px)!important;
+  overflow:visible!important;
+}
+.bubble-wrap .bubble{
+  position:relative!important;
+  order:2!important;
+  max-width:560px!important;
+  min-width:0!important;
+  overflow:visible!important;
+  padding:11px 13px 9px!important;
+  border-radius:18px!important;
+  background:rgba(255,255,255,.97)!important;
+  color:#183c8c!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.10),inset 0 1px 0 rgba(255,255,255,.75)!important;
+  line-height:1.55!important;
+}
+.message-row:not(.mine) .bubble{border-bottom-left-radius:7px!important}
+.message-row.mine .bubble{
+  order:3!important;
+  background:linear-gradient(145deg,#2f80ff,#1762d2)!important;
+  color:#fff!important;
+  border-bottom-right-radius:7px!important;
+  box-shadow:0 8px 22px rgba(23,98,210,.22),inset 0 1px 0 rgba(255,255,255,.22)!important;
+}
+.message-row.mine .bubble small{color:rgba(255,255,255,.74)!important}
+.message-quick-actions{
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  flex:0 0 auto!important;
+  order:1!important;
+  margin-bottom:3px!important;
+}
+.message-row.mine .message-quick-actions{order:2!important}
+.message-row.mine .message-quick-actions .message-tools-btn{order:1!important}
+.message-row.mine .message-quick-actions .message-reaction-trigger{order:2!important}
+.message-tools-btn,
+.message-reaction-trigger{
+  position:static!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:28px!important;
+  height:28px!important;
+  min-width:28px!important;
+  padding:0!important;
+  border-radius:9px!important;
+  border:1px solid rgba(24,60,140,.12)!important;
+  background:rgba(255,255,255,.92)!important;
+  color:#183c8c!important;
+  box-shadow:0 5px 14px rgba(0,0,0,.11)!important;
+  opacity:.92!important;
+  transform:none!important;
+  cursor:pointer!important;
+  font-family:Arial,Helvetica,sans-serif!important;
+  line-height:1!important;
+}
+.message-reaction-trigger{
+  border-radius:9px!important;
+  font-size:17px!important;
+  font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif!important;
+}
+.message-tools-btn{font-size:19px!important;font-weight:700!important}
+.message-tools-btn:hover,.message-reaction-trigger:hover{background:#eef5ff!important;transform:translateY(-1px)!important}
+.message-row.mine .message-tools-btn,.message-row.mine .message-reaction-trigger{
+  background:rgba(255,255,255,.96)!important;
+}
+
+/* Reaction chips are inside the bubble, below the message text. */
+.bubble .message-reactions{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+  gap:4px!important;
+  min-height:0!important;
+  margin-top:7px!important;
+  width:100%!important;
+}
+.message-reaction-chip{
+  width:auto!important;
+  min-width:27px!important;
+  height:25px!important;
+  flex:0 0 auto!important;
+  padding:0 7px!important;
+  border-radius:999px!important;
+  border:1px solid rgba(24,60,140,.12)!important;
+  background:#f7faff!important;
+  color:#183c8c!important;
+  font-size:14px!important;
+  box-shadow:0 3px 9px rgba(0,0,0,.09)!important;
+}
+.message-row.mine .message-reaction-chip{background:rgba(255,255,255,.17)!important;color:#fff!important;border-color:rgba(255,255,255,.24)!important}
+.message-reaction-chip.mine-reaction{box-shadow:0 0 0 1px rgba(47,128,255,.20),0 4px 10px rgba(0,0,0,.10)!important}
+.message-reaction-chip .reaction-count{font-size:8px!important;min-width:13px!important;height:13px!important;line-height:13px!important}
+
+/* Reaction picker: professional rectangular box below bubble. */
+.bubble>.react-picker{
+  position:absolute!important;
+  top:calc(100% + 8px)!important;
+  left:0!important;
+  right:auto!important;
+  width:230px!important;
+  max-width:min(230px,65vw)!important;
+  max-height:190px!important;
+  margin:0!important;
+  padding:8px!important;
+  display:none!important;
+  grid-template-columns:repeat(5,1fr)!important;
+  gap:5px!important;
+  background:rgba(255,255,255,.985)!important;
+  border:1px solid rgba(24,60,140,.12)!important;
+  border-radius:14px!important;
+  box-shadow:0 18px 40px rgba(0,20,70,.22)!important;
+  z-index:10050!important;
+  overflow-y:auto!important;
+}
+.bubble>.react-picker.open{display:grid!important;animation:reactionBoxIn .18s cubic-bezier(.16,1,.3,1) both!important}
+.message-row.mine .bubble>.react-picker{left:auto!important;right:0!important}
+.bubble>.react-picker button{height:35px!important;border:0!important;border-radius:9px!important;background:#f7faff!important;font-size:20px!important;cursor:pointer!important}
+.bubble>.react-picker button:hover{background:#e8f2ff!important;transform:scale(1.08)!important}
+@keyframes reactionBoxIn{from{opacity:0;transform:translateY(-5px) scale(.96)}to{opacity:1;transform:none}}
+
+/* More/options menu: it can never remain open after clicking elsewhere. */
+.message-actions{z-index:10060!important}
+
+/* Desktop composer always gets its own visible row above the drawer/nav. */
+@media(min-width:801px){
+  .message-compose{
+    position:relative!important;
+    z-index:70!important;
+    flex:0 0 66px!important;
+    min-height:66px!important;
+    height:66px!important;
+    display:flex!important;
+    align-items:center!important;
+    gap:8px!important;
+    padding:9px 13px!important;
+    margin:0!important;
+    background:rgba(3,21,47,.96)!important;
+    border-top:1px solid rgba(255,255,255,.12)!important;
+    box-shadow:0 -8px 20px rgba(0,0,0,.16)!important;
+  }
+  .message-input{height:46px!important;min-height:46px!important;padding:12px 14px!important;border-radius:14px!important}
+  .send-btn{height:46px!important;min-height:46px!important;padding:0 16px!important;border-radius:13px!important;background:linear-gradient(135deg,#2f80ff,#1762d2)!important;color:#fff!important}
+
+  /* PC navigation becomes a compact drawer on the side, so it never sits
+     over the message composer. */
+  .bottom-nav{
+    top:50%!important;
+    left:14px!important;
+    right:auto!important;
+    bottom:auto!important;
+    width:78px!important;
+    height:auto!important;
+    min-height:300px!important;
+    transform:translateY(-50%)!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+    gap:5px!important;
+    padding:10px 7px!important;
+    border-radius:18px!important;
+    border:1px solid rgba(255,255,255,.14)!important;
+    box-shadow:0 18px 42px rgba(0,8,30,.34)!important;
+    z-index:80!important;
+  }
+  .bottom-nav::after{display:none!important}
+  .bottom-nav .nav-item{
+    width:64px!important;
+    max-width:64px!important;
+    min-width:64px!important;
+    height:58px!important;
+    padding:5px 3px!important;
+    border-radius:12px!important;
+    font-size:8px!important;
+  }
+  .text-nav-icon{font-size:22px!important;height:24px!important}
+  .messages-nav-photo{width:27px!important;height:27px!important;font-size:18px!important}
+  .messages-nav-photo img{width:24px!important;height:24px!important}
+
+  .container{left:104px!important;bottom:0!important;top:100px!important;padding:12px 20px 18px!important}
+  .messenger{height:calc(100vh - 118px)!important;max-width:1180px!important;margin:0 auto!important}
+  .chat{height:100%!important}
+}
+
+/* Mobile: polished bubbles + fixed composer above the mobile footer. */
+@media(max-width:800px){
+  .bubble-wrap{max-width:92%!important;gap:5px!important}
+  .bubble-wrap .bubble{max-width:calc(100vw - 78px)!important;padding:10px 12px 8px!important;border-radius:17px!important}
+  .message-quick-actions{gap:3px!important;margin-bottom:2px!important}
+  .message-tools-btn,.message-reaction-trigger{width:27px!important;height:27px!important;min-width:27px!important}
+  .message-reaction-trigger{font-size:16px!important}
+  .message-tools-btn{font-size:18px!important}
+  .bubble .message-reactions{margin-top:6px!important}
+  .message-reaction-chip{height:24px!important;min-width:26px!important;font-size:13px!important;padding:0 6px!important}
+  .bubble>.react-picker{width:min(228px,74vw)!important;max-width:74vw!important;max-height:185px!important}
+  .message-compose{z-index:70!important}
+}
+
+/* Strong outside-click cleanup for any More menu. */
+html body{--chat-ui-version:5}
+</style>
+
 </head>
 <body>
 <header class="header">
@@ -2491,8 +2711,11 @@ function renderMessageDoc(d,currentUid){
   const emojiSet=['❤️','👍','😂','😮','😢','😡','🥰','🙏','👏','🎉'];
   const picker=`<div class="react-picker" id="react-picker-${esc(id)}" aria-label="Choose a reaction">${emojiSet.map(emoji=>`<button type="button" aria-label="React ${emoji}" onclick="reactMessage('${esc(id)}','${emoji}',event)">${emoji}</button>`).join('')}<button type="button" class="react-picker-plus" title="More reactions" aria-label="More reactions" onclick="openMoreReactionPicker('${esc(id)}',event)">+</button></div>`;
 
+  /* Reaction chips stay INSIDE the message bubble, directly underneath the message. */
   const reactionBar=`<div class="message-reactions" id="message-reactions-${esc(id)}" data-reaction-message-id="${esc(id)}">${buildReactionChipsHtml(id,currentUid)}</div>`;
-  const trigger=`<button type="button" class="message-reaction-trigger" aria-label="React to message" title="React" onclick="toggleReactionPicker('${esc(id)}',event)"><span aria-hidden="true">${myReaction||'😊'}</span></button>`;
+
+  /* Plain emoji trigger beside the message-options button. */
+  const trigger=`<button type="button" class="message-reaction-trigger" aria-label="React to message" title="React" onclick="toggleReactionPicker('${esc(id)}',event)">${myReaction||'😊'}</button>`;
   const moreBtn=`<button class="message-tools-btn" type="button" aria-label="More message options" title="More options" onclick="toggleMessageActions('${esc(id)}',event)">⋯</button>`;
 
   const actionMenu=`<div class="message-actions" id="actions-${esc(id)}">
@@ -2509,17 +2732,7 @@ function renderMessageDoc(d,currentUid){
 
   return `<div class="${rowClass}" data-message-id="${esc(id)}">
     <div class="bubble-wrap" data-message-id="${esc(id)}">
-      <div class="bubble">
-        ${groupSenderName?`<div class="group-sender-name">${esc(groupSenderName)}</div>`:''}
-        ${body}
-        <small>${formatTime(msg.createdAt)}</small>
-        ${deliveryLabel(msg,currentUid)}
-        <div class="reaction-tools">
-          ${reactionBar}
-          <div class="message-quick-actions">${trigger}${moreBtn}</div>
-        </div>
-        ${picker}
-      </div>
+      ${!mine?`<div class="bubble">${groupSenderName?`<div class="group-sender-name">${esc(groupSenderName)}</div>`:''}${body}<small>${formatTime(msg.createdAt)}</small>${deliveryLabel(msg,currentUid)}${reactionBar}${picker}</div><div class="message-quick-actions">${trigger}${moreBtn}</div>`:`<div class="message-quick-actions">${moreBtn}${trigger}</div><div class="bubble">${body}<small>${formatTime(msg.createdAt)}</small>${deliveryLabel(msg,currentUid)}${reactionBar}${picker}</div>`}
       ${actionMenu}
     </div>
   </div>`;
@@ -3114,5 +3327,17 @@ onAuthStateChanged(auth,async user=>{
   }
 });
 </script>
+
+<script>
+/* Final outside-click guard: clicking anywhere outside an opened message menu
+   immediately closes it. The menu itself and its trigger remain interactive. */
+(function installMessageMenuOutsideClick(){
+  document.addEventListener('pointerdown', function(ev){
+    if(ev.target.closest('.message-actions,.message-tools-btn')) return;
+    document.querySelectorAll('.message-actions.open').forEach(menu=>menu.classList.remove('open'));
+  }, true);
+})();
+</script>
+
 </body>
 </html>
