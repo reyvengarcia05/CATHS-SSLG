@@ -1940,6 +1940,100 @@ body{
 
 </style>
 
+
+<style id="final-post-header-fix">
+/* Final post sizing: keep news posts as contained cards, not stretched across the screen. */
+.news-grid{
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(300px,430px)) !important;
+  justify-content:center !important;
+  align-items:start !important;
+  gap:18px !important;
+  width:100% !important;
+  max-width:900px !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+.news-card{
+  width:100% !important;
+  max-width:430px !important;
+  justify-self:center !important;
+  min-width:0 !important;
+}
+.news-body{
+  min-width:0 !important;
+}
+.news-title,.news-excerpt,.news-meta{
+  overflow-wrap:anywhere !important;
+  word-break:break-word !important;
+}
+
+/* Header: when logged in, show only the circular profile photo — no name text. */
+.header .login-btn.profile-only{
+  width:46px !important;
+  height:46px !important;
+  min-height:46px !important;
+  padding:3px !important;
+  border-radius:50% !important;
+  justify-content:center !important;
+  gap:0 !important;
+  overflow:hidden !important;
+}
+.header .login-btn.profile-only img{
+  width:38px !important;
+  height:38px !important;
+  min-width:38px !important;
+  min-height:38px !important;
+  max-width:38px !important;
+  max-height:38px !important;
+  border-radius:50% !important;
+  object-fit:cover !important;
+  display:block !important;
+}
+.header .login-btn.profile-only .profile-fallback{
+  width:38px !important;
+  height:38px !important;
+  border-radius:50% !important;
+  display:grid !important;
+  place-items:center !important;
+  background:linear-gradient(145deg,#66b8ff,#3d9ff5) !important;
+  color:#062b68 !important;
+  font-weight:800 !important;
+  font-size:17px !important;
+}
+@media(max-width:768px){
+  .news-grid{
+    grid-template-columns:minmax(0,1fr) !important;
+    gap:14px !important;
+    max-width:540px !important;
+    width:100% !important;
+  }
+  .news-card{
+    width:calc(100% - 12px) !important;
+    max-width:520px !important;
+    margin:0 auto !important;
+  }
+  .header .login-btn.profile-only{
+    width:40px !important;
+    height:40px !important;
+    min-height:40px !important;
+    padding:2px !important;
+  }
+  .header .login-btn.profile-only img,
+  .header .login-btn.profile-only .profile-fallback{
+    width:34px !important;
+    height:34px !important;
+  }
+}
+@media(max-width:420px){
+  .news-grid{gap:12px !important}
+  .news-card{width:calc(100% - 10px) !important;max-width:500px !important}
+  .header .login-btn.profile-only{width:36px !important;height:36px !important;min-height:36px !important}
+  .header .login-btn.profile-only img,
+  .header .login-btn.profile-only .profile-fallback{width:30px !important;height:30px !important}
+}
+</style>
+
 </head>
 <body>
 <header class="header">
@@ -3204,7 +3298,7 @@ async function setupAdmin(user){
   renderAdmin();
 }
 
-onAuthStateChanged(auth,async user=>{window.loggedUser=user;if(user){btn.innerHTML=user.photoURL?`<img src="${escapeHtml(user.photoURL)}" style="width:24px;height:24px;border-radius:50%;object-fit:cover"><span>${escapeHtml(user.displayName||'User')}</span>`:svgIcon('user',20)+`<span>${escapeHtml(user.displayName||'User')}</span>`;if(user.photoURL){$('profilePhoto').src=user.photoURL;$('profileNavPhoto').innerHTML=`<img src="${escapeHtml(user.photoURL)}" alt="Profile">`}else{$('profilePhoto').src='';$('profileNavPhoto').innerHTML=svgIcon('user',20)}$('profileName').textContent=user.displayName||'User';$('profileEmail').textContent=user.email||''}else{btn.innerHTML=svgIcon('user',20)+'<span>Login</span>';$('profileNavPhoto').innerHTML=svgIcon('user',20);}await setupAdmin(user);await loadNewsOverrides();});
+onAuthStateChanged(auth,async user=>{window.loggedUser=user;if(user){btn.classList.add('profile-only');btn.setAttribute('aria-label','Open profile menu');btn.innerHTML=user.photoURL?`<img src="${escapeHtml(user.photoURL)}" alt="Profile">`:`<span class="profile-fallback">${escapeHtml((user.displayName||'U').charAt(0).toUpperCase())}</span>`;if(user.photoURL){$('profilePhoto').src=user.photoURL;$('profileNavPhoto').innerHTML=`<img src="${escapeHtml(user.photoURL)}" alt="Profile">`}else{$('profilePhoto').src='';$('profileNavPhoto').innerHTML=svgIcon('user',20)}$('profileName').textContent=user.displayName||'User';$('profileEmail').textContent=user.email||''}else{btn.classList.remove('profile-only');btn.setAttribute('aria-label','Login');btn.innerHTML=svgIcon('user',20)+'<span>Login</span>';$('profileNavPhoto').innerHTML=svgIcon('user',20);}await setupAdmin(user);await loadNewsOverrides();});
 </script>
 </body>
 </html>
