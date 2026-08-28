@@ -1482,7 +1482,18 @@ playGameTool?.addEventListener('click',()=>{
 async function openLeaderboardModal(){
   leaderboardPanel.classList.remove('hidden');
   document.body.classList.add('leaderboard-open');
-  if(currentUser){try{await saveXP();}catch(e){}}
+
+  // Recover the Firebase user immediately if Auth already restored it, even
+  // when the auth-state listener has not finished its first callback yet.
+  if(!currentUser && window.studyFirebase?.auth?.currentUser){
+    currentUser=window.studyFirebase.auth.currentUser;
+    updateUserStatusUI(currentUser);
+    signinBtn.classList.add('hidden');
+    signinBtn.setAttribute('aria-hidden','true');
+    try{await loadCurrentUserXP(currentUser);}catch(e){console.warn('Immediate XP/profile restore failed:',e);}
+  }
+
+  if(currentUser){try{await saveXP();}catch(e){console.warn('Leaderboard XP sync failed:',e);}}
   await loadLeaderboard();
 }
 function closeLeaderboardModal(){
@@ -1598,17 +1609,12 @@ async function initializeStudyAuth(){
     signinBtn.classList.add('hidden');
   }
 
-  if(!window.studyFirebase){
-    return;
-  }
+  if(!window.studyFirebase)return;
 
-  try{
-    await window.studyAuthReady;
-  }catch(e){
-    console.warn('Study auth persistence initialization:',e);
-  }
-
-  window.studyFirebase.onAuthStateChanged(window.studyFirebase.auth,async user=>{
+  // IMPORTANT: register the listener FIRST. Do not wait for persistence setup
+  // before attaching onAuthStateChanged, otherwise the UI can get stuck on
+  // “Restoring your Google account…” and never promote cached XP to Firestore.
+  const handleAuthUser=async user=>{
     authResolved=true;
     currentUser=user||null;
     updateUserStatusUI(currentUser);
@@ -1623,10 +1629,8 @@ async function initializeStudyAuth(){
       await loadCurrentUserXP(user);
       await loadLeaderboard();
     }else{
-      if(authResolved){
-        signinBtn.classList.remove('hidden');
-        signinBtn.setAttribute('aria-hidden','false');
-      }
+      signinBtn.classList.remove('hidden');
+      signinBtn.setAttribute('aria-hidden','false');
       currentUserSection='';
       currentUserGrade='';
       selectedGradeFilter='all';
@@ -1636,8 +1640,22 @@ async function initializeStudyAuth(){
       updateGradePill('');
       xp=Number(localStorage.getItem(guestXPKey)||0);
       updateXPUI();
+      leaderboardStatus.textContent='Sign in with Google to appear on the shared leaderboard.';
     }
+  };
+
+  window.studyFirebase.onAuthStateChanged(window.studyFirebase.auth,user=>{
+    void handleAuthUser(user).catch(e=>console.warn('Study auth handler failed:',e));
   });
+
+  // Use the already-restored currentUser immediately when available.
+  if(window.studyFirebase.auth.currentUser){
+    await handleAuthUser(window.studyFirebase.auth.currentUser);
+  }
+
+  // Persistence setup is still useful for future sign-ins, but it no longer
+  // blocks restoring an already authenticated session.
+  try{await window.studyAuthReady;}catch(e){console.warn('Study auth persistence initialization:',e);}
 }
 
 initializeStudyAuth();
