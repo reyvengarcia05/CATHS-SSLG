@@ -53,9 +53,9 @@ body{
     display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;
 }
 .login-btn:hover{background:rgba(255,255,255,.17)}
-.login-btn.logged-profile{min-width:98px;max-width:118px;justify-content:center;text-align:center;gap:7px}
-.login-btn img{width:32px;height:32px;border-radius:50%;object-fit:cover;flex:0 0 32px}
-.login-btn span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;font-weight:600}
+.login-btn.logged-profile{width:46px;min-width:46px;max-width:46px;height:46px;padding:5px;justify-content:center;align-items:center;gap:0;border-radius:50%;overflow:hidden}
+.login-btn img{width:34px;height:34px;border-radius:50%;object-fit:cover;flex:0 0 34px;display:block}
+.login-btn span{display:none !important}
 .professional-ui-icon{width:18px;height:18px;display:inline-block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .profile-menu{
     display:none;position:absolute;top:calc(100% + 4px);right:0;width:280px;max-width:calc(100vw - 20px);
@@ -289,9 +289,9 @@ textarea{height:150px;resize:none}
     .header-center p{font-size:8px;margin-top:2px}
     .header-right{width:108px;min-width:108px}
     .login-btn{height:40px;min-width:72px;padding:6px 9px;font-size:10px;gap:4px}
-    .login-btn.logged-profile{min-width:0;max-width:108px}
-    .login-btn img{width:28px;height:28px}
-    .login-btn span{font-size:10px}
+    .login-btn.logged-profile{width:40px;min-width:40px;max-width:40px;height:40px;padding:4px;border-radius:50%;justify-content:center;gap:0}
+    .login-btn img{width:30px;height:30px;min-width:30px;min-height:30px;flex:0 0 30px}
+    .login-btn span{display:none !important}
     .container{top:82px;bottom:68px;padding:12px 12px 34px}
     .voice-card{padding:21px 16px;border-radius:21px}
     .voice-card h2{font-size:21px}
@@ -326,22 +326,28 @@ textarea{height:150px;resize:none}
 
 @media(max-width:768px){
     .header-right .login-btn.logged-profile{
-        min-width:86px !important;
-        max-width:108px !important;
-        width:auto !important;
+        width:40px !important;
+        min-width:40px !important;
+        max-width:40px !important;
+        height:40px !important;
+        padding:4px !important;
         justify-content:center !important;
-        text-align:center !important;
-        padding:5px 8px !important;
-        gap:5px !important;
+        align-items:center !important;
+        border-radius:50% !important;
+        gap:0 !important;
+        overflow:hidden !important;
     }
     .header-right .login-btn.logged-profile img{
-        width:28px !important;
-        height:28px !important;
-        min-width:28px !important;
-        min-height:28px !important;
-        flex:0 0 28px !important;
+        width:30px !important;
+        height:30px !important;
+        min-width:30px !important;
+        min-height:30px !important;
+        max-width:30px !important;
+        max-height:30px !important;
+        flex:0 0 30px !important;
+        border-radius:50% !important;
     }
-    .header-right .login-btn.logged-profile span{font-size:10px !important;}
+    .header-right .login-btn.logged-profile span{display:none !important;}
 }
 
 @media(prefers-reduced-motion:reduce){
@@ -986,9 +992,11 @@ onAuthStateChanged(auth,user=>{
         navText.textContent="Profile";
 
         btn.classList.add("logged-profile");
+        btn.setAttribute("aria-label","Open profile menu");
+        btn.setAttribute("title","Profile");
         btn.innerHTML=user.photoURL
-            ? `<img src="${user.photoURL}" alt="Profile"><span>Profile</span>⌄`
-            : `<svg class="professional-ui-icon" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/></svg><span>Profile</span>⌄`;
+            ? `<img src="${user.photoURL}" alt="Profile">`
+            : `<svg class="professional-ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/></svg>`;
         btn.onclick=()=>toggleProfileMenu();
     }else{
         firebaseUser=null;
