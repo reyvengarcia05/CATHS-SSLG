@@ -439,9 +439,11 @@ let flashCardsData=[];
 let currentFlashIndex=0;
 let flashSessionCorrect=new Set();
 const labels={reviewer:'Reviewer',flashcards:'Flashcards',quiz:'Quiz',summary:'Summary',studyguide:'Study Guide'};
-const localXPKey='cathsStudyXP';
-let xp=Number(localStorage.getItem(localXPKey)||0);
+const guestXPKey='cathsStudyXP';
+let xp=Number(localStorage.getItem(guestXPKey)||0);
 let currentUser=null;
+let profileSyncInFlight=false;
+function getUserXPKey(uid){ return 'cathsStudyXP:'+uid; }
 
 const xpValue=document.getElementById('xpValue');
 const rankValue=document.getElementById('rankValue');
@@ -455,19 +457,42 @@ function showXPPop(amount){
   const pop=document.createElement('div'); pop.className='xp-pop'; pop.textContent='+'+amount+' XP'; document.body.appendChild(pop); setTimeout(()=>pop.remove(),950);
 }
 async function saveXP(){
-  localStorage.setItem(localXPKey,String(xp)); updateXPUI();
-  if(!currentUser||!window.studyFirebase)return;
+  if(currentUser){
+    localStorage.setItem(getUserXPKey(currentUser.uid),String(xp));
+  }else{
+    localStorage.setItem(guestXPKey,String(xp));
+  }
+  updateXPUI();
+  if(!currentUser||!window.studyFirebase||profileSyncInFlight)return;
   try{
     const {db,doc,setDoc,serverTimestamp}=window.studyFirebase;
+    profileSyncInFlight=true;
     await setDoc(doc(db,'studyProfiles',currentUser.uid),{
       uid:currentUser.uid,
       displayName:currentUser.displayName||'Student',
+      email:currentUser.email||'',
       photoURL:currentUser.photoURL||'',
       xp,
       updatedAt:serverTimestamp()
     },{merge:true});
     await loadLeaderboard();
   }catch(e){console.warn('Leaderboard sync failed:',e);}
+  finally{profileSyncInFlight=false;}
+}
+async function loadCurrentUserXP(user){
+  if(!user||!window.studyFirebase)return;
+  try{
+    const {db,doc,getDoc}=window.studyFirebase;
+    const snap=await getDoc(doc(db,'studyProfiles',user.uid));
+    const savedLocal=Number(localStorage.getItem(getUserXPKey(user.uid))||0);
+    const savedRemote=snap.exists()?Number(snap.data()?.xp||0):0;
+    xp=Math.max(savedLocal,savedRemote);
+    localStorage.setItem(getUserXPKey(user.uid),String(xp));
+    updateXPUI();
+    if(savedLocal!==xp) await saveXP();
+  }catch(e){
+    console.warn('Could not load saved study XP:',e);
+  }
 }
 function addXP(amount){xp+=amount;saveXP();showXPPop(amount);}
 
@@ -601,7 +626,19 @@ async function loadLeaderboard(){
 }
 
 if(window.studyFirebase){
-  window.studyFirebase.onAuthStateChanged(window.studyFirebase.auth,async user=>{currentUser=user||null;if(user){signinBtn.classList.add('hidden');leaderboardStatus.textContent='Signed in as '+(user.displayName||'Student')+'.';await loadLeaderboard();}else{signinBtn.classList.remove('hidden');}});
+  window.studyFirebase.onAuthStateChanged(window.studyFirebase.auth,async user=>{
+    currentUser=user||null;
+    if(user){
+      signinBtn.classList.add('hidden');
+      leaderboardStatus.textContent='Signed in as '+(user.displayName||'Student')+'.';
+      await loadCurrentUserXP(user);
+      await loadLeaderboard();
+    }else{
+      signinBtn.classList.remove('hidden');
+      xp=Number(localStorage.getItem(guestXPKey)||0);
+      updateXPUI();
+    }
+  });
 }
 
 const gameModal=document.getElementById('gameModal');const gameModalClose=document.getElementById('gameModalClose');const gameModalBackdrop=document.getElementById('gameModalBackdrop');const gameToast=document.getElementById('gameToast');const gameChoiceGrid=document.getElementById('gameChoiceGrid');const friendsInviteList=document.getElementById('friendsInviteList');const gameModalTitle=document.getElementById('gameModalTitle');const gameModalSubtitle=document.getElementById('gameModalSubtitle');
@@ -612,9 +649,45 @@ function showGameToast(text){gameToast.textContent=text;gameToast.classList.remo
 function friendEntryToUid(item){if(typeof item==='string')return item.trim();if(!item||typeof item!=='object')return '';return String(item.uid||item.userId||item.friendUid||item.id||'').trim();}
 function initials(name){return String(name||'Student').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase()||'S';}
 function friendRowHTML(friend){const photo=friend.photoURL?`<img class="friend-avatar" src="${esc(friend.photoURL)}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">`:'';return `<div class="friend-invite-row" data-uid="${esc(friend.uid)}"><div class="friend-avatar-wrap">${photo}<span class="friend-avatar-fallback" ${friend.photoURL?'style=\"display:none\"':''}>${esc(initials(friend.displayName))}</span></div><div class="friend-copy"><strong>${esc(friend.displayName||'Student')}</strong><small>${esc(friend.email||'CATHS Student')}</small></div><button class="friend-invite-action" type="button" data-friend-uid="${esc(friend.uid)}">Invite</button></div>`;}
-async function getMyFriends(){if(!currentUser||!window.studyFirebase) return [];const {db,doc,getDoc,collection,getDocs}=window.studyFirebase;const userSnap=await getDoc(doc(db,'users',currentUser.uid));let raw=[];if(userSnap.exists()){const data=userSnap.data()||{};for(const key of ['friends','friendIds']){if(Array.isArray(data[key])&&data[key].length){raw=data[key];break;}}}
-if(!raw.length){try{const subSnap=await getDocs(collection(db,'users',currentUser.uid,'friends'));raw=subSnap.docs.map(d=>({uid:d.id,...(d.data()||{})}));}catch(e){console.warn('Friends subcollection unavailable:',e);}}
-const ids=[...new Set(raw.map(friendEntryToUid).filter(Boolean).filter(id=>id!==currentUser.uid))];const out=[];for(const uid of ids){try{const snap=await getDoc(doc(db,'users',uid));if(snap.exists()){const d=snap.data()||{};out.push({uid,displayName:d.displayName||d.name||'Student',email:d.email||'',photoURL:d.photoURL||d.photoUrl||d.photo||''});}else{const source=raw.find(x=>friendEntryToUid(x)===uid);out.push({uid,displayName:typeof source==='object'?(source.displayName||source.name||'Student'):'Student',email:typeof source==='object'?(source.email||''):'',photoURL:typeof source==='object'?(source.photoURL||''):''});}}catch(e){console.warn('Could not load friend',uid,e);}}return out;}
+async function getMyFriends(){
+  if(!currentUser||!window.studyFirebase) return [];
+  const {db,doc,getDoc,collection,getDocs,query,limit}=window.studyFirebase;
+  const out=[];
+  const seen=new Set();
+  try{
+    const snap=await getDocs(query(collection(db,'friends',currentUser.uid,'list'),limit(100)));
+    for(const d of snap.docs){
+      const base={uid:d.id,...(d.data()||{})};
+      const uid=String(base.uid||d.id||'').trim();
+      if(!uid||uid===currentUser.uid||seen.has(uid)) continue;
+      seen.add(uid);
+      try{
+        const profileSnap=await getDoc(doc(db,'users',uid));
+        const profile=profileSnap.exists()?(profileSnap.data()||{}):{};
+        out.push({
+          uid,
+          displayName:profile.displayName||profile.nickname||base.nickname||base.username||'Student',
+          email:profile.email||base.email||'',
+          photoURL:profile.photoURL||base.photoURL||'',
+          username:profile.username||base.username||''
+        });
+      }catch(e){
+        out.push({
+          uid,
+          displayName:base.nickname||base.username||'Student',
+          email:base.email||'',
+          photoURL:base.photoURL||'',
+          username:base.username||''
+        });
+      }
+    }
+  }catch(e){
+    console.error('Could not load friends subcollection:',e);
+    throw e;
+  }
+  out.sort((a,b)=>String(a.displayName).localeCompare(String(b.displayName)));
+  return out;
+}
 async function openFriendInvites(){gameChoiceGrid.classList.add('hidden');friendsInviteList.classList.remove('hidden');gameModalTitle.textContent='Invite a Friend';gameModalSubtitle.textContent='Choose one of your friends. They will receive a notification for the game invite.';gameToast.classList.add('hidden');friendsInviteList.innerHTML='<div class="leaderboard-status">Loading your friends…</div>';if(!currentUser){friendsInviteList.innerHTML='<div class="leaderboard-status">Sign in with Google first to invite your friends.</div><button class="friends-back-btn" type="button" id="friendsBackBtn">Back</button>';document.getElementById('friendsBackBtn').onclick=resetGameModal;return;}try{const friends=await getMyFriends();if(!friends.length){friendsInviteList.innerHTML='<div class="leaderboard-status">You don’t have any friends available yet. Add friends first from the Friends page.</div><button class="friends-back-btn" type="button" id="friendsBackBtn">Back</button>';document.getElementById('friendsBackBtn').onclick=resetGameModal;return;}friendsInviteList.innerHTML=friends.map(friendRowHTML).join('')+'<button class="friends-back-btn" type="button" id="friendsBackBtn">Back</button>';friendsInviteList.querySelectorAll('.friend-invite-action').forEach(btn=>btn.addEventListener('click',()=>sendGameInvite(btn.dataset.friendUid,btn)));document.getElementById('friendsBackBtn').onclick=resetGameModal;}catch(e){console.error(e);friendsInviteList.innerHTML='<div class="leaderboard-status">Could not load your friends. Please check your Firebase friends data or Firestore rules.</div><button class="friends-back-btn" type="button" id="friendsBackBtn">Back</button>';document.getElementById('friendsBackBtn').onclick=resetGameModal;}}
 async function sendGameInvite(friendUid,button){if(!currentUser||!window.studyFirebase)return;button.disabled=true;button.textContent='Sending…';try{const {db,addDoc,collection,serverTimestamp}=window.studyFirebase;await addDoc(collection(db,'notifications'),{recipientUid:friendUid,actorUid:currentUser.uid,actorName:currentUser.displayName||'A CATHS student',actorPhotoURL:currentUser.photoURL||'',type:'game_invite',title:(currentUser.displayName||'A friend')+' invited you to play',text:'You were invited to play a game in CATHS AI Study Assistant.',read:false,gameId:'coming-soon',createdAt:serverTimestamp()});button.textContent='Invited ✓';button.classList.add('sent');showGameToast('Invite sent! Your friend will see a new notification in CATHS-MAIN.');}catch(e){console.error('Game invite failed:',e);button.disabled=false;button.textContent='Invite';showGameToast('Could not send the invite. Your Firestore notifications permission may need to allow this write.');}}
 document.getElementById('playGameBtn')?.addEventListener('click',openGameModal);gameModalClose?.addEventListener('click',closeGameModal);gameModalBackdrop?.addEventListener('click',closeGameModal);document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!gameModal.classList.contains('hidden'))closeGameModal();});document.getElementById('inviteFriendBtn')?.addEventListener('click',openFriendInvites);document.querySelectorAll('.game-choice[data-game]').forEach(btn=>btn.addEventListener('click',()=>showGameToast('Game selection is ready. Add your game later and it can appear here.')));
