@@ -866,7 +866,104 @@ body::after{width:300px;height:300px;right:-130px;bottom:120px;background:rgba(2
   .filter{font-size:9px;padding:9px 11px}
 }
 
-.pro-icon{display:block;flex:0 0 auto}.news-icon{display:flex;align-items:center;justify-content:center;width:52px;height:52px;color:#fff}.profile-nav-icon{font-size:0}.profile-nav-icon .pro-icon{width:19px;height:19px}.icon-button{display:inline-flex;align-items:center;justify-content:center;gap:6px}.card-flag{display:inline-flex;align-items:center;gap:5px}.empty .pro-icon{margin:0 auto 8px}.admin-row-actions svg,.card-admin-actions svg{width:14px;height:14px}.action-icon .pro-icon,.code-gate-icon .pro-icon,.notice-icon .pro-icon{width:34px;height:34px}</style>
+.pro-icon{display:block;flex:0 0 auto}.news-icon{display:flex;align-items:center;justify-content:center;width:52px;height:52px;color:#fff}.profile-nav-icon{font-size:0}.profile-nav-icon .pro-icon{width:19px;height:19px}.icon-button{display:inline-flex;align-items:center;justify-content:center;gap:6px}.card-flag{display:inline-flex;align-items:center;gap:5px}.empty .pro-icon{margin:0 auto 8px}.admin-row-actions svg,.card-admin-actions svg{width:14px;height:14px}.action-icon .pro-icon,.code-gate-icon .pro-icon,.notice-icon .pro-icon{width:34px;height:34px}
+/* ===== FINAL HEADER ALIGNMENT FIX =====
+   Logos = LEFT | Title = EXACT CENTER | Login/Profile = RIGHT
+*/
+.header{
+  position:sticky !important;
+  top:0 !important;
+  display:grid !important;
+  grid-template-columns:1fr auto 1fr !important;
+  align-items:center !important;
+  gap:0 !important;
+  min-height:79px !important;
+  padding:10px 22px !important;
+}
+
+.header .logo-group{
+  grid-column:1 !important;
+  justify-self:start !important;
+  display:flex !important;
+  align-items:center !important;
+  gap:8px !important;
+  min-width:0 !important;
+  position:relative !important;
+  z-index:3 !important;
+}
+
+.header .header-center{
+  position:absolute !important;
+  left:50% !important;
+  top:50% !important;
+  transform:translate(-50%,-50%) !important;
+  width:max-content !important;
+  max-width:calc(100% - 330px) !important;
+  min-width:0 !important;
+  padding:0 !important;
+  text-align:center !important;
+  z-index:2 !important;
+}
+
+.header .header-center h1,
+.header .header-center p{
+  text-align:center !important;
+}
+
+.header .header-right{
+  grid-column:3 !important;
+  justify-self:end !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
+  position:relative !important;
+  z-index:3 !important;
+  min-width:0 !important;
+}
+
+/* Keep the existing SVG icon treatment clean and centered. */
+.header .login-btn{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  flex-shrink:0 !important;
+}
+
+@media(max-width:768px){
+  .header{
+    grid-template-columns:1fr auto 1fr !important;
+    min-height:66px !important;
+    padding:9px 10px !important;
+  }
+
+  .header .header-center{
+    max-width:calc(100% - 150px) !important;
+  }
+
+  .header .header-center h1{
+    font-size:14px !important;
+  }
+
+  .header .header-center p{
+    font-size:8px !important;
+  }
+}
+
+@media(max-width:380px){
+  .header .header-center{
+    max-width:calc(100% - 130px) !important;
+  }
+
+  .header .header-center h1{
+    font-size:12px !important;
+  }
+
+  .header .header-center p{
+    font-size:7px !important;
+  }
+}
+
+</style>
 
 <style>
 /* =========================================================
