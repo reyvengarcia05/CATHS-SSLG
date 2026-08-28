@@ -2039,6 +2039,29 @@ html body{--chat-ui-version:5}
   min-height:29px !important;
 }
 </style>
+
+<style id="final-desktop-edge-space-v9">
+/* Final desktop sizing: keep the messenger panel comfortably inset from both edges.
+   Mobile rules remain unchanged. */
+@media (min-width:801px){
+  .container{
+    left:149px !important;
+    right:0 !important;
+    top:100px !important;
+    bottom:76px !important;
+    padding:0 34px 24px !important;
+    overflow:auto !important;
+  }
+  .messenger{
+    width:100% !important;
+    max-width:none !important;
+    min-height:0 !important;
+    height:calc(100vh - 130px) !important;
+    margin:40px 0 0 !important;
+    border-radius:24px !important;
+  }
+}
+</style>
 </head>
 <body>
 <header class="header">
