@@ -7,9 +7,9 @@
 <link rel="icon" type="image/png" href="sslg-logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--blue:#003DA5;--dark:#00296B;--yellow:#FFD93D;--white:#fff;--glass:rgba(255,255,255,.12)}
+:root{--blue:#003DA5;--dark:#00296B;--accent:#66b8ff;--white:#fff;--glass:rgba(255,255,255,.12)}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
-body{min-height:100vh;color:white;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700);padding-bottom:92px;overflow-x:hidden}
+body{min-height:100vh;color:white;background:linear-gradient(135deg,#00296B,#003DA5,#66b8ff);padding-bottom:92px;overflow-x:hidden}
 .header{position:relative;z-index:1000;padding:16px 20px;display:grid;grid-template-columns:220px 1fr 220px;align-items:center;gap:15px;background:rgba(255,255,255,.08);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
 .logo-group{display:flex;align-items:center;gap:8px}.logo{width:58px;height:58px;object-fit:contain}.caths-logo{transform:scale(1.08)}
 .header-center{text-align:center;min-width:0}.header-center h1{font-size:22px;font-weight:700}.header-center p{font-size:12px;opacity:.9}
@@ -18,18 +18,18 @@ body{min-height:100vh;color:white;background:linear-gradient(135deg,#00296B,#003
 .login-btn:hover{background:rgba(255,255,255,.24)}
 .container{width:100%;max-width:1050px;margin:0 auto;padding:24px 20px 110px}
 .hero{background:rgba(255,255,255,.12);backdrop-filter:blur(18px);border-radius:28px;padding:28px;margin-bottom:22px;box-shadow:0 18px 45px rgba(0,0,0,.18)}
-.hero h2{font-size:30px;margin-bottom:8px}.hero h2 span{color:var(--yellow)}.hero p{font-size:13px;line-height:1.7;opacity:.92}
+.hero h2{font-size:30px;margin-bottom:8px}.hero h2 span{color:var(--accent)}.hero p{font-size:13px;line-height:1.7;opacity:.92}
 .toolbar{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap}
 .search{flex:1;min-width:240px;background:rgba(255,255,255,.96);border:none;outline:none;padding:13px 16px;border-radius:14px;color:#173a86;font-size:13px;box-shadow:0 8px 22px rgba(0,0,0,.1)}
-.filter-wrap{display:flex;gap:8px;overflow:auto;padding-bottom:2px}.filter{border:none;background:rgba(255,255,255,.14);color:white;padding:10px 14px;border-radius:12px;font-weight:600;cursor:pointer;white-space:nowrap}.filter.active{background:var(--yellow);color:var(--dark)}
+.filter-wrap{display:flex;gap:8px;overflow:auto;padding-bottom:2px}.filter{border:none;background:rgba(255,255,255,.14);color:white;padding:10px 14px;border-radius:12px;font-weight:600;cursor:pointer;white-space:nowrap}.filter.active{background:var(--accent);color:var(--dark)}
 .news-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .news-card{background:rgba(255,255,255,.12);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,.12);border-radius:22px;overflow:hidden;box-shadow:0 14px 34px rgba(0,0,0,.14);transition:.25s;display:flex;flex-direction:column}
 .news-card:hover{transform:translateY(-4px)}
-.news-banner{height:125px;padding:18px;display:flex;align-items:flex-end;justify-content:space-between;background:linear-gradient(135deg,rgba(0,41,107,.92),rgba(0,61,165,.8),rgba(255,215,0,.55))}.news-icon{font-size:42px}.tag{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.18);padding:6px 9px;border-radius:10px;font-size:10px;font-weight:700}
-.news-body{padding:18px}.news-meta{font-size:10px;opacity:.72;margin-bottom:6px}.news-title{font-size:17px;font-weight:700;margin-bottom:7px}.news-excerpt{font-size:12px;line-height:1.6;opacity:.88}.read-btn{margin-top:14px;border:none;background:var(--yellow);color:var(--dark);padding:10px 14px;border-radius:11px;font-weight:700;cursor:pointer;font-size:12px}
+.news-banner{height:125px;padding:18px;display:flex;align-items:flex-end;justify-content:space-between;background:linear-gradient(135deg,rgba(0,41,107,.92),rgba(0,61,165,.8),rgba(77,169,255,.34))}.news-icon{font-size:42px}.tag{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.18);padding:6px 9px;border-radius:10px;font-size:10px;font-weight:700}
+.news-body{padding:18px}.news-meta{font-size:10px;opacity:.72;margin-bottom:6px}.news-title{font-size:17px;font-weight:700;margin-bottom:7px}.news-excerpt{font-size:12px;line-height:1.6;opacity:.88}.read-btn{margin-top:14px;border:none;background:var(--accent);color:var(--dark);padding:10px 14px;border-radius:11px;font-weight:700;cursor:pointer;font-size:12px}
 .empty{padding:36px 20px;text-align:center;background:rgba(255,255,255,.10);border-radius:20px}.empty div{font-size:42px;margin-bottom:8px}.empty p{font-size:13px;opacity:.78}
 .bottom-nav{position:fixed;left:0;right:0;bottom:0;height:77px;padding:4px 4px env(safe-area-inset-bottom);background:rgba(0,0,0,.28);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);display:flex;justify-content:space-around;align-items:center;z-index:9999;border-top:1px solid rgba(255,255,255,.08)}
-.nav-item{flex:1;max-width:120px;min-width:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:white;font-size:9px;transition:.22s;padding:4px 3px}.nav-item div{font-size:21px;height:26px;display:flex;align-items:center;justify-content:center;margin-bottom:2px}.nav-item.active{color:var(--yellow);transform:translateY(-5px) scale(1.06);font-weight:700}.nav-item.active div{font-size:24px}
+.nav-item{flex:1;max-width:120px;min-width:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:white;font-size:9px;transition:.22s;padding:4px 3px}.nav-item div{font-size:21px;height:26px;display:flex;align-items:center;justify-content:center;margin-bottom:2px}.nav-item.active{color:var(--accent);transform:translateY(-5px) scale(1.06);font-weight:700}.nav-item.active div{font-size:24px}
 #profileNavPhoto{width:28px!important;height:28px!important;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;margin-bottom:2px;font-size:20px;background:transparent!important;padding:0!important;border:none!important;box-shadow:none!important;color:inherit}#profileNavPhoto img{width:28px!important;height:28px!important;border-radius:50%;object-fit:cover;display:block;background:transparent!important;border:none!important;box-shadow:none!important}
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.66);backdrop-filter:blur(8px);z-index:10000;align-items:center;justify-content:center;padding:16px}.modal.show{display:flex}
 .modal-box{width:100%;max-width:650px;max-height:82vh;overflow:auto;background:#fff;color:#183c8c;border-radius:26px;padding:24px;box-shadow:0 25px 70px rgba(0,0,0,.45);animation:pop .28s ease}.modal-box h3{font-size:22px;margin-bottom:6px}.modal-date{font-size:11px;color:#777;margin-bottom:14px}.modal-box p{font-size:13px;line-height:1.7;color:#333;white-space:pre-line}.close-btn{float:right;border:none;background:#eef4ff;color:#183c8c;width:38px;height:38px;border-radius:50%;font-size:20px;cursor:pointer}.close-btn:hover{transform:rotate(90deg)}
@@ -37,11 +37,11 @@ body{min-height:100vh;color:white;background:linear-gradient(135deg,#00296B,#003
 .profile-info{display:flex;align-items:center;gap:12px}.profile-info img{width:50px;height:50px;border-radius:50%;object-fit:cover;background:#eef4ff}.profile-details{min-width:0;display:flex;flex-direction:column;overflow:hidden}.profile-details strong,.profile-details small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.profile-details strong{font-size:15px}.profile-details small{font-size:11px;color:#666}.divider{height:1px;background:#ddd;margin:12px 0}.profile-nav{display:flex;flex-direction:column;gap:6px}.profile-nav-item{display:flex;align-items:center;gap:12px;width:100%;padding:11px 12px;border-radius:13px;text-decoration:none;color:#00296B;font-size:13px;font-weight:600;transition:.2s}.profile-nav-item:hover{background:#eef4ff;transform:translateX(3px)}.profile-nav-icon{width:30px;height:30px;border-radius:9px;background:#f0f4ff;display:flex;align-items:center;justify-content:center;font-size:17px}.logout-button{width:100%;height:50px;border:none;border-radius:11px;background:#00296B;color:#fff;font-weight:600;cursor:pointer}.logout-button:hover{background:#003DA5}
 @keyframes pop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}@keyframes profileIn{from{opacity:0;transform:translateY(-10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes profileOut{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(-8px) scale(.98)}}
 
-.admin-post-bar{display:none;align-items:center;justify-content:space-between;gap:12px;margin:0 0 16px;padding:10px 12px;border-radius:18px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 10px 24px rgba(0,0,0,.12);flex-wrap:wrap}.admin-post-bar.show{display:flex}.post-news-btn,.manage-posts-btn{border:none;padding:11px 15px;border-radius:12px;font-weight:800;cursor:pointer;font-size:12px;transition:.2s;box-shadow:0 8px 20px rgba(0,0,0,.12);min-height:42px}.post-news-btn{background:var(--yellow);color:var(--dark)}.manage-posts-btn{background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.12)}.post-news-btn:hover,.manage-posts-btn:hover{transform:translateY(-1px);filter:brightness(1.03)}.admin-panel-collapsed{display:none!important}.card-admin-actions{display:flex;gap:6px;justify-content:flex-end;margin:10px 0 0;flex-wrap:wrap}.card-admin-actions button{border:none;background:rgba(0,41,107,.72);color:#fff;border-radius:9px;padding:7px 9px;font-size:10px;font-weight:800;cursor:pointer}.card-admin-actions button:hover{background:rgba(0,61,165,.88)}.card-admin-actions .danger{background:rgba(170,40,40,.78)}.admin-source{font-size:9px;opacity:.62;margin-top:5px}.post-modal-box{max-width:760px;width:100%}.admin-card{margin-top:18px;background:rgba(255,255,255,.12);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:18px;box-shadow:0 14px 34px rgba(0,0,0,.14)}
-.admin-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.admin-head h3{font-size:18px}.admin-head p{font-size:11px;opacity:.78;margin-top:2px}.admin-badge{background:var(--yellow);color:var(--dark);padding:6px 10px;border-radius:999px;font-size:10px;font-weight:800}
-.admin-list{display:grid;gap:10px;margin-top:14px}.admin-row{display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.1);border-radius:15px;padding:11px}.admin-row-info{min-width:0}.admin-row-title{font-size:12px;font-weight:700}.admin-row-meta{font-size:10px;opacity:.72;margin-top:2px}.admin-row-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.admin-action{border:none;padding:7px 9px;border-radius:9px;background:rgba(255,255,255,.18);color:#fff;font-size:10px;font-weight:700;cursor:pointer}.admin-action:hover{background:rgba(255,255,255,.28)}.admin-action.danger{background:rgba(220,60,60,.28)}.admin-action.primary{background:var(--yellow);color:var(--dark)}
+.admin-post-bar{display:none;align-items:center;justify-content:space-between;gap:12px;margin:0 0 16px;padding:10px 12px;border-radius:18px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 10px 24px rgba(0,0,0,.12);flex-wrap:wrap}.admin-post-bar.show{display:flex}.post-news-btn,.manage-posts-btn{border:none;padding:11px 15px;border-radius:12px;font-weight:800;cursor:pointer;font-size:12px;transition:.2s;box-shadow:0 8px 20px rgba(0,0,0,.12);min-height:42px}.post-news-btn{background:var(--accent);color:var(--dark)}.manage-posts-btn{background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.12)}.post-news-btn:hover,.manage-posts-btn:hover{transform:translateY(-1px);filter:brightness(1.03)}.admin-panel-collapsed{display:none!important}.card-admin-actions{display:flex;gap:6px;justify-content:flex-end;margin:10px 0 0;flex-wrap:wrap}.card-admin-actions button{border:none;background:rgba(0,41,107,.72);color:#fff;border-radius:9px;padding:7px 9px;font-size:10px;font-weight:800;cursor:pointer}.card-admin-actions button:hover{background:rgba(0,61,165,.88)}.card-admin-actions .danger{background:rgba(170,40,40,.78)}.admin-source{font-size:9px;opacity:.62;margin-top:5px}.post-modal-box{max-width:760px;width:100%}.admin-card{margin-top:18px;background:rgba(255,255,255,.12);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:18px;box-shadow:0 14px 34px rgba(0,0,0,.14)}
+.admin-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.admin-head h3{font-size:18px}.admin-head p{font-size:11px;opacity:.78;margin-top:2px}.admin-badge{background:var(--accent);color:var(--dark);padding:6px 10px;border-radius:999px;font-size:10px;font-weight:800}
+.admin-list{display:grid;gap:10px;margin-top:14px}.admin-row{display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.1);border-radius:15px;padding:11px}.admin-row-info{min-width:0}.admin-row-title{font-size:12px;font-weight:700}.admin-row-meta{font-size:10px;opacity:.72;margin-top:2px}.admin-row-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.admin-action{border:none;padding:7px 9px;border-radius:9px;background:rgba(255,255,255,.18);color:#fff;font-size:10px;font-weight:700;cursor:pointer}.admin-action:hover{background:rgba(255,255,255,.28)}.admin-action.danger{background:rgba(220,60,60,.28)}.admin-action.primary{background:var(--accent);color:var(--dark)}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{display:flex;flex-direction:column;gap:5px}.field.full{grid-column:1/-1}.field label{font-size:10px;font-weight:700;color:#567}.field input,.field textarea,.field select{width:100%;border:1px solid #dce6fa;background:#f8fbff;color:#173a86;border-radius:11px;padding:10px 11px;outline:none;font-family:inherit;font-size:12px}.field textarea{min-height:110px;resize:vertical}.admin-form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}.admin-small{font-size:10px;color:#777;margin-top:7px}
-.admin-modal-box{max-width:760px}.status-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:7px}.status-chip{font-size:9px;font-weight:800;padding:5px 8px;border-radius:999px;background:#eef4ff;color:#183c8c}.status-chip.warning{background:#fff5cf;color:#795900}.status-chip.danger{background:#ffe3e3;color:#9b2424}.status-chip.success{background:#e1f7e8;color:#21733c}
+.admin-modal-box{max-width:760px}.status-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:7px}.status-chip{font-size:9px;font-weight:800;padding:5px 8px;border-radius:999px;background:#eef4ff;color:#183c8c}.status-chip.warning{background:#fff5cf;color:#205aa8}.status-chip.danger{background:#ffe3e3;color:#9b2424}.status-chip.success{background:#e1f7e8;color:#21733c}
 .card-flags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.card-flag{font-size:8px;font-weight:800;padding:4px 6px;border-radius:999px;background:rgba(255,255,255,.15)}
 
 @media(max-width:768px){
@@ -245,7 +245,7 @@ body{padding-bottom:82px;overflow-x:hidden}
   top:50% !important;
   transform:translate(-50%,-50%) !important;
   border-radius:50% !important;
-  background:rgba(255,217,61,.25) !important;
+  background:rgba(77,169,255,.25) !important;
   filter:blur(12px) !important;
 }
 .publish-dots{
@@ -357,7 +357,7 @@ body{padding-bottom:82px;overflow-x:hidden}
 }
 .notice-icon{width:66px;height:66px;margin:0 auto 12px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px}
 .notice-icon.info{background:#eaf1ff;color:#235ec3}.notice-icon.success{background:#e5f7eb;color:#1d7a43}
-.notice-icon.error{background:#ffe6e6;color:#c62828}.notice-icon.warning{background:#fff2cf;color:#8a6400}
+.notice-icon.error{background:#ffe6e6;color:#c62828}.notice-icon.warning{background:#fff2cf;color:#2a69b8}
 #appNoticeCard h3{font-size:19px;color:#00296B;margin-bottom:6px}
 #appNoticeCard p{font-size:11px;color:#6a7894;line-height:1.55}
 .notice-actions{display:flex;justify-content:center;margin-top:16px}
@@ -386,7 +386,7 @@ body{padding-bottom:82px;overflow-x:hidden}
   box-shadow:0 28px 90px rgba(0,0,0,.38);border:1px solid rgba(255,255,255,.84)
 }
 .action-icon{width:66px;height:66px;margin:0 auto 12px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;background:#eef4ff;color:#173a86}
-.action-icon.danger{background:#ffe6e6;color:#c62828}.action-icon.success{background:#e5f7eb;color:#1d7a43}.action-icon.warning{background:#fff2cf;color:#8a6400}
+.action-icon.danger{background:#ffe6e6;color:#c62828}.action-icon.success{background:#e5f7eb;color:#1d7a43}.action-icon.warning{background:#fff2cf;color:#2a69b8}
 #actionCard h3{font-size:19px;color:#00296B;margin-bottom:6px}
 #actionCard p{font-size:11px;color:#6a7894;line-height:1.55}
 .action-buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
@@ -615,7 +615,7 @@ body{padding-bottom:82px;overflow-x:hidden}
 .submission-person{min-width:0}
 .submission-admin-name{font-size:14px;font-weight:800;color:#173a86;word-break:break-word}
 .submission-admin-meta{font-size:9px;color:#71809a;margin-top:4px;line-height:1.5;word-break:break-word}
-.submission-status{flex:0 0 auto;border:none;border-radius:999px;padding:6px 9px;font-size:8px;font-weight:900;background:#fff4cf;color:#7a5b00}
+.submission-status{flex:0 0 auto;border:none;border-radius:999px;padding:6px 9px;font-size:8px;font-weight:900;background:#fff4cf;color:#205aa8}
 .submission-status.reviewed{background:#e5f7eb;color:#1d7a43}
 .submission-status.rejected{background:#ffe6e6;color:#b42323}
 .submission-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
@@ -679,7 +679,7 @@ body{padding-bottom:82px;overflow-x:hidden}
 @keyframes submissionDotBounce{
   0%,100%{transform:translateY(6px) scale(.82);background:#9db3df;opacity:.58}
   25%{transform:translateY(-10px) scale(1);background:#003DA5;opacity:1}
-  50%{transform:translateY(2px) scale(.92);background:#FFD93D;opacity:.95}
+  50%{transform:translateY(2px) scale(.92);background:#66b8ff;opacity:.95}
   75%{transform:translateY(8px) scale(.84);background:#6c8fd0;opacity:.72}
 }
 @media(max-width:768px){
@@ -707,24 +707,611 @@ body{padding-bottom:82px;overflow-x:hidden}
 @keyframes submitLetterBounce{0%,100%{transform:translateY(5px) scale(.96);opacity:.58}25%{transform:translateY(-12px) scale(1.08);opacity:1}50%{transform:translateY(2px) scale(1);opacity:.92}75%{transform:translateY(7px) scale(.97);opacity:.7}}
 @keyframes submitIconFloat{0%,100%{transform:translateY(2px) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}
 @media(max-width:768px){#submitLoadingCard{width:min(340px,94vw);padding:24px 18px 22px;border-radius:22px}.submit-loading-icon{width:64px;height:64px;font-size:33px}.submit-bouncing-text span{font-size:16px}}
+
+/* ===== NEWS PAGE VISUAL REFRESH — design-only overrides ===== */
+:root{
+  --news-ink:#13244a;
+  --news-muted:#61708f;
+  --news-blue:#153d8f;
+  --news-blue-2:#2b66c3;
+  --news-gold:#ffd84a;
+  --news-surface:rgba(255,255,255,.88);
+  --news-line:rgba(255,255,255,.55);
+}
+html{scroll-behavior:smooth}
+body{
+  background:
+    radial-gradient(circle at 8% 8%,rgba(255,255,255,.18),transparent 28%),
+    radial-gradient(circle at 92% 15%,rgba(255,216,74,.22),transparent 24%),
+    linear-gradient(135deg,#071b48 0%,#0d367d 45%,#0f57ae 78%,#f2c72e 145%);
+  color:#fff;
+}
+body::before,body::after{
+  content:"";position:fixed;pointer-events:none;z-index:-1;border-radius:50%;filter:blur(5px)
+}
+body::before{width:360px;height:360px;left:-160px;top:180px;background:rgba(104,178,255,.14)}
+body::after{width:300px;height:300px;right:-130px;bottom:120px;background:rgba(255,224,102,.14)}
+.header{
+  position:sticky;top:0;
+  background:rgba(6,25,67,.60);
+  border-bottom:1px solid rgba(255,255,255,.12);
+  box-shadow:0 12px 34px rgba(0,15,50,.18);
+  padding:12px 22px;
+}
+.logo{width:55px;height:55px;filter:drop-shadow(0 6px 12px rgba(0,0,0,.18))}
+.header-center h1{font-size:23px;letter-spacing:-.4px}
+.header-center p{font-size:11px;letter-spacing:.4px;opacity:.76}
+.login-btn{
+  padding:10px 14px;border:1px solid rgba(255,255,255,.17);
+  background:rgba(255,255,255,.10);box-shadow:0 8px 22px rgba(0,0,0,.12)
+}
+.container{max-width:1120px;padding:34px 22px 112px}
+.hero{
+  position:relative;overflow:hidden;padding:34px 34px 32px;margin-bottom:24px;
+  border:1px solid rgba(255,255,255,.18);
+  background:linear-gradient(135deg,rgba(255,255,255,.17),rgba(255,255,255,.08));
+  box-shadow:0 24px 60px rgba(0,14,52,.18);
+}
+.hero::before{
+  content:"NEWS";position:absolute;right:-20px;top:-44px;font-size:150px;font-weight:800;line-height:1;
+  letter-spacing:-8px;color:rgba(255,255,255,.045);pointer-events:none
+}
+.hero::after{
+  content:"";position:absolute;width:160px;height:160px;right:48px;bottom:-95px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.10);box-shadow:0 0 0 24px rgba(255,255,255,.025),0 0 0 48px rgba(255,255,255,.02)
+}
+.hero h2{position:relative;z-index:1;font-size:34px;letter-spacing:-1px;margin-bottom:9px}
+.hero h2 span{color:#ffe36a;text-shadow:0 4px 18px rgba(255,216,74,.24)}
+.hero p{position:relative;z-index:1;max-width:700px;font-size:13px;line-height:1.8;color:rgba(255,255,255,.82)}
+.toolbar{
+  position:sticky;top:79px;z-index:50;padding:12px;margin-bottom:20px;gap:12px;
+  background:rgba(7,29,72,.42);border:1px solid rgba(255,255,255,.10);
+  border-radius:18px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  box-shadow:0 12px 30px rgba(0,13,47,.12)
+}
+.search{
+  min-height:46px;border:1px solid rgba(29,60,116,.08);padding:13px 17px;
+  color:var(--news-ink);box-shadow:0 12px 28px rgba(0,15,52,.10)
+}
+.search::placeholder{color:#8090ac}
+.search:focus{box-shadow:0 0 0 3px rgba(255,216,74,.25),0 12px 28px rgba(0,15,52,.12)}
+.filter-wrap{gap:7px}
+.filter{
+  border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.09);
+  padding:10px 14px;border-radius:999px;font-size:11px;transition:.2s ease
+}
+.filter:hover{background:rgba(255,255,255,.16);transform:translateY(-1px)}
+.filter.active{box-shadow:0 8px 18px rgba(255,216,74,.18);background:var(--news-gold);color:#13244a}
+.news-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.news-card{
+  position:relative;isolation:isolate;
+  background:linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,.09));
+  border:1px solid rgba(255,255,255,.17);border-radius:25px;
+  box-shadow:0 18px 45px rgba(0,14,52,.16),inset 0 1px 0 rgba(255,255,255,.08);
+  transition:transform .28s ease,box-shadow .28s ease,border-color .28s ease
+}
+.news-card::before{
+  content:"";position:absolute;inset:0;border-radius:25px;pointer-events:none;
+  background:linear-gradient(130deg,rgba(255,255,255,.10),transparent 38%,rgba(255,216,74,.04));z-index:-1
+}
+.news-card:hover{transform:translateY(-7px);box-shadow:0 26px 55px rgba(0,13,48,.24);border-color:rgba(255,255,255,.28)}
+.news-banner{
+  position:relative;height:166px;padding:18px;
+  background:linear-gradient(145deg,#0a2b69 5%,#194d9e 57%,#d9b52d 150%);
+}
+.news-banner::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 25%,rgba(0,0,0,.18));pointer-events:none}
+.news-icon{position:relative;z-index:2;font-size:48px;filter:drop-shadow(0 8px 12px rgba(0,0,0,.18));transform:translateY(2px)}
+.tag{
+  position:relative;z-index:2;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);
+  padding:7px 11px;border-radius:999px;font-size:9px;letter-spacing:.45px;text-transform:uppercase;
+  box-shadow:0 8px 18px rgba(0,0,0,.12)
+}
+.news-body{padding:19px 19px 18px}
+.post-author{margin-bottom:13px!important;padding-bottom:11px;border-bottom:1px solid rgba(255,255,255,.10)}
+.post-author img{box-shadow:0 5px 12px rgba(0,0,0,.14)}
+.news-meta{font-size:9px;letter-spacing:.35px;text-transform:uppercase;opacity:.62;margin-bottom:7px}
+.news-title{font-size:18px;line-height:1.35;letter-spacing:-.25px;margin-bottom:8px}
+.news-excerpt{font-size:11.5px;line-height:1.75;color:rgba(255,255,255,.79)}
+.card-flags{margin-top:12px}
+.card-flag{background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.10);font-size:8px;padding:5px 7px}
+.card-buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
+.read-btn,.submit-entry-btn{
+  min-height:40px;border-radius:12px;padding:9px 13px;font-size:10.5px;font-weight:800;
+  transition:.2s ease;box-shadow:0 8px 18px rgba(0,0,0,.10)
+}
+.read-btn{background:linear-gradient(135deg,#ffe36a,#ffd84a);color:#102653}
+.submit-entry-btn{background:rgba(255,255,255,.12)!important;color:#fff!important;border:1px solid rgba(255,255,255,.15)!important}
+.read-btn:hover,.submit-entry-btn:hover{transform:translateY(-2px)}
+.empty{grid-column:1/-1;padding:62px 22px;background:rgba(255,255,255,.08);border:1px dashed rgba(255,255,255,.18)}
+.empty div{font-size:50px}
+.empty p{font-size:14px;font-weight:700}
+.admin-post-bar{
+  margin:0 0 20px;padding:13px 14px;border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.09);box-shadow:0 14px 30px rgba(0,13,48,.10)
+}
+.post-news-btn{background:linear-gradient(135deg,#ffe36a,#ffd84a);box-shadow:0 10px 20px rgba(255,216,74,.15)}
+.manage-posts-btn{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14)}
+.admin-card{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.14);box-shadow:0 18px 40px rgba(0,13,48,.12)}
+.bottom-nav{
+  background:rgba(4,18,49,.74);border-top:1px solid rgba(255,255,255,.12);
+  box-shadow:0 -12px 34px rgba(0,12,44,.15)
+}
+.nav-item{font-weight:500;opacity:.85}.nav-item.active{opacity:1;text-shadow:0 5px 15px rgba(255,216,74,.24)}
+.modal-box{box-shadow:0 30px 80px rgba(0,0,0,.42)}
+@media(max-width:768px){
+  .header{top:0;padding:9px 10px}
+  .container{padding:18px 12px 98px}
+  .hero{padding:23px 18px 21px;border-radius:22px}
+  .hero::before{font-size:90px;top:-18px;right:-8px}
+  .hero h2{font-size:25px;letter-spacing:-.6px}
+  .hero p{font-size:11px;line-height:1.7;max-width:none}
+  .toolbar{position:relative;top:auto;padding:9px;border-radius:16px;background:rgba(5,23,58,.42)}
+  .search{min-height:43px;padding:11px 13px}
+  .news-grid{gap:14px}
+  .news-card{border-radius:21px}
+  .news-card::before{border-radius:21px}
+  .news-banner{height:138px;padding:14px}
+  .news-icon{font-size:41px}
+  .news-body{padding:16px}
+  .news-title{font-size:16px}
+  .news-excerpt{font-size:11px;line-height:1.7}
+  .card-buttons{display:grid;grid-template-columns:1fr 1fr}
+  .read-btn,.submit-entry-btn{width:100%;min-height:42px}
+}
+@media(max-width:420px){
+  .header-center h1{font-size:13px}
+  .header-center p{font-size:7px}
+  .hero h2{font-size:23px}
+  .card-buttons{grid-template-columns:1fr}
+  .filter{font-size:9px;padding:9px 11px}
+}
+
+.pro-icon{display:block;flex:0 0 auto}.news-icon{display:flex;align-items:center;justify-content:center;width:52px;height:52px;color:#fff}.profile-nav-icon{font-size:0}.profile-nav-icon .pro-icon{width:19px;height:19px}.icon-button{display:inline-flex;align-items:center;justify-content:center;gap:6px}.card-flag{display:inline-flex;align-items:center;gap:5px}.empty .pro-icon{margin:0 auto 8px}.admin-row-actions svg,.card-admin-actions svg{width:14px;height:14px}.action-icon .pro-icon,.code-gate-icon .pro-icon,.notice-icon .pro-icon{width:34px;height:34px}</style>
+
+<style>
+/* =========================================================
+   INDEX-MATCHED APP SHELL — NEWS PAGE
+   Matches the visual shell of index.html only.
+   ========================================================= */
+html,body{
+  width:100%;
+  height:100%;
+  min-height:100%;
+}
+body{
+  overflow:hidden !important;
+  padding-bottom:0 !important;
+  overscroll-behavior:none;
+  background:
+    radial-gradient(circle at 12% 18%,rgba(77,169,255,.09),transparent 24%),
+    radial-gradient(circle at 86% 78%,rgba(77,169,255,.07),transparent 22%),
+    linear-gradient(145deg,#00183d 0%,#003DA5 54%,#00296B 100%) !important;
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:-15%;
+  pointer-events:none;
+  z-index:-1;
+  background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.035) 48%,transparent 60%);
+  transform:rotate(-4deg);
+  opacity:.7;
+}
+
+.header{
+  position:fixed !important;
+  top:6px !important;
+  left:50% !important;
+  right:auto !important;
+  width:calc(100% - 24px) !important;
+  max-width:1400px !important;
+  min-height:78px !important;
+  margin:0 !important;
+  transform:translateX(-50%) !important;
+  z-index:99990 !important;
+  padding:15px 20px !important;
+  display:grid !important;
+  grid-template-columns:220px 1fr 220px !important;
+  align-items:center !important;
+  gap:15px !important;
+  border:1px solid rgba(255,255,255,.12) !important;
+  border-radius:22px !important;
+  background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.055)) !important;
+  backdrop-filter:blur(20px) saturate(125%) !important;
+  -webkit-backdrop-filter:blur(20px) saturate(125%) !important;
+  box-shadow:0 16px 34px rgba(0,8,30,.20), inset 0 1px 0 rgba(255,255,255,.18) !important;
+}
+.header .logo-group{
+  display:flex !important;
+  align-items:center !important;
+  gap:10px !important;
+  flex-shrink:0 !important;
+}
+.header .logo,
+.header .caths-logo{
+  width:58px !important;
+  height:58px !important;
+  object-fit:contain !important;
+}
+.header .caths-logo{transform:scale(1.08) !important}
+.header .header-center{
+  text-align:center !important;
+  min-width:0 !important;
+  padding:0 4px !important;
+}
+.header .header-center h1{
+  margin:0 !important;
+  font-size:22px !important;
+  line-height:1.12 !important;
+  font-weight:800 !important;
+  letter-spacing:.1px !important;
+}
+.header .header-center p{
+  margin:4px 0 0 !important;
+  font-size:11px !important;
+  line-height:1.2 !important;
+  color:rgba(255,255,255,.78) !important;
+}
+.header .header-right{
+  position:relative !important;
+  display:flex !important;
+  justify-content:flex-end !important;
+  align-items:center !important;
+}
+.header .login-btn{
+  width:auto !important;
+  margin:0 !important;
+  padding:10px 16px !important;
+  display:flex !important;
+  align-items:center !important;
+  gap:8px !important;
+  border:1px solid rgba(255,255,255,.15) !important;
+  border-radius:12px !important;
+  background:linear-gradient(145deg,rgba(255,255,255,.15),rgba(255,255,255,.07)) !important;
+  color:#fff !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 8px 20px rgba(0,0,0,.12) !important;
+  font-size:12px !important;
+  font-weight:700 !important;
+}
+.header .login-btn:hover{
+  background:linear-gradient(145deg,rgba(255,255,255,.20),rgba(255,255,255,.09)) !important;
+  border-color:rgba(255,255,255,.25) !important;
+}
+.header .login-btn:active{transform:scale(.97) !important}
+.header .login-btn .ui-svg{
+  width:18px !important;
+  height:18px !important;
+  fill:none !important;
+  stroke:currentColor !important;
+  stroke-width:1.8 !important;
+  stroke-linecap:round !important;
+  stroke-linejoin:round !important;
+}
+
+/* Only the content area scrolls, like index.html. */
+.container{
+  position:fixed !important;
+  top:92px !important;
+  right:0 !important;
+  bottom:82px !important;
+  left:0 !important;
+  width:100% !important;
+  max-width:none !important;
+  margin:0 !important;
+  padding:24px 20px 46px !important;
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+  -webkit-overflow-scrolling:touch !important;
+  overscroll-behavior-y:contain !important;
+  scroll-behavior:smooth !important;
+}
+.container > *{position:relative}
+
+.bottom-nav{
+  position:fixed !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  width:100% !important;
+  height:82px !important;
+  min-height:82px !important;
+  max-width:none !important;
+  margin:0 !important;
+  padding:6px 10px !important;
+  display:flex !important;
+  justify-content:space-around !important;
+  align-items:center !important;
+  gap:4px !important;
+  border-radius:22px 22px 0 0 !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  border-bottom:0 !important;
+  background:linear-gradient(180deg,rgba(3,24,62,.82),rgba(0,12,34,.94)) !important;
+  backdrop-filter:blur(20px) saturate(125%) !important;
+  -webkit-backdrop-filter:blur(20px) saturate(125%) !important;
+  box-shadow:0 -10px 30px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.11) !important;
+  z-index:99990 !important;
+}
+.bottom-nav::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  background:linear-gradient(90deg,rgba(77,169,255,.06),transparent 25%,transparent 75%,rgba(77,169,255,.06));
+}
+.bottom-nav .nav-item{
+  position:relative !important;
+  z-index:1 !important;
+  flex:1 1 0 !important;
+  width:auto !important;
+  max-width:180px !important;
+  min-width:0 !important;
+  height:62px !important;
+  margin:0 !important;
+  padding:7px 10px !important;
+  border-radius:16px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:4px !important;
+  text-align:center !important;
+  white-space:nowrap !important;
+  color:rgba(255,255,255,.72) !important;
+  font-size:10px !important;
+  font-weight:600 !important;
+  text-decoration:none !important;
+  transform:none !important;
+  transition:background .20s ease,color .20s ease,transform .20s ease !important;
+  -webkit-tap-highlight-color:transparent !important;
+}
+.bottom-nav .nav-item:hover{
+  color:#fff !important;
+  background:rgba(255,255,255,.07) !important;
+  transform:translateY(-2px) !important;
+}
+.bottom-nav .nav-item.active{
+  color:#8fd0ff !important;
+  background:linear-gradient(180deg,rgba(87,169,255,.19),rgba(87,169,255,.07)) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 8px 22px rgba(20,120,255,.12) !important;
+  transform:none !important;
+}
+.bottom-nav .nav-item.active::after{
+  content:"" !important;
+  position:absolute !important;
+  left:50% !important;
+  bottom:4px !important;
+  width:24px !important;
+  height:3px !important;
+  border-radius:999px !important;
+  transform:translateX(-50%) !important;
+  background:#77c4ff !important;
+  box-shadow:0 0 12px rgba(119,196,255,.65) !important;
+}
+.bottom-nav .nav-item::before{
+  font-size:20px !important;
+  line-height:1 !important;
+  opacity:.92 !important;
+  margin:0 !important;
+}
+.bottom-nav .nav-item:nth-child(1)::before{content:"⌂" !important}
+.bottom-nav .nav-item:nth-child(2)::before{content:"◫" !important}
+.bottom-nav .nav-item:nth-child(3)::before{content:"◌" !important}
+.bottom-nav .nav-item:nth-child(4)::before{content:"◉" !important}
+.bottom-nav .nav-item:nth-child(5)::before{content:none !important;display:none !important}
+.bottom-nav .profile-nav-icon{
+  width:34px !important;
+  height:34px !important;
+  min-width:34px !important;
+  min-height:34px !important;
+  max-width:34px !important;
+  max-height:34px !important;
+  margin:0 !important;
+  padding:2px !important;
+  display:grid !important;
+  place-items:center !important;
+  border-radius:50% !important;
+  overflow:hidden !important;
+  background:rgba(255,255,255,.10) !important;
+  border:1px solid rgba(255,255,255,.18) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12) !important;
+}
+.bottom-nav .profile-nav-icon img,
+.bottom-nav #profileNavPhoto img{
+  width:30px !important;
+  height:30px !important;
+  min-width:30px !important;
+  min-height:30px !important;
+  max-width:30px !important;
+  max-height:30px !important;
+  display:block !important;
+  flex:none !important;
+  object-fit:cover !important;
+  object-position:center !important;
+  border-radius:50% !important;
+}
+
+@media (max-width:768px){
+  .header{
+    top:8px !important;
+    width:calc(100% - 16px) !important;
+    min-height:66px !important;
+    padding:8px 10px !important;
+    border-radius:18px !important;
+  }
+  .header .logo,
+  .header .caths-logo{
+    width:44px !important;
+    height:44px !important;
+    transform:none !important;
+  }
+  .header .logo-group{gap:6px !important}
+  .header .header-center{padding:0 4px !important}
+  .header .header-center h1{font-size:14px !important}
+  .header .header-center p{font-size:8px !important;margin-top:2px !important}
+  .header .login-btn{font-size:10px !important;padding:7px 9px !important}
+  .header .login-btn .ui-svg{width:16px !important;height:16px !important}
+
+  .container{
+    top:77px !important;
+    bottom:70px !important;
+    padding:14px 12px 34px !important;
+  }
+  .bottom-nav{
+    height:70px !important;
+    min-height:70px !important;
+    padding:6px 6px calc(6px + env(safe-area-inset-bottom)) !important;
+    border-radius:18px 18px 0 0 !important;
+    gap:2px !important;
+  }
+  .bottom-nav .nav-item{
+    height:58px !important;
+    padding:5px 3px !important;
+    border-radius:13px !important;
+    gap:3px !important;
+    font-size:8.5px !important;
+  }
+  .bottom-nav .nav-item::before{font-size:17px !important}
+  .bottom-nav .profile-nav-icon{
+    width:30px !important;height:30px !important;
+    min-width:30px !important;min-height:30px !important;
+    max-width:30px !important;max-height:30px !important;
+  }
+  .bottom-nav .profile-nav-icon img,
+  .bottom-nav #profileNavPhoto img{
+    width:26px !important;height:26px !important;
+    min-width:26px !important;min-height:26px !important;
+    max-width:26px !important;max-height:26px !important;
+  }
+}
+@media (max-width:420px){
+  .header{top:2px !important;width:calc(100% - 12px) !important;padding-left:8px !important;padding-right:8px !important}
+  .header .logo,.header .caths-logo{width:38px !important;height:38px !important}
+  .header .header-center h1{font-size:12px !important}
+  .header .header-center p{font-size:7px !important}
+  .header .login-btn{font-size:9px !important;padding:6px 7px !important;max-width:95px !important}
+  .container{top:74px !important;bottom:68px !important}
+  .bottom-nav{height:68px !important;min-height:68px !important}
+  .bottom-nav .nav-item{height:54px !important;font-size:7.5px !important}
+  .bottom-nav .nav-item::before{font-size:16px !important}
+}
+@media (max-width:768px) and (orientation:landscape){
+  .header{min-height:58px !important}
+  .container{top:65px !important;bottom:62px !important}
+  .bottom-nav{height:62px !important;min-height:62px !important}
+}
+</style>
+
+<style id="index-blue-theme-overrides">
+:root{
+  --blue:#003DA5;
+  --dark:#00296B;
+  --accent:#66b8ff;
+  --white:#ffffff;
+  --glass:rgba(255,255,255,.12);
+}
+
+body{
+  min-height:100vh !important;
+  color:white !important;
+  background:
+    radial-gradient(900px 600px at 8% 8%, rgba(0,120,255,.28), transparent 60%),
+    radial-gradient(700px 500px at 78% 92%, rgba(0,77,190,.24), transparent 62%),
+    linear-gradient(135deg, #03152f 0%, #062b68 34%, #0a4ca2 66%, #173b78 100%) !important;
+  background-attachment:fixed !important;
+  background-size:cover !important;
+  padding-bottom:92px !important;
+  overflow-x:hidden !important;
+}
+body::before{
+  content:"" !important;
+  position:fixed !important;
+  inset:0 !important;
+  pointer-events:none !important;
+  z-index:-1 !important;
+  background:
+    radial-gradient(circle at 20% 25%, rgba(100,180,255,.10) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 78% 72%, rgba(100,180,255,.07) 0 1px, transparent 1.5px) !important;
+  background-size:180px 180px, 240px 240px !important;
+  opacity:.5 !important;
+}
+body::after{
+  content:"" !important;
+  position:fixed !important;
+  inset:-15% !important;
+  pointer-events:none !important;
+  z-index:-1 !important;
+  background:linear-gradient(115deg, transparent 35%, rgba(255,255,255,.035) 48%, transparent 60%) !important;
+  transform:rotate(-4deg) !important;
+  opacity:.7 !important;
+}
+
+/* Same visual header language as index.html */
+.header{
+  padding:15px 20px !important;
+  background:rgba(255,255,255,.08) !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  box-shadow:0 10px 28px rgba(0,0,0,.12) !important;
+}
+.login-btn{
+  background:rgba(255,255,255,.15) !important;
+  color:#fff !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+}
+.login-btn:hover{background:rgba(255,255,255,.24) !important}
+.hero{
+  background:rgba(255,255,255,.12) !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  box-shadow:0 18px 45px rgba(0,0,0,.18) !important;
+}
+.hero h2 span{color:var(--accent) !important}
+
+/* Blue-only controls */
+.filter.active{background:var(--accent) !important;color:var(--dark) !important}
+.read-btn,.post-news-btn,.admin-action.primary{background:#4da9ff !important;color:#062b68 !important}
+.admin-badge{background:#4da9ff !important;color:#062b68 !important}
+.news-banner{
+  background:linear-gradient(135deg,rgba(0,41,107,.92),rgba(0,61,165,.82),rgba(77,169,255,.34)) !important;
+}
+
+/* Same app-shell footer feel as index.html, without gold active state */
+.bottom-nav{
+  height:75px !important;
+  background:rgba(0,0,0,.25) !important;
+  backdrop-filter:blur(20px) !important;
+  -webkit-backdrop-filter:blur(20px) !important;
+  border-top:1px solid rgba(255,255,255,.08) !important;
+}
+.nav-item{color:#fff !important}
+.nav-item.active{color:var(--accent) !important;transform:translateY(-5px) scale(1.08) !important}
+.nav-item:hover{color:#a9dcff !important}
+
+/* Blue-only loading/success accents that previously used gold */
+.submission-loading .loading-dot{background:#66b8ff !important}
+.publish-check{background:rgba(77,169,255,.14) !important;color:#66b8ff !important;box-shadow:0 10px 25px rgba(0,120,255,.15) !important}
+
+@media(max-width:768px){
+  .header{padding:9px 10px !important;min-height:66px !important}
+  .bottom-nav{height:70px !important}
+}
 </style>
 </head>
 <body>
 <header class="header">
   <div class="logo-group"><img src="sslg-logo.png" class="logo" alt="SSLG"><img src="caths-logo.png" class="logo caths-logo" alt="CATHS"></div>
-  <div class="header-center"><h1>CATHS-MAIN News</h1><p>Official SSLG Communication Platform</p></div>
+  <div class="header-center"><h1>CATHS-MAIN</h1><p>Official SSLG Communication Platform</p></div>
   <div class="header-right">
-    <button id="headerLoginBtn" class="login-btn" type="button">👤 <span>Login</span></button>
+    <button id="headerLoginBtn" class="login-btn" type="button"><svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0-0-8 4 4 0 0 0 0 8m7-4h5m-2-3 3 3-3 3"/></svg><span>Login</span></button>
     <div id="profileMenu" class="profile-menu">
       <div class="profile-info"><img id="profilePhoto" src="" alt="Profile"><div class="profile-details"><strong id="profileName">User</strong><small id="profileEmail"></small></div></div>
       <div class="divider"></div>
       <div class="profile-nav">
-        <a href="profile.html" class="profile-nav-item"><span class="profile-nav-icon">👤</span><span>Profile</span></a>
-        <a href="friends.html" class="profile-nav-item"><span class="profile-nav-icon">👥</span><span>Add Friends</span></a>
-        <a href="voice.html" class="profile-nav-item"><span class="profile-nav-icon">🗣️</span><span>Your Concern</span></a>
+        <a href="profile.html" class="profile-nav-item"><span class="profile-nav-icon"></span><span>Profile</span></a>
+        <a href="friends.html" class="profile-nav-item"><span class="profile-nav-icon"></span><span>Add Friends</span></a>
+        <a href="voice.html" class="profile-nav-item"><span class="profile-nav-icon"></span><span>Your Concern</span></a>
       </div>
       <div class="divider"></div>
-      <button id="logoutBtn" class="logout-button" type="button">🚪 Log Out</button>
+      <button id="logoutBtn" class="logout-button" type="button">Log Out</button>
     </div>
   </div>
 </header>
@@ -733,7 +1320,7 @@ body{padding-bottom:82px;overflow-x:hidden}
   <section class="hero"><h2>Latest <span>News</span> & Updates</h2><p>Stay informed about school announcements, student activities, programs, and important updates from the CATHS-MAIN community.</p></section>
 
   <div class="toolbar">
-    <input id="searchInput" class="search" type="search" placeholder="🔍 Search news or announcements...">
+    <input id="searchInput" class="search" type="search" placeholder="Search news or announcements...">
     <div class="filter-wrap">
       <button class="filter active" data-filter="all">All</button>
       <button class="filter" data-filter="announcement">Announcements</button>
@@ -748,15 +1335,15 @@ body{padding-bottom:82px;overflow-x:hidden}
       <div style="font-size:10px;opacity:.72;margin-top:2px">Only authorized admins can publish or manage news.</div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button id="postNewsBtn" class="post-news-btn" type="button">➕ Post News</button>
-      <button id="managePostsBtn" class="manage-posts-btn" type="button">🛠️ Manage</button>
-      <button id="viewAllSubmissionsBtn" class="manage-posts-btn" type="button">📥 Submissions</button>
+      <button id="postNewsBtn" class="post-news-btn" type="button"> Post News</button>
+      <button id="managePostsBtn" class="manage-posts-btn" type="button">Manage Posts</button>
+      <button id="viewAllSubmissionsBtn" class="manage-posts-btn" type="button">Submissions</button>
     </div>
   </div>
 
   <section id="adminPanel" class="admin-card admin-panel-collapsed" style="display:none">
     <div class="admin-head">
-      <div><h3>🛠️ Admin Post Management</h3><p>Manage news visibility, status, content, and moderation.</p></div>
+      <div><h3>Admin Post Management</h3><p>Manage news visibility, status, content, and moderation.</p></div>
       <span class="admin-badge">ADMIN</span>
     </div>
     <div id="adminList" class="admin-list"></div>
@@ -765,24 +1352,24 @@ body{padding-bottom:82px;overflow-x:hidden}
   <section id="newsGrid" class="news-grid"></section>
 </main>
 
-<nav class="bottom-nav">
-  <a href="index.html" class="nav-item"><div>🏠</div><span>Home</span></a>
-  <a href="news-feed.html" class="nav-item"><div>📰</div><span>News Feed</span></a>
-  <a href="voice.html" class="nav-item"><div>🗣️</div><span>Student Voice</span></a>
-  <a href="friends.html" class="nav-item"><div>👥</div><span>Add Friends</span></a>
-  <a href="profile.html" class="nav-item"><div class="profile-nav-icon" id="profileNavPhoto">👤</div><span>Profile</span></a>
-</nav>
+<footer class="bottom-nav" aria-label="Primary navigation">
+  <a href="index.html" class="nav-item"><span>Home</span></a>
+  <a href="news-feed.html" class="nav-item active"><span>News Feed</span></a>
+  <a href="voice.html" class="nav-item"><span>Student Voice</span></a>
+  <a href="friends.html" class="nav-item"><span>Friends</span></a>
+  <a href="profile.html" class="nav-item"><span class="profile-nav-icon" id="profileNavPhoto" aria-hidden="true"></span><span>Profile</span></a>
+</footer>
 
-<div id="newsModal" class="modal"><div class="modal-box"><button class="close-btn" id="closeNews">✕</button><h3 id="modalTitle"></h3><div id="modalDate" class="modal-date"></div><div id="modalFlags" class="card-flags"></div><p id="modalBody"></p></div></div>
+<div id="newsModal" class="modal"><div class="modal-box"><button class="close-btn" id="closeNews">×</button><h3 id="modalTitle"></h3><div id="modalDate" class="modal-date"></div><div id="modalFlags" class="card-flags"></div><p id="modalBody"></p></div></div>
 
 <div id="postNewsModal" class="modal"><div class="modal-box post-modal-box">
-  <button class="close-btn" id="closePostNews">✕</button>
-  <h3>📰 Post News</h3>
+  <button class="close-btn" id="closePostNews">×</button>
+  <h3>Post News</h3>
   <div class="modal-date">Only authorized admin accounts can publish news.</div>
   <div class="form-grid">
     <div class="field full"><label>Title</label><input id="newTitle" maxlength="120" placeholder="Enter the news title"></div>
     <div class="field"><label>Category</label><select id="newType"><option value="announcement">Announcement</option><option value="events">Events</option><option value="student">Student Life</option></select></div>
-    <div class="field"><label>Icon</label><input id="newIcon" maxlength="4" value="📰"></div>
+    <div class="field"><label>Icon</label><input id="newIcon" maxlength="20" value="newspaper"></div>
     <div class="field"><label>Tag</label><input id="newTag" maxlength="40" value="Announcement"></div>
     <div class="field"><label>Date / Meta</label><input id="newDate" maxlength="80" placeholder="School Update"></div>
     <div class="field full"><label>Excerpt</label><textarea id="newExcerpt" maxlength="500" placeholder="Short preview shown on the card"></textarea></div>
@@ -792,12 +1379,12 @@ body{padding-bottom:82px;overflow-x:hidden}
     <div class="field full"><div style="font-size:10px;color:#6d7b95;background:#f5f8ff;border:1px solid #e4ebf8;padding:9px 10px;border-radius:10px;line-height:1.45">Enable this only when students should be able to submit an entry for this announcement, contest, recruitment, activity, or event.</div></div>
     <div class="field"><label>Status</label><div class="status-chips"><span class="status-chip success">New post</span><span class="status-chip">Visible</span></div></div>
   </div>
-  <div class="admin-form-actions"><button id="cancelPostNews" class="admin-action" type="button">Cancel</button><button id="publishPostNews" class="admin-action primary" type="button">🚀 Publish News</button></div>
+  <div class="admin-form-actions"><button id="cancelPostNews" class="admin-action" type="button">Cancel</button><button id="publishPostNews" class="admin-action primary" type="button">Publish News</button></div>
 </div></div>
 
 <div id="adminModal" class="modal"><div class="modal-box admin-modal-box">
-  <button class="close-btn" id="closeAdmin">✕</button>
-  <h3>✏️ Edit News Post</h3>
+  <button class="close-btn" id="closeAdmin">×</button>
+  <h3>Edit News Post</h3>
   <div class="modal-date">Changes are saved to Firestore.</div>
   <div class="form-grid">
     <div class="field"><label>Title</label><input id="adminTitle" maxlength="120"></div>
@@ -824,7 +1411,7 @@ body{padding-bottom:82px;overflow-x:hidden}
     <div id="publishLoadingState">
       <div class="publish-stage">
         <div class="publish-glow"></div>
-        <div id="publishRocket" class="publish-rocket">🚀</div>
+        <div id="publishRocket" class="publish-rocket"></div>
       </div>
       <h3>Publishing your news...</h3>
       <p>Saving your announcement securely. Please wait a moment.</p>
@@ -836,7 +1423,7 @@ body{padding-bottom:82px;overflow-x:hidden}
     </div>
 
     <div id="publishSuccessState" style="display:none">
-      <div class="publish-success-check">✓</div>
+      <div class="publish-success-check"></div>
       <h3>The post has been published!</h3>
       <p>Your news is now live on CATHS-MAIN News.</p>
     </div>
@@ -850,7 +1437,7 @@ body{padding-bottom:82px;overflow-x:hidden}
 
 <div id="codeGateOverlay" aria-hidden="true">
   <div id="codeGateCard" role="dialog" aria-modal="true">
-    <div class="code-gate-icon">🔐</div>
+    <div class="code-gate-icon"></div>
     <h3>Admin Verification</h3>
     <p>Enter the publishing code to continue.</p>
     <input id="publishCode" type="password" maxlength="30" autocomplete="off" inputmode="text" placeholder="Publishing code">
@@ -865,7 +1452,7 @@ body{padding-bottom:82px;overflow-x:hidden}
 
 <div id="appNoticeOverlay" aria-hidden="true">
   <div id="appNoticeCard" role="dialog" aria-modal="true">
-    <div id="noticeIcon" class="notice-icon info">ℹ️</div>
+    <div id="noticeIcon" class="notice-icon info"></div>
     <h3 id="noticeTitle">Notice</h3>
     <p id="noticeMessage"></p>
     <div class="notice-actions"><button id="noticeClose" class="notice-btn" type="button">OK</button></div>
@@ -875,7 +1462,7 @@ body{padding-bottom:82px;overflow-x:hidden}
 
 <div id="actionOverlay" aria-hidden="true">
   <div id="actionCard" role="dialog" aria-modal="true">
-    <div id="actionIcon" class="action-icon">ℹ️</div>
+    <div id="actionIcon" class="action-icon"></div>
     <h3 id="actionTitle">Notice</h3>
     <p id="actionMessage"></p>
     <select id="actionSelect" class="action-select" style="display:none"></select>
@@ -889,8 +1476,8 @@ body{padding-bottom:82px;overflow-x:hidden}
 
 <div id="submissionOverlay" aria-hidden="true">
   <div id="submissionCard" role="dialog" aria-modal="true">
-    <button class="close-btn" id="closeSubmission" type="button" aria-label="Close">✕</button>
-    <h3>📝 Submit Your Entry</h3>
+    <button class="close-btn" id="closeSubmission" type="button" aria-label="Close">×</button>
+    <h3>Submit Your Entry</h3>
     <div class="submission-subtitle">Complete the form below to submit your entry for this activity, contest, recruitment, or school opportunity.</div>
     <span id="submissionPostName" class="submission-post-name">Selected news post</span>
 
@@ -944,7 +1531,7 @@ body{padding-bottom:82px;overflow-x:hidden}
 
     <div class="submission-actions">
       <button id="cancelSubmission" class="submission-btn submission-cancel" type="button">Cancel</button>
-      <button id="submitEntryBtn" class="submission-btn submission-submit" type="button">✅ Submit Entry</button>
+      <button id="submitEntryBtn" class="submission-btn submission-submit" type="button"> Submit Entry</button>
     </div>
   </div>
 </div>
@@ -952,7 +1539,7 @@ body{padding-bottom:82px;overflow-x:hidden}
 
 <div id="submitLoadingOverlay" aria-hidden="true">
   <div id="submitLoadingCard" role="status" aria-live="polite">
-    <div class="submit-loading-icon">📨</div>
+    <div class="submit-loading-icon"></div>
     <h3>Submitting your entry...</h3>
     <p>Please wait while we securely send your application.</p>
     <div class="submit-bouncing-text" aria-hidden="true">
@@ -963,8 +1550,8 @@ body{padding-bottom:82px;overflow-x:hidden}
 
 <div id="submissionsOverlay" aria-hidden="true">
   <div id="submissionsCard" role="dialog" aria-modal="true">
-    <button class="close-btn" id="closeSubmissions" type="button">✕</button>
-    <h3>📥 Student Submissions</h3>
+    <button class="close-btn" id="closeSubmissions" type="button">×</button>
+    <h3>Student Submissions</h3>
     <div id="submissionsSubtitle">Admin-only view</div>
     <div class="submission-toolbar">
       <div class="submission-summary"><span id="submissionCount" class="submission-count">0 submissions</span></div>
@@ -976,25 +1563,54 @@ body{padding-bottom:82px;overflow-x:hidden}
 
 <script>
 const NEWS=[];
+window.addEventListener('DOMContentLoaded',()=>{if($('publishRocket'))$('publishRocket').innerHTML=svgIcon('newspaper',42);if($('codeGateCard')&&$('codeGateCard').querySelector('.code-gate-icon'))$('codeGateCard').querySelector('.code-gate-icon').innerHTML=svgIcon('lock',34);if($('noticeIcon'))$('noticeIcon').innerHTML=svgIcon('info',34);if($('actionIcon'))$('actionIcon').innerHTML=svgIcon('info',34);if($('submissionOverlay')&&$('submissionOverlay').querySelector('.close-btn'))$('submissionOverlay').querySelector('.close-btn').innerHTML='×';});
 let currentFilter='all';
 let mergedNews=[...NEWS];
 let adminMode=false;
 let editingPostId=null;
 const $=id=>document.getElementById(id);
+function svgIcon(name,size=28){
+ const paths={
+  newspaper:'<path d="M4 5.5h16v13H4z"/><path d="M7 8h6M7 11h10M7 14h7"/>',
+  calendar:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 9h16M8 13h3M8 16h5"/>',
+  users:'<path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20"/><circle cx="10" cy="8" r="3"/><path d="M16 11a3 3 0 0 1 3 3v1M15 5.5a3 3 0 0 1 0 5.5"/>',
+  megaphone:'<path d="M4 12h4l8-4v8l-8-4H4z"/><path d="M8 16l2 4h2l-2-4"/><path d="M18 10.5a3 3 0 0 1 0 3"/>',
+  user:'<circle cx="12" cy="8" r="3"/><path d="M5 20a7 7 0 0 1 14 0"/>',
+  lock:'<rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
+  trash:'<path d="M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13M10 10v7M14 10v7"/>',
+  pencil:'<path d="M4 17.5V20h2.5L17.8 8.7 15.3 6.2 4 17.5z"/><path d="M14.5 7l2.5 2.5"/>',
+  inbox:'<path d="M4 5h16v14H4z"/><path d="M4 14h4l1.5 2h5L16 14h4"/>',
+  pin:'<path d="M9 4h6l-1 5 3 3h-4v8l-2-2-2 2v-8H5l3-3z"/>',
+  eye:'<path d="M2.5 12s3.5-5 9.5-5 9.5 5 9.5 5-3.5 5-9.5 5-9.5-5-9.5-5z"/><circle cx="12" cy="12" r="2.5"/>',
+  eyeOff:'<path d="M3 3l18 18"/><path d="M10.6 6.2A10.7 10.7 0 0 1 12 6c6 0 9.5 6 9.5 6a16 16 0 0 1-3.1 3.5M6.8 6.8C3.9 8.5 2.5 12 2.5 12s3.5 6 9.5 6a9.7 9.7 0 0 0 3-.5"/><path d="M9.8 9.8a3 3 0 0 0 4.4 4.4"/>',
+  close:'<path d="M6 6l12 12M18 6L6 18"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 10v6M12 7.5h.01"/>',
+  check:'<path d="M5 12l4 4L19 6"/>'
+ };
+ return '<svg class="pro-icon" width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(paths[name]||paths.newspaper)+'</svg>';
+}
+function professionalIcon(value,type){
+ const v=String(value||'newspaper').toLowerCase();
+ if(type==='events' || v.includes('calendar')) return svgIcon('calendar',42);
+ if(type==='student' || v.includes('users')) return svgIcon('users',42);
+ if(v.includes('megaphone')) return svgIcon('megaphone',42);
+ return svgIcon('newspaper',42);
+}
+
 function escapeHtml(text){return String(text??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
 function decoratePost(base,override){
   const x={...base,...(override||{})};
-  return {id:String(x.id||base.id),type:x.type||base.type,icon:x.icon||base.icon,tag:x.tag||base.tag,date:x.date||base.date,title:x.title??base.title,excerpt:x.excerpt??base.excerpt,body:x.body??base.body,visibility:x.visibility||'public',hidden:Boolean(x.hidden),pinned:Boolean(x.pinned),official:Boolean(x.official),deleted:Boolean(x.deleted),authorUid:x.authorUid||'',authorName:x.authorName||'',authorPhotoURL:x.authorPhotoURL||'',allowSubmissions:Boolean(x.allowSubmissions)};
+  return {id:String(x.id||base.id),type:x.type||base.type,icon:x.icon||base.icon||'newspaper',tag:x.tag||base.tag,date:x.date||base.date,title:x.title??base.title,excerpt:x.excerpt??base.excerpt,body:x.body??base.body,visibility:x.visibility||'public',hidden:Boolean(x.hidden),pinned:Boolean(x.pinned),official:Boolean(x.official),deleted:Boolean(x.deleted),authorUid:x.authorUid||'',authorName:x.authorName||'',authorPhotoURL:x.authorPhotoURL||'',allowSubmissions:Boolean(x.allowSubmissions)};
 }
 function sortNews(list){return [...list].sort((a,b)=>Number(b.pinned)-Number(a.pinned)||Number(b.official)-Number(a.official)||String(a.date).localeCompare(String(b.date)));
 }
 function renderNews(){
  const term=$('searchInput').value.trim().toLowerCase();
  const list=sortNews(mergedNews.filter(item=>!item.deleted && !item.hidden && (item.visibility==='public'||adminMode) && (currentFilter==='all'||item.type===currentFilter) && (!term||`${item.title} ${item.excerpt} ${item.tag} ${item.date}`.toLowerCase().includes(term))));
- if(!list.length){$('newsGrid').innerHTML='<div class="empty" style="grid-column:1/-1"><div>📰</div><p>No news or announcements yet.</p><small style="display:block;margin-top:6px;opacity:.65">Authorized admins can publish the first update using <b>Post News</b>.</small></div>';return;}
- $('newsGrid').innerHTML=list.map(item=>`<article class="news-card"><div class="news-banner"><div class="news-icon">${escapeHtml(item.icon)}</div><div class="tag">${escapeHtml(item.tag)}</div></div><div class="news-body">${item.authorPhotoURL?`<div class="post-author" style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><img src="${escapeHtml(item.authorPhotoURL)}" alt="Admin" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.35)"><div style="min-width:0"><div style="font-size:10px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(item.authorName||'SSLG Admin')}</div><div style="font-size:8px;opacity:.68;margin-top:2px">SSLG Administrator</div></div></div>`:''}<div class="news-meta">${escapeHtml(item.date)}</div><div class="news-title">${escapeHtml(item.title)}</div><div class="news-excerpt">${escapeHtml(item.excerpt)}</div><div class="card-flags">${item.official?'<span class="card-flag">✅ OFFICIAL</span>':''}${item.pinned?'<span class="card-flag">📌 PINNED</span>':''}</div><div class="card-buttons"><button class="read-btn" onclick="openNews('${escapeHtml(item.id)}')">Read More</button>${item.allowSubmissions?`<button class="submit-entry-btn" onclick="openSubmissionForm('${escapeHtml(item.id)}')">📝 Submit Entry</button>`:''}</div>${adminMode?`<div class="card-admin-actions"><button onclick="editPost('${escapeHtml(item.id)}')">✏️ Edit</button><button class="admin-submissions-btn" onclick="openSubmissions('${escapeHtml(item.id)}')">📥 Submissions</button><button onclick="togglePinned('${escapeHtml(item.id)}')">${item.pinned?'📍 Unpin':'📌 Pin'}</button><button onclick="toggleOfficial('${escapeHtml(item.id)}')">${item.official?'✅ Unmark':'🏷️ Official'}</button><button onclick="toggleHidden('${escapeHtml(item.id)}')">${item.hidden?'👁️ Unhide':'🙈 Hide'}</button><button onclick="changeVisibility('${escapeHtml(item.id)}')">🔐 Visibility</button><button class="danger" onclick="deletePost('${escapeHtml(item.id)}')">🗑️ Delete</button></div>`:''}</div></article>`).join('');
+ if(!list.length){$('newsGrid').innerHTML='<div class="empty" style="grid-column:1/-1"><div></div><p>No news or announcements yet.</p><small style="display:block;margin-top:6px;opacity:.65">Authorized admins can publish the first update using <b>Post News</b>.</small></div>';return;}
+ $('newsGrid').innerHTML=list.map(item=>`<article class="news-card"><div class="news-banner"><div class="news-icon">${professionalIcon(item.icon,item.type)}</div><div class="tag">${escapeHtml(item.tag)}</div></div><div class="news-body">${item.authorPhotoURL?`<div class="post-author" style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><img src="${escapeHtml(item.authorPhotoURL)}" alt="Admin" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,.35)"><div style="min-width:0"><div style="font-size:10px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(item.authorName||'SSLG Admin')}</div><div style="font-size:8px;opacity:.68;margin-top:2px">SSLG Administrator</div></div></div>`:''}<div class="news-meta">${escapeHtml(item.date)}</div><div class="news-title">${escapeHtml(item.title)}</div><div class="news-excerpt">${escapeHtml(item.excerpt)}</div><div class="card-flags">${item.official?'<span class="card-flag"> OFFICIAL</span>':''}${item.pinned?'<span class="card-flag">PINNED</span>':''}</div><div class="card-buttons"><button class="read-btn" onclick="openNews('${escapeHtml(item.id)}')">Read More</button>${item.allowSubmissions?`<button class="submit-entry-btn" onclick="openSubmissionForm('${escapeHtml(item.id)}')">Submit Entry</button>`:''}</div>${adminMode?`<div class="card-admin-actions"><button onclick="editPost('${escapeHtml(item.id)}')">Edit</button><button class="admin-submissions-btn" onclick="openSubmissions('${escapeHtml(item.id)}')">Submissions</button><button onclick="togglePinned('${escapeHtml(item.id)}')">${item.pinned?'Unpin':'Pin'}</button><button onclick="toggleOfficial('${escapeHtml(item.id)}')">${item.official?'Unmark':'Official'}</button><button onclick="toggleHidden('${escapeHtml(item.id)}')">${item.hidden?'Unhide':'Hide'}</button><button onclick="changeVisibility('${escapeHtml(item.id)}')">Visibility</button><button class="danger" onclick="deletePost('${escapeHtml(item.id)}')">Delete</button></div>`:''}</div></article>`).join('');
 }
-window.openNews=function(id){const item=mergedNews.find(x=>String(x.id)===String(id)&&!x.deleted);if(!item)return;$('modalTitle').textContent=item.title;$('modalDate').textContent=item.date;$('modalBody').textContent=item.body;const flags=[];if(item.official)flags.push('✅ OFFICIAL ANNOUNCEMENT');if(item.pinned)flags.push('📌 PINNED');if(item.hidden)flags.push('🙈 HIDDEN');if(item.allowSubmissions)flags.push('📝 SUBMISSIONS OPEN');if(item.visibility!=='public')flags.push('🔒 '+item.visibility.toUpperCase());$('modalFlags').innerHTML=flags.map(x=>`<span class="card-flag">${escapeHtml(x)}</span>`).join('');$('newsModal').classList.add('show')};
+window.openNews=function(id){const item=mergedNews.find(x=>String(x.id)===String(id)&&!x.deleted);if(!item)return;$('modalTitle').textContent=item.title;$('modalDate').textContent=item.date;$('modalBody').textContent=item.body;const flags=[];if(item.official)flags.push('OFFICIAL ANNOUNCEMENT');if(item.pinned)flags.push('PINNED');if(item.hidden)flags.push('HIDDEN');if(item.allowSubmissions)flags.push('SUBMISSIONS OPEN');if(item.visibility!=='public')flags.push('Visibility: '+item.visibility.toUpperCase());$('modalFlags').innerHTML=flags.map(x=>`<span class="card-flag">${escapeHtml(x)}</span>`).join('');$('newsModal').classList.add('show')};
 $('closeNews').onclick=()=>$('newsModal').classList.remove('show');
 $('newsModal').addEventListener('click',e=>{if(e.target===$('newsModal'))$('newsModal').classList.remove('show')});
 $('searchInput').addEventListener('input',renderNews);
@@ -1003,7 +1619,7 @@ function openPostNewsModal(){
  if(!adminMode){showAppNotice('Admin access required','Only authorized SSLG administrators can publish news.','error');return;}
  $('newTitle').value='';
  $('newType').value='announcement';
- $('newIcon').value='📰';
+ $('newIcon').value='newspaper';
  $('newTag').value='Announcement';
  $('newDate').value='School Update';
  $('newExcerpt').value='';
@@ -1021,8 +1637,8 @@ function renderAdmin(){
  if(!adminMode){$('adminPostBar').classList.remove('show');$('adminPanel').style.display='none';$('adminPanel').classList.add('admin-panel-collapsed');return;}
  $('adminPostBar').classList.add('show');
  $('adminPanel').style.display='block';
- const html=sortNews(mergedNews.filter(x=>!x.deleted)).map(item=>`<div class="admin-row"><div class="admin-row-info"><div class="admin-row-title">${escapeHtml(item.title)}</div><div class="admin-row-meta">${escapeHtml(item.tag)} • ${escapeHtml(item.visibility)} ${item.allowSubmissions?'• submissions open':''} ${item.hidden?'• hidden':''} ${item.pinned?'• pinned':''} ${item.official?'• official':''}</div></div><div class="admin-row-actions"><button class="admin-action" onclick="editPost('${escapeHtml(item.id)}')">✏️ Edit</button><button class="admin-submissions-btn" onclick="openSubmissions('${escapeHtml(item.id)}')">📥 Submissions</button><button class="admin-action" onclick="toggleHidden('${escapeHtml(item.id)}')">${item.hidden?'👁️ Unhide':'🙈 Hide'}</button><button class="admin-action" onclick="togglePinned('${escapeHtml(item.id)}')">${item.pinned?'📍 Unpin':'📌 Pin'}</button><button class="admin-action" onclick="toggleOfficial('${escapeHtml(item.id)}')">${item.official?'✅ Unmark':'🏷️ Official'}</button><button class="admin-action" onclick="changeVisibility('${escapeHtml(item.id)}')">🔐 Visibility</button><button class="admin-action danger" onclick="deletePost('${escapeHtml(item.id)}')">🗑️ Delete</button></div></div>`).join('');
- $('adminList').innerHTML=html||'<div class="empty"><div>🗂️</div><p>No posts to manage.</p></div>';
+ const html=sortNews(mergedNews.filter(x=>!x.deleted)).map(item=>`<div class="admin-row"><div class="admin-row-info"><div class="admin-row-title">${escapeHtml(item.title)}</div><div class="admin-row-meta">${escapeHtml(item.tag)} • ${escapeHtml(item.visibility)} ${item.allowSubmissions?'• submissions open':''} ${item.hidden?'• hidden':''} ${item.pinned?'• pinned':''} ${item.official?'• official':''}</div></div><div class="admin-row-actions"><button class="admin-action" onclick="editPost('${escapeHtml(item.id)}')">Edit</button><button class="admin-submissions-btn" onclick="openSubmissions('${escapeHtml(item.id)}')">Submissions</button><button class="admin-action" onclick="toggleHidden('${escapeHtml(item.id)}')">${item.hidden?'Unhide':'Hide'}</button><button class="admin-action" onclick="togglePinned('${escapeHtml(item.id)}')">${item.pinned?'Unpin':'Pin'}</button><button class="admin-action" onclick="toggleOfficial('${escapeHtml(item.id)}')">${item.official?'Unmark':'Official'}</button><button class="admin-action" onclick="changeVisibility('${escapeHtml(item.id)}')">Visibility</button><button class="admin-action danger" onclick="deletePost('${escapeHtml(item.id)}')">Delete</button></div></div>`).join('');
+ $('adminList').innerHTML=html||'<div class="empty"><div></div><p>No posts to manage.</p></div>';
 }
 $('managePostsBtn').addEventListener('click',()=>{
  const panel=$('adminPanel');
@@ -1054,7 +1670,7 @@ async function showSubmissionsViewer(postId=null){
     subtitle.textContent=postId ? `Applications submitted for “${postById(postId)?.title||'this news post'}”` : 'All student entries saved in the Google Spreadsheet';
 
     if(!ordered.length){
-      list.innerHTML='<div class="submission-empty">📭<br><br><b>No student submissions yet.</b><br><span style="font-size:10px">Submitted entries will appear here for authorized admins.</span></div>';
+      list.innerHTML='<div class="submission-empty"><br><br><b>No student submissions yet.</b><br><span style="font-size:10px">Submitted entries will appear here for authorized admins.</span></div>';
       return;
     }
 
@@ -1086,14 +1702,14 @@ async function showSubmissionsViewer(postId=null){
   }catch(err){
     console.error('Failed to load student submissions:',err);
     count.textContent='Unavailable';
-    list.innerHTML=`<div class="submission-error"><b>⚠️ Could not load submissions.</b><br>${escapeHtml(err?.message||'Please check the Google Apps Script deployment and try again.')}</div>`;
+    list.innerHTML=`<div class="submission-error"><b>️ Could not load submissions.</b><br>${escapeHtml(err?.message||'Please check the Google Apps Script deployment and try again.')}</div>`;
   }
 }
 
 $('viewAllSubmissionsBtn').addEventListener('click',()=>showSubmissionsViewer());
 
 
-function showAction(title,message,icon='ℹ️',tone='',selectOptions=null,defaultValue=''){
+function showAction(title,message,icon='',tone='',selectOptions=null,defaultValue=''){
   return new Promise(resolve=>{
     const ov=$('actionOverlay'),ic=$('actionIcon'),sel=$('actionSelect');
     ic.textContent=icon;ic.className='action-icon '+tone;
@@ -1117,7 +1733,7 @@ function showAction(title,message,icon='ℹ️',tone='',selectOptions=null,defau
 function verifySensitiveCode(title,message){
   return new Promise(resolve=>{
     const ov=$('actionOverlay'),ic=$('actionIcon'),sel=$('actionSelect'),buttons=$('actionButtons');
-    ic.textContent='🔐';ic.className='action-icon';
+    ic.innerHTML=svgIcon('lock',34);ic.className='action-icon';
     $('actionTitle').textContent=title;$('actionMessage').textContent=message;
     sel.style.display='none';
     buttons.innerHTML=`<input id="sensitiveCodeInput" class="sensitive-code" type="password" maxlength="30" autocomplete="off" inputmode="text" placeholder="Enter code"><div id="sensitiveCodeError" class="sensitive-error">Incorrect publishing code.</div><button id="sensitiveCancel" class="action-btn action-cancel" type="button">Cancel</button><button id="sensitiveConfirm" class="action-btn action-primary" type="button">Verify</button>`;
@@ -1225,7 +1841,7 @@ function validateSubmissionForm(){
 
   $('submitSectionVerifyMsg').style.display='block';
   $('submitSectionVerifyMsg').style.color='#1d7a43';
-  $('submitSectionVerifyMsg').textContent='✓ Section verified.';
+  $('submitSectionVerifyMsg').textContent=' Section verified.';
   $('submitSectionCodeField').classList.remove('invalid');
 
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
@@ -1376,7 +1992,7 @@ $('submitEntryBtn').addEventListener('click',async()=>{
     loadingOverlay?.classList.remove('show');
     loadingOverlay?.setAttribute('aria-hidden','true');
     btn.disabled=false;
-    btn.textContent=originalText||'✅ Submit Entry';
+    btn.textContent=originalText||' Submit Entry';
   }
 });
 
@@ -1446,7 +2062,7 @@ window.toggleOfficial=async function(id){
 window.changeVisibility=async function(id){
   const p=postById(id);if(!p)return;
   if(!(await verifySensitiveCode('Admin Verification','Enter the code to change visibility.')))return;
-  const next=await showAction('Change visibility','Choose who can see this news post.','🔐','',
+  const next=await showAction('Change visibility','Choose who can see this news post.','','',
     [{value:'public',label:'Public'},{value:'friends',label:'Friends'},{value:'onlyMe',label:'Only Me'}],
     p.visibility||'public'
   );
@@ -1457,7 +2073,7 @@ window.changeVisibility=async function(id){
 window.deletePost=async function(id){
   const p=postById(id);if(!p)return;
   if(!(await verifySensitiveCode('Admin Verification','Enter the code to delete this news.')))return;
-  const ok=await showAction('Delete this news post?',p.title||'This post will be removed from the news page.','🗑️','danger');
+  const ok=await showAction('Delete this news post?',p.title||'This post will be removed from the news page.','','danger');
   if(!ok)return;
   const saved=await window.savePostOverride(id,{deleted:true,hidden:true});
   if(saved)showAppNotice('Post deleted successfully','The news post has been removed from CATHS-MAIN News.','success');
@@ -1513,7 +2129,7 @@ function showAppNotice(title,message,type='info'){
   const overlay=$('appNoticeOverlay');
   const icon=$('noticeIcon');
   icon.className='notice-icon '+type;
-  icon.textContent=type==='success'?'✓':type==='error'?'!':type==='warning'?'⚠️':'ℹ️';
+  icon.textContent=type==='success'?'':type==='error'?'!':type==='warning'?'️':'';
   $('noticeTitle').textContent=title;
   $('noticeMessage').textContent=message;
   overlay.classList.add('show');
@@ -1545,7 +2161,7 @@ $('publishPostNews').addEventListener('click',async()=>{
     authorPhotoURL:window.loggedUser.photoURL||'',
     title:$('newTitle').value.trim(),
     type:$('newType').value,
-    icon:$('newIcon').value.trim()||'📰',
+    icon:$('newIcon').value.trim()||'newspaper',
     tag:$('newTag').value.trim()||'News',
     date:$('newDate').value.trim()||'School Update',
     excerpt:$('newExcerpt').value.trim(),
@@ -1588,7 +2204,7 @@ $('publishPostNews').addEventListener('click',async()=>{
       overlay.classList.remove('show');
       overlay.setAttribute('aria-hidden','true');
       btn.disabled=false;
-      btn.textContent='🚀 Publish News';
+      btn.textContent='Publish News';
       return;
     }
 
@@ -1620,7 +2236,7 @@ $('publishPostNews').addEventListener('click',async()=>{
         rocket.getAnimations().forEach(a=>a.cancel());
         rocket.style.transform='';
         btn.disabled=false;
-        btn.textContent='🚀 Publish News';
+        btn.textContent='Publish News';
       },2400);
     },820);
 
@@ -1632,7 +2248,7 @@ $('publishPostNews').addEventListener('click',async()=>{
     overlay.classList.remove('show');
     overlay.setAttribute('aria-hidden','true');
     btn.disabled=false;
-    btn.textContent='🚀 Publish News';
+    btn.textContent='Publish News';
     showAppNotice('Publish failed',e?.message||'Unable to publish this news right now.','error');
   }
 });
@@ -1646,7 +2262,7 @@ $('adminSave').addEventListener('click',async()=>{
   const payload={
     title:$('adminTitle').value.trim(),
     type:$('adminType').value,
-    icon:$('adminIcon').value.trim()||'📰',
+    icon:$('adminIcon').value.trim()||'',
     tag:$('adminTag').value.trim()||'News',
     date:$('adminDate').value.trim()||'School Update',
     excerpt:$('adminExcerpt').value.trim(),
@@ -1767,7 +2383,7 @@ async function loadNewsOverrides(){
     const snap=await getDocs(collection(db,'newsPosts'));
     const map=new Map();
     snap.forEach(d=>map.set(String(d.id),{id:String(d.id),...d.data()}));
-    mergedNews=NEWS.map(base=>decoratePost(base,map.get(String(base.id)))).concat([...map.values()].filter(x=>!NEWS.some(b=>String(b.id)===String(x.id))).map(x=>decoratePost({id:String(x.id),type:'announcement',icon:'📰',tag:'News',date:'School Update',title:'Untitled News',excerpt:'',body:''},x)));
+    mergedNews=NEWS.map(base=>decoratePost(base,map.get(String(base.id)))).concat([...map.values()].filter(x=>!NEWS.some(b=>String(b.id)===String(x.id))).map(x=>decoratePost({id:String(x.id),type:'announcement',icon:'newspaper',tag:'News',date:'School Update',title:'Untitled News',excerpt:'',body:''},x)));
     renderNews();renderAdmin();
   }catch(e){console.error('News overrides load failed:',e);mergedNews=NEWS.map(base=>decoratePost(base,{}));renderNews();renderAdmin();}
 }
@@ -1776,7 +2392,7 @@ window.savePostOverride=async function(id,changes){
   try{
     const clean={...changes,updatedAt:serverTimestamp(),updatedBy:window.loggedUser.uid};
     await setDoc(doc(db,'newsPosts',String(id)),clean,{merge:true});
-    const base=NEWS.find(x=>String(x.id)===String(id))||{id:String(id),type:'announcement',icon:'📰',tag:'News',date:'School Update',title:'Untitled News',excerpt:'',body:''};
+    const base=NEWS.find(x=>String(x.id)===String(id))||{id:String(id),type:'announcement',icon:'newspaper',tag:'News',date:'School Update',title:'Untitled News',excerpt:'',body:''};
     const index=mergedNews.findIndex(x=>String(x.id)===String(id));
     const next=decoratePost(base,{...(index>=0?mergedNews[index]:{}),...changes});
     if(index>=0)mergedNews[index]=next;else mergedNews.push(next);
@@ -1929,7 +2545,7 @@ window.createNewsPost=async function(id,payload){
  if(!window.loggedUser||!adminMode){showAppNotice('Admin access required','Only authorized SSLG administrators can publish news.','error');return false;}
  try{
    await setDoc(doc(db,'newsPosts',String(id)),{id:String(id),...payload,authorUid:window.loggedUser.uid,authorName:window.loggedUser.displayName||'SSLG Admin',authorPhotoURL:window.loggedUser.photoURL||'',createdAt:serverTimestamp(),createdBy:window.loggedUser.uid,updatedAt:serverTimestamp(),updatedBy:window.loggedUser.uid},{merge:true});
-   mergedNews.push(decoratePost({id:String(id),type:'announcement',icon:'📰',tag:'News',date:'School Update',title:'Untitled News',excerpt:'',body:''},payload));
+   mergedNews.push(decoratePost({id:String(id),type:'announcement',icon:'newspaper',tag:'News',date:'School Update',title:'Untitled News',excerpt:'',body:''},payload));
    renderNews();renderAdmin();
    return true;
  }catch(e){console.error('Create news failed:',e);showAppNotice('Publish failed',e.message||'Unable to publish this news right now.','error');return false;}
@@ -1943,7 +2559,7 @@ async function setupAdmin(user){
   renderAdmin();
 }
 
-onAuthStateChanged(auth,async user=>{window.loggedUser=user;if(user){btn.innerHTML=`${user.photoURL?`<img src="${user.photoURL}" style="width:24px;height:24px;border-radius:50%;object-fit:cover">`:'👤'} <span>${escapeHtml(user.displayName||'User')}</span> ▼`;if(user.photoURL){$('profilePhoto').src=user.photoURL;$('profileNavPhoto').innerHTML=`<img src="${user.photoURL}" alt="Profile">`}else{$('profilePhoto').src='';$('profileNavPhoto').textContent='👤'}$('profileName').textContent=user.displayName||'User';$('profileEmail').textContent=user.email||''}else{btn.innerHTML='👤 <span>Login</span>'; $('profileNavPhoto').textContent='👤';}await setupAdmin(user);await loadNewsOverrides();});
+onAuthStateChanged(auth,async user=>{window.loggedUser=user;if(user){btn.innerHTML=user.photoURL?`<img src="${escapeHtml(user.photoURL)}" style="width:24px;height:24px;border-radius:50%;object-fit:cover"><span>${escapeHtml(user.displayName||'User')}</span>`:svgIcon('user',20)+`<span>${escapeHtml(user.displayName||'User')}</span>`;if(user.photoURL){$('profilePhoto').src=user.photoURL;$('profileNavPhoto').innerHTML=`<img src="${escapeHtml(user.photoURL)}" alt="Profile">`}else{$('profilePhoto').src='';$('profileNavPhoto').innerHTML=svgIcon('user',20)}$('profileName').textContent=user.displayName||'User';$('profileEmail').textContent=user.email||''}else{btn.innerHTML=svgIcon('user',20)+'<span>Login</span>';$('profileNavPhoto').innerHTML=svgIcon('user',20);}await setupAdmin(user);await loadNewsOverrides();});
 </script>
 </body>
 </html>
