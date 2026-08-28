@@ -604,6 +604,113 @@ body.leaderboard-open{overflow:hidden;}
   .leader-xp{font-size:8px}
 }
 
+
+/* =========================================================
+   LEADERBOARD — FINAL CENTERED MODAL + FOCUS BLUR
+   ========================================================= */
+body.leaderboard-open{overflow:hidden !important;}
+.leaderboard-panel{
+  position:fixed !important;
+  inset:0 !important;
+  z-index:1000001 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:100vw !important;
+  height:100dvh !important;
+  min-height:100vh !important;
+  max-width:none !important;
+  max-height:none !important;
+  margin:0 !important;
+  padding:20px !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:rgba(0,5,18,.68) !important;
+  backdrop-filter:blur(14px) saturate(.72) !important;
+  -webkit-backdrop-filter:blur(14px) saturate(.72) !important;
+  overflow:hidden !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  animation:leaderboardBackdropIn .24s ease both !important;
+}
+.leaderboard-panel.hidden{display:none !important;}
+.leaderboard-panel::before,.leaderboard-panel::after{display:none !important;}
+.leaderboard-card{
+  position:relative !important;
+  z-index:2 !important;
+  width:min(94vw,560px) !important;
+  max-width:560px !important;
+  max-height:min(88dvh,720px) !important;
+  display:flex !important;
+  flex-direction:column !important;
+  overflow:hidden !important;
+  border:1px solid rgba(170,224,255,.24) !important;
+  border-radius:28px !important;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(91,174,255,.18),transparent 33%),
+    linear-gradient(145deg,rgba(8,31,66,.985),rgba(2,13,31,.995)) !important;
+  box-shadow:
+    0 30px 100px rgba(0,0,0,.56),
+    0 0 0 1px rgba(255,255,255,.035),
+    inset 0 1px 0 rgba(255,255,255,.14) !important;
+  animation:leaderboardCardIn .38s cubic-bezier(.16,1,.3,1) both !important;
+}
+.leaderboard-card .panel-title,.leaderboard-card .leaderboard-meta,.leaderboard-card .leaderboard-filters,.leaderboard-card .signin-btn,.leaderboard-card .leaderboard-list{
+  width:100% !important; max-width:none !important; flex:0 0 auto; background:transparent !important;
+}
+.leaderboard-card .panel-title{
+  padding:20px 24px 12px !important; margin:0 !important;
+  border-bottom:1px solid rgba(255,255,255,.08) !important;
+}
+.leaderboard-card .panel-title h4{font-size:16px !important;line-height:1.25 !important;display:flex !important;align-items:center !important;gap:8px !important;}
+.leaderboard-card .panel-close{
+  width:36px !important;height:36px !important;display:grid !important;place-items:center !important;
+  flex:0 0 auto !important;border:1px solid rgba(255,255,255,.10) !important;
+  border-radius:11px !important;background:rgba(255,255,255,.06) !important;
+  color:rgba(255,255,255,.88) !important;transition:transform .22s ease,background .22s ease !important;
+}
+.leaderboard-card .panel-close:hover{transform:rotate(90deg) scale(1.04) !important;background:rgba(255,255,255,.11) !important;}
+.leaderboard-card .leaderboard-meta{padding:11px 24px 0 !important;margin:0 !important;}
+.leaderboard-card .leaderboard-status{font-size:8.5px !important;line-height:1.5 !important;margin:0 !important;}
+.leaderboard-card .current-grade-pill{margin:0 !important;}
+.leaderboard-card .leaderboard-filters{padding:13px 24px 7px !important;margin:0 !important;display:flex !important;flex-wrap:wrap !important;gap:7px !important;}
+.leaderboard-card .grade-filter{min-height:32px !important;min-width:0 !important;padding:7px 11px !important;border-radius:10px !important;}
+.leaderboard-card .signin-btn{width:calc(100% - 48px) !important;margin:10px 24px 7px !important;min-height:38px !important;}
+.leaderboard-card .leaderboard-list{min-height:0 !important;flex:1 1 auto !important;padding:7px 24px 22px !important;margin:0 !important;overflow:auto !important;overscroll-behavior:contain !important;scrollbar-width:thin !important;scrollbar-color:rgba(130,199,255,.30) transparent !important;}
+.leaderboard-card .leaderboard-list::-webkit-scrollbar{width:5px}
+.leaderboard-card .leaderboard-list::-webkit-scrollbar-thumb{background:rgba(130,199,255,.28);border-radius:999px}
+@keyframes leaderboardBackdropIn{from{opacity:0}to{opacity:1}}
+@keyframes leaderboardCardIn{from{opacity:0;transform:translateY(18px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:640px){
+  .leaderboard-panel{padding:10px !important;}
+  .leaderboard-card{width:calc(100vw - 20px) !important;max-width:390px !important;max-height:calc(100dvh - 20px) !important;border-radius:22px !important;}
+  .leaderboard-card .panel-title{padding:16px 15px 10px !important;}
+  .leaderboard-card .panel-title h4{font-size:13px !important;gap:6px !important;}
+  .leaderboard-card .panel-close{width:32px !important;height:32px !important;border-radius:10px !important;font-size:19px !important;}
+  .leaderboard-card .leaderboard-meta{padding:8px 15px 0 !important;}
+  .leaderboard-card .leaderboard-filters{padding:10px 15px 6px !important;gap:6px !important;}
+  .leaderboard-card .grade-filter{flex:1 1 calc(33.333% - 6px) !important;min-height:31px !important;padding:7px 4px !important;font-size:7.5px !important;}
+  .leaderboard-card .grade-filter:first-child{flex:1 1 100% !important;}
+  .leaderboard-card .signin-btn{width:calc(100% - 30px) !important;margin:8px 15px 6px !important;min-height:36px !important;font-size:8.5px !important;}
+  .leaderboard-card .leaderboard-list{padding:6px 15px 15px !important;max-height:none !important;}
+  .leader-row{grid-template-columns:32px minmax(0,1fr) auto !important;gap:8px !important;min-height:52px !important;padding:8px 9px !important;border-radius:13px !important;}
+  .leader-row:nth-child(1),.leader-row:nth-child(2),.leader-row:nth-child(3){min-height:58px !important;}
+  .leader-rank{width:29px !important;height:29px !important;border-radius:9px !important;}
+  .leader-name strong{font-size:9px !important;}
+  .leader-name small{font-size:6.7px !important;}
+  .leader-xp{font-size:8.5px !important;}
+}
+@media(max-width:380px){
+  .leaderboard-panel{padding:7px !important;}
+  .leaderboard-card{width:calc(100vw - 14px) !important;max-height:calc(100dvh - 14px) !important;border-radius:20px !important;}
+  .leaderboard-card .panel-title{padding:14px 12px 8px !important;}
+  .leaderboard-card .panel-title h4{font-size:11px !important;}
+  .leaderboard-card .leaderboard-meta{padding:7px 12px 0 !important;}
+  .leaderboard-card .leaderboard-filters{padding:8px 12px 4px !important;gap:5px !important;}
+  .leaderboard-card .grade-filter{min-height:29px !important;font-size:7px !important;padding:6px 3px !important;}
+  .leaderboard-card .signin-btn{width:calc(100% - 24px) !important;margin:7px 12px 5px !important;}
+  .leaderboard-card .leaderboard-list{padding:5px 12px 12px !important;}
+}
 </style>
 
 <script type="module">
@@ -637,10 +744,14 @@ window.studyFirebase = { auth, db, provider, signInWithPopup, onAuthStateChanged
 // Keep Firebase Auth persistence identical across every CATHS-MAIN HTML page.
 // We explicitly wait for persistence setup before attaching the auth listener so
 // an existing Google session has a chance to restore cleanly on page load.
-window.studyAuthReady = setPersistence(auth, browserLocalPersistence).catch(error => {
-  console.warn("Auth persistence setup failed:", error);
-  return null;
-});
+window.studyAuthReady = (async () => {
+  try {
+    await setPersistence(auth, browserLocalPersistence);
+  } catch (error) {
+    console.warn("Auth persistence setup failed:", error);
+  }
+  return auth;
+})();
 </script>
 </head>
 <body>
@@ -732,6 +843,7 @@ window.studyAuthReady = setPersistence(auth, browserLocalPersistence).catch(erro
   </section>
 
   <section class="leaderboard-panel hidden" id="leaderboardPanel" aria-label="Student leaderboard">
+    <div class="leaderboard-card">
     <div class="panel-title">
       <h4><svg class="section-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v4a4 4 0 0 1-8 0V4Z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 12v5M8 21h8M9 17h6"/></svg>CATHS Study Leaderboard</h4>
       <button class="panel-close" id="leaderboardClose" type="button" aria-label="Close leaderboard">×</button>
@@ -751,6 +863,7 @@ window.studyAuthReady = setPersistence(auth, browserLocalPersistence).catch(erro
     </div>
     <button class="signin-btn" id="signinBtn" type="button">Sign in with Google</button>
     <div class="leaderboard-list" id="leaderboardList"></div>
+    </div>
   </section>
 
   <div class="game-modal hidden" id="gameModal" role="dialog" aria-modal="true" aria-labelledby="gameModalTitle">
