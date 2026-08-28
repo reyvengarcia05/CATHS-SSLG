@@ -2144,6 +2144,50 @@ html body{--chat-ui-version:5}
 }
 </style>
 
+
+<style id="pc-balanced-spacing-v12">
+@media (min-width:801px){
+  .container{
+    left:104px !important;
+    right:0 !important;
+    top:92px !important;
+    bottom:84px !important;
+    padding:18px 72px 26px 24px !important;
+    display:flex !important;
+    justify-content:center !important;
+    align-items:flex-start !important;
+  }
+
+  .messenger{
+    width:min(1100px, calc(100% - 18px)) !important;
+    max-width:1100px !important;
+    margin-left:18px !important;
+    margin-right:0 !important;
+    height:calc(100vh - 144px) !important;
+    border-radius:24px !important;
+  }
+
+  .bottom-nav{
+    left:14px !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+  }
+}
+
+@media (max-width:1200px) and (min-width:801px){
+  .container{
+    padding-left:18px !important;
+    padding-right:44px !important;
+  }
+
+  .messenger{
+    width:min(1035px, calc(100% - 10px)) !important;
+    max-width:1035px !important;
+    margin-left:16px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <header class="header">
