@@ -498,6 +498,30 @@ body.leaderboard-open{overflow:hidden;}
   .leader-xp{font-size:9px;}
 }
 
+
+/* ===== My Study Library ===== */
+.library-tool-card{position:relative;overflow:hidden}
+.library-tool-card .tool-icon svg{transition:transform .3s cubic-bezier(.16,1,.3,1),filter .3s ease}
+.library-tool-card:hover .tool-icon svg{transform:translateY(-2px) rotate(3deg) scale(1.07);filter:drop-shadow(0 5px 12px rgba(122,197,255,.28))}
+.study-library-panel{position:fixed;inset:0;z-index:1000002;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,5,18,.68);backdrop-filter:blur(14px) saturate(.72);-webkit-backdrop-filter:blur(14px) saturate(.72);animation:libraryBackdropIn .24s ease both}
+.study-library-panel.hidden{display:none!important}
+.study-library-card{width:min(94vw,680px);max-height:min(88dvh,760px);display:flex;flex-direction:column;overflow:hidden;border:1px solid rgba(170,224,255,.24);border-radius:28px;background:radial-gradient(circle at 50% 0%,rgba(91,174,255,.18),transparent 33%),linear-gradient(145deg,rgba(8,31,66,.985),rgba(2,13,31,.995));box-shadow:0 30px 100px rgba(0,0,0,.56),inset 0 1px 0 rgba(255,255,255,.14);animation:libraryCardIn .38s cubic-bezier(.16,1,.3,1) both}
+.study-library-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 24px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
+.study-library-head h4{margin:0;font-size:16px;display:flex;align-items:center;gap:8px}
+.study-library-head p{margin:5px 0 0;color:var(--muted);font-size:8px;line-height:1.45}
+.study-library-close{width:36px;height:36px;border:1px solid rgba(255,255,255,.1);border-radius:11px;background:rgba(255,255,255,.06);color:#fff;font-size:20px;cursor:pointer}
+.study-library-list{padding:16px 20px 22px;overflow:auto;display:grid;gap:9px}
+.study-library-item{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:11px;padding:11px 12px;border-radius:15px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08);transition:.2s ease}
+.study-library-item:hover{transform:translateY(-2px);border-color:rgba(145,211,255,.28);background:rgba(255,255,255,.075)}
+.study-library-icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(145deg,rgba(76,163,255,.22),rgba(0,49,111,.45));border:1px solid rgba(143,211,255,.18)}
+.study-library-icon svg{width:19px;height:19px;fill:none;stroke:#cfeeff;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.study-library-copy{min-width:0}.study-library-copy strong{display:block;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.study-library-copy small{display:block;margin-top:3px;font-size:7px;color:var(--muted)}
+.study-library-open{border:1px solid rgba(143,211,255,.2);background:linear-gradient(145deg,rgba(67,151,255,.24),rgba(0,41,107,.42));color:#fff;border-radius:10px;padding:8px 10px;font-size:8px;font-weight:800;cursor:pointer}
+.study-library-empty{padding:30px 16px;text-align:center;color:var(--muted);font-size:8.5px;line-height:1.55}
+@keyframes libraryBackdropIn{from{opacity:0}to{opacity:1}}
+@keyframes libraryCardIn{from{opacity:0;transform:translateY(18px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:640px){.study-library-panel{padding:10px}.study-library-card{width:calc(100vw - 20px);max-height:calc(100dvh - 20px);border-radius:22px}.study-library-head{padding:15px 14px 11px}.study-library-head h4{font-size:12px}.study-library-head p{font-size:7px}.study-library-list{padding:12px 10px 16px}.study-library-item{grid-template-columns:36px minmax(0,1fr) auto;padding:9px}.study-library-icon{width:36px;height:36px;border-radius:10px}.study-library-copy strong{font-size:8.5px}.study-library-copy small{font-size:6.5px}.study-library-open{font-size:7px;padding:7px 8px}}
+
 /* Play a Game — animated Study Tools card */
 .game-tool-card{
   position:relative;
@@ -723,7 +747,7 @@ import {
   getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, setPersistence, browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 import {
-  getFirestore, doc, getDoc, setDoc, addDoc, serverTimestamp, collection, query, orderBy, limit, getDocs
+  getFirestore, doc, getDoc, setDoc, addDoc, serverTimestamp, collection, query, orderBy, limit, getDocs, where
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -743,7 +767,7 @@ const provider = new GoogleAuthProvider();
 
 // IMPORTANT: all CATHS-MAIN pages use the same Firebase project and LOCAL persistence.
 // Firebase then restores the Google session automatically when this page opens.
-window.studyFirebase = { auth, db, provider, signInWithPopup, onAuthStateChanged, setPersistence, browserLocalPersistence, doc, getDoc, setDoc, addDoc, serverTimestamp, collection, query, orderBy, limit, getDocs };
+window.studyFirebase = { auth, db, provider, signInWithPopup, onAuthStateChanged, setPersistence, browserLocalPersistence, doc, getDoc, setDoc, addDoc, serverTimestamp, collection, query, orderBy, limit, getDocs, where };
 
 window.studyAuthReady = (async () => {
   try {
@@ -824,6 +848,10 @@ window.studyAuthReady = (async () => {
         <span class="tool-icon"><svg viewBox="0 0 24 24"><path d="m12 3 2.1 5.3L20 10l-4.5 3.7L16.5 19 12 15.9 7.5 19l1-5.3L4 10l5.9-1.7z"/></svg></span>
         <strong>Study Guide</strong><small>Organized study plan</small>
       </button>
+      <button class="tool-card library-tool-card" id="viewLibraryTool" data-type="library" type="button">
+        <span class="tool-icon"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/><path d="M3 7V5a2 2 0 0 1 2-2"/></svg></span>
+        <strong>View Your Reviewer</strong><small>All saved study materials</small>
+      </button>
       <button class="tool-card game-tool-card" id="playGameTool" data-type="games" type="button">
         <span class="tool-icon"><svg viewBox="0 0 24 24"><path d="M7 8h10a4 4 0 0 1 4 4v3a3 3 0 0 1-5 2l-2-2H10l-2 2a3 3 0 0 1-5-2v-3a4 4 0 0 1 4-4Z"/><path d="M8 12v4M6 14h4M16 13h.01M18 15h.01"/></svg></span>
         <strong>Play a Game</strong><small>Study with friends</small>
@@ -866,6 +894,16 @@ window.studyAuthReady = (async () => {
     <div class="leaderboard-list" id="leaderboardList"></div>
     </div>
   </section>
+
+  <div class="study-library-panel hidden" id="studyLibraryPanel" role="dialog" aria-modal="true" aria-labelledby="studyLibraryTitle">
+    <div class="study-library-card">
+      <div class="study-library-head">
+        <div><h4 id="studyLibraryTitle">My Study Library</h4><p>Every reviewer, flashcard set, quiz, summary, and study guide you save will appear here.</p></div>
+        <button class="study-library-close" id="studyLibraryClose" type="button" aria-label="Close study library">×</button>
+      </div>
+      <div class="study-library-list" id="studyLibraryList"><div class="study-library-empty">Sign in to see your saved study materials.</div></div>
+    </div>
+  </div>
 
   <div class="game-modal hidden" id="gameModal" role="dialog" aria-modal="true" aria-labelledby="gameModalTitle">
     <div class="game-modal-backdrop" id="gameModalBackdrop"></div>
@@ -954,7 +992,7 @@ window.studyAuthReady = (async () => {
 </main>
 
 <script>
-const toolCards=[...document.querySelectorAll('.tool-card')];
+const toolCards=[...document.querySelectorAll('.tool-card:not(#viewLibraryTool)')];
 const modeBadge=document.getElementById('modeBadge');
 const generateBtn=document.getElementById('generateBtn');
 const topicInput=document.getElementById('topic');
@@ -1144,23 +1182,46 @@ function gradeQuiz(qs){
   let score=0; qs.forEach((q,i)=>{const selected=document.querySelector(`input[name="q${i}"]:checked`); if(selected&&selected.value===q.correct)score++;});
   const earned=score*5; if(earned)addXP(earned); document.getElementById('quizScore').innerHTML=`<div class="quiz-score">Score: <b>${score}/${qs.length}</b> • XP earned: <b>${earned}</b></div>`;
 }
-function makePreview(){
-  const topic=topicInput.value.trim()||'Your Topic'; const notes=notesInput.value.trim();
-  if(!notes){outputBox.innerHTML='<div class="empty-state"><div><div class="mini-robot">🤖</div><strong>Add your notes first</strong><p>Paste a lesson or notes so the preview can create study material from them.</p></div></div>';return;}
-  const safeTopic=esc(topic), sentences=notes.split(/[.!?]+/).map(s=>s.trim()).filter(Boolean);
-  if(currentType==='reviewer'){
-    const points=sentences.slice(0,6).map(s=>'<li>'+esc(s)+'</li>').join(''); const questions=sentences.slice(0,5).map((s,i)=>'<li>What is the key idea in point '+(i+1)+'?</li>').join('');
-    outputBox.innerHTML='<div class="result"><h5>'+safeTopic+' — Reviewer</h5><h6>Key Points</h6><ul>'+points+'</ul><h6>Review Questions</h6><ul>'+questions+'</ul></div>';
-  }else if(currentType==='flashcards'){renderFlashcards(topic,notes);
-  }else if(currentType==='quiz'){makeQuiz(topic,notes);
-  }else if(currentType==='summary'){
-    const summary=sentences.slice(0,4).join('. ')+'.'; outputBox.innerHTML='<div class="result"><h5>'+safeTopic+' — Summary</h5><p>'+esc(summary)+'</p><h6>Remember</h6><p>'+esc(sentences.slice(0,2).join(' • '))+'</p></div>';
-  }else{
-    const points=sentences.slice(0,5).map((s,i)=>'<li><strong>Step '+(i+1)+':</strong> '+esc(s)+'</li>').join(''); outputBox.innerHTML='<div class="result"><h5>'+safeTopic+' — Study Guide</h5><h6>Suggested Flow</h6><ul>'+points+'</ul><h6>Study Tip</h6><p>Break the lesson into smaller sections, review the key terms, then test yourself with practice questions.</p></div>';
+async function saveGeneratedStudyMaterial(payload){
+  const storageKey=currentUser?('cathsStudyMaterials:'+currentUser.uid):'cathsStudyMaterials:guest';
+  try{
+    const localItems=JSON.parse(localStorage.getItem(storageKey)||'[]');
+    localItems.unshift({id:'local-'+Date.now(),...payload,savedAt:new Date().toISOString()});
+    localStorage.setItem(storageKey,JSON.stringify(localItems.slice(0,100)));
+  }catch(e){console.warn('Local study material save failed:',e);}
+  if(!currentUser||!window.studyFirebase)return;
+  try{
+    const {db,collection,addDoc,serverTimestamp}=window.studyFirebase;
+    await addDoc(collection(db,'studyMaterials'),{ownerUid:currentUser.uid,type:payload.type,topic:payload.topic,notes:payload.notes,content:payload.content,createdAt:serverTimestamp()});
+    try{await addDoc(collection(db,'studyActivity'),{ownerUid:currentUser.uid,type:payload.type,topic:payload.topic,createdAt:serverTimestamp(),action:'generated'});}catch(e){console.warn('Study activity save skipped:',e);}
+  }catch(e){
+    console.warn('Study material Firestore save failed:',e);
+    showGameToast?.('Saved on this device. Cloud save could not be completed.');
   }
 }
 
-generateBtn.addEventListener('click',()=>{generateBtn.disabled=true;generateBtn.innerHTML='<span class="spin">◌</span> Preparing...';setTimeout(()=>{makePreview();generateBtn.disabled=false;generateBtn.textContent='Generate Study Material';},350);});
+async function makePreview(){
+  const topic=topicInput.value.trim()||'Your Topic'; const notes=notesInput.value.trim();
+  if(!notes){outputBox.innerHTML='<div class="empty-state"><div><div class="mini-robot">🤖</div><strong>Add your notes first</strong><p>Paste a lesson or notes so the preview can create study material from them.</p></div></div>';return;}
+  const safeTopic=esc(topic), sentences=notes.split(/[.!?]+/).map(s=>s.trim()).filter(Boolean);
+  let savedContent={};
+  if(currentType==='reviewer'){
+    const points=sentences.slice(0,6); const questions=sentences.slice(0,5).map((s,i)=>'What is the key idea in point '+(i+1)+'?');
+    outputBox.innerHTML='<div class="result"><h5>'+safeTopic+' — Reviewer</h5><h6>Key Points</h6><ul>'+points.map(s=>'<li>'+esc(s)+'</li>').join('')+'</ul><h6>Review Questions</h6><ul>'+questions.map(q=>'<li>'+esc(q)+'</li>').join('')+'</ul></div>';
+    savedContent={points,questions};
+  }else if(currentType==='flashcards'){
+    renderFlashcards(topic,notes); savedContent={cards:flashCardsData.map(c=>({front:c.front,back:c.back}))};
+  }else if(currentType==='quiz'){
+    makeQuiz(topic,notes); const quizQs=Array.from(outputBox.querySelectorAll('.quiz-q')).map((el,i)=>({question:el.querySelector('strong')?.textContent||`Question ${i+1}`,correct:el.querySelector(`input#correct${i}`)?.value||''})); savedContent={questions:quizQs};
+  }else if(currentType==='summary'){
+    const summary=sentences.slice(0,4).join('. ')+'.'; const remember=sentences.slice(0,2); outputBox.innerHTML='<div class="result"><h5>'+safeTopic+' — Summary</h5><p>'+esc(summary)+'</p><h6>Remember</h6><p>'+esc(remember.join(' • '))+'</p></div>'; savedContent={summary,remember};
+  }else if(currentType==='studyguide'){
+    const points=sentences.slice(0,5); outputBox.innerHTML='<div class="result"><h5>'+safeTopic+' — Study Guide</h5><h6>Suggested Flow</h6><ul>'+points.map((s,i)=>'<li><strong>Step '+(i+1)+':</strong> '+esc(s)+'</li>').join('')+'</ul><h6>Study Tip</h6><p>Break the lesson into smaller sections, review the key terms, then test yourself with practice questions.</p></div>'; savedContent={steps:points,tip:'Break the lesson into smaller sections, review the key terms, then test yourself with practice questions.'};
+  }
+  await saveGeneratedStudyMaterial({type:currentType,topic,notes,content:savedContent});
+}
+
+generateBtn.addEventListener('click',async()=>{generateBtn.disabled=true;generateBtn.innerHTML='<span class="spin">◌</span> Preparing...';setTimeout(async()=>{try{await makePreview();}finally{generateBtn.disabled=false;generateBtn.textContent='Generate Study Material';}},350);});
 
 async function signIn(){
   if(!window.studyFirebase)return; signinBtn.disabled=true; signinBtn.textContent='Signing in…';
@@ -1333,6 +1394,58 @@ async function initializeStudyAuth(){
 }
 
 initializeStudyAuth();
+
+const studyLibraryPanel=document.getElementById('studyLibraryPanel');
+const studyLibraryList=document.getElementById('studyLibraryList');
+const viewLibraryTool=document.getElementById('viewLibraryTool');
+const studyLibraryClose=document.getElementById('studyLibraryClose');
+function materialIcon(type){return type==='flashcards'?'<svg viewBox="0 0 24 24"><rect x="4" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a1 1 0 0 1 1 1v11"/></svg>':type==='quiz'?'<svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM8 8h8M8 12h5M8 16h8"/></svg>':type==='summary'?'<svg viewBox="0 0 24 24"><path d="M5 4h14v16H5zM8 8h8M8 12h6M8 16h4"/></svg>':type==='studyguide'?'<svg viewBox="0 0 24 24"><path d="m12 3 2.1 5.3L20 10l-4.5 3.7L16.5 19 12 15.9 7.5 19l1-5.3L4 10l5.9-1.7z"/></svg>':'<svg viewBox="0 0 24 24"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg>';}
+function materialLabel(type){return labels[type]||String(type||'Study Material').replace(/(^|[-_])([a-z])/g,(_,a,b)=>b.toUpperCase());}
+function materialDate(ts){try{return ts?.toDate?ts.toDate().toLocaleString():''}catch{return ''}}
+function openStudyLibrary(){studyLibraryPanel.classList.remove('hidden');document.body.classList.add('modal-open');loadStudyLibrary();}
+function closeStudyLibrary(){studyLibraryPanel.classList.add('hidden');document.body.classList.remove('modal-open');}
+async function loadStudyLibrary(){
+  const storageKey=currentUser?('cathsStudyMaterials:'+currentUser.uid):'cathsStudyMaterials:guest';
+  let localDocs=[];
+  try{localDocs=JSON.parse(localStorage.getItem(storageKey)||'[]');}catch(e){localDocs=[];}
+  if(!currentUser||!window.studyFirebase){
+    if(!localDocs.length){studyLibraryList.innerHTML='<div class="study-library-empty">Sign in with Google to sync your saved study materials across devices. Materials created on this device can still be viewed here.</div>';return;}
+    renderStudyLibraryItems(localDocs);return;
+  }
+  studyLibraryList.innerHTML='<div class="study-library-empty">Loading your saved study materials…</div>';
+  try{
+    const {db,collection,query,where,orderBy,limit,getDocs}=window.studyFirebase;
+    const snap=await getDocs(query(collection(db,'studyMaterials'),where('ownerUid','==',currentUser.uid),limit(100)));
+    const cloudDocs=snap.docs.map(d=>({id:d.id,...(d.data()||{})}));
+    cloudDocs.sort((a,b)=>{const ad=a.createdAt?.toDate?a.createdAt.toDate().getTime():0;const bd=b.createdAt?.toDate?b.createdAt.toDate().getTime():0;return bd-ad;});
+    const cloudKeys=new Set(cloudDocs.map(x=>`${x.topic}|${x.type}|${x.notes||''}`));
+    const merged=[...cloudDocs,...localDocs.filter(x=>!cloudKeys.has(`${x.topic}|${x.type}|${x.notes||''}`))];
+    merged.sort((a,b)=>{const ad=a.createdAt?.toDate?a.createdAt.toDate().getTime():new Date(a.savedAt||0).getTime();const bd=b.createdAt?.toDate?b.createdAt.toDate().getTime():new Date(b.savedAt||0).getTime();return bd-ad;});
+    if(!merged.length){studyLibraryList.innerHTML='<div class="study-library-empty">No saved materials yet. Generate a reviewer, flashcard set, quiz, summary, or study guide and it will appear here automatically.</div>';return;}
+    renderStudyLibraryItems(merged.slice(0,100));
+  }catch(e){
+    console.error('Could not load study library:',e);
+    if(localDocs.length)renderStudyLibraryItems(localDocs);
+    else studyLibraryList.innerHTML='<div class="study-library-empty">Could not load your saved materials. Check your Firestore studyMaterials read rule and query index.</div>';
+  }
+}
+function materialSavedDate(item){return materialDate(item.createdAt)||(item.savedAt?new Date(item.savedAt).toLocaleString():'Saved');}
+function renderStudyLibraryItems(docs){
+  studyLibraryList.innerHTML=docs.map(item=>`<div class="study-library-item"><div class="study-library-icon">${materialIcon(item.type)}</div><div class="study-library-copy"><strong>${esc(item.topic||'Untitled Study Material')}</strong><small>${esc(materialLabel(item.type))} • ${esc(materialSavedDate(item))}</small></div><button class="study-library-open" type="button" data-open-id="${esc(item.id)}">Open</button></div>`).join('');
+  studyLibraryList.querySelectorAll('[data-open-id]').forEach(btn=>btn.onclick=()=>openSavedStudyMaterial(docs.find(x=>x.id===btn.dataset.openId)));
+}
+
+function openSavedStudyMaterial(item){
+  if(!item)return; currentType=item.type||'reviewer'; modeBadge.textContent=materialLabel(currentType); toolCards.forEach(c=>c.classList.toggle('active',c.dataset.type===currentType));
+  const data=item.content||{}; const topic=item.topic||'Your Topic';
+  if(currentType==='reviewer'){outputBox.innerHTML=`<div class="result"><h5>${esc(topic)} — Reviewer</h5><h6>Key Points</h6><ul>${(data.points||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul><h6>Review Questions</h6><ul>${(data.questions||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;}
+  else if(currentType==='flashcards'){flashCardsData=(data.cards||[]).map((c,i)=>({front:c.front||'',back:c.back||'',sourceIndex:i}));currentFlashIndex=0;flashSessionCorrect=new Set();outputBox.innerHTML=`<div class="result"><h5>${esc(topic)} — Flashcards</h5><div id="flashcardArea"></div></div>`;renderCurrentFlashcard();}
+  else if(currentType==='quiz'){const questions=data.questions||[];outputBox.innerHTML=`<div class="result"><h5>${esc(topic)} — Practice Quiz</h5>${questions.map((q,i)=>`<div class="quiz-q"><strong>${esc(q.question||`Question ${i+1}`)}</strong><div class="quiz-score">Saved correct answer: <b>${esc(q.correct||'')}</b></div></div>`).join('')}<div class="quiz-score">This is your saved quiz record. Generate the topic again to take a fresh attempt.</div></div>`;}
+  else if(currentType==='summary'){outputBox.innerHTML=`<div class="result"><h5>${esc(topic)} — Summary</h5><p>${esc(data.summary||'')}</p><h6>Remember</h6><p>${esc((data.remember||[]).join(' • '))}</p></div>`;}
+  else {outputBox.innerHTML=`<div class="result"><h5>${esc(topic)} — Study Guide</h5><h6>Suggested Flow</h6><ul>${(data.steps||[]).map((x,i)=>`<li><strong>Step ${i+1}:</strong> ${esc(x)}</li>`).join('')}</ul><h6>Study Tip</h6><p>${esc(data.tip||'')}</p></div>`;}
+  closeStudyLibrary(); window.scrollTo({top:document.querySelector('.workspace')?.offsetTop||0,behavior:'smooth'});
+}
+viewLibraryTool?.addEventListener('click',openStudyLibrary);studyLibraryClose?.addEventListener('click',closeStudyLibrary);studyLibraryPanel?.addEventListener('click',e=>{if(e.target===studyLibraryPanel)closeStudyLibrary();});
 
 const gameModal=document.getElementById('gameModal');const gameModalClose=document.getElementById('gameModalClose');const gameModalBackdrop=document.getElementById('gameModalBackdrop');const gameToast=document.getElementById('gameToast');const gameChoiceGrid=document.getElementById('gameChoiceGrid');const gameSelectGrid=document.getElementById('gameSelectGrid');const friendsInviteList=document.getElementById('friendsInviteList');const gameModalTitle=document.getElementById('gameModalTitle');const gameModalSubtitle=document.getElementById('gameModalSubtitle');const playSoloBtn=document.getElementById('playSoloBtn');const inviteFriendBtn=document.getElementById('inviteFriendBtn');let selectedFriend=null;let selectedGame=null;
 function openGameModal(){resetGameModal();gameModal.classList.remove('hidden');document.body.classList.add('modal-open');}
