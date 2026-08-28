@@ -3,1996 +3,318 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>CATHS-MAIN Student Voice</title>
-    <link rel="icon" type="image/png" href="sslg-logo.png">
-
+<link rel="icon" type="image/png" href="sslg-logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-
-/* ===== CONCERN PRIVACY WARNING ===== */
-.concern-warning{
-    display:flex;
-    align-items:flex-start;
-    gap:10px;
-    margin:0 0 22px;
-    padding:13px 15px;
-    border-radius:14px;
-    background:rgba(255,215,0,.13);
-    border:1px solid rgba(255,215,0,.35);
-    color:white;
-    font-size:13px;
-    line-height:1.5;
-}
-.concern-warning-icon{
-    flex:0 0 auto;
-    font-size:18px;
-    line-height:1.4;
-}
-.voice-card form > label:first-of-type{
-    margin-top:24px;
-}
-@media(max-width:768px){
-    .concern-warning{
-        gap:8px;
-        padding:11px 12px;
-        margin-bottom:18px;
-        font-size:11px;
-        line-height:1.45;
-    }
-    .concern-warning-icon{
-        font-size:16px;
-    }
-}
-
-
-    
-
-    .loading-dots{
-    text-align:center;
-    font-size:60px;
-    font-weight:bold;
-    padding:50px;
-}
-
-.loading-dots span{
-    animation: pulse 1s infinite;
-}
-
-.loading-dots span:nth-child(1){
-    animation-delay:0s;
-}
-.loading-dots span:nth-child(2){
-    animation-delay:0.2s;
-}
-.loading-dots span:nth-child(3){
-    animation-delay:0.4s;
-}
-.loading-dots span:nth-child(4){
-    animation-delay:0.6s;
-}
-
-@keyframes pulse{
-    0%{
-        color:#FFD700; /* yellow */
-        opacity:1;
-    }
-
-    50%{
-        color:#1E3A8A; /* blue */
-        opacity:.5;
-    }
-
-    100%{
-        color:#FFD700;
-        opacity:1;
-    }
-}
-    
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins',sans-serif;
-}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+html,body{width:100%;height:100%}
 body{
-background:linear-gradient(135deg,#00296B,#003DA5,#FFD700);
-min-height:100vh;
-color:white;
-padding-bottom:100px;
+    overflow:hidden;
+    color:#fff;
+    background:
+      radial-gradient(900px 600px at 8% 8%,rgba(0,120,255,.24),transparent 60%),
+      radial-gradient(800px 560px at 92% 14%,rgba(77,169,255,.12),transparent 58%),
+      radial-gradient(700px 500px at 78% 92%,rgba(0,77,190,.24),transparent 62%),
+      linear-gradient(135deg,#03152f 0%,#062b68 34%,#0a4ca2 66%,#173b78 100%);
+    background-attachment:fixed;
 }
-
 .header{
-    position:relative;
-    z-index:1000;
-
-    padding:20px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    background:rgba(255,255,255,.08);
-    backdrop-filter:blur(12px);
-    -webkit-backdrop-filter:blur(12px);
+    position:fixed;top:6px;left:50%;transform:translateX(-50%);
+    width:calc(100% - 28px);max-width:1400px;height:82px;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:9px 14px;border:1px solid rgba(255,255,255,.20);
+    border-radius:20px;
+    background:linear-gradient(135deg,rgba(255,255,255,.13),rgba(255,255,255,.055));
+    backdrop-filter:blur(22px) saturate(145%);
+    -webkit-backdrop-filter:blur(22px) saturate(145%);
+    box-shadow:0 16px 36px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.16);
+    z-index:99990;
+    animation:headerIn .65s cubic-bezier(.16,1,.3,1) both;
 }
-
-    .header-right{
-    position:relative;
-    display:flex;
-    align-items:center;
+.header::before{
+    content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+    background:linear-gradient(90deg,rgba(77,169,255,.08),transparent 28%,transparent 72%,rgba(77,169,255,.08));
 }
-
-.logo{
-width:80px;
-height:80px;
-object-fit:contain;
-}
-    .logo-group{
-    display:flex;
-    align-items:center;
-    gap:8px;
-}
-
-.caths-logo{
-    width:80px;
-    height:80px;
-    object-fit:contain;
-}
-
+.logo-group{width:220px;min-width:220px;display:flex;align-items:center;gap:7px;z-index:2}
+.logo,.caths-logo{width:52px;height:52px;object-fit:contain;display:block}
 .header-center{
-    flex:1;
-    text-align:center;
-    margin-left:0;
-    margin-right:0;
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:max-content;max-width:50%;text-align:center;z-index:3
 }
-
-.header-center h1{
-font-size:22px;
-font-weight:700;
+.header-center h1{font-size:18px;font-weight:700;line-height:1.15;white-space:nowrap}
+.header-center p{font-size:11px;line-height:1.2;opacity:.88;margin-top:3px;white-space:nowrap}
+.header-right{position:relative;width:220px;min-width:220px;display:flex;justify-content:flex-end;align-items:center;z-index:4}
+.login-btn{
+    height:46px;min-width:84px;padding:7px 12px;border-radius:13px;
+    border:1px solid rgba(255,255,255,.18);
+    background:rgba(255,255,255,.11);color:#fff;font-weight:600;
+    display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;
 }
-
-.header-center p{
-font-size:13px;
-opacity:.9;
+.login-btn:hover{background:rgba(255,255,255,.17)}
+.login-btn.logged-profile{min-width:185px;max-width:200px;justify-content:flex-start}
+.login-btn img{width:32px;height:32px;border-radius:50%;object-fit:cover}
+.login-btn span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.professional-ui-icon{width:18px;height:18px;display:inline-block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.profile-menu{
+    display:none;position:absolute;top:calc(100% + 4px);right:0;width:280px;max-width:calc(100vw - 20px);
+    background:#fff;color:#00296B;border-radius:20px;padding:16px;
+    box-shadow:0 20px 50px rgba(0,0,0,.28),0 8px 20px rgba(0,0,0,.12);
+    opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-12px) scale(.96);transform-origin:top right;
 }
+.profile-menu.open{display:block;visibility:visible;pointer-events:auto;animation:profileIn .42s cubic-bezier(.16,1,.3,1) forwards}
+.profile-menu.closing{display:block;visibility:visible;pointer-events:none;animation:profileOut .25s ease forwards}
+.profile-info{display:flex;align-items:center;gap:12px}
+.profile-info img{width:50px;height:50px;border-radius:50%;object-fit:cover}
+.profile-details{min-width:0;display:flex;flex-direction:column;overflow:hidden}
+.profile-details strong{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.profile-details small{font-size:11px;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.profile-divider{width:100%;height:1px;background:#ddd;margin:12px 0}
+.profile-nav{display:flex;flex-direction:column;gap:6px}
+.profile-nav-item{display:flex;align-items:center;gap:12px;width:100%;padding:12px 13px;border-radius:13px;text-decoration:none;color:#00296B;font-size:13px;font-weight:600;transition:.2s}
+.profile-nav-item:hover{background:#eef4ff;transform:translateX(3px)}
+.profile-nav-icon{
+    width:30px;height:30px;display:flex;align-items:center;justify-content:center;
+    border-radius:9px;background:#f0f4ff
+}
+.logout-button{
+    width:100%;height:48px;border:none;border-radius:12px;background:#00296B;color:#fff;
+    font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px
+}
+.logout-button:hover{background:#003DA5}
 
 .container{
-    width:100%;
-    max-width:1000px;
-    margin:0 auto;
-    padding:32px 20px 120px;
+    position:fixed;top:100px;left:0;right:0;bottom:76px;
+    padding:18px 20px 50px;overflow-x:hidden;overflow-y:auto;
+    -webkit-overflow-scrolling:touch;scroll-behavior:smooth;
 }
-
 .voice-card{
-    width:100%;
-    max-width:920px;
-    margin:0 auto;
-
-    background:rgba(255,255,255,.13);
-    backdrop-filter:blur(20px);
-    -webkit-backdrop-filter:blur(20px);
-
-    padding:32px;
-    border-radius:28px;
-
-    border:1px solid rgba(255,255,255,.14);
-
-    box-shadow:
-        0 18px 45px rgba(0,0,0,.16),
-        inset 0 1px 0 rgba(255,255,255,.08);
+    width:100%;max-width:920px;margin:0 auto 30px;padding:30px;border-radius:25px;
+    background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.055));
+    border:1px solid rgba(255,255,255,.15);
+    backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    box-shadow:0 18px 45px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.10);
+    animation:cardIn .75s cubic-bezier(.16,1,.3,1) .12s both;
 }
-
 .voice-card h2{
-margin-bottom:10px;
+    display:block;font-size:28px;font-weight:700;line-height:1.25;margin-bottom:10px;
+    animation:textIn .55s cubic-bezier(.16,1,.3,1) .24s both;
 }
-
-.voice-card p{
-margin-bottom:20px;
-opacity:.9;
+.voice-card>p{font-size:14px;line-height:1.65;margin-bottom:18px;opacity:.88;animation:textIn .55s cubic-bezier(.16,1,.3,1) .30s both}
+.concern-warning{
+    display:flex;align-items:flex-start;gap:10px;margin:0 0 22px;padding:13px 15px;border-radius:14px;
+    background:linear-gradient(135deg,rgba(77,155,255,.14),rgba(77,155,255,.06));
+    border:1px solid rgba(113,185,255,.28);font-size:13px;line-height:1.5;
+    animation:itemIn .55s cubic-bezier(.16,1,.3,1) .38s both
 }
-
-label{
-display:block;
-margin-top:15px;
-margin-bottom:8px;
-font-weight:600;
+.concern-warning-icon{flex:0 0 auto}
+label{display:block;margin:15px 0 8px;font-weight:600}
+input,select,textarea{
+    width:100%;padding:15px;border:none;outline:none;border-radius:15px;font-size:14px;margin-bottom:18px;
+    transition:transform .22s ease,box-shadow .22s ease
 }
-
-input,
-select,
-textarea{
-width:100%;
-padding:15px;
-border:none;
-outline:none;
-border-radius:15px;
-font-size:14px;
-margin-bottom:25px;
-}
-
-    .checkbox{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin:20px 0 25px 0;
-}
-
-.checkbox input{
-    width:22px;
-    height:22px;
-    margin:0;
-}
-
-.checkbox label{
-    margin:0;
-    color:white;
-    font-weight:600;
-}
-
-textarea{
-height:150px;
-resize:none;
-}
-
-.checkbox{
-display:flex;
-align-items:center;
-gap:10px;
-margin-top:15px;
-}
-
-.checkbox input{
-width:auto;
-}
-
-.submit-btn{
-width:100%;
-padding:15px;
-margin-top:20px;
-border:none;
-border-radius:15px;
-background:#FFD700;
-color:#00296B;
-font-size:16px;
-font-weight:700;
-cursor:pointer;
-transition:.3s;
-}
-
-.submit-btn:hover{
-transform:translateY(-3px);
-}
-
-.success{
-display:none;
-background:#28a745;
-padding:15px;
-border-radius:15px;
-margin-top:15px;
-text-align:center;
-}
-
-.bottom-nav{
-position:fixed;
-bottom:0;
-left:0;
-right:0;
-height:85px;
-background:linear-gradient(90deg,#1e3a8a,#b59f1a);
-display:flex;
-justify-content:space-around;
-align-items:center;
-z-index:999;
-}
-
-.nav-item{
-display:flex;
-flex-direction:column;
-align-items:center;
-text-decoration:none;
-color:white;
-font-size:11px;
-}
-
-.nav-item div{
-font-size:24px;
-margin-bottom:4px;
-}
-
-.active{
-color:#FFD700;
-transform:translateY(-5px) scale(1.12);
-font-weight:700;
-position:relative;
-z-index:2;
-}
-
-.active div{
-font-size:27px;
-}
-
-#profileNavPhoto{
-    width:32px !important;
-    height:32px !important;
-
-    min-width:32px !important;
-    max-width:32px !important;
-
-    min-height:32px !important;
-    max-height:32px !important;
-
-    flex:0 0 32px !important;
-
-    border-radius:50% !important;
-    overflow:hidden !important;
-
-    padding:0 !important;
-    margin:0 0 4px 0 !important;
-
-    display:flex !important;
-    align-items:center !important;
-    justify-content:center !important;
-
-    font-size:20px !important;
-    line-height:1 !important;
-}
-
-#profileNavPhoto img{
-    width:32px !important;
-    height:32px !important;
-
-    min-width:32px !important;
-    max-width:32px !important;
-
-    min-height:32px !important;
-    max-height:32px !important;
-
-    border-radius:50% !important;
-    object-fit:cover !important;
-
-    display:block !important;
-}
-    
-.popup{
-    display:none;
-    position:fixed;
+input:focus,select:focus,textarea:focus{transform:translateY(-1px);box-shadow:0 0 0 3px rgba(77,169,255,.14),0 8px 20px rgba(0,0,0,.10)}
+textarea{height:150px;resize:none}
+.checkbox{display:flex;align-items:center;gap:10px;margin:15px 0}
+.checkbox input{width:auto;margin:0}
+.checkbox label{margin:0}
+.voice-card form>*:not(.section-search-wrapper):not(.checkbox){animation:itemIn .55s cubic-bezier(.16,1,.3,1) .44s both}
+.section-search-wrapper{position:relative;width:100%;animation:itemIn .55s cubic-bezier(.16,1,.3,1) .44s both}
+#sectionSearch{width:100%;background:#fff;color:#222;margin:0}
+.section-suggestions{
+    position:fixed !important;
     top:0;
     left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,.6);
-    justify-content:center;
-    align-items:center;
-    z-index:9999;
-}
-
-.popup-content{
-    background:white;
-    padding:30px;
-    border-radius:20px;
-    text-align:center;
-    max-width:350px;
-    width:90%;
-    animation:pop .3s ease;
-}
-
-.checkmark{
-    font-size:60px;
-    margin-bottom:10px;
-}
-
-#loginModal .popup-content h2{
-    color:white;
-    margin-bottom:8px;
-}
-
-#successPopup .popup-content button{
-    margin-top:15px;
-    padding:10px 25px;
-    border:none;
-    border-radius:10px;
-    background:#1f4ed8;
-    color:white;
-    cursor:pointer;
-}
-
-@keyframes pop{
-    from{
-        transform:scale(.8);
-        opacity:0;
-    }
-    to{
-        transform:scale(1);
-        opacity:1;
-    }
-}
-
-.inbox-btn{
-    width:100%;
-    margin-top:15px;
-    padding:18px;
-    border:none;
-    border-radius:20px;
-    background:white;
-    color:#1f3c88;
-    font-size:18px;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-.inbox-modal{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.6);
-    z-index:9999;
-}
-
-.inbox-content{
-    width:90%;
-    max-width:800px;
-    max-height:80vh;
-    overflow-y:auto;
-    margin:40px auto;
-    padding:25px;
-    border-radius:25px;
-    background:white;
-}
-
-.modal-content{
-    position:relative;
-}
-
-#concernsModal .close-btn{
-    position:absolute;
-    top:16px;
-    right:16px;
-
-    width:46px;
-    height:46px;
-
-    border:none;
-    border-radius:50%;
-
-    background:linear-gradient(135deg,#1f4ed8,#0d2c7a);
-    color:white;
-
-    font-size:26px;
-    font-weight:500;
-    line-height:1;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    cursor:pointer;
-
-    box-shadow:0 6px 18px rgba(31,78,216,.35);
-
-    transition:all .25s ease;
-}
-
-#concernsModal .close-btn:hover{
-    transform:scale(1.08) rotate(90deg);
-    background:linear-gradient(135deg,#2563eb,#183c8c);
-    box-shadow:0 8px 22px rgba(31,78,216,.45);
-}
-
-#concernsModal .close-btn:active{
-    transform:scale(.92);
-}
-
-.concern-card{
-    background:#f5f5f5;
-    padding:15px;
-    border-radius:15px;
-    margin-top:15px;
-}
-
-.pending{
-    background:#ffd54f;
-    padding:5px 12px;
-    border-radius:10px;
-    font-size:12px;
-}
-
-.resolved{
-    background:#4caf50;
-    color:white;
-    padding:5px 12px;
-    border-radius:10px;
-    font-size:12px;
-}
-
-    .submit-btn{
-    width:100%;
-    height:80px;
-    border:none;
-    border-radius:25px;
-    background:#FFD93D;
-    color:#0d2c7a;
-    font-size:20px;
-    font-weight:700;
-    cursor:pointer;
-    margin:20px 0;
-}
-.modal{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.6);
-    backdrop-filter:blur(8px);
-    -webkit-backdrop-filter:blur(8px);
-
-    z-index:9999999;
-
-    justify-content:center;
-    align-items:center;
-}
-
-.modal-content{
-    background:#ffffff;
-    width:90%;
-    max-width:850px;
-    max-height:80vh;
-    overflow-y:auto;
-    margin:5% auto;
-    padding:30px;
-    border-radius:25px;
-    box-shadow:0 20px 50px rgba(0,0,0,.25);
-}
-
-.modal-content h2{
-    color:#183c8c;
-    font-size:32px;
-    margin-bottom:20px;
-    text-align:center;
-}
-
-.concern-card{
-    background:#f8faff;
-    border-left:6px solid #183c8c;
-    border-radius:15px;
-    padding:18px;
-    margin:15px 0;
-    color:#222;
-}
-
-.concern-card h3{
-    color:#183c8c;
-    margin-bottom:8px;
-    font-size:20px;
-}
-
-.concern-card p{
-    color:#333;
-    margin:5px 0;
-    line-height:1.5;
-}
-
-.concern-card small{
-    color:#666;
-    font-weight:600;
-}
-
-.close{
-    float:right;
-    font-size:35px;
-    color:#183c8c;
-    cursor:pointer;
-    font-weight:bold;
-}
-
-    .concern-card{
-    background:#ffffff;
-    color:#222;
-    padding:18px;
-    border-radius:15px;
-    margin-bottom:15px;
-    box-shadow:0 4px 12px rgba(0,0,0,.1);
-    border-left:5px solid #2f4fa2;
-}
-
-.concern-card h3{
-    margin:0 0 10px;
-    color:#2f4fa2;
-    font-size:20px;
-}
-
-.concern-card p{
-    margin:6px 0;
-    line-height:1.5;
-    color:#333;
-}
-
-.concern-card small{
-    display:block;
-    margin-top:10px;
-    color:#666;
-    font-weight:600;
-}
-
- .popup-content{
-    position:relative;
-    width:90%;
-    max-width:420px;
-    padding:35px 30px;
-    border-radius:28px;
-
-    background:rgba(34,42,60,.96);
-    backdrop-filter:blur(18px);
-
-    border:1px solid rgba(255,255,255,.12);
-    box-shadow:0 20px 60px rgba(0,0,0,.45);
-
-    text-align:center;
-    color:#fff;
-    animation:pop .3s ease;
-}
-    
-.view-btn{
-    width:100%;
-    height:80px;
-    border:none;
-    border-radius:25px;
-    background:white;
-    color:#0d2c7a;
-    font-size:20px;
-    font-weight:700;
-    cursor:pointer;
-    margin-bottom:10px;
-}
-
-#loginModal .close-btn{
-    position:absolute;
-    top:14px;
-    right:16px;
-    background:transparent;
-    border:none;
-    padding:0;
-    margin:0;
-    width:28px;
-    height:28px;
-
-    font-size:20px;
-    line-height:1;
-    font-weight:500;
-    color:#FFD93D;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-    transition:.2s ease;
-}
-
-#loginModal .close-btn:hover{
-    color:#FFE66D;
-    transform:scale(1.08);
-}
-
-#loginModal .close-btn:hover{
-    color:#FFD93D;
-    transform:scale(1.1);
-}
-   .login-btn{
-    background:rgba(255,255,255,.15);
-    backdrop-filter:blur(10px);
-    color:white;
-    border:none;
-    padding:8px 15px;
-    border-radius:12px;
-    font-weight:600;
-    cursor:pointer;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-    width:auto;
-    white-space:nowrap;
-}
-
-.login-btn:hover{
-    background:rgba(255,255,255,.25);
-}
-
-.profile-menu{
-    display:none;
-
-    position:absolute;
-    top:calc(100% + 4px);
-    right:0;
-
-    width:280px;
-    max-width:calc(100vw - 20px);
-
-    background:#ffffff;
-    color:#00296B;
-
-    border-radius:20px;
-    padding:16px;
-
-    border:1px solid rgba(0,0,0,.08);
-
-    box-shadow:
-        0 20px 50px rgba(0,0,0,.28),
-        0 8px 20px rgba(0,0,0,.12);
-
-    z-index:100002;
-
-    opacity:0;
-    visibility:hidden;
-
-    transform:translateY(-12px) scale(.96);
-    transform-origin:top right;
-
-    pointer-events:none;
-}
-
-.profile-info{
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-
-.profile-info img{
-    width:50px;
-    height:50px;
-    border-radius:50%;
-    object-fit:cover;
-}
-
-.profile-details{
-    min-width:0;
-
-    display:flex;
-    flex-direction:column;
-    overflow:hidden;
-}
-
-.profile-details strong{
-    color:#00296B;
-    font-size:15px;
-    font-weight:700;
-
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-}
-
-.profile-details small{
-    color:#666;
-    font-size:11px;
-
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-}
-
-.profile-divider{
-    width:100%;
-    height:1px;
-    background:#ddd;
-    margin:12px 0;
-}
-
-.profile-nav{
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-}
-
-.profile-nav-item{
-    display:flex;
-    align-items:center;
-    gap:12px;
-
-    width:100%;
-    padding:12px 13px;
-
-    border-radius:13px;
-
-    text-decoration:none;
-    color:#00296B;
-
-    font-size:13px;
-    font-weight:600;
-
-    transition:.2s ease;
-}
-
-.profile-nav-item:hover{
-    background:#eef4ff;
-    transform:translateX(3px);
-}
-
-.profile-nav-icon{
-    width:30px;
-    height:30px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    border-radius:9px;
-    background:#f0f4ff;
-
-    font-size:17px;
-
-    transition:.25s cubic-bezier(.16,1,.3,1);
-}
-
-.profile-nav-item:hover .profile-nav-icon{
-    transform:scale(1.1) rotate(-3deg);
-}
-
-.logout-button{
-    width:100%;
-    height:58px;
-
-    padding:11px;
-
-    border:none;
-    border-radius:10px;
-
-    background:#00296B;
-    color:white;
-
-    font-size:13px;
-    font-weight:600;
-
-    cursor:pointer;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:9px;
-
-    transition:.25s ease;
-}
-
-.logout-button:hover{
-    background:#003DA5;
-}
-
-.logout-button:active{
-    transform:scale(.98);
-}
-
-    #googleLoginBtn{
-    width:100%;
-    height:58px;
-    border:none;
-    border-radius:16px;
-    background:#FFD93D;
-    color:#082A75;
-    font-size:18px;
-    font-weight:700;
-    cursor:pointer;
-    margin:0;
-}
-
-/* ==============================
-CELLPHONE DITO BE AHHAHAAHHAA
-   ============================== */
-
-@media (max-width: 768px){
-
-    #concernsModal .close-btn{
-        width:40px;
-        height:40px;
-        top:10px;
-        right:10px;
-        font-size:23px;
-    }
-
-   #profileNavPhoto{
-    width:25px !important;
-    height:25px !important;
-
-    min-width:25px !important;
-    max-width:25px !important;
-
-    min-height:25px !important;
-    max-height:25px !important;
-
-    flex:0 0 25px !important;
-
-    margin-bottom:2px !important;
-}
-
-#profileNavPhoto img{
-    width:25px !important;
-    height:25px !important;
-
-    min-width:25px !important;
-    max-width:25px !important;
-
-    min-height:25px !important;
-    max-height:25px !important;
-}
-
-    body{
-        padding-bottom:85px;
-        overflow-x:hidden;
-    }
-
-    /* HEADER */
-    .header{
-        padding:10px 12px;
-        min-height:68px;
-        gap:8px;
-    }
-
-    .logo-group{
-        display:flex;
-        align-items:center;
-        gap:5px;
-        flex-shrink:0;
-    }
-
-    .logo,
-    .caths-logo{
-        width:42px;
-        height:42px;
-    }
-
-    .caths-logo{
-        transform:scale(1.08);
-    }
-
-    .header-center{
-        min-width:0;
-        flex:1;
-        text-align:center;
-        padding:0 5px;
-    }
-
-    .header-center h1{
-        font-size:14px;
-        line-height:1.2;
-        white-space:nowrap;
-        overflow:hidden;
-        text-overflow:ellipsis;
-    }
-
-    .header-center p{
-        font-size:8px;
-        line-height:1.3;
-        white-space:nowrap;
-        overflow:hidden;
-        text-overflow:ellipsis;
-    }
-
-    .login-btn{
-        font-size:10px;
-        padding:7px 9px;
-        gap:4px;
-        margin:0;
-        max-width:110px;
-        white-space:nowrap;
-        overflow:hidden;
-        text-overflow:ellipsis;
-        flex-shrink:0;
-    }
-
-    .login-btn img{
-        width:24px !important;
-        height:24px !important;
-    }
-
-    /* MAIN CONTAINER */
-   .container{
-    width:100%;
-    max-width:none;
-    padding:14px 12px 100px;
-}
-
-.voice-card{
-    width:100%;
-    padding:20px 16px;
-    border-radius:22px;
-}
-
-    .voice-card h2{
-        font-size:21px;
-        line-height:1.3;
-    }
-
-    .voice-card p{
-        font-size:12px;
-        line-height:1.6;
-        margin-bottom:16px;
-    }
-
-    /* FORM */
-    label{
-        font-size:13px;
-        margin-top:12px;
-        margin-bottom:7px;
-    }
-
-    input,
-    select,
-    textarea{
-        width:100%;
-        font-size:13px;
-        padding:13px;
-        border-radius:13px;
-        margin-bottom:18px;
-    }
-
-    textarea{
-        height:135px;
-    }
-
-    .checkbox{
-        gap:9px;
-        margin:10px 0 18px;
-    }
-
-    .checkbox input{
-        width:20px;
-        height:20px;
-        margin:0;
-        flex-shrink:0;
-    }
-
-    .checkbox label{
-        font-size:12px;
-    }
-
-    /* BUTTONS */
-    .submit-btn,
-    .view-btn{
-        height:62px;
-        font-size:16px;
-        border-radius:18px;
-        margin:12px 0 8px;
-    }
-
-    /* BOTTOM NAV */
-    .bottom-nav{
-        height:72px;
-        padding:5px 3px;
-        z-index:9999;
-    }
-
-    .nav-item{
-        min-width:54px;
-        font-size:9px;
-        line-height:1.1;
-        padding:3px;
-    }
-
-    .nav-item div{
-        font-size:21px;
-        margin-bottom:2px;
-        height:24px;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-    }
-
-    .nav-item.active{
-        transform:translateY(-4px) scale(1.08);
-    }
-
-    .nav-item.active div{
-        font-size:24px;
-    }
-
-    /* POPUPS */
-    .popup{
-        padding:15px;
-    }
-
-    .popup-content{
-        width:92%;
-        max-width:350px;
-        padding:28px 20px;
-        border-radius:22px;
-    }
-
-    .popup-content h2{
-        font-size:24px;
-    }
-
-    .popup-content p{
-        font-size:13px;
-        line-height:1.5;
-    }
-
-    .checkmark{
-        font-size:50px;
-    }
-
-    /* LOGIN MODAL */
-    .modal{
-        padding:15px;
-    }
-
-    #loginModal .popup-content{
-        width:100%;
-        max-width:350px;
-        padding:28px 20px;
-    }
-
-    #loginModal .popup-content h2{
-        font-size:30px !important;
-    }
-
-    #loginModal .popup-content p{
-        font-size:13px;
-    }
-
-    #googleLoginBtn{
-        height:54px;
-        font-size:15px;
-        border-radius:15px;
-    }
-
-    #loginModal .close-btn{
-        top:12px;
-        right:12px;
-    }
-
-    /* CONCERNS MODAL */
-    .modal-content{
-        width:94%;
-        max-height:82vh;
-        padding:18px 14px;
-        margin:9vh auto 0;
-        border-radius:20px;
-    }
-
-    .modal-content h2{
-        font-size:23px;
-        margin-bottom:15px;
-    }
-
-    .concern-card{
-        padding:14px;
-        border-radius:13px;
-    }
-
-    .concern-card h3{
-        font-size:16px;
-    }
-
-    .concern-card p{
-        font-size:12px;
-    }
-
-    .concern-card small{
-        font-size:11px;
-    }
-
-.profile-menu{
-    top:calc(100% + 4px);
-    right:0;
-
-    width:calc(100vw - 20px);
-    max-width:300px;
-
-    border-radius:18px;
-    padding:14px;
-    z-index:100002;
-}
-
-.profile-info{
-    gap:13px;
-}
-
-.profile-info img{
-    width:62px;
-    height:62px;
-}
-
-.profile-details strong{
-    font-size:18px;
-}
-
-.profile-details small{
-    font-size:13px;
-}
-
-.logout-button{
-    height:58px;
-    font-size:13px;
-}
-
-}
-
-/* SMALL PHONES */
-@media (max-width:380px){
-
-    .header{
-        padding:8px 8px;
-        gap:5px;
-    }
-
-    .logo,
-    .caths-logo{
-        width:36px;
-        height:36px;
-    }
-
-    .header-center h1{
-        font-size:11px;
-    }
-
-    .header-center p{
-        font-size:7px;
-    }
-
-    .login-btn{
-        font-size:9px;
-        padding:6px 7px;
-        max-width:88px;
-    }
-
-    .voice-card{
-        padding:16px 13px;
-    }
-
-    .voice-card h2{
-        font-size:19px;
-    }
-
-    .voice-card p{
-        font-size:11px;
-    }
-
-    .submit-btn,
-    .view-btn{
-        height:58px;
-        font-size:14px;
-    }
-
-    .bottom-nav{
-        height:68px;
-    }
-
-    .nav-item{
-        font-size:8px;
-        min-width:46px;
-    }
-
-    .nav-item div{
-        font-size:19px;
-    }
-}
-
-    /* =========================================
-   PROFILE MENU ANIMATIONS
-========================================= */
-
-@keyframes profileMenuIn{
-
-    0%{
-        opacity:0;
-        transform:translateY(-12px) scale(.96);
-    }
-
-    60%{
-        opacity:1;
-        transform:translateY(2px) scale(1.01);
-    }
-
-    100%{
-        opacity:1;
-        transform:translateY(0) scale(1);
-    }
-}
-
-@keyframes profileMenuOut{
-
-    0%{
-        opacity:1;
-        transform:translateY(0) scale(1);
-    }
-
-    65%{
-        opacity:1;
-        transform:translateY(-2px) scale(.995);
-    }
-
-    100%{
-        opacity:0;
-        transform:translateY(-10px) scale(.97);
-    }
-}
-
-.profile-menu.open{
-    display:block;
-    visibility:visible;
-    pointer-events:auto;
-
-    animation:
-        profileMenuIn
-        .42s
-        cubic-bezier(.16,1,.3,1)
-        forwards;
-}
-
-.profile-menu.closing{
-    display:block;
-    visibility:visible;
-    pointer-events:none;
-
-    animation:
-        profileMenuOut
-        .38s
-        cubic-bezier(.4,0,.2,1)
-        forwards;
-}
-
-/* PROFILE HEADER */
-
-.profile-menu .profile-info{
-    opacity:0;
-    transform:translateY(-8px);
-}
-
-.profile-menu.open .profile-info{
-    animation:
-        profileItemIn
-        .38s
-        cubic-bezier(.16,1,.3,1)
-        .05s
-        forwards;
-}
-
-/* DIVIDERS */
-
-.profile-menu .profile-divider{
-    opacity:0;
-}
-
-.profile-menu.open .profile-divider{
-    animation:
-        profileFadeIn
-        .3s
-        ease
-        .14s
-        forwards;
-}
-
-/* NAV ITEMS */
-
-.profile-nav-item{
-    opacity:0;
-    transform:translateX(14px);
-}
-
-.profile-menu.open .profile-nav-item:nth-child(1){
-    animation:
-        profileItemIn
-        .38s
-        cubic-bezier(.16,1,.3,1)
-        .17s
-        forwards;
-}
-
-.profile-menu.open .profile-nav-item:nth-child(2){
-    animation:
-        profileItemIn
-        .38s
-        cubic-bezier(.16,1,.3,1)
-        .24s
-        forwards;
-}
-
-.profile-menu.open .profile-nav-item:nth-child(3){
-    animation:
-        profileItemIn
-        .38s
-        cubic-bezier(.16,1,.3,1)
-        .31s
-        forwards;
-}
-
-/* LOGOUT */
-
-.profile-menu .logout-button{
-    opacity:0;
-    transform:translateY(8px);
-}
-
-.profile-menu.open .logout-button{
-    animation:
-        profileItemIn
-        .38s
-        cubic-bezier(.16,1,.3,1)
-        .38s
-        forwards;
-}
-
-@keyframes profileItemIn{
-
-    from{
-        opacity:0;
-        transform:translateY(8px);
-    }
-
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-
-@keyframes profileFadeIn{
-
-    from{
-        opacity:0;
-    }
-
-    to{
-        opacity:1;
-    }
-}
-
-/* EXIT — REVERSE ORDER */
-
-.profile-menu.closing .logout-button{
-    animation:
-        profileItemOut
-        .16s
-        cubic-bezier(.4,0,.2,1)
-        0s
-        forwards;
-}
-
-.profile-menu.closing .profile-nav-item:nth-child(3){
-    animation:
-        profileItemOut
-        .16s
-        cubic-bezier(.4,0,.2,1)
-        .035s
-        forwards;
-}
-
-.profile-menu.closing .profile-nav-item:nth-child(2){
-    animation:
-        profileItemOut
-        .16s
-        cubic-bezier(.4,0,.2,1)
-        .07s
-        forwards;
-}
-
-.profile-menu.closing .profile-nav-item:nth-child(1){
-    animation:
-        profileItemOut
-        .16s
-        cubic-bezier(.4,0,.2,1)
-        .105s
-        forwards;
-}
-
-.profile-menu.closing .profile-info{
-    animation:
-        profileInfoOut
-        .18s
-        cubic-bezier(.4,0,.2,1)
-        .14s
-        forwards;
-}
-
-@keyframes profileItemOut{
-
-    from{
-        opacity:1;
-        transform:translateX(0) translateY(0) scale(1);
-    }
-
-    to{
-        opacity:0;
-        transform:translateX(8px) translateY(-4px) scale(.98);
-    }
-}
-
-@keyframes profileInfoOut{
-
-    from{
-        opacity:1;
-        transform:translateY(0);
-    }
-
-    to{
-        opacity:0;
-        transform:translateY(-6px);
-    }
-}
-
-    /* ==============================
-/* ==============================
-   SECTION SEARCH - AESTHETIC
-================================= */
-
-.section-search-wrapper{
-    position:relative;
-    width:100%;
-    margin-bottom:32px;
-}
-
-.section-search-wrapper > label{
-    display:block;
-    margin-top:15px;
-    margin-bottom:10px;
-    font-weight:600;
-}
-
-#sectionSearch{
-    width:100%;
-    padding:15px 18px;
-
-    border:none;
-    outline:none;
-
-    border-radius:15px;
-
-    font-size:14px;
-
-    background:#fff;
-    color:#222;
-
-    margin:0;
-
-    box-shadow:0 4px 14px rgba(0,0,0,.06);
-
-    transition:
-        box-shadow .25s ease,
-        transform .25s ease;
-}
-
-#sectionSearch:focus{
-    box-shadow:0 8px 22px rgba(0,0,0,.14);
-    transform:translateY(-1px);
-}
-
-.section-suggestions{
-    position:absolute;
-
-    top:100%;
-    left:0;
-    right:0;
-
-    background:#ffffff;
-
-    border-radius:16px;
-
+    right:auto;
+    width:0;
     max-height:230px;
     overflow-y:auto;
-
     padding:7px;
-
-    box-shadow:
-        0 14px 35px rgba(0,0,0,.16),
-        0 4px 12px rgba(0,0,0,.08);
-
-    z-index:999999;
-
+    background:#ffffff;
+    border:1px solid rgba(24,60,140,.10);
+    border-radius:16px;
+    box-shadow:0 18px 42px rgba(0,0,0,.22),0 4px 12px rgba(0,0,0,.10);
+    z-index:2147483647 !important;
     display:none;
-
-    border:1px solid rgba(24,60,140,.08);
+    pointer-events:auto;
+    overscroll-behavior:contain;
 }
-
-.section-suggestions.show{
-    display:block !important;
+.section-suggestions.show{display:block;animation:sectionDropdownIn .18s cubic-bezier(.16,1,.3,1) both}
+.section-option{padding:12px 14px;color:#183c8c;background:transparent;font-size:14px;font-weight:500;border-radius:11px;cursor:pointer;transition:.2s}
+.section-option:hover{background:#eef4ff;transform:translateX(3px)}
+.section-option.no-result{text-align:center;color:#777;cursor:default}
+.submit-btn,.view-btn{
+    width:100%;min-height:58px;padding:14px;border:none;border-radius:16px;
+    background:linear-gradient(135deg,#2F80FF,#1762D2);color:#fff;font-size:16px;font-weight:700;
+    cursor:pointer;box-shadow:0 10px 24px rgba(23,98,210,.22),inset 0 1px 0 rgba(255,255,255,.22);
+    transition:transform .22s cubic-bezier(.16,1,.3,1),box-shadow .22s ease,filter .22s ease;
+    margin:10px 0;
 }
-
-.section-suggestions.show{
-    display:block;
+.submit-btn:hover,.view-btn:hover{transform:translateY(-3px);filter:brightness(1.08);box-shadow:0 14px 30px rgba(23,98,210,.30)}
+.submit-btn:active,.view-btn:active{transform:scale(.98)}
+.loading-dots{
+    width:54px;height:54px;margin:38px auto;position:relative
 }
-
-.section-option{
-    padding:12px 14px;
-
-    color:#183c8c;
-    background:transparent;
-
-    font-size:14px;
-    font-weight:500;
-
-    border-radius:11px;
-
-    cursor:pointer;
-
-    transition:
-        background .2s ease,
-        transform .2s ease,
-        color .2s ease;
+.loading-dots::before{
+    content:"";position:absolute;inset:3px;border-radius:50%;border:4px solid rgba(77,155,255,.16);
+    border-top-color:#6fc6ff;border-right-color:#2f80ff;animation:spin .8s linear infinite
 }
-
-.section-option:hover{
-    background:#eef4ff;
-    color:#0d2c7a;
-    transform:translateX(3px);
+.popup,.modal{
+    display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);
+    z-index:9999999;justify-content:center;align-items:center;padding:15px
 }
-
-.section-option:active{
-    transform:scale(.98);
+.popup-content{
+    position:relative;width:90%;max-width:420px;padding:32px 28px;border-radius:28px;
+    background:rgba(34,42,60,.97);border:1px solid rgba(255,255,255,.12);
+    box-shadow:0 20px 60px rgba(0,0,0,.45);text-align:center;color:#fff;
+    animation:pop .3s ease
 }
-
-.section-option.no-result{
-    color:#777;
-    cursor:default;
-    text-align:center;
+.popup-content h2{margin-bottom:8px}
+.popup-content p{color:rgba(255,255,255,.84);font-size:14px;line-height:1.55}
+.checkmark.loading-mark{
+    width:58px;height:58px;margin:0 auto 16px;border-radius:50%;
+    border:4px solid rgba(119,196,255,.16);border-top-color:#6fc6ff;border-right-color:#2f80ff;
+    animation:spin .8s linear infinite
 }
-
-.section-option.no-result:hover{
-    background:transparent;
-    transform:none;
+.checkmark.success-mark{
+    position:relative;width:62px;height:62px;margin:0 auto 16px;border-radius:50%;
+    background:linear-gradient(145deg,#2f80ff,#1762d2)
 }
-/* =========================================
-   SECTION REQUIRED POPUP
-========================================= */
-
-.section-error-popup{
-    max-width:420px;
-    width:90%;
-    padding:35px 30px;
-    border-radius:28px;
-
-    background:rgba(34,42,60,.97);
-    backdrop-filter:blur(20px);
-    -webkit-backdrop-filter:blur(20px);
-
-    border:1px solid rgba(255,255,255,.15);
-
-    box-shadow:
-        0 25px 70px rgba(0,0,0,.5),
-        inset 0 1px 0 rgba(255,255,255,.08);
-
-    animation:sectionPopupIn .35s cubic-bezier(.16,1,.3,1);
+.checkmark.success-mark::before{
+    content:"";position:absolute;left:18px;top:15px;width:20px;height:11px;
+    border-left:3px solid #fff;border-bottom:3px solid #fff;transform:rotate(-45deg)
 }
-
-.section-error-icon{
-    width:75px;
-    height:75px;
-
-    margin:0 auto 18px;
-
-    border-radius:50%;
-
-    background:rgba(255,215,0,.15);
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:40px;
-
-    box-shadow:
-        0 0 0 8px rgba(255,215,0,.05);
+.modal-content{
+    position:relative;background:#fff;color:#222;width:90%;max-width:850px;max-height:82vh;
+    overflow-y:auto;padding:30px;border-radius:25px;box-shadow:0 20px 50px rgba(0,0,0,.25)
 }
-
-.section-error-popup h2{
-    color:white;
-    font-size:26px;
-    margin-bottom:10px;
+.modal-content h2{color:#183c8c;font-size:30px;margin-bottom:20px;text-align:center}
+.concern-card{
+    background:#fff;color:#222;padding:18px;border-radius:15px;margin-bottom:15px;
+    box-shadow:0 4px 12px rgba(0,0,0,.1);border-left:5px solid #2f4fa2
 }
-
-.section-error-popup p{
-    color:rgba(255,255,255,.82);
-    font-size:14px;
-    line-height:1.6;
-    margin-bottom:24px;
+.concern-card h3{color:#2f4fa2;font-size:20px;margin-bottom:8px}
+.concern-card p{color:#333;margin:6px 0;line-height:1.5}
+.concern-card small{display:block;margin-top:10px;color:#666;font-weight:600}
+.close-btn{
+    position:absolute;top:12px;right:14px;width:34px;height:34px;border:none;border-radius:50%;
+    background:#eef4ff;color:#183c8c;font-size:25px;cursor:pointer
 }
-
+.close-btn::before{content:"×"}
 .try-again-btn{
-    width:100%;
-    height:55px;
-
-    border:none;
-    border-radius:15px;
-
-    background:#FFD93D;
-    color:#0d2c7a;
-
-    font-size:16px;
-    font-weight:700;
-
-    cursor:pointer;
-
-    transition:
-        transform .2s ease,
-        box-shadow .2s ease,
-        background .2s ease;
+    width:100%;height:52px;border:none;border-radius:15px;background:linear-gradient(135deg,#4E9EFF,#1762D2);
+    color:#fff;font-size:16px;font-weight:700;cursor:pointer
 }
-
-.try-again-btn:hover{
-    transform:translateY(-2px);
-
-    background:#FFE66D;
-
-    box-shadow:
-        0 8px 20px rgba(255,217,61,.25);
+.section-error-popup{max-width:420px}
+.section-error-icon{
+    width:65px;height:65px;margin:0 auto 18px;border-radius:50%;background:rgba(77,169,255,.15);
+    display:flex;align-items:center;justify-content:center
 }
-
-.try-again-btn:active{
-    transform:scale(.97);
+.error-mark{
+    width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+    border:2px solid #8fd0ff;border-radius:50%;color:#8fd0ff;font-size:22px;font-weight:700
 }
-
-@keyframes sectionPopupIn{
-
-    from{
-        opacity:0;
-        transform:translateY(20px) scale(.9);
-    }
-
-    to{
-        opacity:1;
-        transform:translateY(0) scale(1);
-    }
-
-}
-
-@media(max-width:768px){
-
-    .section-error-popup{
-        width:92%;
-        padding:30px 22px;
-        border-radius:24px;
-    }
-
-    .section-error-icon{
-        width:65px;
-        height:65px;
-        font-size:34px;
-    }
-
-    .section-error-popup h2{
-        font-size:23px;
-    }
-
-    .section-error-popup p{
-        font-size:13px;
-    }
-
-    .try-again-btn{
-        height:52px;
-        font-size:15px;
-    }
-
-}
-    
-
-/* ===== APP-STYLE RESPONSIVE OVERRIDES ===== */
 .bottom-nav{
-  height:77px !important;
-  padding:4px 4px env(safe-area-inset-bottom) !important;
-  background:rgba(0,0,0,.28) !important;
-  backdrop-filter:blur(18px) !important;
-  -webkit-backdrop-filter:blur(18px) !important;
-  display:flex !important;
-  justify-content:space-around !important;
-  align-items:center !important;
-  z-index:9999 !important;
-  border-top:1px solid rgba(255,255,255,.08);
+    position:fixed;left:0;right:0;bottom:0;width:100%;height:76px;
+    padding:5px 16px;display:flex;align-items:center;justify-content:center;gap:8px;
+    border-top:1px solid rgba(255,255,255,.16);border-radius:19px 19px 0 0;
+    background:linear-gradient(180deg,rgba(7,25,58,.94),rgba(2,13,32,.99));
+    backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);
+    box-shadow:0 -12px 30px rgba(0,8,30,.24);z-index:99990;
+    animation:navIn .65s cubic-bezier(.16,1,.3,1) .15s both
 }
-.bottom-nav .nav-item{
-  flex:1 !important;
-  max-width:120px !important;
-  min-width:56px !important;
-  display:flex !important;
-  flex-direction:column !important;
-  align-items:center !important;
-  justify-content:center !important;
-  text-decoration:none !important;
-  color:white !important;
-  font-size:9px !important;
-  line-height:1.1 !important;
-  padding:4px 3px !important;
-  transition:.22s !important;
+.bottom-nav::after{
+    content:"";position:absolute;left:0;right:0;top:-1px;height:2px;
+    background:linear-gradient(90deg,transparent 3%,rgba(119,196,255,.18) 15%,#77c4ff 50%,rgba(119,196,255,.18) 85%,transparent 97%);
+    box-shadow:0 0 14px rgba(119,196,255,.28)
 }
-.bottom-nav .nav-item div{
-  font-size:21px !important;
-  height:26px !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  margin-bottom:2px !important;
+.nav-item{
+    position:relative;flex:1;max-width:190px;height:60px;padding:6px 8px;border-radius:14px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    color:rgba(255,255,255,.72);font-size:10px;font-weight:600;text-decoration:none;
+    transition:.2s
 }
-.bottom-nav .nav-item.active{
-  color:#FFD700 !important;
-  transform:translateY(-5px) scale(1.06) !important;
-  font-weight:700 !important;
+.nav-item:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav-item.active{color:#fff;background:linear-gradient(180deg,rgba(87,169,255,.19),rgba(87,169,255,.07))}
+.nav-item.active::after{
+    content:"";position:absolute;left:50%;top:3px;width:30px;height:3px;transform:translateX(-50%);
+    border-radius:999px;background:#77c4ff;box-shadow:0 0 12px rgba(119,196,255,.7)
 }
-.bottom-nav .nav-item.active div{font-size:24px !important}
-.bottom-nav .profile-nav-icon{
-  width:28px !important;
-  height:28px !important;
-  padding:0 !important;
-  margin:0 0 2px 0 !important;
-  background:transparent !important;
-  border:none !important;
-  box-shadow:none !important;
-  color:inherit !important;
+.professional-nav-icon{width:28px;height:25px;display:flex;align-items:center;justify-content:center}
+.professional-nav-icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.profile-nav-icon#profileNavPhoto{
+    width:32px;height:32px;display:grid;place-items:center;border-radius:50%;
+    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);overflow:hidden
 }
-.bottom-nav .profile-nav-icon img,
-.bottom-nav #profileNavPhoto img{
-  width:28px !important;
-  height:28px !important;
-  min-width:28px !important;
-  min-height:28px !important;
-  max-width:28px !important;
-  max-height:28px !important;
-  border-radius:50% !important;
-  object-fit:cover !important;
-  display:block !important;
-  background:transparent !important;
-  border:none !important;
-  box-shadow:none !important;
-}
+.profile-nav-icon#profileNavPhoto img{width:28px;height:28px;border-radius:50%;object-fit:cover}
+
+@keyframes headerIn{from{opacity:0;transform:translateX(-50%) translateY(-18px) scale(.98)}to{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
+@keyframes cardIn{from{opacity:0;transform:translateY(28px) scale(.975)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes textIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes itemIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes navIn{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pop{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes sectionDropdownIn{from{opacity:0;transform:translateY(-4px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes profileIn{from{opacity:0;transform:translateY(-12px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes profileOut{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(-10px) scale(.97)}}
 
 @media(max-width:768px){
-  body{
-    padding-bottom:82px;
-    overflow-x:hidden;
-  }
-
-  .header{
-    padding:9px 10px !important;
-    min-height:66px;
-    gap:8px;
-  }
-  .logo,.caths-logo{
-    width:39px !important;
-    height:39px !important;
-  }
-  .caths-logo{transform:none !important}
-  .header-center h1{
-    font-size:14px !important;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-  }
-  .header-center p{
-    font-size:8px !important;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-  }
-
-  .container{
-    width:100% !important;
-    padding-left:12px !important;
-    padding-right:12px !important;
-    padding-bottom:105px !important;
-  }
-
-  .voice-card{
-    width:100% !important;
-    max-width:none !important;
-    padding:22px 16px !important;
-    border-radius:22px !important;
-  }
-  .voice-card h2{
-    font-size:23px !important;
-    line-height:1.25;
-  }
-  .voice-card p{
-    font-size:12px !important;
-    line-height:1.6 !important;
-  }
-
-  input,select,textarea{
-    font-size:13px !important;
-    padding:13px !important;
-  }
-  textarea{min-height:140px}
-  .checkbox{
-    gap:9px !important;
-    align-items:flex-start !important;
-  }
-  .checkbox label{
-    font-size:11px !important;
-    line-height:1.45 !important;
-  }
-
-  .submit-btn,.view-btn{
-    width:100% !important;
-    min-height:52px !important;
-    height:auto !important;
-    padding:13px 14px !important;
-    font-size:14px !important;
-    border-radius:15px !important;
-  }
-
-  .bottom-nav{
-    height:70px !important;
-    padding:4px 3px !important;
-  }
-  .bottom-nav .nav-item{
-    min-width:52px !important;
-    font-size:8px !important;
-    padding:3px 2px !important;
-  }
-  .bottom-nav .nav-item div{
-    font-size:20px !important;
-    height:24px !important;
-  }
-  .bottom-nav .nav-item.active{
-    transform:translateY(-5px) scale(1.05) !important;
-  }
-  .bottom-nav .nav-item.active div{font-size:23px !important}
-  .bottom-nav .profile-nav-icon,
-  .bottom-nav #profileNavPhoto,
-  .bottom-nav #profileNavPhoto img{
-    width:25px !important;
-    height:25px !important;
-    min-width:25px !important;
-    min-height:25px !important;
-    max-width:25px !important;
-    max-height:25px !important;
-    background:transparent !important;
-    border:none !important;
-    box-shadow:none !important;
-  }
-
-  .popup{padding:12px !important}
-  .popup-content{
-    width:100% !important;
-    max-width:350px !important;
-    padding:24px 18px !important;
-    border-radius:21px !important;
-  }
-  .popup-content h2{font-size:24px !important}
-  .popup-content p{font-size:12px !important;line-height:1.55 !important}
-
-  .modal{padding:12px !important}
-  .modal-content{
-    width:100% !important;
-    max-width:100% !important;
-    max-height:84vh !important;
-    margin:8vh auto 0 !important;
-    padding:18px 14px !important;
-    border-radius:20px !important;
-    overflow-y:auto;
-  }
-
-  #loginModal .popup-content{
-    width:100% !important;
-    max-width:350px !important;
-    padding:26px 18px !important;
-  }
-  #googleLoginBtn{
-    min-height:52px !important;
-    height:auto !important;
-    font-size:14px !important;
-    border-radius:14px !important;
-  }
+    .header{top:5px;width:calc(100% - 14px);height:68px;padding:7px 9px;border-radius:17px}
+    .logo-group{width:90px;min-width:90px;gap:4px}
+    .logo,.caths-logo{width:38px;height:38px}
+    .header-center{max-width:46%}
+    .header-center h1{font-size:14px}
+    .header-center p{font-size:8px;margin-top:2px}
+    .header-right{width:108px;min-width:108px}
+    .login-btn{height:40px;min-width:72px;padding:6px 9px;font-size:10px;gap:4px}
+    .login-btn.logged-profile{min-width:0;max-width:108px}
+    .login-btn img{width:28px;height:28px}
+    .login-btn span{font-size:10px}
+    .container{top:82px;bottom:68px;padding:12px 12px 34px}
+    .voice-card{padding:21px 16px;border-radius:21px}
+    .voice-card h2{font-size:21px}
+    .voice-card>p{font-size:12px}
+    .concern-warning{font-size:11px;padding:11px 12px;gap:8px}
+    input,select,textarea{font-size:13px;padding:13px;border-radius:13px}
+    textarea{min-height:140px}
+    .submit-btn,.view-btn{min-height:52px;padding:13px 14px;font-size:14px;border-radius:15px}
+    .bottom-nav{height:68px;padding:4px 5px;border-radius:16px 16px 0 0}
+    .nav-item{height:56px;padding:4px 3px;border-radius:12px;font-size:8px}
+    .nav-item.active::after{top:2px;width:24px;height:2px}
+    .professional-nav-icon{width:25px;height:23px}
+    .professional-nav-icon svg{width:18px;height:18px}
+    .profile-nav-icon#profileNavPhoto{width:27px;height:27px}
+    .profile-nav-icon#profileNavPhoto img{width:24px;height:24px}
+    .modal-content{width:94%;padding:18px 14px;border-radius:20px}
+    .modal-content h2{font-size:23px}
+    .popup-content{width:92%;max-width:350px;padding:26px 20px}
+    .profile-menu{width:calc(100vw - 20px);max-width:300px;border-radius:18px;padding:14px}
+}
+@media(max-width:420px){
+    .header{width:calc(100% - 10px);padding:7px}
+    .logo-group{width:78px;min-width:78px}
+    .logo,.caths-logo{width:34px;height:34px}
+    .header-right{width:98px;min-width:98px}
+    .header-center{max-width:48%}
+    .header-center h1{font-size:12px}
+    .header-center p{font-size:7px}
+    .nav-item{font-size:7.5px}
 }
 
-@media(max-width:380px){
-  .header{padding:8px 8px !important}
-  .logo,.caths-logo{width:36px !important;height:36px !important}
-  .header-center h1{font-size:11px !important}
-  .header-center p{font-size:7px !important}
-  .voice-card{padding:17px 13px !important}
-  .voice-card h2{font-size:20px !important}
-  .voice-card p{font-size:11px !important}
-  .bottom-nav .nav-item{min-width:44px !important;font-size:7px !important}
-  .bottom-nav .nav-item div{font-size:19px !important}
-  .bottom-nav .nav-item.active div{font-size:22px !important}
+@media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
-
 </style>
 </head>
 
 <body>
 
-<div class="header">
-
+<header class="header">
     <div class="logo-group">
-        <img src="sslg-logo.png" class="logo">
-        <img src="caths-logo.png" class="caths-logo">
+        <img src="sslg-logo.png" class="logo" alt="SSLG Logo">
+        <img src="caths-logo.png" class="caths-logo" alt="CATHS Logo">
     </div>
 
     <div class="header-center">
@@ -2001,2267 +323,647 @@ CELLPHONE DITO BE AHHAHAAHHAA
     </div>
 
     <div class="header-right">
-
-        <button
-            id="headerLoginBtn"
-            class="login-btn"
-            onclick="openLogin(false)">
-            👤 <span>Login</span>
+        <button id="headerLoginBtn" class="login-btn" onclick="openLogin(false)">
+            <svg class="professional-ui-icon" viewBox="0 0 24 24"><path d="M15 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M17 8h4m-2-2 2 2-2 2"/></svg>
+            <span>Login</span>
         </button>
 
         <div id="logoutMenu" class="profile-menu">
-
             <div class="profile-info">
-
-                <img
-                    id="profilePhoto"
-                    src=""
-                    alt="Profile Photo">
-
+                <img id="profilePhoto" src="" alt="Profile Photo">
                 <div class="profile-details">
                     <strong id="profileName">User</strong>
                     <small id="profileEmail"></small>
                 </div>
-
             </div>
 
             <div class="profile-divider"></div>
 
             <div class="profile-nav">
-
                 <a href="profile.html" class="profile-nav-item">
-                    <span class="profile-nav-icon">👤</span>
+                    <span class="profile-nav-icon"><svg class="professional-ui-icon" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/></svg></span>
                     <span>Profile</span>
                 </a>
-
                 <a href="friends.html" class="profile-nav-item">
-                    <span class="profile-nav-icon">👥</span>
+                    <span class="profile-nav-icon"><svg class="professional-ui-icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M17 11a3.5 3.5 0 0 1 0 7M17 5.5a3.5 3.5 0 0 1 0 6.5"/></svg></span>
                     <span>Add Friends</span>
                 </a>
-
                 <a href="voice.html" class="profile-nav-item">
-                    <span class="profile-nav-icon">🗣️</span>
+                    <span class="profile-nav-icon"><svg class="professional-ui-icon" viewBox="0 0 24 24"><path d="M5 5h14v10H9l-4 4V5zM8 9h8M8 12h5"/></svg></span>
                     <span>Your Concern</span>
                 </a>
-
             </div>
 
             <div class="profile-divider"></div>
 
-            <button
-                type="button"
-                class="logout-button"
-                onclick="logoutUser()">
-                🚪 Log Out
+            <button type="button" class="logout-button" onclick="logoutUser()">
+                <svg class="professional-ui-icon" viewBox="0 0 24 24"><path d="M10 4H5v16h5M15 8l4 4-4 4M10 12h9"/></svg>
+                Log Out
             </button>
+        </div>
+    </div>
+</header>
 
+<main class="container">
+    <section class="voice-card">
+        <!-- BIG MESSAGE ICON REMOVED -->
+        <h2>Submit a Concern or Suggestion</h2>
+
+        <p>Your voice matters. Share your concerns, ideas, or suggestions to help improve our school community.</p>
+
+        <div class="concern-warning">
+            <span class="concern-warning-icon">
+                <svg class="professional-ui-icon" viewBox="0 0 24 24"><path d="M12 3 2.8 20h18.4L12 3Z"/><path d="M12 9v5M12 17.3h.01"/></svg>
+            </span>
+            <span><strong>Privacy Notice:</strong> Only SSLG Admin will see your concern and the information you provide.</span>
         </div>
 
-    </div>
-
-</div>
-
-<div class="container">
-
-<div class="voice-card">
-
-<h2>🗣️ Submit a Concern or Suggestion</h2>
-
-<p>
-Your voice matters. Share your concerns, ideas,
-or suggestions to help improve our school community.
-</p>
-
-<div class="concern-warning">
-    <span class="concern-warning-icon">⚠️</span>
-    <span><strong>Privacy Notice:</strong> Only SSLG Admin will see your concern and the information you provide.</span>
-</div>
-
-<form id="voiceForm">
-
-<label>Full Name</label>
-<input type="text" id="name" placeholder="Enter your name">
-
-<div class="section-search-wrapper">
-
-    <label for="sectionSearch">Section</label>
-
-   <input
-    type="text"
-    id="sectionSearch"
-    placeholder="🔍 Search and select your section..."
-    autocomplete="off"
->
-
-<div id="sectionSuggestions" class="section-suggestions"></div>
-
-<input type="hidden" id="section">
-
-</div>
-
-<!-- SECTION VERIFICATION -->
-<div id="sectionVerification" style="display:none; margin-top:10px;">
-
-    <label for="verificationCode">
-        🔐 Section Verification Code
-    </label>
-
-    <input
-        type="password"
-        id="verificationCode"
-        placeholder="Enter your section code"
-        autocomplete="off"
-    >
-
-    <button
-        type="button"
-        id="verifySectionBtn"
-        class="submit-btn"
-        style="
-            height:58px;
-            margin:0 0 10px 0;
-            font-size:15px;
-        "
-        onclick="verifySectionCode()"
-    >
-        🔐 Verify Section
-    </button>
-
-    <div
-        id="verificationMessage"
-        style="
-            display:none;
-            padding:12px;
-            border-radius:12px;
-            text-align:center;
-            font-weight:600;
-            margin-bottom:15px;
-        "
-    ></div>
-
-</div>
-
-<select id="category" required>
-    <option value="">Select Category</option>
-    <option>Facilities</option>
-    <option>Academics</option>
-    <option>Bullying</option>
-    <option>Guidance Concern</option>
-    <option>School Event</option>
-    <option>SSLG Suggestion</option>
-    <option>Others</option>
-</select>
-
-<textarea
-id="concern"
-placeholder="Type your concern or suggestion here..."
-required></textarea>
-<button type="submit" class="submit-btn">
-    Submit Concern
-</button>
-<button
-    type="button"
-    onclick="openMyConcerns()"
-    class="view-btn">
-    📄 See Your Concerns
-</button>
-
-<button
-    type="button"
-    id="seeAllConcernsBtn"
-    onclick="openAllConcerns()"
-    class="view-btn admin-only-btn"
-    style="display:none;">
-    🛡️ See All Concerns
-</button>
-
-</form>
-
-</div>
-</div>
-
-<div class="bottom-nav">
-
-<a href="index.html" class="nav-item">
-<div>🏠</div>
-<span>Home</span>
-</a>
-
-<a href="news-feed.html" class="nav-item">
-<div>📰</div>
-<span>News Feed</span>
-</a>
-
-<a href="voice.html" class="nav-item active">
-<div>🗣️</div>
-<span>Student Voice</span>
-</a>
-
-<a href="friends.html" class="nav-item">
-<div>👥</div>
-<span>Add Friends</span>
-</a>
-
-<a href="profile.html" class="nav-item">
-<div class="profile-nav-icon" id="profileNavPhoto">👤</div>
-<span id="profileNavText">Profile</span>
-</a>
-
-</div>
-
-
-<script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec";
-
-let firebaseUser = null;
-const nameInput = document.getElementById("name");
-
-let sectionVerified = false;
-let verifiedSection = "";
-
-
-window.verifySectionCode = function(){
-
-    const section =
-        document.getElementById("section").value.trim();
-
-    const code =
-        document.getElementById("verificationCode").value.trim();
-
-    const message =
-        document.getElementById("verificationMessage");
-
-    const button =
-        document.getElementById("verifySectionBtn");
-
-
-    /* NO SECTION */
-
-   if(!section){
-
-    openSectionRequiredPopup();
-
-    return;
-}
-
-
-    /* NO CODE */
-
-    if(!code){
-
-        message.style.display = "block";
-        message.style.background = "#fff3cd";
-        message.style.color = "#856404";
-
-        message.textContent =
-            "🔐 Please enter your section verification code.";
-
-        return;
-    }
-
-
-    /* GET CORRECT CODE */
-
-    const correctCode = SECTION_CODES[section];
-
-
-    /* SECTION DOES NOT EXIST */
-
-    if(!correctCode){
-
-        sectionVerified = false;
-        verifiedSection = "";
-
-        message.style.display = "block";
-        message.style.background = "#ffe5e5";
-        message.style.color = "#b00020";
-
-        message.textContent =
-            "❌ Section code is not configured.";
-
-        return;
-    }
-
-
-    /* CHECK CODE */
-
-    if(code === correctCode){
-
-        sectionVerified = true;
-        verifiedSection = section;
-
-
-        message.style.display = "block";
-        message.style.background = "#d4edda";
-        message.style.color = "#155724";
-
-        message.textContent =
-            "✅ Section verified successfully!";
-
-
-        button.textContent =
-            "✅ Section Verified";
-
-        button.style.background =
-            "#28a745";
-
-        button.style.color =
-            "white";
-
-        button.disabled = true;
-
-
-        document.getElementById(
-            "verificationCode"
-        ).readOnly = true;
-
-
-        return;
-
-    }
-
-
-    /* WRONG CODE */
-
-    sectionVerified = false;
-    verifiedSection = "";
-
-
-    message.style.display = "block";
-    message.style.background = "#ffe5e5";
-    message.style.color = "#b00020";
-
-    message.textContent =
-        "❌ Incorrect section verification code.";
-
-
-    button.disabled = false;
-
-    button.textContent =
-        "🔐 Verify Section";
-
-};
-
-
-/* =========================================
-   SUBMIT CONCERN
-========================================= */
-
-document
-.getElementById("voiceForm")
-.addEventListener(
-    "submit",
-    async function(e){
-
-        e.preventDefault();
-
-
-        /* =====================================
-           REQUIRE LOGIN
-        ===================================== */
-
-        if(!firebaseUser){
-
-            openLogin();
-
-            return;
-
-        }
-
-
-        const section =
-            document
-            .getElementById("section")
-            .value
-            .trim();
-
-
-        const sectionSearch =
-            document
-            .getElementById("sectionSearch")
-            .value
-            .trim();
-
-
-        const verificationCode =
-            document
-            .getElementById("verificationCode")
-            .value
-            .trim();
-
-
-        const concern =
-            document
-            .getElementById("concern")
-            .value
-            .trim();
-
-
-        const category =
-            document
-            .getElementById("category")
-            .value;
-
-
-        /* =====================================
-           CHECK SECTION
-        ===================================== */
-
-       if(!section){
-
-    openSectionRequiredPopup();
-
-    return;
-
-}
-
-
-if(
-    !sectionVerified ||
-    verifiedSection !== section
-){
-
-    openSectionVerificationPopup();
-
-    return;
-
-}
-
-
-        /* =====================================
-           CHECK CODE
-        ===================================== */
-
-        if(!verificationCode){
-
-            alert(
-                "Please enter your section verification code."
-            );
-
-            return;
-
-        }
-
-
-        /* =====================================
-           CHECK FORM
-        ===================================== */
-
-        if(
-            !concern ||
-            !category
-        ){
-
-            alert(
-                "Please complete all fields."
-            );
-
-            return;
-
-        }
-
-
-let name = "";
-let email = "";
-
-
-/* =========================================
-   GET EMAIL DIRECTLY FROM FIREBASE USER
-========================================= */
-
-if(!firebaseUser){
-
-    alert("Your Google account session was not detected.");
-
-    return;
-
-}
-
-email =
-    String(firebaseUser.email || "")
-        .trim()
-        .toLowerCase();
-
-
-/* =========================================
-   MAKE SURE EMAIL EXISTS
-========================================= */
-
-if(!email){
-
-    alert(
-        "Your Google account email could not be detected."
-    );
-
-    console.error(
-        "Firebase user:",
-        firebaseUser
-    );
-
-    return;
-
-}
-
-
-/* =========================================
-   NAME
-========================================= */
-
-name = nameInput.value.trim();
-
-if(!name){
-    alert(
-        "Please enter your name."
-    );
-    return;
-}
-
-
-        /* =====================================
-           DATA
-        ===================================== */
-const data = {
-
-    action: "submitConcern",
-
-    name: name,
-
-    email: String(firebaseUser.email || "")
-        .trim()
-        .toLowerCase(),
-
-    section: section,
-
-    verificationCode: verificationCode,
-
-    concern:
-        "[" +
-        category +
-        "] " +
-        concern
-};
-
-console.log("=== SUBMIT DEBUG ===");
-console.log("Firebase user:", firebaseUser);
-console.log("Firebase email:", firebaseUser.email);
-console.log("Data being sent:", data);
-
-
-/* TEST */
-
-console.log(
-    "Submitting concern with email:",
-    data.email
-);
-
-        /* =====================================
-           SUBMIT
-        ===================================== */
-
-        try{
-
-            document
-            .getElementById(
-                "submittingPopup"
-            )
-            .style.display = "flex";
-
-
-          const response =
-    await fetch(
-        SCRIPT_URL,
-        {
-            method: "POST",
-
-            body: JSON.stringify(data)
-        }
-    );
-
-const result =
-    await response.json();
-
-console.log("=== SERVER RESPONSE ===");
-console.log(result);
-
-            /* =================================
-               SERVER REJECTED
-            ================================= */
-
-            if(!result.success){
-
-                document
-                .getElementById(
-                    "submittingPopup"
-                )
-                .style.display = "none";
-
-
-                alert(
-                    result.message ||
-                    "Failed to submit concern."
-                );
-
-                return;
-
-            }
-
-
-            /* =================================
-               SUCCESS
-            ================================= */
-
-            document
-            .getElementById(
-                "submittingPopup"
-            )
-            .style.display = "none";
-
-
-            document
-            .getElementById(
-                "successPopup"
-            )
-            .style.display = "flex";
-
-
-            const sound =
-                document.getElementById(
-                    "successSound"
-                );
-
-
-            if(sound){
-
-                sound
-                .play()
-                .catch(() => {});
-
-            }
-
-
-            /* RESET FORM */
-
-            document
-            .getElementById(
-                "voiceForm"
-            )
-            .reset();
-
-
-            /* RESET SECTION */
-
-            document
-            .getElementById(
-                "section"
-            )
-            .value = "";
-
-
-            document
-            .getElementById(
-                "sectionSearch"
-            )
-            .value = "";
-
-
-            document
-            .getElementById(
-                "verificationCode"
-            )
-            .value = "";
-
-
-            document
-            .getElementById(
-                "sectionVerification"
-            )
-            .style.display = "none";
-
-
-            document
-            .getElementById(
-                "verificationMessage"
-            )
-            .style.display = "none";
-
-
-            /* RESET VERIFICATION */
-
-            sectionVerified = false;
-
-            verifiedSection = "";
-
-
-            const verifyButton =
-                document.getElementById(
-                    "verifySectionBtn"
-                );
-
-
-            verifyButton.disabled = false;
-
-            verifyButton.textContent =
-                "🔐 Verify Section";
-
-            verifyButton.style.background =
-                "#FFD93D";
-
-            verifyButton.style.color =
-                "#0d2c7a";
-
-
-            document
-            .getElementById(
-                "verificationCode"
-            )
-            .readOnly = false;
-
-
-            /* RESTORE USER NAME */
-
-            if(firebaseUser){
-
-                nameInput.value =
-                    firebaseUser.displayName || "";
-
-                nameInput.readOnly = true;
-
-            }
-
-
-        }catch(error){
-
-            document
-            .getElementById(
-                "submittingPopup"
-            )
-            .style.display = "none";
-
-
-            console.error(error);
-
-
-            alert(
-                "Failed to submit concern."
-            );
-
-        }
-
-    }
-);
-
-function closePopup() {
-    document.getElementById("successPopup").style.display = "none";
-}
-</script>
-
-<audio id="successSound">
-    <source src="success.mp3" type="audio/mpeg">
-</audio>
-
-    <div id="submittingPopup" class="popup">
+        <form id="voiceForm">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" placeholder="Enter your name">
+
+            <div class="section-search-wrapper">
+                <label for="sectionSearch">Section</label>
+                <input type="text" id="sectionSearch" placeholder="Search and select your section..." autocomplete="off">
+                <div id="sectionSuggestions" class="section-suggestions"></div>
+                <input type="hidden" id="section">
+            </div>
+
+            <div id="sectionVerification" style="display:none;margin-top:10px">
+                <label for="verificationCode">
+                    <svg class="professional-ui-icon" viewBox="0 0 24 24"><path d="M7 10V8a5 5 0 0 1 10 0v2M6 10h12v10H6z"/></svg>
+                    Section Verification Code
+                </label>
+
+                <input type="password" id="verificationCode" placeholder="Enter your section code" autocomplete="off">
+
+                <button type="button" id="verifySectionBtn" class="submit-btn" style="margin:0 0 10px" onclick="verifySectionCode()">
+                    <svg class="professional-ui-icon" viewBox="0 0 24 24"><path d="M7 10V8a5 5 0 0 1 10 0v2M6 10h12v10H6z"/></svg>
+                    Verify Section
+                </button>
+
+                <div id="verificationMessage" style="display:none;padding:12px;border-radius:12px;text-align:center;font-weight:600;margin-bottom:15px"></div>
+            </div>
+
+            <label for="category">Category</label>
+            <select id="category" required>
+                <option value="">Select Category</option>
+                <option>Facilities</option>
+                <option>Academics</option>
+                <option>Bullying</option>
+                <option>Guidance Concern</option>
+                <option>School Event</option>
+                <option>SSLG Suggestion</option>
+                <option>Others</option>
+            </select>
+
+            <label for="concern">Concern or Suggestion</label>
+            <textarea id="concern" placeholder="Type your concern or suggestion here..." required></textarea>
+
+            <button type="submit" class="submit-btn">Submit Concern</button>
+
+            <button type="button" onclick="openMyConcerns()" class="view-btn">
+                <svg class="professional-ui-icon" viewBox="0 0 24 24"><path d="M6 3h12v18H6zM9 7h6M9 11h6M9 15h4"/></svg>
+                See Your Concerns
+            </button>
+
+            <button type="button" id="seeAllConcernsBtn" onclick="openAllConcerns()" class="view-btn" style="display:none">
+                <svg class="professional-ui-icon" viewBox="0 0 24 24"><path d="M12 3 20 6v5c0 5-3.2 8.6-8 10-4.8-1.4-8-5-8-10V6l8-3Z"/><path d="m9 12 2 2 4-4"/></svg>
+                See All Concerns
+            </button>
+        </form>
+    </section>
+</main>
+
+<nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+        <div class="professional-nav-icon"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5M5.5 9.8V21h13V9.8M9.5 21v-6h5v6"/></svg></div>
+        <span>Home</span>
+    </a>
+
+    <a href="news-feed.html" class="nav-item">
+        <div class="professional-nav-icon"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="16" rx="1.5"/><path d="M9 4v16M12 8h4M12 12h4M12 16h3"/></svg></div>
+        <span>News Feed</span>
+    </a>
+
+    <a href="voice.html" class="nav-item active">
+        <div class="professional-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 5h14v10H9l-4 4V5zM8 9h8M8 12h5"/></svg></div>
+        <span>Student Voice</span>
+    </a>
+
+    <a href="friends.html" class="nav-item">
+        <div class="professional-nav-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M17 11a3.5 3.5 0 0 0 0 7M17 5.5a3.5 3.5 0 0 1 0 6.5"/></svg></div>
+        <span>Add Friends</span>
+    </a>
+
+    <a href="profile.html" class="nav-item">
+        <div class="profile-nav-icon" id="profileNavPhoto">
+            <svg class="professional-ui-icon" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/></svg>
+        </div>
+        <span id="profileNavText">Profile</span>
+    </a>
+</nav>
+
+<audio id="successSound"><source src="success.mp3" type="audio/mpeg"></audio>
+
+<div id="submittingPopup" class="popup">
     <div class="popup-content">
-        <div class="checkmark">⏳</div>
+        <div class="checkmark loading-mark" aria-label="Loading"></div>
         <h2>Submitting...</h2>
-        <p style="color:white;">
-            Please wait while we submit your concern.
-        </p>
+        <p>Please wait while we submit your concern.</p>
     </div>
 </div>
 
 <div id="successPopup" class="popup">
     <div class="popup-content">
-        <div class="checkmark">✅</div>
+        <div class="checkmark success-mark" aria-label="Success"></div>
         <h2>Thank You!</h2>
-       <p style="color:white;">
-    Your concern has been submitted successfully.
-</p>
-        <button onclick="closePopup()">OK</button>
+        <p>Your concern has been submitted successfully.</p>
+        <button onclick="closePopup()" class="submit-btn">OK</button>
     </div>
 </div>
 
 <div id="concernsModal" class="modal">
-
     <div class="modal-content">
-
-        <button
-            class="close-btn"
-            onclick="closeConcerns()">
-            ✕
-        </button>
-
-        <h2 id="concernsModalTitle">
-            📥 Student Concerns
-        </h2>
-
+        <button class="close-btn" onclick="closeConcerns()" aria-label="Close"></button>
+        <h2 id="concernsModalTitle">Student Concerns</h2>
         <div id="concernsList"></div>
-
     </div>
-
 </div>
-
-
-<script>
-
-function closeConcerns(){
-
-    document.getElementById(
-        "concernsModal"
-    ).style.display = "none";
-
-}
-
-
-async function openMyConcerns(){
-
-    if(!firebaseUser){
-
-        openLogin();
-        return;
-
-    }
-
-
-    const modal =
-        document.getElementById(
-            "concernsModal"
-        );
-
-    const list =
-        document.getElementById(
-            "concernsList"
-        );
-
-    const title =
-        document.getElementById(
-            "concernsModalTitle"
-        );
-
-
-    modal.style.display = "flex";
-
-    title.textContent =
-        "📄 Your Concerns";
-
-
-    list.innerHTML = `
-        <div class="loading-dots">
-            <span>.</span>
-            <span>.</span>
-            <span>.</span>
-            <span>.</span>
-        </div>
-    `;
-
-
-    try{
-
-      console.log(
-    "Logged-in user:",
-    firebaseUser.email
-);
-
-const response =
-    await fetch(
-        SCRIPT_URL +
-        "?action=getMyConcerns&email=" +
-        encodeURIComponent(
-            firebaseUser.email
-        )
-    );
-
-
-        const data =
-            await response.json();
-
-
-        if(
-            data &&
-            data.success === false
-        ){
-
-            list.innerHTML = `
-                <p style="
-                    text-align:center;
-                    color:#666;
-                    padding:20px;
-                ">
-                    ${data.message || "Unable to load concerns."}
-                </p>
-            `;
-
-            return;
-
-        }
-
-
-        renderConcerns(data);
-
-
-    }catch(error){
-
-        console.error(error);
-
-        list.innerHTML = `
-            <p style="
-                text-align:center;
-                color:#666;
-                padding:20px;
-            ">
-                Failed to load your concerns.
-            </p>
-        `;
-
-    }
-
-}
-
-
-async function openAllConcerns(){
-
-    if(!firebaseUser){
-
-        openLogin();
-
-        return;
-
-    }
-
-
-  if(!window.isAdminUser()){
-
-    alert(
-        "🛡️ Admin access only."
-    );
-
-    return;
-
-}
-
-
-    const modal =
-        document.getElementById(
-            "concernsModal"
-        );
-
-    const list =
-        document.getElementById(
-            "concernsList"
-        );
-
-    const title =
-        document.getElementById(
-            "concernsModalTitle"
-        );
-
-
-    modal.style.display = "flex";
-
-    title.textContent =
-        "🛡️ All Student Concerns";
-
-
-    list.innerHTML = `
-        <div class="loading-dots">
-            <span>.</span>
-            <span>.</span>
-            <span>.</span>
-            <span>.</span>
-        </div>
-    `;
-
-
-    try{
-
-        const response =
-            await fetch(
-                SCRIPT_URL +
-                "?action=getAllConcerns&email=" +
-                encodeURIComponent(
-                    firebaseUser.email
-                )
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if(
-            data &&
-            data.success === false
-        ){
-
-            list.innerHTML = `
-                <p style="
-                    text-align:center;
-                    color:#666;
-                    padding:20px;
-                ">
-                    ${data.message ||
-                    "Admin access denied."}
-                </p>
-            `;
-
-            return;
-
-        }
-
-
-        renderConcerns(data);
-
-
-    }catch(error){
-
-        console.error(error);
-
-        list.innerHTML = `
-            <p style="
-                text-align:center;
-                color:#666;
-                padding:20px;
-            ">
-                Failed to load all concerns.
-            </p>
-        `;
-
-    }
-
-}
-
-
-function renderConcerns(data){
-
-    const list =
-        document.getElementById(
-            "concernsList"
-        );
-
-
-    if(
-        !Array.isArray(data) ||
-        data.length === 0
-    ){
-
-        list.innerHTML = `
-            <div style="
-                text-align:center;
-                padding:35px 20px;
-                color:#777;
-            ">
-                <div style="font-size:45px;">
-                    📭
-                </div>
-
-                <p style="margin-top:10px;">
-                    No concerns found.
-                </p>
-            </div>
-        `;
-
-        return;
-
-    }
-
-
-    let html = "";
-
-
-    [...data]
-    .reverse()
-    .forEach(item => {
-
-        html += `
-
-        <div class="concern-card">
-
-            <h3>
-                👤 ${item.name || "No Name"}
-            </h3>
-
-            <p>
-                <strong>Section:</strong>
-                ${item.section || "N/A"}
-            </p>
-
-            <p>
-                <strong>Concern:</strong>
-                ${item.concern || ""}
-            </p>
-
-            <small>
-                📌 Status:
-                ${item.status || "Pending"}
-            </small>
-
-        </div>
-
-        `;
-
-    });
-
-
-    list.innerHTML = html;
-
-}
-
-</script>
 
 <div id="loginModal" class="modal">
-
     <div class="popup-content">
-
-        <button
-            class="close-btn"
-            onclick="closeLogin()">
-            ✕
-        </button>
-
-        <h2 style="
-            font-size:42px;
-            font-weight:700;
-            margin-bottom:8px;
-            color:white;
-        ">
-            Welcome Back
-        </h2>
-
-        <p style="
-            color:rgba(255,255,255,.85);
-            font-size:17px;
-            margin-bottom:22px;
-        ">
-            Sign in to continue
-        </p>
-
-        <button
-            id="googleLoginBtn"
-            class="submit-btn"
-            onclick="googleLogin()">
-            Continue with Google
-        </button>
-
+        <button class="close-btn" onclick="closeLogin()" aria-label="Close"></button>
+        <h2 style="font-size:34px">Welcome Back</h2>
+        <p style="margin-bottom:22px">Sign in to continue</p>
+        <button id="googleLoginBtn" class="submit-btn" onclick="googleLogin()">Continue with Google</button>
     </div>
-
 </div>
 
-    <script>
-function openLogin(fromStudentVoice = false){
+<div id="sectionRequiredPopup" class="popup">
+    <div class="popup-content section-error-popup">
+        <div class="section-error-icon"><span class="error-mark">!</span></div>
+        <h2>Section Required</h2>
+        <p style="margin-bottom:24px">Please select your section from the list.</p>
+        <button type="button" class="try-again-btn" onclick="closeSectionRequiredPopup()">Try Again</button>
+    </div>
+</div>
 
+<div id="sectionVerificationPopup" class="popup">
+    <div class="popup-content section-error-popup">
+        <div class="section-error-icon"><span class="error-mark">!</span></div>
+        <h2>Verification Required</h2>
+        <p style="margin-bottom:24px">Please verify your section first.</p>
+        <button type="button" class="try-again-btn" onclick="closeSectionVerificationPopup()">Try Again</button>
+    </div>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz0BU6Qgp3nUL7zRlRjuzVoJoWbzxYIiG3vL0AvKuwWN2F3srViP3AImFcvUytjhCQQ/exec";
+let firebaseUser = null;
+let sectionVerified = false;
+let verifiedSection = "";
+const nameInput = document.getElementById("name");
+
+const SECTION_CODES = {
+  "7-Agoncillo":"483721#","7-Constantino":"C615904","7-Delos Santos":"827316D","7-Guillermo":"274856S",
+  "7-Nacpil":"N731492","7-Ocampo":"958214O","7-Tolentino":"T346781","7-Zaide":"Z820563E",
+  "8-Archimedes":"514827S","8-Bernoulli":"693152I","8-Pythagoras":"PY428715","8-Hypatia":"761304IA",
+  "8-Pascal":"235896","8-Euler":"E847231R","8-Euclid":"391625D","8-Ptolemy":"672418MY","8-Descartes":"CART159734",
+  "9-Aristotle":"RIS583216","9-Galilei":"724951LEI","9-Copernicus":"COP316847","9-Pasteur":"865203TEUR",
+  "9-Mendel":"ME492731L","9-Faraday":"137568DAY","9-Newton":"651824TON","9-Edison":"308475SON","9-Einstein":"976312TEIN",
+  "10-Aquino":"AQ428163","10-Bonifacio":"715294CIO","10-Del Pilar":"PILAR863517","10-Jacinto":"TO249681",
+  "10-Luna":"LUNA531728","10-Quezon":"QUE694315","10-Rizal":"182957AL",
+  "11-Twain":"736481IN","11-Farmer":"FARM295714","11-Lovelace":"814326LOVE","11-Guerrero":"GUER463859",
+  "11-Morgan":"927145MOR","11-Silverton":"TON351682","11-Westinghouse":"67823HOUSE4",
+  "12-Ansel":"542813SEL","12-Babbage":"BAB819365","12-Javier":"JAV274631","12-Pacioli":"635927CIOLI",
+  "12-Shakespeare":"391847PEARE","12-Mendeleev":"758216LEEV"
+};
+
+const sections = Object.keys(SECTION_CODES);
+
+function openLogin(fromStudentVoice=false){
     window.loginForStudentVoice = fromStudentVoice;
-
-    document.getElementById("loginModal").style.display = "flex";
+    document.getElementById("loginModal").style.display="flex";
 }
+function closeLogin(){document.getElementById("loginModal").style.display="none"}
+function closePopup(){document.getElementById("successPopup").style.display="none"}
+function closeConcerns(){document.getElementById("concernsModal").style.display="none"}
 
-function closeLogin(){
-
-    document.getElementById("loginModal").style.display = "none";
+function openSectionRequiredPopup(){document.getElementById("sectionRequiredPopup").style.display="flex"}
+function closeSectionRequiredPopup(){
+    document.getElementById("sectionRequiredPopup").style.display="none";
+    document.getElementById("sectionSearch").focus();
+    showSectionSuggestions(document.getElementById("sectionSearch").value);
 }
-
-window.onclick = function(e){
-
-    const modal = document.getElementById("loginModal");
-
-    if(e.target === modal){
-        modal.style.display = "none";
-    }
-
-};
-</script>
-    
-   <script type="module">
-
-import {
-    initializeApp
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
-import {
-    getAuth,
-    GoogleAuthProvider,
-    signInWithPopup,
-    signOut,
-    onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
-
-const firebaseConfig = {
-
-    apiKey:
-        "AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",
-
-    authDomain:
-        "caths-page.firebaseapp.com",
-
-    projectId:
-        "caths-page",
-
-    storageBucket:
-        "caths-page.firebasestorage.app",
-
-    messagingSenderId:
-        "945498022620",
-
-    appId:
-        "1:945498022620:web:71aeb4cd2472e061aeca19",
-
-    measurementId:
-        "G-CBG1YSK13G"
-};
-
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-const googleProvider = new GoogleAuthProvider();
-
-     const ADMIN_EMAILS = [
-    "reyvengarcia15@gmail.com",
-    "reyvenbermudo091@gmail.com",
-    "reyvengarcia05@gmail.com",
-    "chezcadc14@gmail.com",
-    "nathanielgarc679@gmail.com",
-    "marteena.133@gmail.com",
-    "Gabbicastillo0126@gmail.com",
-    "leddadanielle91@gmail.com",
-    "jennapastor062@gmail.com",
-    "dhenmark1313@gmail.com",
-    "christianangelointes0@gmail.com",
-    "alexaislacruz@gmail.com",
-    "galangjullianne016@gmail.com",
-    "vanessajotic2403@gmail.com",
-    "aquinobernardjr0@gmail.com",
-    "angellyar0909@gmail.com",
-    "vhergelnarciso@gmail.com",
-    "sicatmadisson487@gmail.com",
-    "chezcadc14@gmail.com",
-         
-];
+function openSectionVerificationPopup(){document.getElementById("sectionVerificationPopup").style.display="flex"}
+function closeSectionVerificationPopup(){
+    document.getElementById("sectionVerificationPopup").style.display="none";
+    document.getElementById("verificationCode").focus();
+}
 
 window.isAdminUser = function(){
-
-    if(!firebaseUser || !firebaseUser.email){
-
-        return false;
-
-    }
-
-    const userEmail =
-        String(firebaseUser.email)
-            .trim()
-            .toLowerCase();
-
-    return ADMIN_EMAILS
-        .map(email =>
-            String(email)
-                .trim()
-                .toLowerCase()
-        )
-        .includes(userEmail);
-
+    if(!firebaseUser?.email) return false;
+    const ADMIN_EMAILS = [
+        "reyvengarcia15@gmail.com","reyvenbermudo091@gmail.com","reyvengarcia05@gmail.com","chezcadc14@gmail.com",
+        "nathanielgarc679@gmail.com","marteena.133@gmail.com","Gabbicastillo0126@gmail.com","leddadanielle91@gmail.com",
+        "jennapastor062@gmail.com","dhenmark1313@gmail.com","christianangelointes0@gmail.com","alexaislacruz@gmail.com",
+        "galangjullianne016@gmail.com","vanessajotic2403@gmail.com","aquinobernardjr0@gmail.com","angellyar0909@gmail.com",
+        "vhergelnarciso@gmail.com","sicatmadisson487@gmail.com","chezcadc14@gmail.com"
+    ];
+    return ADMIN_EMAILS.map(x=>x.toLowerCase()).includes(firebaseUser.email.trim().toLowerCase());
 };
-       
+
 window.toggleProfileMenu = function(){
-
-    if (!firebaseUser) {
-        openLogin(false);
-        return;
+    if(!firebaseUser){openLogin(false);return}
+    const menu=document.getElementById("logoutMenu");
+    if(menu.classList.contains("open")){
+        menu.classList.remove("open");menu.classList.add("closing");
+        setTimeout(()=>{menu.style.display="none";menu.classList.remove("closing")},250);
+    }else{
+        menu.style.display="block";menu.classList.add("open");
     }
-
-    const menu = document.getElementById("logoutMenu");
-
-    if (!menu) return;
-
-    /* CLOSE */
-    if (menu.classList.contains("open")) {
-
-        menu.classList.remove("open");
-        menu.classList.add("closing");
-
-        menu.addEventListener("animationend", function handleClose(e){
-
-            if (e.animationName !== "profileMenuOut") return;
-
-            menu.style.display = "none";
-            menu.style.visibility = "hidden";
-            menu.classList.remove("closing");
-
-        }, { once:true });
-
-        return;
-    }
-
-    /* OPEN */
-    menu.classList.remove("closing");
-    menu.style.display = "block";
-    menu.style.visibility = "visible";
-
-    requestAnimationFrame(() => {
-        menu.classList.add("open");
-    });
-
 };
 
+function resetVerificationUI(){
+    sectionVerified=false;verifiedSection="";
+    document.getElementById("sectionVerification").style.display="none";
+    document.getElementById("verificationCode").value="";
+    document.getElementById("verificationCode").readOnly=false;
+    document.getElementById("verificationMessage").style.display="none";
+    const b=document.getElementById("verifySectionBtn");
+    b.disabled=false;b.textContent="Verify Section";
+}
 
-/* =========================================
-   GOOGLE LOGIN
-========================================= */
+window.verifySectionCode=function(){
+    const section=document.getElementById("section").value.trim();
+    const code=document.getElementById("verificationCode").value.trim();
+    const msg=document.getElementById("verificationMessage");
+    const btn=document.getElementById("verifySectionBtn");
+    if(!section){openSectionRequiredPopup();return}
+    if(!code){
+        msg.style.display="block";msg.style.background="#fff3cd";msg.style.color="#856404";
+        msg.textContent="Please enter your section verification code.";return;
+    }
+    const correctCode=SECTION_CODES[section];
+    if(!correctCode){
+        sectionVerified=false;verifiedSection="";
+        msg.style.display="block";msg.style.background="#ffe5e5";msg.style.color="#b00020";
+        msg.textContent="Section code is not configured.";return;
+    }
+    if(code===correctCode){
+        sectionVerified=true;verifiedSection=section;
+        msg.style.display="block";msg.style.background="#d4edda";msg.style.color="#155724";
+        msg.textContent="Section verified successfully!";
+        btn.textContent="Section Verified";btn.style.background="#28a745";btn.disabled=true;
+        document.getElementById("verificationCode").readOnly=true;
+    }else{
+        sectionVerified=false;verifiedSection="";
+        msg.style.display="block";msg.style.background="#ffe5e5";msg.style.color="#b00020";
+        msg.textContent="Incorrect section verification code.";
+        btn.disabled=false;btn.textContent="🔒 Verify Section";
+    }
+};
 
-window.googleLogin = async function(){
+function hideSectionSuggestions(){
+    const box=document.getElementById("sectionSuggestions");
+    if(!box) return;
+    box.classList.remove("show");
+    box.style.display="none";
+}
+
+function positionSectionSuggestions(){
+    const input=document.getElementById("sectionSearch");
+    const box=document.getElementById("sectionSuggestions");
+    if(!input || !box || !box.classList.contains("show")) return;
+
+    const rect=input.getBoundingClientRect();
+    const viewportPadding=8;
+    const gap=6;
+    const desiredWidth=Math.max(180,Math.min(rect.width,window.innerWidth-(viewportPadding*2)));
+
+    let left=rect.left;
+    if(left+desiredWidth>window.innerWidth-viewportPadding){
+        left=window.innerWidth-desiredWidth-viewportPadding;
+    }
+    left=Math.max(viewportPadding,left);
+
+    box.style.left=left+"px";
+    box.style.width=desiredWidth+"px";
+
+    const spaceBelow=Math.max(0,window.innerHeight-rect.bottom-viewportPadding-gap);
+    const spaceAbove=Math.max(0,rect.top-viewportPadding-gap);
+    const naturalHeight=Math.min(230,Math.max(0,box.scrollHeight));
+
+    if(spaceBelow<Math.min(170,naturalHeight)&&spaceAbove>spaceBelow){
+        const height=Math.min(230,Math.max(110,spaceAbove));
+        box.style.maxHeight=height+"px";
+        box.style.top=Math.max(viewportPadding,rect.top-height-gap)+"px";
+    }else{
+        const height=Math.min(230,Math.max(110,spaceBelow||110));
+        box.style.maxHeight=height+"px";
+        box.style.top=(rect.bottom+gap)+"px";
+    }
+}
+
+function showSectionSuggestions(searchText=""){
+    const box=document.getElementById("sectionSuggestions");
+    const wrapper=document.querySelector(".section-search-wrapper");
+    if(!box||!wrapper) return;
+
+    /* Move the dropdown outside the glass card so it can never be clipped. */
+    if(box.parentElement!==document.body){
+        document.body.appendChild(box);
+    }
+
+    const search=searchText.trim().toLowerCase();
+    const filtered=sections.filter(s=>s.toLowerCase().includes(search));
+    box.innerHTML="";
+
+    if(!filtered.length){
+        const n=document.createElement("div");
+        n.className="section-option no-result";
+        n.textContent="No matching section found";
+        box.appendChild(n);
+    }else{
+        filtered.forEach(section=>{
+            const option=document.createElement("div");
+            option.className="section-option";
+            option.textContent=section;
+
+            option.addEventListener("mousedown",e=>e.preventDefault());
+
+            option.addEventListener("click",function(e){
+                e.preventDefault();
+                e.stopPropagation();
+
+                document.getElementById("sectionSearch").value=section;
+                document.getElementById("section").value=section;
+
+                hideSectionSuggestions();
+
+                resetVerificationUI();
+                document.getElementById("sectionVerification").style.display="block";
+
+                setTimeout(()=>document.getElementById("verificationCode").focus(),100);
+            });
+
+            box.appendChild(option);
+        });
+    }
+
+    box.classList.add("show");
+    box.style.display="block";
+
+    requestAnimationFrame(positionSectionSuggestions);
+}
+
+document.getElementById("sectionSearch").addEventListener("input",function(){
+    document.getElementById("section").value="";
+    resetVerificationUI();
+    showSectionSuggestions(this.value);
+});
+
+document.getElementById("sectionSearch").addEventListener("focus",function(){
+    showSectionSuggestions(this.value);
+});
+
+document.getElementById("sectionSearch").addEventListener("click",function(e){
+    e.stopPropagation();
+    showSectionSuggestions(this.value);
+});
+
+document.addEventListener("click",function(e){
+    const box=document.getElementById("sectionSuggestions");
+    if(box&&!box.contains(e.target)&&e.target.id!=="sectionSearch"){
+        hideSectionSuggestions();
+    }
+});
+
+window.addEventListener("resize",function(){
+    positionSectionSuggestions();
+});
+
+window.addEventListener("scroll",function(){
+    positionSectionSuggestions();
+},true);
+
+window.addEventListener("orientationchange",function(){
+    setTimeout(positionSectionSuggestions,50);
+});
+
+document.getElementById("voiceForm").addEventListener("submit",async e=>{
+    e.preventDefault();
+
+    if(!firebaseUser){openLogin(true);return}
+
+    const section=document.getElementById("section").value.trim();
+    const verificationCode=document.getElementById("verificationCode").value.trim();
+    const concern=document.getElementById("concern").value.trim();
+    const category=document.getElementById("category").value;
+
+    if(!section){openSectionRequiredPopup();return}
+    if(!sectionVerified || verifiedSection!==section){openSectionVerificationPopup();return}
+    if(!verificationCode){alert("Please enter your section verification code.");return}
+    if(!concern || !category){alert("Please complete all fields.");return}
+
+    const email=String(firebaseUser.email||"").trim().toLowerCase();
+    const name=nameInput.value.trim();
+
+    if(!email){alert("Your Google account email could not be detected.");return}
+    if(!name){alert("Please enter your name.");return}
+
+    const data={
+        action:"submitConcern",
+        name,
+        email,
+        section,
+        verificationCode,
+        concern:"["+category+"] "+concern
+    };
 
     try{
+        document.getElementById("submittingPopup").style.display="flex";
+        const response=await fetch(SCRIPT_URL,{method:"POST",body:JSON.stringify(data)});
+        const result=await response.json();
 
-        await signInWithPopup(
-            auth,
-            googleProvider
-        );
+        document.getElementById("submittingPopup").style.display="none";
 
-        closeLogin();
+        if(!result.success){
+            alert(result.message||"Failed to submit concern.");return;
+        }
 
-        /*
-        Voice page stays on voice.html.
-        */
+        document.getElementById("successPopup").style.display="flex";
+        document.getElementById("successSound")?.play().catch(()=>{});
 
-        window.loginForStudentVoice = false;
-
+        document.getElementById("voiceForm").reset();
+        document.getElementById("section").value="";
+        document.getElementById("sectionSearch").value="";
+        resetVerificationUI();
+        document.getElementById("name").value=firebaseUser.displayName||"";
+        document.getElementById("name").readOnly=true;
     }catch(error){
-
-        console.error(
-            "Google login error:",
-            error
-        );
-
-        alert(
-            "Google login failed: " +
-            error.message
-        );
-
+        document.getElementById("submittingPopup").style.display="none";
+        console.error(error);
+        alert("Failed to submit concern.");
     }
+});
 
+function renderConcerns(data){
+    const list=document.getElementById("concernsList");
+    if(!Array.isArray(data)||data.length===0){
+        list.innerHTML=`<div style="text-align:center;padding:35px 20px;color:#777"><p>No concerns found.</p></div>`;
+        return;
+    }
+    list.innerHTML=[...data].reverse().map(item=>`
+        <div class="concern-card">
+            <h3>${item.name||"No Name"}</h3>
+            <p><strong>Section:</strong> ${item.section||"N/A"}</p>
+            <p><strong>Concern:</strong> ${item.concern||""}</p>
+            <small>Status: ${item.status||"Pending"}</small>
+        </div>
+    `).join("");
+}
+
+async function openMyConcerns(){
+    if(!firebaseUser){openLogin();return}
+    const modal=document.getElementById("concernsModal");
+    const list=document.getElementById("concernsList");
+    document.getElementById("concernsModalTitle").textContent="Your Concerns";
+    modal.style.display="flex";
+    list.innerHTML='<div class="loading-dots"></div>';
+    try{
+        const r=await fetch(SCRIPT_URL+"?action=getMyConcerns&email="+encodeURIComponent(firebaseUser.email));
+        const data=await r.json();
+        if(data?.success===false){list.innerHTML=`<p style="text-align:center;color:#666;padding:20px">${data.message||"Unable to load concerns."}</p>`;return}
+        renderConcerns(data);
+    }catch(err){
+        console.error(err);
+        list.innerHTML='<p style="text-align:center;color:#666;padding:20px">Failed to load your concerns.</p>';
+    }
+}
+
+async function openAllConcerns(){
+    if(!firebaseUser){openLogin();return}
+    if(!window.isAdminUser()){alert("Admin access only.");return}
+    const modal=document.getElementById("concernsModal");
+    const list=document.getElementById("concernsList");
+    document.getElementById("concernsModalTitle").textContent="All Student Concerns";
+    modal.style.display="flex";
+    list.innerHTML='<div class="loading-dots"></div>';
+    try{
+        const r=await fetch(SCRIPT_URL+"?action=getAllConcerns&email="+encodeURIComponent(firebaseUser.email));
+        const data=await r.json();
+        if(data?.success===false){list.innerHTML=`<p style="text-align:center;color:#666;padding:20px">${data.message||"Admin access denied."}</p>`;return}
+        renderConcerns(data);
+    }catch(err){
+        console.error(err);
+        list.innerHTML='<p style="text-align:center;color:#666;padding:20px">Failed to load all concerns.</p>';
+    }
+}
+
+document.getElementById("loginModal").addEventListener("click",e=>{
+    if(e.target===e.currentTarget) closeLogin();
+});
+
+document.getElementById("successPopup").addEventListener("click",e=>{
+    if(e.target===e.currentTarget) closePopup();
+});
+</script>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged}
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+const firebaseConfig={
+    apiKey:"AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",
+    authDomain:"caths-page.firebaseapp.com",
+    projectId:"caths-page",
+    storageBucket:"caths-page.firebasestorage.app",
+    messagingSenderId:"945498022620",
+    appId:"1:945498022620:web:71aeb4cd2472e061aeca19",
+    measurementId:"G-CBG1YSK13G"
 };
 
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const googleProvider=new GoogleAuthProvider();
 
-/* =========================================
-   LOGOUT
-========================================= */
-
-window.logoutUser = async function(){
-
+window.googleLogin=async function(){
     try{
+        await signInWithPopup(auth,googleProvider);
+        closeLogin();
+        window.loginForStudentVoice=false;
+    }catch(error){
+        console.error("Google login error:",error);
+        alert("Google login failed: "+error.message);
+    }
+};
 
+window.logoutUser=async function(){
+    try{
         await signOut(auth);
-
         localStorage.removeItem("userName");
         localStorage.removeItem("userPhoto");
         localStorage.removeItem("userEmail");
-
-        const menu = document.getElementById("logoutMenu");
-
-        if(menu){
-
-            menu.style.display = "none";
-            menu.style.visibility = "hidden";
-
-            menu.classList.remove("open");
-            menu.classList.remove("closing");
-
-        }
-
         location.reload();
-
     }catch(error){
-
-        console.error(
-            "Logout error:",
-            error
-        );
-
-        alert(
-            "Logout failed: " +
-            error.message
-        );
-
+        console.error(error);
+        alert("Logout failed: "+error.message);
     }
-
 };
 
-/* =========================================
-   AUTH STATE
-========================================= */
+onAuthStateChanged(auth,user=>{
+    const btn=document.getElementById("headerLoginBtn");
+    const profileName=document.getElementById("profileName");
+    const profileEmail=document.getElementById("profileEmail");
+    const profilePhoto=document.getElementById("profilePhoto");
+    const navPhoto=document.getElementById("profileNavPhoto");
+    const navText=document.getElementById("profileNavText");
+    const seeAll=document.getElementById("seeAllConcernsBtn");
 
-onAuthStateChanged(
-    auth,
-    (user) => {
+    if(user){
+        firebaseUser=user;
 
-        const btn =
-            document.getElementById(
-                "headerLoginBtn"
-            );
+        if(seeAll) seeAll.style.display=window.isAdminUser()?"block":"none";
 
-        const nameInput =
-            document.getElementById("name");
+        localStorage.setItem("userName",user.displayName||"User");
+        localStorage.setItem("userPhoto",user.photoURL||"");
+        localStorage.setItem("userEmail",user.email||"");
 
-        const profileName =
-            document.getElementById(
-                "profileName"
-            );
+        nameInput.value=user.displayName||"";
+        nameInput.readOnly=true;
 
-        const profileEmail =
-            document.getElementById(
-                "profileEmail"
-            );
+        profileName.textContent=user.displayName||"User";
+        profileEmail.textContent=user.email||"";
+        profilePhoto.src=user.photoURL||"";
 
-        const profilePhoto =
-            document.getElementById(
-                "profilePhoto"
-            );
+        navPhoto.innerHTML=user.photoURL
+            ? `<img src="${user.photoURL}" alt="Profile">`
+            : `<svg class="professional-ui-icon" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/></svg>`;
+        navText.textContent="Profile";
 
-        const navPhoto =
-            document.getElementById(
-                "profileNavPhoto"
-            );
-
-        const navText =
-    document.getElementById(
-        "profileNavText"
-    );
-
-
-        if(user){
-
-            firebaseUser = user;
-
-const seeAllBtn =
-    document.getElementById(
-        "seeAllConcernsBtn"
-    );
-
-if(seeAllBtn){
-
-    const loggedEmail =
-        String(user.email || "")
-            .trim()
-            .toLowerCase();
-
-    const admin =
-        ADMIN_EMAILS
-            .map(email =>
-                email.trim().toLowerCase()
-            )
-            .includes(loggedEmail);
-
-    if(admin){
-
-        seeAllBtn.style.display = "block";
-
+        btn.classList.add("logged-profile");
+        btn.innerHTML=user.photoURL
+            ? `<img src="${user.photoURL}" alt="Profile"><span>${user.displayName||"User"}</span>⌄`
+            : `<svg class="professional-ui-icon" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/></svg><span>${user.displayName||"User"}</span>⌄`;
+        btn.onclick=()=>toggleProfileMenu();
     }else{
+        firebaseUser=null;
+        if(seeAll) seeAll.style.display="none";
+        nameInput.value="";
+        nameInput.readOnly=false;
 
-        seeAllBtn.style.display = "none";
+        navPhoto.innerHTML=`<svg class="professional-ui-icon" viewBox="0 0 24 24"><path d="M7 10V8a5 5 0 0 1 10 0v2M6 10h12v10H6z"/></svg>`;
+        navText.textContent="Login";
 
+        btn.classList.remove("logged-profile");
+        btn.innerHTML=`<svg class="professional-ui-icon" viewBox="0 0 24 24"><path d="M15 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0-0-8 4 4 0 0 0 0 8M17 8h4m-2-2 2 2-2 2"/></svg><span>Login</span>`;
+        btn.onclick=()=>openLogin(false);
     }
-
-}
-
-            closeLogin();
-
-
-            /* SAVE USER */
-
-            localStorage.setItem(
-                "userName",
-                user.displayName || "User"
-            );
-
-            localStorage.setItem(
-                "userPhoto",
-                user.photoURL || ""
-            );
-
-            localStorage.setItem(
-                "userEmail",
-                user.email || ""
-            );
-
-
-            /* FORM NAME */
-
-            if(nameInput){
-
-                nameInput.value =
-                    user.displayName || "";
-
-                nameInput.readOnly = true;
-
-            }
-
-
-            /* PROFILE MENU */
-
-            if(profileName){
-
-                profileName.textContent =
-                    user.displayName || "User";
-
-            }
-
-            if(profileEmail){
-
-                profileEmail.textContent =
-                    user.email || "";
-
-            }
-
-            if(profilePhoto){
-
-                profilePhoto.src =
-                    user.photoURL || "";
-
-            }
-
-
-            /* BOTTOM PHOTO */
-
-          if(navPhoto){
-
-    if(user.photoURL){
-
-        navPhoto.innerHTML = `
-            <img
-                src="${user.photoURL}"
-                alt="Profile"
-            >
-        `;
-
-    }else{
-
-        navPhoto.innerHTML = "👤";
-
-    }
-
-}
-
-if(navText){
-    navText.textContent = "Profile";
-}
-
-
-            /* HEADER PROFILE */
-
-            if(btn){
-
-                if(user.photoURL){
-
-                    btn.innerHTML = `
-                        <img
-                            src="${user.photoURL}"
-                            style="
-                                width:32px;
-                                height:32px;
-                                border-radius:50%;
-                                object-fit:cover;
-                            "
-                        >
-
-                        <span>
-                            ${user.displayName || "User"}
-                        </span>
-
-                        ▼
-                    `;
-
-                }else{
-
-                    btn.innerHTML = `
-                        👤
-                        <span>
-                            ${user.displayName || "User"}
-                        </span>
-
-                        ▼
-                    `;
-
-                }
-
-                btn.onclick = () => {
-                    toggleProfileMenu();
-                };
-
-            }
-
-
-        }else{
-
-            firebaseUser = null;
-
-            const seeAllBtn =
-    document.getElementById(
-        "seeAllConcernsBtn"
-    );
-
-if(seeAllBtn){
-    seeAllBtn.style.display = "none";
-}
-
-
-            if(nameInput){
-
-                nameInput.value = "";
-                nameInput.readOnly = false;
-
-            }
-
-
-            const menu =
-                document.getElementById(
-                    "logoutMenu"
-                );
-
-            if(menu){
-
-                menu.style.display = "none";
-
-                menu.classList.remove("open");
-                menu.classList.remove("closing");
-
-            }
-
-
-         if(navPhoto){
-    navPhoto.innerHTML = "🔐";
-}
-
-if(navText){
-    navText.textContent = "Login";
-}
-
-
-            if(btn){
-
-                btn.innerHTML = "👤 Login";
-
-                btn.onclick = () => {
-                    openLogin(false);
-                };
-
-            }
-
-        }
-
-    }
-);
-
+});
 </script>
 
-<script>
-
-const SECTION_CODES = {
-
-  "7-Agoncillo": "483721#",
-  "7-Constantino": "C615904",
-  "7-Delos Santos": "827316D",
-  "7-Guillermo": "274856S",
-  "7-Nacpil": "N731492",
-  "7-Ocampo": "958214O",
-  "7-Tolentino": "T346781",
-  "7-Zaide": "Z820563E",
-
-  "8-Archimedes": "514827S",
-  "8-Bernoulli": "693152I",
-  "8-Pythagoras": "PY428715",
-  "8-Hypatia": "761304IA",
-  "8-Pascal": "235896",
-  "8-Euler": "E847231R",
-  "8-Euclid": "391625D",
-  "8-Ptolemy": "672418MY",
-  "8-Descartes": "CART159734",
-
-  "9-Aristotle": "RIS583216",
-  "9-Galilei": "724951LEI",
-  "9-Copernicus": "COP316847",
-  "9-Pasteur": "865203TEUR",
-  "9-Mendel": "ME492731L",
-  "9-Faraday": "137568DAY",
-  "9-Newton": "651824TON",
-  "9-Edison": "308475SON",
-  "9-Einstein": "976312TEIN",
-
-  "10-Aquino": "AQ428163",
-  "10-Bonifacio": "715294CIO",
-  "10-Del Pilar": "PILAR863517",
-  "10-Jacinto": "TO249681",
-  "10-Luna": "LUNA531728",
-  "10-Quezon": "QUE694315",
-  "10-Rizal": "182957AL",
-
-  "11-Twain": "736481IN",
-  "11-Farmer": "FARM295714",
-  "11-Lovelace": "814326LOVE",
-  "11-Guerrero": "GUER463859",
-  "11-Morgan": "927145MOR",
-  "11-Silverton": "TON351682",
-  "11-Westinghouse": "67823HOUSE4",
-
-  "12-Ansel": "542813SEL",
-  "12-Babbage": "BAB819365",
-  "12-Javier": "JAV274631",
-  "12-Pacioli": "635927CIOLI",
-  "12-Shakespeare": "391847PEARE",
-  "12-Mendeleev": "758216LEEV"
-
-};
-</script>
-
-<script>
-
-const sections = [
-
-    "7-Agoncillo",
-    "7-Constantino",
-    "7-Delos Santos",
-    "7-Guillermo",
-    "7-Nacpil",
-    "7-Ocampo",
-    "7-Tolentino",
-    "7-Zaide",
-
-    "8-Archimedes",
-    "8-Bernoulli",
-    "8-Pythagoras",
-    "8-Hypatia",
-    "8-Pascal",
-    "8-Euler",
-    "8-Euclid",
-    "8-Ptolemy",
-    "8-Descartes",
-
-    "9-Aristotle",
-    "9-Galilei",
-    "9-Copernicus",
-    "9-Pasteur",
-    "9-Mendel",
-    "9-Faraday",
-    "9-Newton",
-    "9-Edison",
-    "9-Einstein",
-
-    "10-Aquino",
-    "10-Bonifacio",
-    "10-Del Pilar",
-    "10-Jacinto",
-    "10-Luna",
-    "10-Quezon",
-    "10-Rizal",
-
-    "11-Twain",
-    "11-Farmer",
-    "11-Lovelace",
-    "11-Guerrero",
-    "11-Morgan",
-    "11-Silverton",
-    "11-Westinghouse",
-
-    "12-Ansel",
-    "12-Babbage",
-    "12-Javier",
-    "12-Pacioli",
-    "12-Shakespeare",
-    "12-Mendeleev"
-
-];
-
-</script>
-
-    <script>
-
-const sectionSearch =
-    document.getElementById("sectionSearch");
-
-const sectionSuggestions =
-    document.getElementById("sectionSuggestions");
-
-const sectionHidden =
-    document.getElementById("section");
-
-
-/* =========================================
-   SHOW SECTION LIST
-========================================= */
-
-function showSectionSuggestions(searchText = ""){
-
-    const search =
-        searchText.trim().toLowerCase();
-
-    const filteredSections =
-        sections.filter(section =>
-            section.toLowerCase().includes(search)
-        );
-
-
-    sectionSuggestions.innerHTML = "";
-
-
-    /* NO RESULTS */
-
-    if(filteredSections.length === 0){
-
-        const noResult =
-            document.createElement("div");
-
-        noResult.className =
-            "section-option no-result";
-
-        noResult.textContent =
-            "No matching section found";
-
-        sectionSuggestions.appendChild(
-            noResult
-        );
-
-    }else{
-
-        /* RESULTS */
-
-        filteredSections.forEach(section => {
-
-            const option =
-                document.createElement("div");
-
-            option.className =
-                "section-option";
-
-            option.textContent =
-                section;
-
-
-            option.addEventListener(
-                "click",
-                function(e){
-
-                    e.preventDefault();
-                    e.stopPropagation();
-
-
-                    /* SELECT SECTION */
-
-                    sectionSearch.value =
-                        section;
-
-                    sectionHidden.value =
-                        section;
-
-
-                    /* CLOSE LIST */
-
-                    sectionSuggestions.classList.remove(
-                        "show"
-                    );
-
-
-                    /* RESET VERIFICATION */
-
-                    sectionVerified = false;
-                    verifiedSection = "";
-
-
-                    const verificationBox =
-                        document.getElementById(
-                            "sectionVerification"
-                        );
-
-                    const verificationCode =
-                        document.getElementById(
-                            "verificationCode"
-                        );
-
-                    const verificationMessage =
-                        document.getElementById(
-                            "verificationMessage"
-                        );
-
-                    const verifyButton =
-                        document.getElementById(
-                            "verifySectionBtn"
-                        );
-
-
-                    /* SHOW VERIFICATION */
-
-                    if(verificationBox){
-
-                        verificationBox.style.display =
-                            "block";
-
-                    }
-
-
-                    /* RESET CODE */
-
-                    if(verificationCode){
-
-                        verificationCode.value = "";
-
-                        verificationCode.readOnly =
-                            false;
-
-                    }
-
-
-                    /* RESET MESSAGE */
-
-                    if(verificationMessage){
-
-                        verificationMessage.style.display =
-                            "none";
-
-                    }
-
-
-                    /* RESET BUTTON */
-
-                    if(verifyButton){
-
-                        verifyButton.disabled =
-                            false;
-
-                        verifyButton.textContent =
-                            "🔐 Verify Section";
-
-                        verifyButton.style.background =
-                            "#FFD93D";
-
-                        verifyButton.style.color =
-                            "#0d2c7a";
-
-                    }
-
-
-                    /* FOCUS CODE */
-
-                    if(verificationCode){
-
-                        setTimeout(() => {
-
-                            verificationCode.focus();
-
-                        }, 100);
-
-                    }
-
-                }
-            );
-
-
-            sectionSuggestions.appendChild(
-                option
-            );
-
-        });
-
-    }
-
-
-    /* SHOW DROPDOWN */
-
-    sectionSuggestions.classList.add(
-        "show"
-    );
-
-}
-
-
-/* =========================================
-   INPUT
-========================================= */
-
-sectionSearch.addEventListener(
-    "input",
-    function(){
-
-        /* Clear selected section */
-
-        sectionHidden.value = "";
-
-
-        /* Reset verification */
-
-        sectionVerified = false;
-        verifiedSection = "";
-
-
-        const verificationBox =
-            document.getElementById(
-                "sectionVerification"
-            );
-
-        const verificationCode =
-            document.getElementById(
-                "verificationCode"
-            );
-
-        const verificationMessage =
-            document.getElementById(
-                "verificationMessage"
-            );
-
-        const verifyButton =
-            document.getElementById(
-                "verifySectionBtn"
-            );
-
-
-        if(verificationBox){
-
-            verificationBox.style.display =
-                "none";
-
-        }
-
-        if(verificationCode){
-
-            verificationCode.value = "";
-
-            verificationCode.readOnly =
-                false;
-
-        }
-
-        if(verificationMessage){
-
-            verificationMessage.style.display =
-                "none";
-
-        }
-
-        if(verifyButton){
-
-            verifyButton.disabled =
-                false;
-
-            verifyButton.textContent =
-                "🔐 Verify Section";
-
-            verifyButton.style.background =
-                "#FFD93D";
-
-            verifyButton.style.color =
-                "#0d2c7a";
-
-        }
-
-
-        /* SHOW RESULTS */
-
-        showSectionSuggestions(
-            this.value
-        );
-
-    }
-);
-
-
-/* =========================================
-   CLICK / FOCUS
-========================================= */
-
-sectionSearch.addEventListener(
-    "focus",
-    function(){
-
-        showSectionSuggestions(
-            this.value
-        );
-
-    }
-);
-
-
-sectionSearch.addEventListener(
-    "click",
-    function(){
-
-        showSectionSuggestions(
-            this.value
-        );
-
-    }
-);
-
-
-/* =========================================
-   CLOSE WHEN CLICK OUTSIDE
-========================================= */
-
-document.addEventListener(
-    "click",
-    function(event){
-
-        if(
-            !event.target.closest(
-                ".section-search-wrapper"
-            )
-        ){
-
-            sectionSuggestions.classList.remove(
-                "show"
-            );
-
-        }
-
-    }
-);
-
-</script>
-
-<!-- SECTION REQUIRED POPUP -->
-<div id="sectionRequiredPopup" class="popup">
-
-    <div class="popup-content section-error-popup">
-
-        <div class="section-error-icon">
-            ⚠️
-        </div>
-
-        <h2>Section Required</h2>
-
-        <p>
-            Please select your section from the list.
-        </p>
-
-        <button
-            type="button"
-            class="try-again-btn"
-            onclick="closeSectionRequiredPopup()">
-            Try Again
-        </button>
-
-    </div>
-
-</div>
-
-
-<script>
-
-function openSectionRequiredPopup(){
-
-    const popup =
-        document.getElementById(
-            "sectionRequiredPopup"
-        );
-
-    if(popup){
-
-        popup.style.display = "flex";
-
-    }
-
-}
-
-
-function closeSectionRequiredPopup(){
-
-    const popup =
-        document.getElementById(
-            "sectionRequiredPopup"
-        );
-
-    if(popup){
-
-        popup.style.display = "none";
-
-    }
-
-
-    const sectionSearch =
-        document.getElementById(
-            "sectionSearch"
-        );
-
-    if(sectionSearch){
-
-        sectionSearch.focus();
-
-        showSectionSuggestions(
-            sectionSearch.value
-        );
-
-    }
-
-}
-
-</script>
-
-    <!-- SECTION VERIFICATION REQUIRED POPUP -->
-<div id="sectionVerificationPopup" class="popup">
-
-    <div class="popup-content section-error-popup">
-
-        <div class="section-error-icon">
-            🔐
-        </div>
-
-        <h2>Verification Required</h2>
-
-        <p>
-            Please verify your section first.
-        </p>
-
-        <button
-            type="button"
-            class="try-again-btn"
-            onclick="closeSectionVerificationPopup()">
-            Try Again
-        </button>
-
-    </div>
-
-</div>
-
-    <script>
-
-function openSectionVerificationPopup(){
-
-    const popup =
-        document.getElementById(
-            "sectionVerificationPopup"
-        );
-
-    if(popup){
-
-        popup.style.display = "flex";
-
-    }
-
-}
-
-
-function closeSectionVerificationPopup(){
-
-    const popup =
-        document.getElementById(
-            "sectionVerificationPopup"
-        );
-
-    if(popup){
-
-        popup.style.display = "none";
-
-    }
-
-
-    const verificationCode =
-        document.getElementById(
-            "verificationCode"
-        );
-
-    if(verificationCode){
-
-        verificationCode.focus();
-
-    }
-
-}
-
-</script>
-    
 </body>
 </html>
