@@ -53,9 +53,9 @@ body{
     display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;
 }
 .login-btn:hover{background:rgba(255,255,255,.17)}
-.login-btn.logged-profile{min-width:185px;max-width:200px;justify-content:flex-start}
-.login-btn img{width:32px;height:32px;border-radius:50%;object-fit:cover}
-.login-btn span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.login-btn.logged-profile{min-width:98px;max-width:118px;justify-content:center;text-align:center;gap:7px}
+.login-btn img{width:32px;height:32px;border-radius:50%;object-fit:cover;flex:0 0 32px}
+.login-btn span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;font-weight:600}
 .professional-ui-icon{width:18px;height:18px;display:inline-block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .profile-menu{
     display:none;position:absolute;top:calc(100% + 4px);right:0;width:280px;max-width:calc(100vw - 20px);
@@ -243,6 +243,26 @@ textarea{height:150px;resize:none}
 }
 .professional-nav-icon{width:28px;height:25px;display:flex;align-items:center;justify-content:center}
 .professional-nav-icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav-symbol{
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:25px;
+    line-height:1;
+    font-weight:400;
+    color:currentColor;
+    text-align:center;
+}
+.nav-item.active .nav-symbol{
+    font-size:27px;
+}
+@media(max-width:768px){
+    .nav-symbol{font-size:21px}
+    .nav-item.active .nav-symbol{font-size:23px}
+}
+@media(max-width:420px){
+    .nav-symbol{font-size:20px}
+    .nav-item.active .nav-symbol{font-size:22px}
+}
+
 .profile-nav-icon#profileNavPhoto{
     width:32px;height:32px;display:grid;place-items:center;border-radius:50%;
     background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);overflow:hidden
@@ -301,6 +321,27 @@ textarea{height:150px;resize:none}
     .header-center h1{font-size:12px}
     .header-center p{font-size:7px}
     .nav-item{font-size:7.5px}
+}
+
+
+@media(max-width:768px){
+    .header-right .login-btn.logged-profile{
+        min-width:86px !important;
+        max-width:108px !important;
+        width:auto !important;
+        justify-content:center !important;
+        text-align:center !important;
+        padding:5px 8px !important;
+        gap:5px !important;
+    }
+    .header-right .login-btn.logged-profile img{
+        width:28px !important;
+        height:28px !important;
+        min-width:28px !important;
+        min-height:28px !important;
+        flex:0 0 28px !important;
+    }
+    .header-right .login-btn.logged-profile span{font-size:10px !important;}
 }
 
 @media(prefers-reduced-motion:reduce){
@@ -437,22 +478,22 @@ textarea{height:150px;resize:none}
 
 <nav class="bottom-nav">
     <a href="index.html" class="nav-item">
-        <div class="professional-nav-icon"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5M5.5 9.8V21h13V9.8M9.5 21v-6h5v6"/></svg></div>
+        <div class="professional-nav-icon nav-symbol">⌂</div>
         <span>Home</span>
     </a>
 
     <a href="news-feed.html" class="nav-item">
-        <div class="professional-nav-icon"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="16" rx="1.5"/><path d="M9 4v16M12 8h4M12 12h4M12 16h3"/></svg></div>
+        <div class="professional-nav-icon nav-symbol">◫</div>
         <span>News Feed</span>
     </a>
 
     <a href="voice.html" class="nav-item active">
-        <div class="professional-nav-icon"><svg viewBox="0 0 24 24"><path d="M5 5h14v10H9l-4 4V5zM8 9h8M8 12h5"/></svg></div>
+        <div class="professional-nav-icon nav-symbol">◌</div>
         <span>Student Voice</span>
     </a>
 
     <a href="friends.html" class="nav-item">
-        <div class="professional-nav-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M17 11a3.5 3.5 0 0 0 0 7M17 5.5a3.5 3.5 0 0 1 0 6.5"/></svg></div>
+        <div class="professional-nav-icon nav-symbol">◉</div>
         <span>Add Friends</span>
     </a>
 
@@ -946,8 +987,8 @@ onAuthStateChanged(auth,user=>{
 
         btn.classList.add("logged-profile");
         btn.innerHTML=user.photoURL
-            ? `<img src="${user.photoURL}" alt="Profile"><span>${user.displayName||"User"}</span>⌄`
-            : `<svg class="professional-ui-icon" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/></svg><span>${user.displayName||"User"}</span>⌄`;
+            ? `<img src="${user.photoURL}" alt="Profile"><span>Profile</span>⌄`
+            : `<svg class="professional-ui-icon" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/></svg><span>Profile</span>⌄`;
         btn.onclick=()=>toggleProfileMenu();
     }else{
         firebaseUser=null;
