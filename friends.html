@@ -86,7 +86,8 @@ input{
   transition:.2s ease
 }
 .btn:active{transform:scale(.98)}
-.btn-primary{background:var(--yellow);color:var(--darkblue)}
+.btn-primary{background:#1976ff;color:#fff;box-shadow:0 8px 18px rgba(25,118,255,.20)}
+.btn-primary:hover{background:#1267e8;transform:translateY(-1px)}
 .btn-secondary{background:#fff;color:var(--darkblue)}
 .btn-danger{background:#fee2e2;color:#991b1b}
 .btn-success{background:#dcfce7;color:#166534}
@@ -107,7 +108,7 @@ input{
 .status{font-size:11px;font-weight:700;color:#64748b}
 
 .section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
-.count-badge{background:var(--yellow);color:var(--darkblue);border-radius:999px;padding:4px 9px;font-size:10px;font-weight:800}
+.count-badge{background:#1976ff;color:#fff;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:800}
 .list{display:flex;flex-direction:column;gap:10px}
 .empty{
   text-align:center;padding:24px 12px;background:rgba(255,255,255,.08);
@@ -208,7 +209,7 @@ input{
 .login-popup p{color:rgba(255,255,255,.85);font-size:17px;margin-bottom:22px}
 .login-close{position:absolute;top:14px;right:16px;background:transparent;border:none;padding:0;margin:0;width:28px;height:28px;font-size:20px;line-height:1;font-weight:500;color:#FFD93D;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s ease}
 .login-close:hover{color:#FFE66D;transform:scale(1.08)}
-#googleLoginBtn{width:100%;height:58px;border:none;border-radius:16px;background:#FFD93D;color:#082A75;font-size:18px;font-weight:700;cursor:pointer;margin:0;transition:.2s ease}
+#googleLoginBtn{width:100%;height:58px;border:none;border-radius:16px;background:#1976ff;color:#fff;font-size:18px;font-weight:700;cursor:pointer;margin:0;transition:.2s ease}
 #googleLoginBtn:hover{transform:translateY(-2px);filter:brightness(1.03)}
 @keyframes pop{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
 
@@ -260,6 +261,7 @@ input{
   background:linear-gradient(135deg,#fff1f2,#ffe4e6);
   box-shadow:inset 0 0 0 1px rgba(220,38,38,.08);
 }
+.remove-icon svg{width:30px;height:30px;fill:none;stroke:#dc2626;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .remove-dialog h3{font-size:21px;color:#00296B;margin-bottom:7px}
 .remove-dialog p{font-size:13px;line-height:1.6;color:#64748b;margin:0 auto 17px;max-width:330px}
 .remove-friend-preview{
@@ -792,8 +794,6 @@ main{
 .profile-btn:hover{background:rgba(255,255,255,.22)}
 
 .verified-badge{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;margin-left:5px;border-radius:50%;background:#1d9bf0;color:#fff;font-size:10px;font-weight:900;line-height:1;vertical-align:middle;box-shadow:0 1px 3px rgba(29,155,240,.28)}
-.admin-badge{display:inline-flex;align-items:center;gap:5px;margin-left:7px;padding:3px 8px;border-radius:999px;background:linear-gradient(135deg,#eaf5ff,#d9ecff);color:#135ca8;border:1px solid #c5e2ff;font-size:9px;font-weight:800;letter-spacing:.55px;line-height:1;vertical-align:middle;box-shadow:0 2px 7px rgba(19,92,168,.10)}
-.admin-badge .admin-check{width:13px;height:13px;border-radius:50%;display:grid;place-items:center;background:#1d9bf0;color:#fff;font-size:8px;font-weight:900;line-height:1;box-shadow:0 1px 3px rgba(29,155,240,.25)}
 
 
 /* =========================================================
@@ -854,7 +854,7 @@ body::after{
   box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 8px 20px rgba(0,0,0,.12) !important;
 }
 .login-btn img{width:34px !important;height:34px !important;border-radius:50% !important;object-fit:cover !important}
-.login-icon{font-size:18px;line-height:1}.profile-chevron{display:inline-grid;place-items:center;width:14px;height:14px}.profile-chevron svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.login-icon{font-size:18px;line-height:1}
 .header .notification-wrap{position:relative !important;display:flex !important;align-items:center !important}
 .header .notification-btn{
   width:46px !important;height:46px !important;margin:0 !important;padding:0 !important;
@@ -910,7 +910,7 @@ body::after{
   box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 8px 22px rgba(20,120,255,.12) !important;transform:none !important
 }
 .bottom-nav .nav-item.active::after{
-  content:"";position:absolute;left:50%;top:4px;bottom:auto;width:24px;height:3px;border-radius:999px;transform:translateX(-50%);
+  content:"";position:absolute;left:50%;bottom:4px;width:24px;height:3px;border-radius:999px;transform:translateX(-50%);
   background:#77c4ff;box-shadow:0 0 12px rgba(119,196,255,.65)
 }
 .bottom-nav .nav-item .nav-icon-placeholder{display:none !important}
@@ -941,40 +941,45 @@ body::after{
   .header{width:calc(100% - 12px) !important;padding-left:8px !important;padding-right:8px !important}.bottom-nav{height:70px !important;min-height:70px !important}.bottom-nav .nav-item{height:54px !important;font-size:7.5px !important}.bottom-nav .nav-item::before{font-size:16px !important}
 }
 
+
 /* =========================================================
-   FRIENDS PAGE DESIGN FADE-IN
+   POLISHED PAGE FADE + MOBILE HEADER PROFILE
    ========================================================= */
-body{
-  opacity:0;
-  animation:pageFadeIn .65s ease-out .05s forwards;
-}
-.header{
-  opacity:0;
-  transform:translateY(-10px);
-  animation:shellFadeDown .65s cubic-bezier(.16,1,.3,1) .10s forwards;
-}
-.container{
-  opacity:0;
-  transform:translateY(10px);
-  animation:contentFadeUp .70s cubic-bezier(.16,1,.3,1) .18s forwards;
-}
-.card{
-  opacity:0;
-  transform:translateY(12px);
-  animation:cardFadeUp .55s cubic-bezier(.16,1,.3,1) forwards;
-}
-.container .card:nth-of-type(1){animation-delay:.28s}
-.container .card:nth-of-type(2){animation-delay:.36s}
-.container .card:nth-of-type(3){animation-delay:.44s}
-.container .card:nth-of-type(4){animation-delay:.52s}
-.container .card:nth-of-type(5){animation-delay:.60s}
+body{animation:pageFadeIn .48s ease both}
+.header{animation:headerFadeIn .52s cubic-bezier(.16,1,.3,1) .03s both}
+.container{animation:contentFadeIn .58s cubic-bezier(.16,1,.3,1) .08s both}
+.card{animation:cardFadeIn .52s cubic-bezier(.16,1,.3,1) both}
+.card:nth-of-type(2){animation-delay:.05s}.card:nth-of-type(3){animation-delay:.10s}.card:nth-of-type(4){animation-delay:.15s}.card:nth-of-type(5){animation-delay:.20s}
 @keyframes pageFadeIn{from{opacity:0}to{opacity:1}}
-@keyframes shellFadeDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
-@keyframes contentFadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-@keyframes cardFadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-@media(prefers-reduced-motion:reduce){
-  body,.header,.container,.card{animation:none !important;opacity:1 !important;transform:none !important}
+@keyframes headerFadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes contentFadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes cardFadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.header-right .login-btn{overflow:hidden}
+.header-right .login-btn span:not(.login-icon):not(.profile-chevron){max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.profile-chevron{display:inline-grid;place-items:center;width:18px;height:18px;flex:0 0 auto}
+.profile-chevron svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.admin-badge{display:inline-flex;align-items:center;gap:4px;margin-left:6px;padding:2px 8px;border-radius:999px;background:#e8f2ff;color:#1769d1;border:1px solid #cfe2ff;font-size:9px;font-weight:800;line-height:1.5;vertical-align:middle;white-space:nowrap}
+.admin-check{display:inline-grid;place-items:center;width:13px;height:13px;border-radius:50%;background:#2b86ff;color:#fff;font-size:8px;font-weight:900}
+.verified-badge{display:none!important}
+.user-row .user-main strong,.row-info strong,.remove-friend-preview strong{display:flex!important;align-items:center;flex-wrap:wrap;gap:2px}
+.button-icon{display:inline-grid;place-items:center;width:15px;height:15px;flex:0 0 auto}
+.button-icon svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.remove-confirm{background:#dc2626;color:#fff;box-shadow:0 7px 18px rgba(220,38,38,.22)}
+.remove-confirm:hover{background:#b91c1c}
+@media(max-width:768px){
+  .header-right{min-width:0}
+  .header-right .login-btn{width:42px!important;min-width:42px!important;height:42px!important;min-height:42px!important;padding:3px!important;border-radius:50%!important;justify-content:center!important;gap:0!important}
+  .header-right .login-btn img{width:34px!important;height:34px!important;border-radius:50%!important;display:block!important;flex:0 0 34px!important}
+  .header-right .login-btn .login-icon{width:34px!important;height:34px!important;display:grid!important;place-items:center!important;border-radius:50%!important;background:rgba(255,255,255,.11)!important;font-size:14px!important}
+  .header-right .login-btn span:not(.login-icon):not(.profile-chevron){display:none!important}
+  .header-right .login-btn .profile-chevron{display:none!important}
+  .profile-menu{right:0!important;width:min(310px,calc(100vw - 20px))!important}
+  .user-row,.request-row,.sent-request-row,.friend-row{align-items:flex-start!important}
+  .actions{flex:0 0 auto!important}
+  .message-btn,.actions .btn{min-height:36px!important}
 }
+@media(prefers-reduced-motion:reduce){body,.header,.container,.card{animation:none!important}}
 
 </style>
 </head>
@@ -1068,7 +1073,7 @@ body{
     <h3>Find Friends</h3>
     <div class="sub">Search by username or nickname.</div>
     <div class="search-box">
-      <span class="search-icon"></span>
+      <span class="search-icon">🔍</span>
       <input id="searchInput" placeholder="Search username or nickname..." autocomplete="off">
     </div>
     <div id="searchResults" class="results">
@@ -1140,13 +1145,13 @@ body{
 
 <div id="removeFriendModal" class="remove-modal" aria-hidden="true">
   <div class="remove-dialog" role="dialog" aria-modal="true" aria-labelledby="removeFriendTitle">
-    <div class="remove-icon"></div>
+    <div class="remove-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M8 10v8M12 10v8M16 10v8M6 7l1 13h10l1-13"></path></svg></div>
     <h3 id="removeFriendTitle">Remove Friend?</h3>
     <p>This person will be removed from your friends list. You can send a new friend request later.</p>
     <div id="removeFriendPreview" class="remove-friend-preview"></div>
     <div class="remove-actions">
       <button type="button" class="remove-cancel" onclick="closeRemoveFriendModal()">Cancel</button>
-      <button type="button" class="remove-confirm" id="confirmRemoveFriendBtn">Remove Friend</button>
+      <button type="button" class="remove-confirm" id="confirmRemoveFriendBtn">Delete</button>
     </div>
   </div>
 </div>
@@ -1155,7 +1160,7 @@ body{
 
 <div id="loginOverlay" class="overlay">
   <div class="login-popup">
-    <button class="login-close" type="button" onclick="closeLoginDialog()"></button>
+    <button class="login-close" type="button" onclick="closeLoginDialog()">✕</button>
 
     <h2>Welcome Back</h2>
 
@@ -1166,9 +1171,6 @@ body{
     </button>
   </div>
 </div>
-
-
-
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
@@ -1213,11 +1215,8 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
-
-// Use the same browser-local Firebase Auth persistence as index.html.
-// This keeps the Google account signed in when moving between pages.
 const authPersistenceReady = setPersistence(auth, browserLocalPersistence).catch(error => {
-  console.error('Auth persistence setup failed:', error);
+  console.warn("Firebase auth persistence setup failed:", error);
 });
 
 // Reuse the same real-time notifications behavior as index.html.
@@ -1282,25 +1281,27 @@ const VERIFIED_ADMIN_EMAILS = new Set(['reyvengarcia15@gmail.com','reyvenbermudo
 function isVerifiedAdminEmail(email){return VERIFIED_ADMIN_EMAILS.has(String(email||'').trim().toLowerCase());}
 function isVerifiedAdminUser(user){
   if(!user) return false;
-  if(user.isAdmin === true || String(user.role||'').toLowerCase() === 'admin' || user.admin === true) return true;
+  if(user.isAdmin === true || user.admin === true || String(user.role||'').trim().toLowerCase() === 'admin') return true;
   return isVerifiedAdminEmail(user.email || user.fromEmail || user.toEmail || '');
 }
-function verifiedBadgeHtml(userOrEmail){
-  const admin = typeof userOrEmail === 'string' ? isVerifiedAdminEmail(userOrEmail) : isVerifiedAdminUser(userOrEmail);
-  return admin ? '<span class="verified-badge" title="Verified admin" aria-label="Verified admin">✓</span><span class="admin-badge"><span class="admin-check">✓</span>ADMIN</span>' : '';
+function verifiedBadgeHtml(user){
+  return isVerifiedAdminUser(user) ? '<span class="admin-badge"><span class="admin-check">✓</span>ADMIN</span>' : '';
 }
 function verifiedNameHtml(user){
-  const name = typeof user === 'string' ? user : (user?.nickname||user?.name||user?.displayName||'Student');
+  if(typeof user === 'string') return escapeHtml(user);
+  const name = user?.nickname || user?.name || user?.displayName || 'Student';
   return `${escapeHtml(name)}${verifiedBadgeHtml(user)}`;
 }
 async function enrichUser(uid, base={}){
   if(!uid) return base;
-  if(base.email || base.isAdmin === true || String(base.role||'').toLowerCase() === 'admin' || base.admin === true) return base;
+  if(isVerifiedAdminUser(base) || base.email) return {...base,uid};
   try{
     const snap = await getDoc(doc(db,'users',uid));
-    if(snap.exists()) return {...base,...snap.data(),id:uid,uid};
-  }catch(error){ console.warn('Could not load user verification data:',error); }
-  return {...base,id:uid,uid};
+    if(snap.exists()) return {...base,...snap.data(),uid,id:uid};
+  }catch(error){
+    console.warn('Could not load profile for verification:',error);
+  }
+  return {...base,uid,id:uid};
 }
 
 
@@ -1343,7 +1344,7 @@ function setHeaderUser(user, profile){
   const nav = $('profileNavPhoto');
   if(user){
     btn.innerHTML = user.photoURL
-      ? `<img src="${escapeHtml(user.photoURL)}" alt=""> <span>${escapeHtml(user.displayName || 'User')}</span><span class="profile-chevron" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg></span>`
+      ? `<img src="${escapeHtml(user.photoURL)}" alt="Profile"><span>${escapeHtml(user.displayName || 'User')}</span><span class="profile-chevron" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg></span>`
       : `<span class="login-icon" aria-hidden="true">U</span><span>${escapeHtml(user.displayName || 'User')}</span><span class="profile-chevron" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg></span>`;
     $('menuName').textContent = profile?.nickname || user.displayName || 'User';
     $('menuUsername').textContent = profile?.username ? '@' + profile.username : '@username';
@@ -1389,6 +1390,7 @@ window.closeLoginDialog = function(){
 
 window.googleLogin = async function(){
   try{
+    await authPersistenceReady;
     await signInWithPopup(auth, googleProvider);
     closeLoginDialog();
   }catch(error){
@@ -1530,14 +1532,17 @@ async function findUsers(term){
   }
 }
 
-function renderSearchResults(users){
+async function renderSearchResults(users){
   if(!users.length){
     $('searchResults').innerHTML = '<div class="empty">No students found.</div>';
     return;
   }
 
+  $('searchResults').innerHTML = '<div class="loading">Loading profiles...</div>';
+  const enrichedUsers = await Promise.all(users.map(user=>enrichUser(user.id,user)));
   $('searchResults').innerHTML = '';
-  users.forEach(user => {
+
+  enrichedUsers.forEach(user => {
     const row = document.createElement('div');
     row.className = 'user-row';
     row.innerHTML = `
@@ -1558,7 +1563,6 @@ function renderSearchResults(users){
     row.appendChild(messageLink);
 
     $('searchResults').appendChild(row);
-    // Public profile viewing: user-profile.html applies the profile/privacy rules.
     row.querySelectorAll('.row-info, .avatar, img').forEach(el=>{
       el.style.cursor='pointer';
       el.addEventListener('click', event=>{
@@ -1606,7 +1610,7 @@ async function areFriends(otherUid){
 async function refreshRelationshipButton(otherUid, button){
   try{
     if(await areFriends(otherUid)){
-      button.textContent = 'Friends';
+      button.textContent = '✓ Friends';
       button.disabled = true;
       button.className = 'btn btn-success';
       return;
@@ -1630,7 +1634,7 @@ async function handleRelationshipAction(user, button){
   if(!(await ensureSignedIn())) return;
   try{
     if(await areFriends(user.id)){
-      button.textContent = 'Friends';
+      button.textContent = '✓ Friends';
       button.disabled = true;
       button.className = 'btn btn-success';
       return;
@@ -1692,12 +1696,10 @@ async function sendFriendRequest(user){
       fromUsername: currentProfile.username,
       fromNickname: currentProfile.nickname,
       fromPhotoURL: firebaseUser.photoURL || '',
-      fromEmail: firebaseUser.email || '',
       to: user.id,
       toUsername: user.username,
       toNickname: user.nickname,
       toPhotoURL: user.photoURL || '',
-      toEmail: user.email || '',
       status: 'pending',
       createdAt: serverTimestamp()
     });
@@ -1745,33 +1747,31 @@ async function loadRequests(){
       return;
     }
 
+    const requests = await Promise.all(snap.docs.map(async d=>{
+      const req={id:d.id,...d.data()};
+      const profile=await enrichUser(req.from,{uid:req.from,email:req.fromEmail||'',photoURL:req.fromPhotoURL||'',nickname:req.fromNickname||'',username:req.fromUsername||''});
+      return {...req,...profile};
+    }));
+
     $('requestsList').innerHTML = '';
-    for(const d of snap.docs){
-      const req = {id:d.id,...d.data()};
-      const sender = await enrichUser(req.from, {
-        uid:req.from,
-        email:req.fromEmail || '',
-        nickname:req.fromNickname,
-        username:req.fromUsername,
-        photoURL:req.fromPhotoURL
-      });
+    requests.forEach(req=>{
       const row = document.createElement('div');
       row.className = 'request-row';
       row.innerHTML = `
-        ${avatarHtml(sender)}
+        ${avatarHtml({photoURL:req.photoURL||req.fromPhotoURL,nickname:req.nickname||req.fromNickname,username:req.username||req.fromUsername})}
         <div class="row-info">
-          <strong>${verifiedNameHtml(sender)}</strong>
-          <small>@${escapeHtml(sender.username || req.fromUsername || '')} sent you a friend request.</small>
+          <strong>${verifiedNameHtml({...req,email:req.email||req.fromEmail})}</strong>
+          <small>@${escapeHtml(req.username || req.fromUsername || '')} sent you a friend request.</small>
         </div>
         <div class="actions">
-          <button class="btn btn-success"><span class="button-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"></path></svg></span>Accept</button>
-          <button class="btn btn-danger"><span class="button-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"></path></svg></span>Reject</button>
+          <button class="btn btn-success">Accept</button>
+          <button class="btn btn-danger">Reject</button>
         </div>
       `;
       row.querySelector('.btn-success').addEventListener('click',()=>acceptRequest(req,row));
       row.querySelector('.btn-danger').addEventListener('click',()=>rejectRequest(req,row));
       $('requestsList').appendChild(row);
-    }
+    });
   }catch(error){
     console.error(error);
     $('requestsList').innerHTML = '<div class="empty">Could not load requests. Check Firestore rules.</div>';
@@ -1785,7 +1785,6 @@ async function acceptRequest(req,row){
       username:req.fromUsername || '',
       nickname:req.fromNickname || '',
       photoURL:req.fromPhotoURL || '',
-      email:req.fromEmail || '',
       since:serverTimestamp()
     });
     await setDoc(doc(db,'friends',req.from,'list',firebaseUser.uid), {
@@ -1793,7 +1792,6 @@ async function acceptRequest(req,row){
       username:currentProfile.username,
       nickname:currentProfile.nickname,
       photoURL:firebaseUser.photoURL || '',
-      email:firebaseUser.email || '',
       since:serverTimestamp()
     });
     await updateDoc(doc(db,'friendRequests',req.id), {status:'accepted',respondedAt:serverTimestamp()});
@@ -1856,68 +1854,54 @@ async function loadSentRequests(){
       return;
     }
 
-    const requests = snap.docs.map(d=>({id:d.id,...d.data()}));
-
-    requests.sort((a,b)=>{
-      const aTime = a.createdAt?.seconds || 0;
-      const bTime = b.createdAt?.seconds || 0;
-      return bTime - aTime;
-    });
+    const requests = await Promise.all(snap.docs.map(async d=>{
+      const req={id:d.id,...d.data()};
+      const profile=await enrichUser(req.to,{uid:req.to,email:req.toEmail||'',photoURL:req.toPhotoURL||'',nickname:req.toNickname||'',username:req.toUsername||''});
+      return {...req,...profile};
+    }));
+    requests.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
 
     $('sentRequestsList').innerHTML = '';
-
-    for(const req of requests){
-      const target = await enrichUser(req.to, {uid:req.to,email:req.toEmail || '',nickname:req.toNickname,username:req.toUsername,photoURL:req.toPhotoURL});
+    requests.forEach(req=>{
       const row = document.createElement('div');
       row.className = 'sent-request-row';
-
-      row.innerHTML = `
-        ${avatarHtml(target)}
-        <div class="row-info">
-          <strong>${verifiedNameHtml(target)}</strong>
-          <small>@${escapeHtml(req.toUsername || '')} • Request pending</small>
-        </div>
-        <div class="actions">
-          <button class="btn btn-secondary"><span class="button-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"></path></svg></span>Cancel</button>
-        </div>
-      `;
-
       const profileLink = document.createElement('a');
       profileLink.href = `user-profile.html?uid=${encodeURIComponent(req.to)}`;
       profileLink.className = 'friend-profile-link';
       profileLink.innerHTML = `
-        ${avatarHtml(target)}
+        ${avatarHtml({photoURL:req.photoURL||req.toPhotoURL,nickname:req.nickname||req.toNickname,username:req.username||req.toUsername})}
         <div class="row-info">
-          <strong>${verifiedNameHtml(target)}</strong>
-          <small>@${escapeHtml(req.toUsername || '')} • Request pending</small>
+          <strong>${verifiedNameHtml({...req,email:req.email||req.toEmail})}</strong>
+          <small>@${escapeHtml(req.username || req.toUsername || '')} • Request pending</small>
         </div>
       `;
 
-      const actions = row.querySelector('.actions');
-      row.innerHTML = '';
+      const actions=document.createElement('div');
+      actions.className='actions';
+      const cancelBtn=document.createElement('button');
+      cancelBtn.className='btn btn-secondary';
+      cancelBtn.textContent='Cancel';
+      actions.appendChild(cancelBtn);
       row.appendChild(profileLink);
       row.appendChild(actions);
 
-      actions.querySelector('button').addEventListener('click', async ()=>{
-        const button = actions.querySelector('button');
-        button.disabled = true;
-        button.textContent = 'Cancelling...';
-
+      cancelBtn.addEventListener('click',async ()=>{
+        cancelBtn.disabled=true;
+        cancelBtn.textContent='Cancelling...';
         try{
           await deleteDoc(doc(db,'friendRequests',req.id));
-          showToast(`Friend request to ${req.toNickname || req.toUsername || 'student'} cancelled.`);
+          showToast(`Friend request to ${req.nickname || req.toNickname || req.username || req.toUsername || 'student'} cancelled.`);
           await loadSentRequests();
           await findUsers(normalize($('searchInput').value));
         }catch(error){
           console.error(error);
-          button.disabled = false;
-          button.textContent = 'Cancel';
+          cancelBtn.disabled=false;
+          cancelBtn.textContent='Cancel';
           showToast('Could not cancel friend request.');
         }
       });
-
       $('sentRequestsList').appendChild(row);
-    }
+    });
   }catch(error){
     console.error(error);
     $('sentRequestsList').innerHTML = '<div class="empty">Could not load sent requests. Check Firestore rules.</div>';
@@ -1938,38 +1922,31 @@ async function loadFriends(){
       return;
     }
 
-    const friends = snap.docs.map(d=>({id:d.id,...d.data()}));
+    const friends = await Promise.all(snap.docs.map(async d=>{
+      const base={id:d.id,...d.data()};
+      return await enrichUser(base.uid||d.id,base);
+    }));
     friends.sort((a,b)=>String(a.nickname||a.username||'').localeCompare(String(b.nickname||b.username||'')));
     $('friendsList').innerHTML = '';
 
-    for(const rawFriend of friends){
-      const friend = await enrichUser(rawFriend.uid || rawFriend.id, rawFriend);
+    friends.forEach(friend=>{
       const row = document.createElement('div');
       row.className = 'friend-row';
       row.innerHTML = `
         <a class="friend-profile-link" href="user-profile.html?uid=${encodeURIComponent(friend.uid)}" aria-label="View ${escapeHtml(friend.nickname || friend.username || 'student')} profile">
-          ${avatarHtml({photoURL:friend.photoURL,nickname:friend.nickname,username:friend.username})}
+          ${avatarHtml(friend)}
           <div class="row-info">
             <strong>${verifiedNameHtml(friend)}</strong>
             <small>@${escapeHtml(friend.username || '')}</small>
           </div>
         </a>
         <div class="actions">
-          <button class="btn btn-danger"><span class="button-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 7h14M9 7V4h6v3M8 10v7M12 10v7M16 10v7"></path><path d="M6 7l1 13h10l1-13"></path></svg></span>Remove Friend</button>
+          <button class="btn btn-danger">Delete</button>
         </div>
       `;
       row.querySelector('.btn-danger').addEventListener('click',()=>openRemoveFriendModal(friend,row));
-            const messageLink = document.createElement('a');
-      messageLink.className = 'btn message-btn';
-      messageLink.href = `messages.html?uid=${encodeURIComponent(friend.uid)}`;
-      messageLink.innerHTML = '<span class="button-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 5.5h14v10H10l-5 3v-3H5z"></path></svg></span>Message';
-      messageLink.title = `Message ${friend.nickname || friend.username || 'friend'}`;
-      const actions = row.querySelector('.actions');
-      if(actions) actions.prepend(messageLink);
-      else row.appendChild(messageLink);
-
-$('friendsList').appendChild(row);
-    }
+      $('friendsList').appendChild(row);
+    });
   }catch(error){
     console.error(error);
     $('friendsList').innerHTML = '<div class="empty">Could not load friends. Check Firestore rules.</div>';
@@ -2025,7 +2002,7 @@ $('confirmRemoveFriendBtn').addEventListener('click',()=>{
   button.textContent = 'Removing...';
   removeFriend(friend,row).finally(()=>{
     button.disabled = false;
-    button.textContent = 'Remove Friend';
+    button.textContent = 'Delete';
   });
 });
 
@@ -2034,8 +2011,13 @@ $('removeFriendModal').addEventListener('click',(event)=>{
 });
 
 document.addEventListener('keydown',(event)=>{
-  if(event.key === 'Escape' && $('removeFriendModal').classList.contains('show')){
-    closeRemoveFriendModal();
+  if(event.key !== 'Escape') return;
+  if($('removeFriendModal').classList.contains('show')) closeRemoveFriendModal();
+  if($('loginOverlay').style.display === 'flex') closeLoginDialog();
+  const menu=$('profileMenu');
+  if(menu?.classList.contains('open')){
+    menu.classList.remove('open');
+    menu.classList.add('closing');
   }
 });
 
@@ -2063,8 +2045,7 @@ $('loginOverlay').addEventListener('click',(event)=>{
   if(event.target === $('loginOverlay')) closeLoginDialog();
 });
 
-authPersistenceReady.finally(() => {
-  onAuthStateChanged(auth, async (user)=>{
+authPersistenceReady.finally(()=>onAuthStateChanged(auth, async (user)=>{
   firebaseUser = user;
   window.userLoggedIn = !!user;
   if(user?.uid){
@@ -2080,7 +2061,7 @@ authPersistenceReady.finally(() => {
     currentProfile = null;
     setHeaderUser(null,null);
     $('profileSetupCard').innerHTML = `
-      <h3>Login to use Friends</h3>
+      <h3>Login Login to use Friends</h3>
       <div class="sub">Sign in with Google first, then create your username/nickname.</div>
       <button class="btn btn-primary" onclick="googleLogin()">Continue with Google</button>
     `;
@@ -2091,7 +2072,7 @@ authPersistenceReady.finally(() => {
   }
 
   $('profileSetupCard').innerHTML = `
-    <h3> Your Friends Profile</h3>
+    <h3>Your Friends Profile</h3>
     <div class="sub">Choose the username and nickname that other students will search for.</div>
     <div class="profile-grid">
       <div id="setupAvatar" class="avatar fallback-avatar">U</div>
@@ -2104,7 +2085,7 @@ authPersistenceReady.finally(() => {
           </div>
           <div>
             <label for="nicknameInput">Nickname</label>
-            <input id="nicknameInput" maxlength="20" placeholder="e.g. Reyven" autocomplete="off">
+            <input id="nicknameInput" maxlength="30" placeholder="e.g. Reyven" autocomplete="off">
             <div class="helper">This is the name shown to your friends.</div>
           </div>
         </div>
@@ -2117,8 +2098,7 @@ authPersistenceReady.finally(() => {
   await loadRequests();
   await loadSentRequests();
   await loadFriends();
-  });
-});
+}));
 </script>
 
 </body>
