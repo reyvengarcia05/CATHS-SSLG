@@ -2062,6 +2062,36 @@ html body{--chat-ui-version:5}
   }
 }
 </style>
+
+<style id="pc-centered-messenger-v10">
+@media (min-width:801px){
+  .container{
+    left:90px !important;
+    right:0 !important;
+    top:92px !important;
+    bottom:84px !important;
+    padding:18px 44px 24px !important;
+    display:flex !important;
+    justify-content:center !important;
+    align-items:flex-start !important;
+  }
+
+  .messenger{
+    width:min(1180px, calc(100% - 20px)) !important;
+    max-width:1180px !important;
+    height:calc(100vh - 144px) !important;
+    margin:0 auto !important;
+    border-radius:24px !important;
+  }
+
+  .bottom-nav{
+    left:14px !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <header class="header">
