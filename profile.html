@@ -1585,7 +1585,7 @@ linear-gradient(135deg,#03152f 0%,#062b68 34%,#0a4ca2 66%,#173b78 100%);backgrou
 .header::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(90deg,rgba(77,169,255,.08),transparent 28%,transparent 72%,rgba(77,169,255,.08))}
 .logo-group{width:220px;min-width:220px;display:flex;align-items:center;gap:7px;z-index:2}.logo,.caths-logo{width:52px;height:52px;object-fit:contain;display:block}
 .header-center{max-width:50%;z-index:3}.header-center h1{font-size:18px;line-height:1.15}.header-center p{font-size:11px;line-height:1.2;margin-top:3px}
-.container{position:fixed;top:100px;left:0;right:0;bottom:76px;padding:18px 20px 50px;overflow-x:hidden;overflow-y:auto;scroll-behavior:smooth}
+.container{position:fixed;top:100px;left:0;right:0;bottom:76px;padding:18px 20px 50px;overflow-x:hidden;overflow-y:auto;scroll-behavior:smooth;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch}
 .profile-card{background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.055));border:1px solid rgba(255,255,255,.15);border-radius:25px;box-shadow:0 18px 45px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.10);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);animation:cardIn .75s cubic-bezier(.16,1,.3,1) .12s both}
 .cover{background:radial-gradient(600px 260px at 15% 30%,rgba(119,196,255,.24),transparent 62%),linear-gradient(135deg,rgba(3,21,47,.96),rgba(9,76,162,.88),rgba(119,196,255,.28));position:relative}
 .profile-main>*{animation:itemIn .55s cubic-bezier(.16,1,.3,1) both}.profile-picture-wrapper{animation:itemIn .55s .08s cubic-bezier(.16,1,.3,1) both}.profile-name-row{animation:itemIn .55s .14s cubic-bezier(.16,1,.3,1) both}.stats{animation:itemIn .55s .20s cubic-bezier(.16,1,.3,1) both}.tabs{animation:itemIn .55s .26s cubic-bezier(.16,1,.3,1) both}.tab-content{animation:itemIn .55s .32s cubic-bezier(.16,1,.3,1) both}
@@ -1799,6 +1799,53 @@ linear-gradient(135deg,#03152f 0%,#062b68 34%,#0a4ca2 66%,#173b78 100%);backgrou
     .profile-nav-icon#profileNavPhoto,#profileNavPhoto,#profileNavPhotoImg{width:25px !important;height:25px !important;}
 }
 
+
+
+/* =========================================================
+   SHARE UI + SMOOTH MOTION
+   ========================================================= */
+.share-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,10,30,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:100010;opacity:0;transition:opacity .22s ease}
+.share-modal.open{display:flex;opacity:1}
+.share-modal-box{width:min(500px,100%);max-height:min(720px,88vh);overflow:hidden;background:linear-gradient(145deg,rgba(255,255,255,.99),rgba(246,250,255,.98));color:#183c8c;border:1px solid rgba(255,255,255,.76);border-radius:24px;padding:22px;box-shadow:0 28px 80px rgba(0,10,40,.36);transform:translateY(16px) scale(.975);opacity:0;transition:transform .28s cubic-bezier(.16,1,.3,1),opacity .22s ease}
+.share-modal.open .share-modal-box{transform:translateY(0) scale(1);opacity:1}
+.share-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px}
+.share-modal-kicker{display:inline-flex;align-items:center;gap:6px;color:#4e9eff;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px}
+.share-modal-head h3{margin:0;font-size:21px;color:#163b82}
+.share-modal-head p{margin:5px 0 0;color:#71809a;font-size:12px;line-height:1.45}
+.share-choice-grid{display:grid;gap:10px}
+.share-choice{width:100%;display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:12px;padding:13px 14px;border:1px solid #dfe8f7;background:#f8fbff;border-radius:16px;color:#183c8c;text-align:left;cursor:pointer;transition:transform .2s ease,background .2s ease,border-color .2s ease,box-shadow .2s ease}
+.share-choice:hover{transform:translateY(-2px);background:#fff;border-color:#a9c9f7;box-shadow:0 10px 26px rgba(23,79,150,.10)}
+.share-choice:active{transform:scale(.985)}
+.share-choice-icon{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:#e9f2ff;color:#1762d2}
+.share-choice-icon .pro-icon{margin:0;width:20px;height:20px}
+.share-choice strong{display:block;font-size:13px}
+.share-choice small{display:block;margin-top:3px;color:#74839e;font-size:10px}
+.share-choice-arrow{font-size:25px;line-height:1;color:#8fa3c2;margin-right:2px}
+.share-message-box{display:flex;flex-direction:column}
+.share-message-search-wrap{display:flex;align-items:center;gap:9px;border:1px solid #dbe5f2;background:#fff;border-radius:13px;padding:0 12px;margin-bottom:12px}
+.share-message-search-wrap>.pro-icon{width:18px;height:18px;margin:0;color:#8193ae}
+.share-message-search{width:100%;height:44px;border:0;outline:0;background:transparent;color:#183c8c;font:inherit;font-size:12px}
+.share-message-list{max-height:54vh;overflow:auto;padding-right:2px;scrollbar-width:none;-ms-overflow-style:none}
+.share-message-list::-webkit-scrollbar{width:0;height:0}
+.share-target-section{margin:8px 0 7px;color:#8291aa;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em}
+.share-target{width:100%;display:flex;align-items:center;gap:11px;border:0;background:transparent;border-radius:12px;padding:9px 8px;color:#183c8c;text-align:left;cursor:pointer;transition:background .18s ease,transform .18s ease}
+.share-target:hover{background:#eef5ff;transform:translateX(2px)}
+.share-target-avatar{width:40px;height:40px;flex:0 0 40px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:#e5efff;color:#1e3a8a;font-size:13px;font-weight:800}
+.share-target-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.share-target-icon{width:40px;height:40px;flex:0 0 40px;border-radius:50%;display:grid;place-items:center;background:#e8f2ff;color:#1762d2}
+.share-target-info{min-width:0;flex:1}
+.share-target-info strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.share-target-info small{display:block;margin-top:2px;color:#7c8aa2;font-size:10px}
+.share-target-type{font-size:9px;font-weight:800;color:#8b9ab2}
+.share-target-empty{padding:25px 12px;text-align:center;color:#7b889d;font-size:11px}
+
+/* Page-entry and dynamic-content motion. */
+.post-card,.friend-profile-row,.content-box,.post-composer-card{animation:profileFadeUp .45s cubic-bezier(.16,1,.3,1) both}
+.post-card:nth-child(2){animation-delay:.04s}.post-card:nth-child(3){animation-delay:.08s}.post-card:nth-child(4){animation-delay:.12s}.post-card:nth-child(5){animation-delay:.16s}
+.animate-in{animation:profileFadeUp .45s cubic-bezier(.16,1,.3,1) both}
+@keyframes profileFadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+@media(max-width:768px){.share-modal{padding:12px}.share-modal-box{border-radius:20px;padding:18px;max-height:86vh}.share-modal-head h3{font-size:19px}.share-choice{grid-template-columns:44px minmax(0,1fr) auto;padding:12px}.share-choice-icon{width:40px;height:40px}.share-message-list{max-height:55vh}}
 
 /* =========================================================
    FINAL CLEANUP — SVG ICONS + HIDDEN SCROLLBARS
@@ -2622,6 +2669,53 @@ body{
   </div>
 </div>
 
+
+<!-- =========================
+     SHARE POST MODALS
+========================= -->
+<div id="shareChoiceModal" class="share-modal" aria-hidden="true">
+  <div class="share-modal-box" role="dialog" aria-modal="true" aria-labelledby="shareChoiceTitle">
+    <div class="share-modal-head">
+      <div>
+        <span class="share-modal-kicker"><span class="pro-icon pro-share" aria-hidden="true"></span> Share</span>
+        <h3 id="shareChoiceTitle">Share this post</h3>
+        <p>Choose how you want to share it.</p>
+      </div>
+      <button class="modal-x" type="button" aria-label="Close" onclick="closeShareChoice()">×</button>
+    </div>
+    <div class="share-choice-grid">
+      <button class="share-choice" type="button" onclick="shareAsPost()">
+        <span class="share-choice-icon"><span class="pro-icon pro-share" aria-hidden="true"></span></span>
+        <span><strong>Share as post</strong><small>Post it on your profile</small></span>
+        <span class="share-choice-arrow">›</span>
+      </button>
+      <button class="share-choice" type="button" onclick="openShareAsMessage()">
+        <span class="share-choice-icon"><span class="pro-icon pro-chat" aria-hidden="true"></span></span>
+        <span><strong>Share as message</strong><small>Send it to a friend or group</small></span>
+        <span class="share-choice-arrow">›</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="shareMessageModal" class="share-modal" aria-hidden="true">
+  <div class="share-modal-box share-message-box" role="dialog" aria-modal="true" aria-labelledby="shareMessageTitle">
+    <div class="share-modal-head">
+      <div>
+        <span class="share-modal-kicker"><span class="pro-icon pro-chat" aria-hidden="true"></span> Message</span>
+        <h3 id="shareMessageTitle">Send post to</h3>
+        <p>Select a friend or group conversation.</p>
+      </div>
+      <button class="modal-x" type="button" aria-label="Close" onclick="closeShareMessage()">×</button>
+    </div>
+    <div class="share-message-search-wrap">
+      <span class="pro-icon pro-search" aria-hidden="true"></span>
+      <input id="shareMessageSearch" class="share-message-search" type="text" placeholder="Search friends or groups..." autocomplete="off">
+    </div>
+    <div id="shareMessageList" class="share-message-list"></div>
+  </div>
+</div>
+
 <div id="postToast" class="post-toast"></div>
 
 <!-- =========================
@@ -3143,62 +3237,241 @@ function closeCommentSuccessPopup(){
 window.closeCommentSuccessPopup=closeCommentSuccessPopup;
 window.submitComment=submitComment;
 
+let activeSharePostId = null;
+let shareFriendsCache = [];
+let shareGroupsCache = [];
+
+function openShareModal(id){
+    const el=document.getElementById(id);
+    if(!el)return;
+    el.classList.add('open');
+    el.setAttribute('aria-hidden','false');
+}
+function closeShareChoice(){
+    activeSharePostId=null;
+    const el=document.getElementById('shareChoiceModal');
+    if(el){el.classList.remove('open');el.setAttribute('aria-hidden','true');}
+}
+window.closeShareChoice=closeShareChoice;
+function closeShareMessage(){
+    const el=document.getElementById('shareMessageModal');
+    if(el){el.classList.remove('open');el.setAttribute('aria-hidden','true');}
+    activeSharePostId=null;
+}
+window.closeShareMessage=closeShareMessage;
+
+async function getSharePost(postId){
+    const snap=await getDoc(doc(db,'posts',postId));
+    return snap.exists()?{id:snap.id,...(snap.data()||{})}:null;
+}
+
 async function sharePost(postId){
     const user=auth.currentUser;
     if(!user){
-        const loginOverlay = document.getElementById('loginOverlay');
+        const loginOverlay=document.getElementById('loginOverlay');
         if(loginOverlay) loginOverlay.style.display='flex';
         return;
     }
     try{
-        const originalSnap=await getDoc(doc(db,'posts',postId));
-        if(!originalSnap.exists()){ alert('This post no longer exists.'); return; }
-        const original=originalSnap.data() || {};
-
-        // Create a new post owned by the current user while preserving
-        // the original poster's name/text inside the shared-post card.
-        const profileSnap=await getDoc(doc(db,'users',user.uid));
-        const profile=profileSnap.exists()?profileSnap.data()||{}:{};
-
-        await addDoc(collection(db,'posts'),{
-            authorUid:user.uid,
-            authorName:profile.name || profile.displayName || user.displayName || 'User',
-            authorEmail:profile.email || user.email || '',
-            username:profile.username || '',
-            photoURL:profile.photoURL || user.photoURL || '',
-            text:original.text || '',
-            visibility:'public',
-            isShared:true,
-            originalPostId:postId,
-            originalAuthorUid:original.authorUid || '',
-            originalAuthorName:original.authorName || 'User',
-            originalText:original.text || '',
-            createdAt:serverTimestamp(),
-            shareCount:0,
-            likeCount:0,
-            commentCount:0
-        });
-
-        const postRef=doc(db,'posts',postId);
-        const current=Number(original.shareCount||0);
-        await updateDoc(postRef,{shareCount:current+1});
-        if(original.authorUid&&original.authorUid!==user.uid){
-            await addDoc(collection(db,'notifications'),{recipientUid:original.authorUid,actorUid:user.uid,actorName:profile.nickname||profile.name||profile.displayName||user.displayName||'Student',type:'share',text:'shared your post.',postId,read:false,createdAt:serverTimestamp()});
-        }
-
-        await loadPosts();
-        const countText=document.getElementById('postsCount');
-        if(countText) countText.textContent = String(document.querySelectorAll('.post-card').length);
-        showPostToast('Post shared successfully!');
+        const original=await getSharePost(postId);
+        if(!original){showPostToast('This post no longer exists.');return;}
+        activeSharePostId=postId;
+        openShareModal('shareChoiceModal');
     }catch(error){
-        console.error('Share error:',error);
-        const message = error?.code === 'permission-denied'
-          ? 'Firestore is blocking the share. Please check your Firestore Rules.'
-          : 'Could not share the post.';
-        alert(message);
+        console.error('Prepare share error:',error);
+        showPostToast('Could not prepare sharing.');
     }
 }
 window.sharePost=sharePost;
+
+async function incrementSharedPostCount(postId, original){
+    try{
+        await updateDoc(doc(db,'posts',postId),{shareCount:Number(original?.shareCount||0)+1});
+    }catch(e){console.warn('Could not update share count',e);}
+}
+
+async function shareAsPost(){
+    const user=auth.currentUser;
+    const postId=activeSharePostId;
+    if(!user||!postId)return;
+    try{
+        const original=await getSharePost(postId);
+        if(!original){showPostToast('This post no longer exists.');closeShareChoice();return;}
+        const profileSnap=await getDoc(doc(db,'users',user.uid));
+        const profile=profileSnap.exists()?profileSnap.data()||{}:{};
+        await addDoc(collection(db,'posts'),{
+            authorUid:user.uid,
+            authorName:profile.name || profile.nickname || profile.displayName || user.displayName || 'User',
+            authorEmail:profile.email || user.email || '',
+            username:profile.username || '',
+            photoURL:profile.photoURL || user.photoURL || '',
+            text:original.originalText || original.text || '',
+            visibility:'public',
+            audienceUids:[],
+            mentions:original.mentions || [],
+            isShared:true,
+            originalPostId:postId,
+            originalAuthorUid:original.originalAuthorUid || original.authorUid || '',
+            originalAuthorName:original.originalAuthorName || original.authorName || 'User',
+            originalText:original.originalText || original.text || '',
+            createdAt:serverTimestamp(),
+            likeCount:0,
+            commentCount:0,
+            shareCount:0
+        });
+        await incrementSharedPostCount(postId,original);
+        if(original.authorUid&&original.authorUid!==user.uid){
+            await addDoc(collection(db,'notifications'),{
+                recipientUid:original.authorUid,actorUid:user.uid,
+                actorName:profile.nickname||profile.name||profile.displayName||user.displayName||'Student',
+                type:'share',text:'shared your post.',postId,read:false,createdAt:serverTimestamp()
+            }).catch(()=>{});
+        }
+        closeShareChoice();
+        showPostToast('Post shared as a post.');
+        await loadPosts();
+        const countText=document.getElementById('postsCount');
+        if(countText)countText.textContent=String(document.querySelectorAll('.post-card').length);
+    }catch(error){
+        console.error('Share as post error:',error);
+        showPostToast(error?.code==='permission-denied'?'Firestore blocked this share.':'Could not share as a post.');
+    }
+}
+window.shareAsPost=shareAsPost;
+
+async function loadShareTargets(){
+    const user=auth.currentUser;
+    if(!user)return;
+    try{
+        const friendSnap=await getDocs(query(collection(db,'friends',user.uid,'list'),limit(100)));
+        shareFriendsCache=await Promise.all(friendSnap.docs.map(async d=>{
+            const fid=d.id;
+            let data={...(d.data()||{})};
+            try{const us=await getDoc(doc(db,'users',fid));if(us.exists())data={...data,...(us.data()||{})};}catch(e){}
+            return {uid:data.uid||fid,...data};
+        }));
+        shareFriendsCache.sort((a,b)=>String(a.nickname||a.name||a.username||'').localeCompare(String(b.nickname||b.name||b.username||'')));
+    }catch(e){console.warn('Share friend targets',e);shareFriendsCache=[];}
+    try{
+        const groupSnap=await getDocs(query(collection(db,'groups'),where('memberUids','array-contains',user.uid),limit(100)));
+        shareGroupsCache=groupSnap.docs.map(d=>({id:d.id,...(d.data()||{})})).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')));
+    }catch(e){
+        // Older projects may not have groups enabled/rules; keep friend sharing working.
+        console.warn('Share group targets',e);shareGroupsCache=[];
+    }
+}
+
+function shareTargetMarkup(item,kind){
+    if(kind==='group'){
+        const name=item.name||'Group Chat';
+        return `<button type="button" class="share-target" data-share-kind="group" data-share-id="${escapePostHtml(item.id)}">
+            <span class="share-target-icon"><span class="pro-icon pro-users" aria-hidden="true"></span></span>
+            <span class="share-target-info"><strong>${escapePostHtml(name)}</strong><small>${Number(item.memberUids?.length||0)} members</small></span>
+            <span class="share-target-type">GROUP</span>
+        </button>`;
+    }
+    const name=item.nickname||item.name||item.displayName||item.username||'Student';
+    const avatar=item.photoURL?`<img src="${escapePostHtml(item.photoURL)}" alt="">`:escapePostHtml(name.charAt(0).toUpperCase());
+    return `<button type="button" class="share-target" data-share-kind="friend" data-share-id="${escapePostHtml(item.uid)}">
+        <span class="share-target-avatar">${avatar}</span>
+        <span class="share-target-info"><strong>${escapePostHtml(name)}${verifiedBadgeHtml(item.email||'')}</strong><small>${item.username?'@'+escapePostHtml(item.username):'Friend'}</small></span>
+        <span class="share-target-type">FRIEND</span>
+    </button>`;
+}
+
+function renderShareTargets(filter=''){
+    const box=document.getElementById('shareMessageList');
+    if(!box)return;
+    const q=String(filter||'').trim().toLowerCase();
+    const friends=shareFriendsCache.filter(x=>{
+        const n=String(x.nickname||x.name||x.displayName||x.username||'').toLowerCase();
+        return !q||n.includes(q);
+    });
+    const groups=shareGroupsCache.filter(x=>String(x.name||'').toLowerCase().includes(q));
+    let html='';
+    if(friends.length)html+=`<div class="share-target-section">Friends</div>${friends.map(x=>shareTargetMarkup(x,'friend')).join('')}`;
+    if(groups.length)html+=`<div class="share-target-section">Groups</div>${groups.map(x=>shareTargetMarkup(x,'group')).join('')}`;
+    box.innerHTML=html||'<div class="share-target-empty">No friends or groups found.</div>';
+    box.querySelectorAll('[data-share-id]').forEach(btn=>btn.addEventListener('click',()=>shareTarget(btn.dataset.shareKind,btn.dataset.shareId)));
+    box.querySelectorAll('.share-target').forEach((el,i)=>el.style.animationDelay=`${Math.min(i,8)*25}ms`);
+}
+
+async function openShareAsMessage(){
+    const user=auth.currentUser;
+    if(!user||!activeSharePostId)return;
+    const choice=document.getElementById('shareChoiceModal');
+    if(choice){choice.classList.remove('open');choice.setAttribute('aria-hidden','true');}
+    openShareModal('shareMessageModal');
+    const box=document.getElementById('shareMessageList');
+    if(box)box.innerHTML='<div class="share-target-empty">Loading conversations...</div>';
+    const input=document.getElementById('shareMessageSearch');
+    if(input){input.value='';setTimeout(()=>input.focus(),50);}
+    await loadShareTargets();
+    renderShareTargets('');
+}
+window.openShareAsMessage=openShareAsMessage;
+
+async function shareTarget(kind,id){
+    const user=auth.currentUser;
+    const postId=activeSharePostId;
+    if(!user||!postId||!id)return;
+    try{
+        const original=await getSharePost(postId);
+        if(!original){showPostToast('This post no longer exists.');closeShareMessage();return;}
+        const profileSnap=await getDoc(doc(db,'users',user.uid));
+        const profile=profileSnap.exists()?profileSnap.data()||{}:{};
+        const author=original.originalAuthorName||original.authorName||'Student';
+        const body=String(original.originalText||original.text||'').slice(0,900);
+        const text=`↗ Shared post\n\nOriginal post by ${author}:\n${body}`;
+        if(kind==='group'){
+            const group=shareGroupsCache.find(g=>g.id===id);
+            if(!group||!(group.memberUids||[]).includes(user.uid))throw new Error('You are not a member of this group.');
+            await addDoc(collection(db,'groups',id,'messages'),{
+                senderUid:user.uid,
+                senderName:profile.nickname||profile.name||profile.displayName||user.displayName||'Student',
+                text,
+                sharedPost:{postId,authorName:author,text:body},
+                createdAt:serverTimestamp(),
+                hiddenFor:[],unsent:false,readBy:[user.uid]
+            });
+        }else{
+            const friendUid=id;
+            if(friendUid===user.uid)return;
+            const friendRef=doc(db,'friends',user.uid,'list',friendUid);
+            if(!(await getDoc(friendRef)).exists())throw new Error('You can only share to your friends.');
+            const cid=[user.uid,friendUid].sort().join('_');
+            await addDoc(collection(db,'conversations',cid,'messages'),{
+                senderUid:user.uid,
+                receiverUid:friendUid,
+                text,
+                sharedPost:{postId,authorName:author,text:body},
+                createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{},readBy:[user.uid]
+            });
+            await addDoc(collection(db,'notifications'),{
+                recipientUid:friendUid,actorUid:user.uid,
+                actorName:profile.nickname||profile.name||profile.displayName||user.displayName||'Student',
+                type:'message',text:'shared a post with you.',chatId:cid,postId,read:false,createdAt:serverTimestamp()
+            }).catch(()=>{});
+        }
+        await incrementSharedPostCount(postId,original);
+        closeShareMessage();
+        showPostToast(kind==='group'?'Post shared to the group.':'Post shared as a message.');
+        await loadPosts();
+    }catch(error){
+        console.error('Share target error:',error);
+        showPostToast(error?.code==='permission-denied'?'Firestore blocked this message share.':(error.message||'Could not share the post.'));
+    }
+}
+
+window.shareTarget=shareTarget;
+
+const shareSearch=document.getElementById('shareMessageSearch');
+if(shareSearch)shareSearch.addEventListener('input',e=>renderShareTargets(e.target.value));
+
+document.querySelectorAll('#shareChoiceModal,#shareMessageModal').forEach(modal=>{
+    modal.addEventListener('click',e=>{if(e.target===modal){if(modal.id==='shareChoiceModal')closeShareChoice();else closeShareMessage();}});
+});
+
 
 function showPostToast(message){
     const toast=document.getElementById('postToast');
@@ -4129,6 +4402,8 @@ document.addEventListener("keydown", e => {
         closeComments();
         closeProfileSectionRequiredPopup();
         closeProfileSectionVerificationPopup();
+        closeShareChoice();
+        closeShareMessage();
     }
 });
 
@@ -4138,20 +4413,21 @@ document.addEventListener("keydown", e => {
 <script>
 (function(){
     const ICONS = {
-        user: '<circle cx="12" cy="8" r="3.2"></circle><path d="M5.5 20c.8-3.4 3-5.4 6.5-5.4s5.7 2 6.5 5.4"></path>',
-        edit: '<path d="M4 16.8V20h3.2L18.8 8.4a2.2 2.2 0 0 0-3.1-3.1L4 16.8Z"></path><path d="m14.6 6.8 2.6 2.6"></path>',
+        user: '<circle cx="12" cy="8" r="3.25"></circle><path d="M5 20c.8-3.4 3.15-5.35 7-5.35s6.2 1.95 7 5.35"></path>',
+        edit: '<path d="M4 17.2V20h2.8L19 7.8a2 2 0 0 0-2.8-2.8L4 17.2Z"></path><path d="m13.8 6.2 4 4"></path>',
         chat: '<path d="M4 5.5h16v11H9l-5 3v-3H4z"></path><path d="M8 9.5h8M8 13h5"></path>',
         users: '<circle cx="9" cy="8.5" r="3"></circle><circle cx="16.5" cy="9.5" r="2.5"></circle><path d="M3.5 19c.7-3.2 2.6-5.2 5.5-5.2s4.8 2 5.5 5.2"></path><path d="M14 14.4c2.2-.3 4.3 1.3 5 4.6"></path>',
         lock: '<rect x="5.5" y="10" width="13" height="10" rx="2"></rect><path d="M8.5 10V7.7a3.5 3.5 0 0 1 7 0V10"></path>',
         save: '<path d="M5 4h11l3 3v13H5z"></path><path d="M8 4v5h7V4M8 20v-6h8v6"></path>',
         warning: '<path d="M12 4 21 19H3L12 4Z"></path><path d="M12 9v4M12 16h.01"></path>',
-        news: '<rect x="4" y="4" width="16" height="16" rx="2"></rect><path d="M8 8h8M8 12h8M8 16h5"></path>',
-        like: '<path d="M7 11v8H4v-8zM9 19h6.2c1.3 0 2.4-.9 2.7-2.2l1-4.8c.3-1.5-.8-2.8-2.3-2.8H14l.5-2.6c.3-1.6-.9-3.1-2.5-3.1L8.7 9.6"></path>',
-        share: '<path d="M14 5h5v5"></path><path d="M19 5 11 13"></path><path d="M19 13v5H5V5h5"></path>',
-        pin: '<path d="m9 4 6 0 1 5 2 2-5 1v6l-1 2-1-2v-6l-5-1 2-2z"></path>',
+        news: '<circle cx="12" cy="12" r="8.5"></circle><path d="M3.5 12h17M12 3.5c2.3 2.35 3.5 5.2 3.5 8.5S14.3 18.15 12 20.5C9.7 18.15 8.5 15.3 8.5 12S9.7 5.85 12 3.5Z"></path>',
+        like: '<path d="M7 10.5V20H4v-9.5zM9 20h5.7c1.35 0 2.5-.85 2.85-2.15l1.1-4.55c.35-1.5-.8-2.95-2.35-2.95h-2.7l.55-2.7c.3-1.5-.85-2.95-2.4-2.95L8.7 9.2"></path>',
+        share: '<circle cx="6" cy="12" r="2"></circle><circle cx="18" cy="6" r="2"></circle><circle cx="18" cy="18" r="2"></circle><path d="m7.7 11 8.45-4M7.7 13l8.45 4"></path>',
+        pin: '<path d="m9 4 6 0 1 5 2 2-5 1v5l-1 3-1-3v-5l-5-1 2-2z"></path>',
         trash: '<path d="M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13M10 10v7M14 10v7"></path>',
         eye: '<path d="M2.5 12s3.2-5 9.5-5 9.5 5 9.5 5-3.2 5-9.5 5-9.5-5-9.5-5Z"></path><circle cx="12" cy="12" r="2.5"></circle>',
-        doc: '<rect x="5" y="3.5" width="14" height="17" rx="2"></rect><path d="M8.5 8h7M8.5 11.5h7M8.5 15h4.5"></path>'
+        search: '<circle cx="10.8" cy="10.8" r="6.2"></circle><path d="m16 16 4.2 4.2"></path>',
+        doc: '<path d="M7 3.5h7l3 3V20H7z"></path><path d="M14 3.5V7h3M9 11h6M9 14.5h6M9 18h4"></path>'
     };
 
     function makeSvg(kind, extraClass){
@@ -4188,10 +4464,24 @@ document.addEventListener("keydown", e => {
 
     upgradeIcons(document);
 
+    const motionObserver = new IntersectionObserver(entries=>{
+        entries.forEach(entry=>{
+            if(entry.isIntersecting){
+                entry.target.classList.add('animate-in');
+                motionObserver.unobserve(entry.target);
+            }
+        });
+    },{threshold:.08});
+
+    function observeMotion(root=document){
+        (root||document).querySelectorAll?.('.post-card,.friend-profile-row,.content-box,.post-composer-card,.share-target').forEach(el=>motionObserver.observe(el));
+    }
+    observeMotion(document);
+
     const observer = new MutationObserver(mutations=>{
         for(const mutation of mutations){
             mutation.addedNodes.forEach(node=>{
-                if(node.nodeType === 1) upgradeIcons(node);
+                if(node.nodeType === 1){ upgradeIcons(node); observeMotion(node); }
             });
         }
     });
