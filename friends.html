@@ -96,6 +96,7 @@ input{
 .search-box{position:relative}
 .search-box input{padding-left:42px}
 .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#64748b}
+.search-icon svg{width:18px;height:18px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .results{display:flex;flex-direction:column;gap:10px;margin-top:15px}
 .user-row{
   background:#fff;color:#0f172a;border-radius:16px;padding:12px;
@@ -1073,7 +1074,7 @@ body{animation:pageFadeIn .48s ease both}
     <h3>Find Friends</h3>
     <div class="sub">Search by username or nickname.</div>
     <div class="search-box">
-      <span class="search-icon">🔍</span>
+      <span class="search-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"></circle><path d="M16 16l4.5 4.5"></path></svg></span>
       <input id="searchInput" placeholder="Search username or nickname..." autocomplete="off">
     </div>
     <div id="searchResults" class="results">
@@ -1976,6 +1977,7 @@ function closeRemoveFriendModal(){
   modal.setAttribute('aria-hidden','true');
   pendingRemoveFriend = null;
 }
+window.closeRemoveFriendModal = closeRemoveFriendModal;
 
 async function removeFriend(friend,row){
   try{
