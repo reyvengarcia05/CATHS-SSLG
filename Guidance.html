@@ -247,6 +247,65 @@ input[readonly]{background:linear-gradient(180deg,#f8fbff,#edf3f9)!important}
   .bottom-nav .nav-item::after{height:4px}.bottom-nav .nav-item.is-active::after{width:29px;}
 }
 @media(prefers-reduced-motion:reduce){.nav-item.nav-clicked,.nav-item.nav-clicked .nav-icon-wrap{animation:none!important}.nav-item,.nav-item::after,.nav-svg{transition:none!important}.nav-ripple{display:none!important;}}
+
+/* === INDEX-STYLE ACCOUNT CONTROL === */
+.header-right{position:relative!important}
+.login-btn{position:relative!important;justify-content:center!important;white-space:nowrap!important}
+.login-btn.user-account{padding:6px 11px!important;gap:7px!important;border-radius:14px!important}
+.login-btn.user-account img{width:30px!important;height:30px!important;border-radius:50%!important;object-fit:cover!important;border:1.5px solid rgba(255,255,255,.55)!important;box-shadow:0 4px 12px rgba(0,0,0,.18)!important}
+.login-btn.user-account .account-name{max-width:145px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:700}
+.login-btn.user-account .account-chevron{font-size:10px;opacity:.78;transform:translateY(-1px)}
+.profile-menu{
+  display:none;position:absolute;top:calc(100% + 10px);right:0;width:280px;max-width:calc(100vw - 20px);
+  background:rgba(255,255,255,.97);color:#00296B;border-radius:20px;padding:16px;
+  box-shadow:0 18px 45px rgba(0,0,0,.25),0 4px 12px rgba(0,0,0,.08);
+  z-index:99999;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  opacity:0;transform:translateY(-12px) scale(.96);transform-origin:top right;pointer-events:none;
+}
+.profile-menu.open{display:block;pointer-events:auto;animation:profileMenuIn .42s cubic-bezier(.16,1,.3,1) forwards}
+.profile-menu.closing{display:block;pointer-events:none;animation:profileMenuOut .28s cubic-bezier(.4,0,.2,1) forwards}
+.profile-info{display:flex;align-items:center;gap:12px}
+.profile-info img{width:50px!important;height:50px!important;border-radius:50%!important;object-fit:cover!important;border:1px solid #dbe6f5!important;background:#eef4ff}
+.profile-details{display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.profile-details strong{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.profile-details small{font-size:11px;color:#66748f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.profile-divider{height:1px;background:#dde5f0;margin:12px 0}
+.profile-nav{display:flex;flex-direction:column;gap:5px}
+.profile-nav-item{display:flex;align-items:center;gap:10px;width:100%;padding:10px 11px;border-radius:12px;text-decoration:none;color:#00296B;font-size:13px;font-weight:600;transition:background .2s ease,transform .2s ease,box-shadow .2s ease}
+.profile-nav-item:hover{background:#eef5ff;transform:translateX(3px);box-shadow:inset 0 0 0 1px rgba(0,92,190,.06)}
+.profile-menu-icon{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:9px;background:#f0f5ff;color:#0b55a6;flex:0 0 auto}
+.profile-menu-icon .ui-svg{width:18px!important;height:18px!important;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.logout-button{width:100%!important;padding:11px!important;border:none!important;border-radius:11px!important;background:#00296B!important;color:#fff!important;font-weight:700!important;cursor:pointer;transition:transform .2s ease,background .2s ease,box-shadow .2s ease!important}
+.logout-button:hover{background:#003DA5!important;transform:translateY(-1px);box-shadow:0 8px 18px rgba(0,41,107,.18)!important}
+.profile-menu .profile-info,.profile-menu .profile-divider,.profile-menu .profile-nav-item,.profile-menu .logout-button{opacity:0}
+.profile-menu.open .profile-info{animation:profileItemIn .36s cubic-bezier(.16,1,.3,1) .04s forwards}
+.profile-menu.open .profile-divider{animation:profileFadeIn .3s ease .12s forwards}
+.profile-menu.open .profile-nav-item:nth-child(1){animation:profileItemIn .34s cubic-bezier(.16,1,.3,1) .16s forwards}
+.profile-menu.open .profile-nav-item:nth-child(2){animation:profileItemIn .34s cubic-bezier(.16,1,.3,1) .22s forwards}
+.profile-menu.open .profile-nav-item:nth-child(3){animation:profileItemIn .34s cubic-bezier(.16,1,.3,1) .28s forwards}
+.profile-menu.open .logout-button{animation:profileItemIn .34s cubic-bezier(.16,1,.3,1) .34s forwards}
+.profile-menu.closing .logout-button{animation:profileItemOut .14s ease 0s forwards}
+.profile-menu.closing .profile-nav-item:nth-child(3){animation:profileItemOut .14s ease .03s forwards}
+.profile-menu.closing .profile-nav-item:nth-child(2){animation:profileItemOut .14s ease .06s forwards}
+.profile-menu.closing .profile-nav-item:nth-child(1){animation:profileItemOut .14s ease .09s forwards}
+.profile-menu.closing .profile-info{animation:profileInfoOut .16s ease .12s forwards}
+@keyframes profileMenuIn{0%{opacity:0;transform:translateY(-12px) scale(.96)}60%{opacity:1;transform:translateY(2px) scale(1.01)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes profileMenuOut{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-10px) scale(.97)}}
+@keyframes profileItemIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes profileFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes profileItemOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(6px)}}
+@keyframes profileInfoOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-6px)}}
+@media(max-width:560px){
+  .login-btn.user-account{padding:5px 8px!important}
+  .login-btn.user-account img{width:29px!important;height:29px!important}
+  .login-btn.user-account .account-name{max-width:72px;font-size:10px}
+  .profile-menu{right:-4px;width:270px}
+}
+@media(max-width:390px){
+  .login-btn.user-account .account-name{display:none}
+  .login-btn.user-account{padding:5px 7px!important}
+}
+
 </style>
 </head>
 <body>
@@ -262,10 +321,37 @@ input[readonly]{background:linear-gradient(180deg,#f8fbff,#edf3f9)!important}
     <p>Private Student Guidance Request</p>
   </div>
   <div class="header-right">
-    <button class="login-btn" type="button" onclick="googleLogin()">
-      <svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M12 12h7M16 8l4 4-4 4"/></svg>
+    <button id="headerLoginBtn" class="login-btn" type="button" aria-expanded="false" aria-haspopup="true" onclick="openLogin(false)">
+      <svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8m7-4h5m-2-3 3 3-3 3"/></svg>
       <span>Sign In</span>
     </button>
+
+    <div id="logoutMenu" class="profile-menu" aria-hidden="true">
+      <div class="profile-info">
+        <img id="profilePhoto" src="" alt="Profile Photo">
+        <div class="profile-details">
+          <strong id="profileName">User</strong>
+          <small id="profileEmail"></small>
+        </div>
+      </div>
+      <div class="profile-divider"></div>
+      <div class="profile-nav">
+        <a href="profile.html" class="profile-nav-item">
+          <span class="profile-menu-icon"><svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.4"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span>
+          <span>Profile</span>
+        </a>
+        <a href="friends.html" class="profile-nav-item">
+          <span class="profile-menu-icon"><svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0M14 17a4.3 4.3 0 0 1 6.5 3"/></svg></span>
+          <span>Add Friends</span>
+        </a>
+        <a href="voice.html" class="profile-nav-item">
+          <span class="profile-menu-icon"><svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4V5Z"/><path d="M8 9h8M8 13h5"/></svg></span>
+          <span>Student Voice</span>
+        </a>
+      </div>
+      <div class="profile-divider"></div>
+      <button type="button" class="logout-button" onclick="logoutUser()">Log Out</button>
+    </div>
   </div>
 </header>
 
@@ -497,7 +583,7 @@ input[readonly]{background:linear-gradient(180deg,#f8fbff,#edf3f9)!important}
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxUzs6AMBvMq9CAGlJv9B3LqYld_cBTIkTh6jx_MP8YKrfhFmpU8uXgwVEuQL4ZFp_1/exec";
 
-const ADMIN_EMAILS = ["rogel.salvador@deped.gov.ph"];
+const ADMIN_EMAILS = ["rogel.salvador@deped.gov.ph","Reyvengarcia15@gmail.com"];
 let firebaseUser = null;
 let sectionVerified = false;
 let verifiedSection = "";
@@ -976,37 +1062,148 @@ window.approveGuidanceSubmission=async function(item,cardKey){
 
 function escapeHtml(value){return String(value??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[m]));}
 
+window.userLoggedIn = false;
+
+window.toggleProfileMenu = function(){
+  if(!window.userLoggedIn){
+    openLogin(false);
+    return;
+  }
+  const menu=document.getElementById('logoutMenu');
+  const btn=document.getElementById('headerLoginBtn');
+  if(!menu) return;
+  if(menu.classList.contains('open')){
+    menu.classList.remove('open');
+    menu.classList.add('closing');
+    if(btn) btn.setAttribute('aria-expanded','false');
+    const finish=()=>{
+      menu.style.display='none';
+      menu.classList.remove('closing');
+      menu.setAttribute('aria-hidden','true');
+    };
+    menu.addEventListener('animationend',function handler(e){
+      if(e.animationName!=='profileMenuOut') return;
+      menu.removeEventListener('animationend',handler);
+      finish();
+    });
+    setTimeout(finish,260);
+    return;
+  }
+  menu.style.display='block';
+  menu.classList.remove('closing');
+  menu.setAttribute('aria-hidden','false');
+  if(btn) btn.setAttribute('aria-expanded','true');
+  requestAnimationFrame(()=>menu.classList.add('open'));
+};
+
+window.closeProfileMenu = function(){
+  const menu=document.getElementById('logoutMenu');
+  const btn=document.getElementById('headerLoginBtn');
+  if(!menu || !menu.classList.contains('open')) return;
+  menu.classList.remove('open');
+  menu.classList.add('closing');
+  if(btn) btn.setAttribute('aria-expanded','false');
+  setTimeout(()=>{
+    menu.style.display='none';
+    menu.classList.remove('closing');
+    menu.setAttribute('aria-hidden','true');
+  },260);
+};
+
+document.addEventListener('click',function(e){
+  const menu=document.getElementById('logoutMenu');
+  const btn=document.getElementById('headerLoginBtn');
+  if(!menu || !btn || !menu.classList.contains('open')) return;
+  if(!menu.contains(e.target) && !btn.contains(e.target)) closeProfileMenu();
+});
+
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape') closeProfileMenu();
+});
+
 window.googleLogin=async function(){
-  try{await signInWithPopup(window.auth,window.googleProvider);closeLogin()}catch(err){console.error(err);alert('Google login failed: '+err.message)}
-}
+  try{
+    await signInWithPopup(window.auth,window.googleProvider);
+    closeLogin();
+  }catch(err){
+    console.error('Google login error:',err);
+    alert('Google login failed: '+err.message);
+  }
+};
+
+window.logoutUser = async function(){
+  try{
+    await signOut(window.auth);
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userPhoto');
+    localStorage.removeItem('userEmail');
+    closeProfileMenu();
+  }catch(err){
+    console.error('Logout error:',err);
+    alert('Logout failed: '+err.message);
+  }
+};
 </script>
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-import {getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,setPersistence,browserLocalPersistence} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserLocalPersistence} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 const firebaseConfig={apiKey:"AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",authDomain:"caths-page.firebaseapp.com",projectId:"caths-page",storageBucket:"caths-page.firebasestorage.app",messagingSenderId:"945498022620",appId:"1:945498022620:web:71aeb4cd2472e061aeca19",measurementId:"G-CBG1YSK13G"};
-const app=initializeApp(firebaseConfig);window.auth=getAuth(app);window.googleProvider=new GoogleAuthProvider();setPersistence(auth,browserLocalPersistence).catch(console.error);
+const app=initializeApp(firebaseConfig);const auth=getAuth(app);window.auth=auth;window.googleProvider=new GoogleAuthProvider();setPersistence(auth,browserLocalPersistence).catch(console.error);
 onAuthStateChanged(auth,user=>{
   setGoogleUser(user);
+  window.userLoggedIn=!!user;
+
+  const headerBtn=document.getElementById('headerLoginBtn');
+  const profileMenu=document.getElementById('logoutMenu');
+  const profileName=document.getElementById('profileName');
+  const profileEmail=document.getElementById('profileEmail');
+  const profilePhoto=document.getElementById('profilePhoto');
   const navPhoto=document.getElementById('profileNavPhoto');
   const navText=document.getElementById('profileNavText');
+
   if(user){
-    if(navPhoto){
-      if(user.photoURL){
-        navPhoto.innerHTML=`<img src="${user.photoURL}" alt="Profile">`;
-      }else{
-        navPhoto.textContent='';
-      }
-    }
-    if(navText) navText.textContent='Profile';
+    closeLogin();
     localStorage.setItem('userPhoto',user.photoURL||'');
     localStorage.setItem('userName',user.displayName||'User');
     localStorage.setItem('userEmail',user.email||'');
+
+    if(profileName) profileName.textContent=user.displayName||'User';
+    if(profileEmail) profileEmail.textContent=user.email||'';
+    if(profilePhoto){
+      profilePhoto.src=user.photoURL||'';
+      profilePhoto.style.display=user.photoURL?'block':'none';
+    }
+
+    if(headerBtn){
+      headerBtn.classList.add('user-account');
+      headerBtn.setAttribute('aria-expanded','false');
+      headerBtn.innerHTML=user.photoURL
+        ? `<img src="${user.photoURL}" alt="Profile"><span class="account-name">${escapeHtml(user.displayName||'User')}</span><span class="account-chevron">▼</span>`
+        : `<svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/></svg><span class="account-name">${escapeHtml(user.displayName||'User')}</span><span class="account-chevron">▼</span>`;
+      headerBtn.onclick=()=>toggleProfileMenu();
+    }
+
+    if(navPhoto){
+      if(user.photoURL) navPhoto.innerHTML=`<img src="${user.photoURL}" alt="Profile">`;
+      else navPhoto.innerHTML='<span class="profile-fallback"><svg class="nav-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.4"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span>';
+    }
+    if(navText) navText.textContent='Profile';
   }else{
-    if(navPhoto) navPhoto.textContent='';
+    closeProfileMenu();
+    if(headerBtn){
+      headerBtn.classList.remove('user-account');
+      headerBtn.setAttribute('aria-expanded','false');
+      headerBtn.innerHTML='<svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8m7-4h5m-2-3 3 3-3 3"/></svg><span>Sign In</span>';
+      headerBtn.onclick=()=>openLogin(false);
+    }
+    if(navPhoto) navPhoto.innerHTML='<span class="profile-fallback"><svg class="nav-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.4"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span>';
     if(navText) navText.textContent='Profile';
     document.getElementById('fullName').value='';
     document.getElementById('email').value='';
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userPhoto');
+    localStorage.removeItem('userEmail');
   }
 });
 </script>
