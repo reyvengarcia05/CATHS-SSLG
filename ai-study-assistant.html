@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#061a3a">
+<title>CATHS-MAIN • AI Study Assistant</title>
+<link rel="icon" type="image/png" href="sslg-logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#2f80ff;
+  --darkblue:#061a3a;
+  --deep:#020b1b;
+  --cyan:#79c7ff;
+  --text:#fff;
+  --muted:rgba(255,255,255,.68);
+  --glass:rgba(255,255,255,.10);
+  --line:rgba(255,255,255,.15);
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
+html,body{min-height:100%;width:100%}
+body{
+  color:var(--text);
+  background:
+    radial-gradient(1000px 700px at 12% 8%,rgba(62,145,255,.22),transparent 62%),
+    radial-gradient(900px 650px at 88% 22%,rgba(25,87,190,.18),transparent 64%),
+    radial-gradient(900px 700px at 50% 100%,rgba(24,64,145,.28),transparent 68%),
+    linear-gradient(135deg,#020b1b 0%,#071d3d 36%,#0b3270 68%,#061a3a 100%);
+  background-attachment:fixed;
+  overflow-x:hidden;
+}
+body::before,body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1}
+body::before{background:radial-gradient(circle at 20% 28%,rgba(117,190,255,.08),transparent 24%),radial-gradient(circle at 78% 72%,rgba(52,133,255,.07),transparent 26%)}
+body::after{background:linear-gradient(115deg,transparent 35%,rgba(120,190,255,.035) 48%,transparent 60%)}
+
+.page{width:min(1160px,100%);margin:0 auto;padding:18px 20px 42px}
+.topbar{
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;
+  min-height:72px;margin-bottom:18px;
+}
+.brand{display:flex;align-items:center;justify-content:flex-start;gap:9px}
+.brand img{width:42px;height:42px;object-fit:contain}
+.brand .school-logo{width:44px;height:44px}
+.title{text-align:center}
+.title h1{font-size:19px;line-height:1.2;font-weight:800;letter-spacing:.1px}
+.title p{font-size:9px;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.back-wrap{display:flex;justify-content:flex-end}
+.back-btn{
+  display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:13px;
+  color:#fff;text-decoration:none;background:rgba(255,255,255,.10);border:1px solid var(--line);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12);backdrop-filter:blur(14px);transition:.2s ease;
+  font-size:12px;font-weight:700
+}
+.back-btn:hover{transform:translateY(-2px);background:rgba(255,255,255,.15)}
+.back-btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.hero{
+  position:relative;overflow:hidden;border:1px solid var(--line);border-radius:26px;padding:28px;
+  background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.055));
+  backdrop-filter:blur(18px);box-shadow:0 18px 45px rgba(0,12,40,.22),inset 0 1px 0 rgba(255,255,255,.14);
+}
+.hero::before{content:"";position:absolute;width:260px;height:260px;right:-110px;top:-120px;border-radius:50%;background:radial-gradient(circle,rgba(77,166,255,.22),transparent 68%)}
+.hero-grid{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;position:relative;z-index:1}
+.robot{
+  width:86px;height:86px;border-radius:24px;display:grid;place-items:center;
+  background:linear-gradient(145deg,rgba(75,157,255,.30),rgba(0,41,107,.58));
+  border:1px solid rgba(148,213,255,.28);box-shadow:0 10px 28px rgba(0,20,60,.18),inset 0 1px 0 rgba(255,255,255,.18)
+}
+.robot svg{width:50px;height:50px;fill:none;stroke:#e5f4ff;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 4px 10px rgba(80,170,255,.35))}
+.hero h2{font-size:27px;line-height:1.15;font-weight:800;margin-bottom:6px}
+.hero h2 span{color:#8fd0ff}
+.hero p{font-size:12px;line-height:1.7;color:rgba(255,255,255,.74);max-width:760px}
+
+.tools{margin-top:20px}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:12px}
+.section-head h3{font-size:16px;font-weight:800}
+.section-head span{font-size:10px;color:var(--muted)}
+.tool-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.tool-card{
+  appearance:none;border:1px solid var(--line);color:#fff;text-align:left;cursor:pointer;min-width:0;
+  padding:16px 14px;border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.055));
+  backdrop-filter:blur(14px);box-shadow:inset 0 1px 0 rgba(255,255,255,.12);transition:.22s ease
+}
+.tool-card:hover{transform:translateY(-4px);border-color:rgba(154,215,255,.34);box-shadow:0 14px 30px rgba(0,18,60,.18),inset 0 1px 0 rgba(255,255,255,.17)}
+.tool-card.active{background:linear-gradient(145deg,rgba(55,138,255,.27),rgba(0,41,107,.42));border-color:rgba(125,193,255,.44);box-shadow:0 12px 30px rgba(18,73,160,.22),inset 0 1px 0 rgba(255,255,255,.18)}
+.tool-icon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:rgba(114,180,255,.12);border:1px solid rgba(147,211,255,.15);margin-bottom:10px}
+.tool-icon svg{width:20px;height:20px;fill:none;stroke:#e9f6ff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tool-card strong{display:block;font-size:11px;line-height:1.35}
+.tool-card small{display:block;margin-top:4px;font-size:8.5px;line-height:1.4;color:var(--muted)}
+
+.workspace{margin-top:20px;display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);gap:15px}
+.panel{
+  border:1px solid var(--line);border-radius:22px;padding:20px;background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(255,255,255,.05));
+  backdrop-filter:blur(16px);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)
+}
+.panel-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.panel-title h4{font-size:15px;font-weight:800}
+.badge{font-size:8px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;padding:6px 8px;border-radius:999px;background:rgba(116,188,255,.11);border:1px solid rgba(142,207,255,.14);color:#bfe4ff}
+label{display:block;font-size:10px;font-weight:700;color:rgba(255,255,255,.78);margin-bottom:7px}
+textarea,select,input{
+  width:100%;border:1px solid rgba(255,255,255,.13);outline:none;color:#fff;background:rgba(2,14,35,.34);
+  border-radius:14px;padding:12px;font-size:11px;transition:.2s ease
+}
+textarea{min-height:190px;resize:vertical;line-height:1.55}
+textarea::placeholder,input::placeholder{color:rgba(255,255,255,.38)}
+textarea:focus,select:focus,input:focus{border-color:rgba(119,194,255,.45);box-shadow:0 0 0 3px rgba(70,150,255,.08)}
+select option{background:#061a3a;color:#fff}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.generate{
+  width:100%;margin-top:12px;border:0;border-radius:14px;padding:13px 16px;cursor:pointer;color:#031225;font-weight:800;font-size:11px;
+  background:linear-gradient(135deg,#a9dcff,#5baeff);box-shadow:0 12px 25px rgba(42,136,255,.18);transition:.2s ease
+}
+.generate:hover{transform:translateY(-2px);filter:brightness(1.04)}
+.generate:disabled{opacity:.55;cursor:wait;transform:none}
+
+.output{min-height:100%;display:flex;flex-direction:column}
+.output-box{flex:1;min-height:320px;border:1px dashed rgba(255,255,255,.18);border-radius:16px;padding:18px;background:rgba(2,12,30,.20);overflow:auto}
+.empty-state{text-align:center;min-height:280px;display:grid;place-items:center;padding:20px;color:var(--muted)}
+.empty-state .mini-robot{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;margin:0 auto 10px;background:rgba(102,174,255,.09);border:1px solid rgba(125,194,255,.14)}
+.empty-state svg{width:29px;height:29px;fill:none;stroke:#bfe5ff;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+.empty-state strong{display:block;color:#fff;font-size:12px;margin-bottom:5px}
+.empty-state p{font-size:9px;line-height:1.6;max-width:280px;margin:auto}
+.result h5{font-size:15px;margin-bottom:10px}
+.result h6{font-size:10px;color:#bfe4ff;margin:15px 0 6px;text-transform:uppercase;letter-spacing:.7px}
+.result p,.result li{font-size:10px;line-height:1.65;color:rgba(255,255,255,.82)}
+.result ul{padding-left:17px}
+.flashcards{display:grid;gap:10px}
+.flashcard{padding:13px 14px;border-radius:14px;background:rgba(255,255,255,.065);border:1px solid rgba(255,255,255,.11)}
+.flashcard .front{font-size:10px;font-weight:800;margin-bottom:5px}
+.flashcard .back{font-size:9px;color:var(--muted);line-height:1.55}
+.quiz-q{padding:13px;border-radius:14px;background:rgba(255,255,255,.065);border:1px solid rgba(255,255,255,.11);margin-bottom:9px}
+.quiz-q strong{display:block;font-size:10px;line-height:1.5;margin-bottom:8px}
+.quiz-q label{font-size:9px;font-weight:500;color:rgba(255,255,255,.76);margin:5px 0;cursor:pointer}
+.quiz-q input{width:auto;margin-right:7px;vertical-align:middle;accent-color:#75bdff}
+
+.note{margin-top:12px;font-size:8.5px;line-height:1.55;color:rgba(255,255,255,.45)}
+.hidden{display:none!important}
+.spin{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:900px){
+  .tool-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .workspace{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .page{padding:10px 11px 30px}
+  .topbar{grid-template-columns:auto 1fr auto;gap:7px;min-height:60px;margin-bottom:12px}
+  .brand{gap:5px}.brand img{width:31px;height:31px}.brand .school-logo{width:33px;height:33px}
+  .title h1{font-size:13px;white-space:nowrap}.title p{font-size:6.8px;letter-spacing:1.2px}
+  .back-btn{padding:8px 10px;border-radius:11px;font-size:9px;gap:5px}.back-btn svg{width:15px;height:15px}
+  .hero{border-radius:20px;padding:18px}.hero-grid{grid-template-columns:auto 1fr;gap:13px}
+  .robot{width:56px;height:56px;border-radius:17px}.robot svg{width:33px;height:33px}.hero h2{font-size:20px}.hero p{font-size:9.5px;line-height:1.55}
+  .tools{margin-top:15px}.section-head{margin-bottom:9px}.section-head h3{font-size:13px}.section-head span{font-size:8px}
+  .tool-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.tool-card{padding:12px;border-radius:15px}.tool-icon{width:33px;height:33px;border-radius:10px;margin-bottom:8px}.tool-icon svg{width:17px;height:17px}.tool-card strong{font-size:9.5px}.tool-card small{font-size:7.5px}
+  .workspace{margin-top:14px;gap:10px}.panel{border-radius:18px;padding:14px}.panel-title{margin-bottom:11px}.panel-title h4{font-size:12px}.badge{font-size:7px;padding:5px 7px}
+  textarea{min-height:150px;font-size:9.5px;padding:10px}.controls{gap:8px}.controls label{font-size:8.5px}select{font-size:9px;padding:10px}.generate{font-size:9.5px;padding:12px}
+  .output-box{min-height:250px;padding:12px}.empty-state{min-height:220px}.empty-state strong{font-size:10px}.empty-state p{font-size:8px}.result h5{font-size:12px}.result h6{font-size:8.5px}.result p,.result li{font-size:8.5px}.flashcard .front{font-size:9px}.flashcard .back{font-size:8px}
+}
+@media(max-width:380px){
+  .title h1{font-size:12px}.hero-grid{gap:10px}.robot{width:50px;height:50px}.hero h2{font-size:18px}.hero p{font-size:9px}.tool-card{padding:10px}.tool-card strong{font-size:9px}.tool-card small{font-size:7px}
+}
+
+.section-svg{width:18px;height:18px;display:inline-block;vertical-align:-4px;margin-right:7px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.xp-icon .ui-svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.play-game-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 12px;padding:11px 14px;border:1px solid rgba(142,211,255,.26);border-radius:14px;background:linear-gradient(135deg,rgba(76,160,255,.26),rgba(0,57,132,.42));color:#fff;cursor:pointer;font-size:9.5px;font-weight:800;transition:.2s ease}.play-game-btn:hover{transform:translateY(-2px);border-color:rgba(175,226,255,.48)}.play-game-btn .ui-svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.game-modal{position:fixed;inset:0;z-index:1000000;display:grid;place-items:center;padding:18px}.game-modal.hidden{display:none}.game-modal-backdrop{position:absolute;inset:0;background:rgba(0,7,22,.66);backdrop-filter:blur(10px)}.game-modal-card{position:relative;z-index:1;width:min(92vw,430px);padding:22px;border-radius:24px;border:1px solid rgba(165,222,255,.22);background:linear-gradient(145deg,rgba(9,37,79,.96),rgba(3,19,44,.97));box-shadow:0 28px 80px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.12)}.game-modal-close{position:absolute;right:12px;top:10px;width:34px;height:34px;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#fff;font-size:22px;cursor:pointer}.game-modal-icon{width:52px;height:52px;display:grid;place-items:center;border-radius:16px;margin-bottom:12px;background:linear-gradient(145deg,rgba(75,161,255,.18),rgba(255,255,255,.05));border:1px solid rgba(151,213,255,.2)}.game-modal-icon .ui-svg{width:25px;height:25px;fill:none;stroke:#dff4ff;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.game-modal-title{font-size:18px;font-weight:800}.game-modal-subtitle{margin-top:5px;color:var(--muted);font-size:9px;line-height:1.55}.game-choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.game-choice{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;padding:14px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.055);color:#fff;cursor:pointer;transition:.2s ease}.game-choice:hover{transform:translateY(-3px);border-color:rgba(155,218,255,.34);background:rgba(82,163,255,.10)}.game-choice .ui-svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.game-choice span{font-size:10px;font-weight:800}.game-choice small{font-size:7.5px;color:var(--muted);line-height:1.4}.game-toast{margin-top:12px;padding:10px 12px;border-radius:12px;background:rgba(83,161,255,.10);border:1px solid rgba(126,198,255,.18);font-size:8.5px;color:#d9efff}.game-toast.hidden{display:none}.friends-invite-list{display:grid;gap:8px;margin-top:14px;max-height:290px;overflow:auto;padding-right:2px}.friend-invite-row{display:flex;align-items:center;gap:10px;padding:10px;border-radius:14px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09)}.friend-avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;display:block;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}.friend-avatar-fallback{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,rgba(81,166,255,.24),rgba(0,41,107,.42));border:1px solid rgba(152,214,255,.18);font-weight:800;font-size:12px;flex:0 0 38px}.friend-copy{min-width:0;flex:1}.friend-copy strong{display:block;font-size:9.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.friend-copy small{display:block;color:var(--muted);font-size:7.5px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.friend-invite-action{border:1px solid rgba(143,211,255,.22);background:linear-gradient(145deg,rgba(67,151,255,.23),rgba(0,41,107,.42));color:#fff;border-radius:10px;padding:8px 10px;font-size:8px;font-weight:800;cursor:pointer;white-space:nowrap}.friend-invite-action.sent{background:rgba(63,167,107,.18);border-color:rgba(128,221,166,.25);color:#d9ffe8;cursor:default}.friends-back-btn{width:100%;margin-top:10px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.055);color:#fff;border-radius:11px;padding:9px;font-size:8.5px;font-weight:800;cursor:pointer}@media(max-width:640px){.game-modal{padding:12px}.game-modal-card{width:100%;max-width:390px;padding:18px;border-radius:20px}.game-modal-title{font-size:16px}.game-choice-grid{grid-template-columns:1fr;gap:8px}.game-choice{padding:13px}.play-game-btn{font-size:9px;padding:10px}.section-svg{width:16px;height:16px}}
+.progress-strip{margin-top:14px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:10px;align-items:stretch}
+.xp-card{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:16px;border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.045));backdrop-filter:blur(14px);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.xp-icon{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:rgba(102,178,255,.12);border:1px solid rgba(140,209,255,.16);font-size:15px}
+.xp-copy span{display:block;font-size:8px;letter-spacing:.7px;text-transform:uppercase;color:var(--muted);font-weight:700}.xp-copy strong{display:block;font-size:12px;margin-top:2px}
+.leaderboard-btn,.signin-btn{border:1px solid rgba(143,211,255,.22);background:linear-gradient(145deg,rgba(67,151,255,.24),rgba(0,41,107,.42));color:#fff;border-radius:14px;padding:11px 14px;cursor:pointer;font-weight:800;font-size:9.5px;transition:.2s ease}.leaderboard-btn:hover,.signin-btn:hover{transform:translateY(-2px);border-color:rgba(161,220,255,.45)}
+.leaderboard-panel{margin-top:12px;border:1px solid var(--line);border-radius:20px;padding:16px;background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(255,255,255,.05));backdrop-filter:blur(16px);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.panel-close{border:0;background:transparent;color:#fff;font-size:22px;cursor:pointer;line-height:1}.leaderboard-status{font-size:9px;color:var(--muted);margin-bottom:10px}.signin-btn{margin-bottom:12px}.leaderboard-list{display:grid;gap:7px}.leader-row{display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;gap:9px;padding:9px 10px;border-radius:13px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08)}.leader-rank{font-weight:800;font-size:10px;text-align:center;display:grid;place-items:center}.rank-svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.leader-name{min-width:0}.leader-name strong{display:block;font-size:9.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.leader-name small{display:block;font-size:7.5px;color:var(--muted);margin-top:2px}.leader-xp{font-size:9px;font-weight:800;color:#bfe4ff}.leader-row.me{border-color:rgba(133,204,255,.34);background:linear-gradient(145deg,rgba(60,144,255,.16),rgba(255,255,255,.05))}
+.count-row{margin-top:10px}.count-control{display:flex;align-items:center;gap:6px}.count-step{width:34px;height:34px;border:1px solid rgba(255,255,255,.14);border-radius:10px;background:rgba(255,255,255,.07);color:#fff;font-size:18px;cursor:pointer}.count-control input{height:34px;text-align:center;padding:7px 5px;max-width:82px}.count-row small{display:block;margin-top:5px;font-size:7.5px;color:var(--muted)}
+.flashcard.playable{display:none;padding:18px}.flashcard.playable.active{display:block;animation:cardIn .24s ease}.flashcard-front-label,.flashcard-back-label{font-size:7px;text-transform:uppercase;letter-spacing:.8px;color:#9ed7ff;font-weight:800}.flashcard-front-text{font-size:14px;line-height:1.5;font-weight:800;margin:7px 0 14px}.flashcard-answer{font-size:11px;line-height:1.6;color:rgba(255,255,255,.84);padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);margin-bottom:12px}.flash-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.flash-action{border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:10px;cursor:pointer;color:#fff;font-size:9px;font-weight:800;background:rgba(255,255,255,.07)}.flash-action.good{background:linear-gradient(135deg,rgba(45,164,90,.28),rgba(0,70,40,.32));border-color:rgba(114,223,157,.22)}.flash-action.review{background:rgba(255,255,255,.055)}.flash-meta{display:flex;justify-content:space-between;gap:8px;font-size:8px;color:var(--muted);margin-bottom:10px}.xp-pop{position:fixed;right:20px;top:20px;z-index:999999;padding:9px 13px;border-radius:999px;background:rgba(6,26,58,.94);border:1px solid rgba(140,210,255,.28);color:#dff3ff;font-weight:800;font-size:10px;box-shadow:0 12px 30px rgba(0,0,0,.22);animation:xpPop .9s ease forwards;pointer-events:none}@keyframes xpPop{0%{opacity:0;transform:translateY(-8px) scale(.9)}18%,70%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-12px) scale(.98)}}@keyframes cardIn{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
+.quiz-submit{width:100%;margin-top:12px;border:1px solid rgba(140,210,255,.2);border-radius:12px;padding:11px;background:linear-gradient(135deg,rgba(76,163,255,.25),rgba(0,41,107,.38));color:#fff;font-weight:800;font-size:9px;cursor:pointer}.quiz-score{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.06);font-size:9px;color:#dff3ff}
+@media(max-width:640px){.progress-strip{grid-template-columns:1fr 1fr;gap:8px}.leaderboard-btn{grid-column:1/-1;width:100%;padding:10px}.leaderboard-panel{border-radius:17px;padding:13px}.xp-card{padding:10px}.xp-copy strong{font-size:11px}.xp-copy span{font-size:7px}.flashcard-front-text{font-size:12px}.flashcard-answer{font-size:9.5px}.flash-actions{gap:7px}.xp-pop{right:12px;top:12px;font-size:9px}}
+
+/* Play a Game — animated Study Tools card */
+.game-tool-card{
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+}
+.game-tool-card::after{
+  content:"";
+  position:absolute;
+  width:120px;height:120px;
+  right:-52px;bottom:-62px;
+  border-radius:50%;
+  border:1px solid rgba(146,214,255,.18);
+  box-shadow:0 0 24px rgba(76,160,255,.12);
+  animation:gameOrbPulse 2.8s ease-in-out infinite;
+  pointer-events:none;
+}
+.game-tool-card .tool-icon svg{
+  transition:transform .35s cubic-bezier(.16,1,.3,1),filter .35s ease;
+}
+.game-tool-card:hover .tool-icon svg{
+  transform:translateY(-2px) rotate(-4deg) scale(1.08);
+  filter:drop-shadow(0 5px 12px rgba(122,197,255,.32));
+}
+.game-tool-card:active{transform:translateY(1px) scale(.985);}
+@keyframes gameOrbPulse{0%,100%{transform:scale(.72);opacity:.25}50%{transform:scale(1);opacity:.62}}
+
+.game-modal-card{
+  animation:gameModalIn .42s cubic-bezier(.16,1,.3,1) both;
+}
+.game-modal:not(.hidden) .game-modal-backdrop{
+  animation:gameBackdropIn .28s ease both;
+}
+.game-choice{
+  transition:transform .28s cubic-bezier(.16,1,.3,1),box-shadow .28s ease,border-color .28s ease,background .28s ease;
+}
+.game-choice:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(0,0,0,.22);border-color:rgba(162,221,255,.38);}
+.game-choice:active{transform:scale(.985);}
+@keyframes gameModalIn{from{opacity:0;transform:translateY(14px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes gameBackdropIn{from{opacity:0}to{opacity:1}}
+@media(max-width:640px){
+  .game-tool-card{min-height:112px;}
+}
+
+</style>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import {
+  getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, setDoc, addDoc, serverTimestamp, collection, query, orderBy, limit, getDocs
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",
+  authDomain: "caths-page.firebaseapp.com",
+  projectId: "caths-page",
+  storageBucket: "caths-page.firebasestorage.app",
+  messagingSenderId: "945498022620",
+  appId: "1:945498022620:web:71aeb4cd2472e061aeca19",
+  measurementId: "G-CBG1YSK13G"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+
+window.studyFirebase = { auth, db, provider, signInWithPopup, onAuthStateChanged, doc, getDoc, setDoc, addDoc, serverTimestamp, collection, query, orderBy, limit, getDocs };
+</script>
+</head>
+<body>
+<main class="page">
+  <header class="topbar">
+    <div class="brand" aria-label="CATHS-MAIN">
+      <img src="sslg-logo.png" alt="SSLG Logo">
+      <img class="school-logo" src="caths-logo.png" alt="CATHS Logo">
+    </div>
+    <div class="title">
+      <h1>CATHS-MAIN AI Study Assistant</h1>
+      <p>Learn smarter • Study better</p>
+    </div>
+    <div class="back-wrap">
+      <a class="back-btn" href="index.html">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        <span>Back to Home</span>
+      </a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-grid">
+      <div class="robot" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M9 3h6a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4Z"/>
+          <path d="M12 3V1.5M9 11h.01M15 11h.01M9 15h6M5 9H3M21 9h-2"/>
+          <path d="M8 7.5h8"/>
+        </svg>
+      </div>
+      <div>
+        <h2>Your <span>AI Study Assistant</span></h2>
+        <p>Create reviewers, flashcards, quizzes, summaries, and study guides from your own notes. Choose a tool below, add your lesson, and generate a study-ready output.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="tools" aria-label="Study tools">
+    <div class="section-head">
+      <h3>Study Tools</h3>
+      <span>Select one to get started</span>
+    </div>
+    <div class="tool-grid">
+      <button class="tool-card active" data-type="reviewer" type="button">
+        <span class="tool-icon"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg></span>
+        <strong>Reviewer</strong><small>Key points + questions</small>
+      </button>
+      <button class="tool-card" data-type="flashcards" type="button">
+        <span class="tool-icon"><svg viewBox="0 0 24 24"><rect x="4" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a1 1 0 0 1 1 1v11"/></svg></span>
+        <strong>Flashcards</strong><small>Front + back cards</small>
+      </button>
+      <button class="tool-card" data-type="quiz" type="button">
+        <span class="tool-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM8 8h8M8 12h5M8 16h8"/></svg></span>
+        <strong>Quiz</strong><small>Practice questions</small>
+      </button>
+      <button class="tool-card" data-type="summary" type="button">
+        <span class="tool-icon"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5zM8 8h8M8 12h6M8 16h4"/></svg></span>
+        <strong>Summary</strong><small>Simple lesson recap</small>
+      </button>
+      <button class="tool-card" data-type="studyguide" type="button">
+        <span class="tool-icon"><svg viewBox="0 0 24 24"><path d="m12 3 2.1 5.3L20 10l-4.5 3.7L16.5 19 12 15.9 7.5 19l1-5.3L4 10l5.9-1.7z"/></svg></span>
+        <strong>Study Guide</strong><small>Organized study plan</small>
+      </button>
+      <button class="tool-card game-tool-card" id="playGameTool" data-type="games" type="button">
+        <span class="tool-icon"><svg viewBox="0 0 24 24"><path d="M7 8h10a4 4 0 0 1 4 4v3a3 3 0 0 1-5 2l-2-2H10l-2 2a3 3 0 0 1-5-2v-3a4 4 0 0 1 4-4Z"/><path d="M8 12v4M6 14h4M16 13h.01M18 15h.01"/></svg></span>
+        <strong>Play a Game</strong><small>Study with friends</small>
+      </button>
+    </div>
+  </section>
+
+  <section class="progress-strip" aria-label="Study progress">
+    <div class="xp-card">
+      <div class="xp-icon">✦</div>
+      <div class="xp-copy"><span>Your XP</span><strong id="xpValue">0 XP</strong></div>
+    </div>
+    <div class="xp-card">
+      <div class="xp-icon"><svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v4a4 4 0 0 1-8 0V4Z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 12v5M8 21h8M9 17h6"/></svg></div>
+      <div class="xp-copy"><span>Leaderboard</span><strong id="rankValue">Not ranked</strong></div>
+    </div>
+    <button class="leaderboard-btn" id="leaderboardBtn" type="button">View Leaderboard</button>
+  </section>
+
+  <section class="leaderboard-panel hidden" id="leaderboardPanel" aria-label="Student leaderboard">
+    <div class="panel-title">
+      <h4><svg class="section-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v4a4 4 0 0 1-8 0V4Z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 12v5M8 21h8M9 17h6"/></svg>CATHS Study Leaderboard</h4>
+      <button class="panel-close" id="leaderboardClose" type="button" aria-label="Close leaderboard">×</button>
+    </div>
+    <div class="leaderboard-status" id="leaderboardStatus">Sign in with Google to appear on the shared leaderboard.</div>
+    <button class="signin-btn" id="signinBtn" type="button">Sign in with Google</button>
+    <div class="leaderboard-list" id="leaderboardList"></div>
+  </section>
+
+  <div class="game-modal hidden" id="gameModal" role="dialog" aria-modal="true" aria-labelledby="gameModalTitle">
+    <div class="game-modal-backdrop" id="gameModalBackdrop"></div>
+    <div class="game-modal-card">
+      <button class="game-modal-close" id="gameModalClose" type="button" aria-label="Close game menu">×</button>
+      <div class="game-modal-icon"><svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8h10a4 4 0 0 1 4 4v3a3 3 0 0 1-5 2l-2-2H10l-2 2a3 3 0 0 1-5-2v-3a4 4 0 0 1 4-4Z"/><path d="M8 12v4M6 14h4M16 13h.01M18 15h.01"/></svg></div>
+      <div class="game-modal-title" id="gameModalTitle">Choose a Game</div>
+      <p class="game-modal-subtitle" id="gameModalSubtitle">Pick a game to play with a friend. Games can be added here later.</p>
+      <div class="game-choice-grid" id="gameChoiceGrid">
+        <button class="game-choice" type="button" data-game="coming-soon">
+          <svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h12v16H6zM9 8h6M9 12h6M9 16h4"/></svg>
+          <span>Choose a Game</span><small>More games coming soon</small>
+        </button>
+        <button class="game-choice" type="button" id="inviteFriendBtn">
+          <svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M9.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M17 8h4M19 6v4"/></svg>
+          <span>Invite a Friend</span><small>Invite someone to play</small>
+        </button>
+      </div>
+      <div class="friends-invite-list hidden" id="friendsInviteList"></div>
+      <div class="game-toast hidden" id="gameToast"></div>
+    </div>
+  </div>
+
+  <section class="workspace">
+    <div class="panel">
+      <div class="panel-title">
+        <h4>Build your study material</h4>
+        <span class="badge" id="modeBadge">Reviewer</span>
+      </div>
+      <label for="topic">Topic / Subject</label>
+      <input id="topic" type="text" placeholder="e.g. Understanding Culture, Society and Politics">
+      <div style="height:10px"></div>
+      <label for="notes">Paste your notes or lesson here</label>
+      <textarea id="notes" placeholder="Paste your lesson, notes, reviewer draft, or study material here..."></textarea>
+      <div class="controls">
+        <div>
+          <label for="difficulty">Difficulty</label>
+          <select id="difficulty"><option>Easy</option><option selected>Balanced</option><option>Challenging</option></select>
+        </div>
+        <div>
+          <label for="length">Length</label>
+          <select id="length"><option>Short</option><option selected>Standard</option><option>Detailed</option></select>
+        </div>
+      </div>
+      <div class="count-row hidden" id="countRow">
+        <label for="itemCount" id="countLabel">Number of items</label>
+        <div class="count-control">
+          <button type="button" class="count-step" id="countMinus" aria-label="Decrease count">−</button>
+          <input id="itemCount" type="number" min="1" max="50" value="10" inputmode="numeric">
+          <button type="button" class="count-step" id="countPlus" aria-label="Increase count">+</button>
+        </div>
+        <small id="countHint">Maximum 50 flashcards.</small>
+      </div>
+      <button class="generate" id="generateBtn" type="button">Generate Study Material</button>
+      <p class="note">The page is ready for the AI backend. The current demo can generate a local preview so the interface can be tested before connecting a Gemini API endpoint.</p>
+    </div>
+
+    <div class="panel output">
+      <div class="panel-title">
+        <h4>Generated Result</h4>
+        <span class="badge">Preview</span>
+      </div>
+      <div class="output-box" id="outputBox">
+        <div class="empty-state">
+          <div>
+            <div class="mini-robot">
+              <svg viewBox="0 0 24 24"><path d="M9 3h6a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4Z"/><path d="M12 3V1.5M9 11h.01M15 11h.01M9 15h6M5 9H3M21 9h-2"/></svg>
+            </div>
+            <strong>Ready when you are</strong>
+            <p>Choose a study tool, enter a topic and your notes, then press generate.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+const toolCards=[...document.querySelectorAll('.tool-card')];
+const modeBadge=document.getElementById('modeBadge');
+const generateBtn=document.getElementById('generateBtn');
+const topicInput=document.getElementById('topic');
+const notesInput=document.getElementById('notes');
+const outputBox=document.getElementById('outputBox');
+const countRow=document.getElementById('countRow');
+const countLabel=document.getElementById('countLabel');
+const countHint=document.getElementById('countHint');
+const itemCount=document.getElementById('itemCount');
+let currentType='reviewer';
+let flashCardsData=[];
+let currentFlashIndex=0;
+let flashSessionCorrect=new Set();
+const labels={reviewer:'Reviewer',flashcards:'Flashcards',quiz:'Quiz',summary:'Summary',studyguide:'Study Guide'};
+const localXPKey='cathsStudyXP';
+let xp=Number(localStorage.getItem(localXPKey)||0);
+let currentUser=null;
+
+const xpValue=document.getElementById('xpValue');
+const rankValue=document.getElementById('rankValue');
+const leaderboardPanel=document.getElementById('leaderboardPanel');
+const leaderboardList=document.getElementById('leaderboardList');
+const leaderboardStatus=document.getElementById('leaderboardStatus');
+const signinBtn=document.getElementById('signinBtn');
+
+function updateXPUI(){xpValue.textContent=xp.toLocaleString()+' XP';}
+function showXPPop(amount){
+  const pop=document.createElement('div'); pop.className='xp-pop'; pop.textContent='+'+amount+' XP'; document.body.appendChild(pop); setTimeout(()=>pop.remove(),950);
+}
+async function saveXP(){
+  localStorage.setItem(localXPKey,String(xp)); updateXPUI();
+  if(!currentUser||!window.studyFirebase)return;
+  try{
+    const {db,doc,setDoc,serverTimestamp}=window.studyFirebase;
+    await setDoc(doc(db,'studyProfiles',currentUser.uid),{
+      uid:currentUser.uid,
+      displayName:currentUser.displayName||'Student',
+      photoURL:currentUser.photoURL||'',
+      xp,
+      updatedAt:serverTimestamp()
+    },{merge:true});
+    await loadLeaderboard();
+  }catch(e){console.warn('Leaderboard sync failed:',e);}
+}
+function addXP(amount){xp+=amount;saveXP();showXPPop(amount);}
+
+function getCount(){
+  let n=parseInt(itemCount.value,10)||1;
+  const max=currentType==='quiz'?30:50;
+  n=Math.max(1,Math.min(max,n)); itemCount.value=n; return n;
+}
+function updateCountControl(){
+  const show=currentType==='flashcards'||currentType==='quiz';
+  countRow.classList.toggle('hidden',!show);
+  if(currentType==='flashcards'){
+    countLabel.textContent='Number of flashcards'; itemCount.max=50; itemCount.value=Math.min(Number(itemCount.value)||10,50); countHint.textContent='Maximum 50 flashcards. Earn 10 XP for each first-time correct card.';
+  }else if(currentType==='quiz'){
+    countLabel.textContent='Number of questions'; itemCount.max=30; itemCount.value=Math.min(Number(itemCount.value)||10,30); countHint.textContent='Maximum 30 quiz questions.';
+  }
+}
+
+toolCards.forEach(card=>card.addEventListener('click',()=>{
+  toolCards.forEach(c=>c.classList.remove('active')); card.classList.add('active');
+  currentType=card.dataset.type; modeBadge.textContent=labels[currentType]; updateCountControl();
+}));
+
+document.getElementById('countMinus').addEventListener('click',()=>{itemCount.value=Math.max(1,(parseInt(itemCount.value,10)||1)-1);});
+document.getElementById('countPlus').addEventListener('click',()=>{const max=currentType==='quiz'?30:50; itemCount.value=Math.min(max,(parseInt(itemCount.value,10)||1)+1);});
+itemCount.addEventListener('change',getCount);
+
+function esc(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+function extractTerms(text){
+  const sentences=text.split(/[.!?]+/).map(s=>s.trim()).filter(Boolean);
+  const terms=[];
+  for(const s of sentences){
+    const words=s.match(/[A-Za-z][A-Za-z'-]{4,}/g)||[];
+    const candidate=words.slice(0,5).join(' ');
+    if(candidate) terms.push({front:candidate,back:s});
+  }
+  return terms.length?terms:[{front:'Main idea',back:'Review the central concept from your notes.'}];
+}
+function buildFlashcards(notes,count){
+  const base=extractTerms(notes); const out=[];
+  for(let i=0;i<count;i++){ const item=base[i%base.length]; out.push({front:item.front,back:item.back,sourceIndex:i}); }
+  return out;
+}
+function renderFlashcards(topic,notes){
+  flashCardsData=buildFlashcards(notes,getCount()); currentFlashIndex=0; flashSessionCorrect=new Set();
+  const first=flashCardsData[0];
+  outputBox.innerHTML=`<div class="result"><h5>${esc(topic)} — Flashcards</h5><div id="flashcardArea"></div></div>`;
+  renderCurrentFlashcard();
+}
+function renderCurrentFlashcard(){
+  const area=document.getElementById('flashcardArea'); if(!area)return;
+  const card=flashCardsData[currentFlashIndex]; const total=flashCardsData.length;
+  area.innerHTML=`<div class="flashcard-meta"><span>Card ${currentFlashIndex+1} of ${total}</span><span>+10 XP when you mark it correct</span></div><div class="flashcard playable active"><div class="flashcard-front-label">Question / Front</div><div class="flashcard-front-text">${esc(card.front)}</div><div class="flashcard-back-label">Answer / Back</div><div class="flashcard-answer">${esc(card.back)}</div><div class="flash-actions"><button class="flash-action review" type="button" id="reviewCardBtn">↻ Review Again</button><button class="flash-action good" type="button" id="gotItBtn">✓ I Got It +10 XP</button></div></div>`;
+  document.getElementById('reviewCardBtn').onclick=()=>nextFlashcard(false);
+  document.getElementById('gotItBtn').onclick=()=>nextFlashcard(true);
+}
+function nextFlashcard(correct){
+  const key=String(currentFlashIndex);
+  if(correct&&!flashSessionCorrect.has(key)){flashSessionCorrect.add(key);addXP(10);}
+  currentFlashIndex++;
+  if(currentFlashIndex>=flashCardsData.length){
+    const earned=flashSessionCorrect.size*10;
+    outputBox.innerHTML=`<div class="empty-state"><div><div class="mini-robot">✦</div><strong>Flashcard session complete!</strong><p>You earned <b>${earned} XP</b> this round. Generate another set or choose Review Again for more practice.</p><button class="generate" type="button" id="restartFlashBtn">Restart Flashcards</button></div></div>`;
+    document.getElementById('restartFlashBtn').onclick=()=>renderFlashcards(topicInput.value.trim()||'Your Topic',notesInput.value.trim());
+    return;
+  }
+  renderCurrentFlashcard();
+}
+function makeQuiz(topic,notes){
+  const count=getCount(); const sentences=notes.split(/[.!?]+/).map(s=>s.trim()).filter(Boolean); const source=sentences.length?sentences:['Review the main idea from your notes.'];
+  const qs=[];
+  for(let i=0;i<count;i++){const correct=source[i%source.length];const distract1='An unrelated statement from another topic.';const distract2='A detail that is not supported by the lesson.';const opts=[correct,distract1,distract2].sort(()=>Math.random()-.5);qs.push({correct,opts});}
+  const html=qs.map((q,i)=>`<div class="quiz-q"><strong>${i+1}. Which statement best matches the lesson?</strong>${q.opts.map((o,j)=>`<label><input type="radio" name="q${i}" value="${esc(o)}"> ${esc(o)}</label>`).join('')}<input type="hidden" id="correct${i}" value="${esc(q.correct)}"></div>`).join('');
+  outputBox.innerHTML=`<div class="result"><h5>${esc(topic)} — Practice Quiz</h5>${html}<button class="quiz-submit" id="submitQuizBtn" type="button">Submit Quiz</button><div id="quizScore"></div></div>`;
+  document.getElementById('submitQuizBtn').onclick=()=>gradeQuiz(qs);
+}
+function gradeQuiz(qs){
+  let score=0; qs.forEach((q,i)=>{const selected=document.querySelector(`input[name="q${i}"]:checked`); if(selected&&selected.value===q.correct)score++;});
+  const earned=score*5; if(earned)addXP(earned); document.getElementById('quizScore').innerHTML=`<div class="quiz-score">Score: <b>${score}/${qs.length}</b> • XP earned: <b>${earned}</b></div>`;
+}
+function makePreview(){
+  const topic=topicInput.value.trim()||'Your Topic'; const notes=notesInput.value.trim();
+  if(!notes){outputBox.innerHTML='<div class="empty-state"><div><div class="mini-robot">🤖</div><strong>Add your notes first</strong><p>Paste a lesson or notes so the preview can create study material from them.</p></div></div>';return;}
+  const safeTopic=esc(topic), sentences=notes.split(/[.!?]+/).map(s=>s.trim()).filter(Boolean);
+  if(currentType==='reviewer'){
+    const points=sentences.slice(0,6).map(s=>'<li>'+esc(s)+'</li>').join(''); const questions=sentences.slice(0,5).map((s,i)=>'<li>What is the key idea in point '+(i+1)+'?</li>').join('');
+    outputBox.innerHTML='<div class="result"><h5>'+safeTopic+' — Reviewer</h5><h6>Key Points</h6><ul>'+points+'</ul><h6>Review Questions</h6><ul>'+questions+'</ul></div>';
+  }else if(currentType==='flashcards'){renderFlashcards(topic,notes);
+  }else if(currentType==='quiz'){makeQuiz(topic,notes);
+  }else if(currentType==='summary'){
+    const summary=sentences.slice(0,4).join('. ')+'.'; outputBox.innerHTML='<div class="result"><h5>'+safeTopic+' — Summary</h5><p>'+esc(summary)+'</p><h6>Remember</h6><p>'+esc(sentences.slice(0,2).join(' • '))+'</p></div>';
+  }else{
+    const points=sentences.slice(0,5).map((s,i)=>'<li><strong>Step '+(i+1)+':</strong> '+esc(s)+'</li>').join(''); outputBox.innerHTML='<div class="result"><h5>'+safeTopic+' — Study Guide</h5><h6>Suggested Flow</h6><ul>'+points+'</ul><h6>Study Tip</h6><p>Break the lesson into smaller sections, review the key terms, then test yourself with practice questions.</p></div>';
+  }
+}
+
+generateBtn.addEventListener('click',()=>{generateBtn.disabled=true;generateBtn.innerHTML='<span class="spin">◌</span> Preparing...';setTimeout(()=>{makePreview();generateBtn.disabled=false;generateBtn.textContent='Generate Study Material';},350);});
+
+async function signIn(){
+  if(!window.studyFirebase)return; signinBtn.disabled=true; signinBtn.textContent='Signing in…';
+  try{await window.studyFirebase.signInWithPopup(window.studyFirebase.auth,window.studyFirebase.provider);}catch(e){leaderboardStatus.textContent='Sign-in was cancelled or unavailable. You can still use local XP.';}finally{signinBtn.disabled=false;}
+}
+signinBtn.addEventListener('click',signIn);
+const playGameTool=document.getElementById('playGameTool');
+playGameTool?.addEventListener('click',()=>{
+  if(gameModal) gameModal.classList.remove('hidden');
+});
+
+document.getElementById('leaderboardBtn').onclick=async()=>{leaderboardPanel.classList.remove('hidden');await loadLeaderboard();};
+document.getElementById('leaderboardClose').onclick=()=>leaderboardPanel.classList.add('hidden');
+
+async function loadLeaderboard(){
+  if(!window.studyFirebase)return;
+  leaderboardList.innerHTML='<div class="leaderboard-status">Loading leaderboard…</div>';
+  try{
+    const {db,collection,query,orderBy,limit,getDocs}=window.studyFirebase;
+    const snap=await getDocs(query(collection(db,'studyProfiles'),orderBy('xp','desc'),limit(10)));
+    const rows=[]; let rank=1;
+    snap.forEach(d=>rows.push({id:d.id,...d.data()}));
+    if(currentUser&&currentUser.uid){
+      const me=rows.find(r=>r.id===currentUser.uid); if(me) rankValue.textContent='#'+(rows.indexOf(me)+1);
+      else rankValue.textContent='Top 10+';
+    }else rankValue.textContent='Sign in';
+    leaderboardList.innerHTML=rows.length?rows.map((r,i)=>`<div class="leader-row ${currentUser&&r.id===currentUser.uid?'me':''}"><div class="leader-rank">${i<3?`<svg class="rank-svg" viewBox="0 0 24 24" aria-label="Rank ${i+1}"><path d="M7 5h10l-1 7a4 4 0 0 1-8 0L7 5Z"/><path d="M7 6H3v2a4 4 0 0 0 4 4M17 6h4v2a4 4 0 0 1-4 4M12 16v4M8 21h8"/><path d="M10 9h4"/></svg>`:i+1}</div><div class="leader-name"><strong>${esc(r.displayName||'Student')}</strong><small>${r.id===(currentUser?.uid||'')?'You • ':''}Study XP</small></div><div class="leader-xp">${Number(r.xp||0).toLocaleString()} XP</div></div>`).join(''):'<div class="leaderboard-status">No shared scores yet. Be the first!</div>';
+    if(currentUser){leaderboardStatus.textContent='Signed in. Your XP can now appear on the shared leaderboard.';signinBtn.classList.add('hidden');}
+  }catch(e){
+    leaderboardStatus.textContent='Shared leaderboard is not connected yet. Check your Firestore rules/connection.';
+    leaderboardList.innerHTML='';
+    if(currentUser)rankValue.textContent='—';
+  }
+}
+
+if(window.studyFirebase){
+  window.studyFirebase.onAuthStateChanged(window.studyFirebase.auth,async user=>{currentUser=user||null;if(user){signinBtn.classList.add('hidden');leaderboardStatus.textContent='Signed in as '+(user.displayName||'Student')+'.';await loadLeaderboard();}else{signinBtn.classList.remove('hidden');}});
+}
+
+const gameModal=document.getElementById('gameModal');const gameModalClose=document.getElementById('gameModalClose');const gameModalBackdrop=document.getElementById('gameModalBackdrop');const gameToast=document.getElementById('gameToast');const gameChoiceGrid=document.getElementById('gameChoiceGrid');const friendsInviteList=document.getElementById('friendsInviteList');const gameModalTitle=document.getElementById('gameModalTitle');const gameModalSubtitle=document.getElementById('gameModalSubtitle');
+function openGameModal(){resetGameModal();gameModal.classList.remove('hidden');document.body.classList.add('modal-open');}
+function closeGameModal(){gameModal.classList.add('hidden');document.body.classList.remove('modal-open');}
+function resetGameModal(){gameModalTitle.textContent='Choose a Game';gameModalSubtitle.textContent='Pick a game to play with a friend. Games can be added here later.';gameChoiceGrid.classList.remove('hidden');friendsInviteList.classList.add('hidden');gameToast.classList.add('hidden');gameToast.textContent='';}
+function showGameToast(text){gameToast.textContent=text;gameToast.classList.remove('hidden');}
+function friendEntryToUid(item){if(typeof item==='string')return item.trim();if(!item||typeof item!=='object')return '';return String(item.uid||item.userId||item.friendUid||item.id||'').trim();}
+function initials(name){return String(name||'Student').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase()||'S';}
+function friendRowHTML(friend){const photo=friend.photoURL?`<img class="friend-avatar" src="${esc(friend.photoURL)}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">`:'';return `<div class="friend-invite-row" data-uid="${esc(friend.uid)}"><div class="friend-avatar-wrap">${photo}<span class="friend-avatar-fallback" ${friend.photoURL?'style=\"display:none\"':''}>${esc(initials(friend.displayName))}</span></div><div class="friend-copy"><strong>${esc(friend.displayName||'Student')}</strong><small>${esc(friend.email||'CATHS Student')}</small></div><button class="friend-invite-action" type="button" data-friend-uid="${esc(friend.uid)}">Invite</button></div>`;}
+async function getMyFriends(){if(!currentUser||!window.studyFirebase) return [];const {db,doc,getDoc,collection,getDocs}=window.studyFirebase;const userSnap=await getDoc(doc(db,'users',currentUser.uid));let raw=[];if(userSnap.exists()){const data=userSnap.data()||{};for(const key of ['friends','friendIds']){if(Array.isArray(data[key])&&data[key].length){raw=data[key];break;}}}
+if(!raw.length){try{const subSnap=await getDocs(collection(db,'users',currentUser.uid,'friends'));raw=subSnap.docs.map(d=>({uid:d.id,...(d.data()||{})}));}catch(e){console.warn('Friends subcollection unavailable:',e);}}
+const ids=[...new Set(raw.map(friendEntryToUid).filter(Boolean).filter(id=>id!==currentUser.uid))];const out=[];for(const uid of ids){try{const snap=await getDoc(doc(db,'users',uid));if(snap.exists()){const d=snap.data()||{};out.push({uid,displayName:d.displayName||d.name||'Student',email:d.email||'',photoURL:d.photoURL||d.photoUrl||d.photo||''});}else{const source=raw.find(x=>friendEntryToUid(x)===uid);out.push({uid,displayName:typeof source==='object'?(source.displayName||source.name||'Student'):'Student',email:typeof source==='object'?(source.email||''):'',photoURL:typeof source==='object'?(source.photoURL||''):''});}}catch(e){console.warn('Could not load friend',uid,e);}}return out;}
+async function openFriendInvites(){gameChoiceGrid.classList.add('hidden');friendsInviteList.classList.remove('hidden');gameModalTitle.textContent='Invite a Friend';gameModalSubtitle.textContent='Choose one of your friends. They will receive a notification for the game invite.';gameToast.classList.add('hidden');friendsInviteList.innerHTML='<div class="leaderboard-status">Loading your friends…</div>';if(!currentUser){friendsInviteList.innerHTML='<div class="leaderboard-status">Sign in with Google first to invite your friends.</div><button class="friends-back-btn" type="button" id="friendsBackBtn">Back</button>';document.getElementById('friendsBackBtn').onclick=resetGameModal;return;}try{const friends=await getMyFriends();if(!friends.length){friendsInviteList.innerHTML='<div class="leaderboard-status">You don’t have any friends available yet. Add friends first from the Friends page.</div><button class="friends-back-btn" type="button" id="friendsBackBtn">Back</button>';document.getElementById('friendsBackBtn').onclick=resetGameModal;return;}friendsInviteList.innerHTML=friends.map(friendRowHTML).join('')+'<button class="friends-back-btn" type="button" id="friendsBackBtn">Back</button>';friendsInviteList.querySelectorAll('.friend-invite-action').forEach(btn=>btn.addEventListener('click',()=>sendGameInvite(btn.dataset.friendUid,btn)));document.getElementById('friendsBackBtn').onclick=resetGameModal;}catch(e){console.error(e);friendsInviteList.innerHTML='<div class="leaderboard-status">Could not load your friends. Please check your Firebase friends data or Firestore rules.</div><button class="friends-back-btn" type="button" id="friendsBackBtn">Back</button>';document.getElementById('friendsBackBtn').onclick=resetGameModal;}}
+async function sendGameInvite(friendUid,button){if(!currentUser||!window.studyFirebase)return;button.disabled=true;button.textContent='Sending…';try{const {db,addDoc,collection,serverTimestamp}=window.studyFirebase;await addDoc(collection(db,'notifications'),{recipientUid:friendUid,actorUid:currentUser.uid,actorName:currentUser.displayName||'A CATHS student',actorPhotoURL:currentUser.photoURL||'',type:'game_invite',title:(currentUser.displayName||'A friend')+' invited you to play',text:'You were invited to play a game in CATHS AI Study Assistant.',read:false,gameId:'coming-soon',createdAt:serverTimestamp()});button.textContent='Invited ✓';button.classList.add('sent');showGameToast('Invite sent! Your friend will see a new notification in CATHS-MAIN.');}catch(e){console.error('Game invite failed:',e);button.disabled=false;button.textContent='Invite';showGameToast('Could not send the invite. Your Firestore notifications permission may need to allow this write.');}}
+document.getElementById('playGameBtn')?.addEventListener('click',openGameModal);gameModalClose?.addEventListener('click',closeGameModal);gameModalBackdrop?.addEventListener('click',closeGameModal);document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!gameModal.classList.contains('hidden'))closeGameModal();});document.getElementById('inviteFriendBtn')?.addEventListener('click',openFriendInvites);document.querySelectorAll('.game-choice[data-game]').forEach(btn=>btn.addEventListener('click',()=>showGameToast('Game selection is ready. Add your game later and it can appear here.')));
+updateXPUI(); updateCountControl();
+</script>
+
+</body>
+</html>
