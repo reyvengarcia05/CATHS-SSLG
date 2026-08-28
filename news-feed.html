@@ -12,7 +12,7 @@
 :root{
   --blue:#003DA5;
   --darkblue:#00296B;
-  --yellow:#FFD700;
+  --accent:#66b8ff;
   --white:#fff;
   --glass:rgba(255,255,255,.13);
   --line:rgba(255,255,255,.12);
@@ -24,7 +24,7 @@ html{scroll-behavior:smooth}
 body{
   min-height:100vh;
   color:#fff;
-  background:linear-gradient(135deg,#001F54,#003DA5,#FFD700);
+  background:linear-gradient(135deg,#00296B,#003DA5,#66b8ff);
   padding-bottom:95px;
   overflow-x:hidden;
 }
@@ -95,7 +95,7 @@ a{-webkit-tap-highlight-color:transparent}
   border:none;
   border-radius:15px;
   padding:12px 16px;
-  background:var(--yellow);
+  background:var(--accent);
   color:var(--darkblue);
   font-weight:800;
   cursor:pointer;
@@ -267,7 +267,7 @@ a{-webkit-tap-highlight-color:transparent}
   cursor:pointer;
 }
 .post-action:hover{background:rgba(255,255,255,.15)}
-.post-action.active{background:var(--yellow);color:var(--darkblue);font-weight:800}
+.post-action.active{background:var(--accent);color:var(--darkblue);font-weight:800}
 .reaction-wrap{position:relative}
 .reaction-picker{
   display:none;
@@ -497,7 +497,7 @@ a{-webkit-tap-highlight-color:transparent}
   justify-content:center;
 }
 .nav-item.active{
-  color:var(--yellow);
+  color:var(--accent);
   transform:translateY(-5px) scale(1.06);
   font-weight:800;
 }
@@ -527,7 +527,7 @@ a{-webkit-tap-highlight-color:transparent}
 .spinner{
   width:30px;height:30px;
   border:3px solid rgba(255,255,255,.25);
-  border-top-color:var(--yellow);
+  border-top-color:var(--accent);
   border-radius:50%;
   animation:spin .8s linear infinite;
 }
@@ -607,6 +607,288 @@ a{-webkit-tap-highlight-color:transparent}
 .comment-mention-wrap{display:flex}
 
 </style>
+
+<style>
+:root{--blue:#003DA5;--darkblue:#00296B;--accent:#66b8ff;--white:#fff;--glass:rgba(255,255,255,.12)}
+body{background:linear-gradient(135deg,#00296B,#003DA5,#66b8ff)!important;padding-bottom:92px!important}
+.header{position:relative!important;z-index:1000!important;padding:16px 20px!important;display:grid!important;grid-template-columns:220px 1fr 220px!important;align-items:center!important;gap:15px!important;background:rgba(255,255,255,.08)!important;backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;border-bottom:0!important}
+.logo-group{display:flex!important;align-items:center!important;gap:8px!important}.logo,.caths-logo{width:58px!important;height:58px!important;object-fit:contain!important;flex:0 0 58px!important}.caths-logo{transform:scale(1.08)!important}
+.header-center{text-align:center!important;min-width:0!important}.header-center h1{font-size:22px!important;font-weight:700!important;line-height:1.2!important}.header-center p{font-size:12px!important;opacity:.9!important;margin-top:3px!important}
+.header-right{position:relative!important;display:flex!important;justify-content:flex-end!important;align-items:center!important}
+.header-profile-btn{background:rgba(255,255,255,.15)!important;backdrop-filter:blur(10px)!important;color:#fff!important;border:none!important;padding:9px 14px!important;border-radius:12px!important;font-weight:600!important;cursor:pointer!important;display:flex!important;align-items:center!important;gap:7px!important;white-space:nowrap!important}
+.header-profile-btn:hover{background:rgba(255,255,255,.24)!important}.header-profile-btn .pro-icon{display:block}
+.menu-icon{width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;color:#315eae}.menu-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.profile-menu .menu-link{display:flex!important;align-items:center!important;gap:9px!important}
+.logout-btn{display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important}
+.bottom-nav{position:fixed!important;left:0!important;right:0!important;bottom:0!important;height:75px!important;padding:4px 4px env(safe-area-inset-bottom)!important;background:rgba(0,0,0,.25)!important;backdrop-filter:blur(20px)!important;-webkit-backdrop-filter:blur(20px)!important;display:flex!important;justify-content:space-around!important;align-items:center!important;z-index:9999!important;border-top:1px solid rgba(255,255,255,.08)!important}
+.nav-item{flex:1!important;max-width:120px!important;min-width:56px!important;color:#fff!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:2px!important;text-decoration:none!important;font-size:9px!important;padding:4px 3px!important;transition:.22s!important}
+.nav-item .nav-icon{font-size:0!important;width:26px!important;height:26px!important;display:flex!important;align-items:center!important;justify-content:center!important;margin-bottom:2px!important;color:currentColor!important;transition:.22s!important}
+.nav-item .nav-icon svg{width:22px!important;height:22px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+.nav-item.active{color:var(--accent)!important;transform:translateY(-5px) scale(1.06)!important;font-weight:700!important}.nav-item.active .nav-icon svg{width:25px!important;height:25px!important}.nav-item:hover{color:#a9dcff!important}
+#profileNavPhoto{width:26px!important;height:26px!important;border-radius:50%!important;overflow:hidden!important;background:transparent!important;border:none!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important;color:currentColor!important}#profileNavPhoto img{width:26px!important;height:26px!important;border-radius:50%!important;object-fit:cover!important;display:block!important}
+.spinner{border-top-color:#66b8ff!important}
+@media(max-width:768px){
+ body{padding-bottom:82px!important}.header{padding:9px 10px!important;grid-template-columns:auto 1fr auto!important;gap:8px!important;min-height:66px!important}.logo,.caths-logo{width:39px!important;height:39px!important;flex-basis:39px!important}.caths-logo{transform:none!important}.header-center{padding:0 3px!important}.header-center h1{font-size:14px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}.header-center p{font-size:8px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}.header-profile-btn{font-size:10px!important;padding:7px 8px!important;max-width:108px!important;overflow:hidden!important;text-overflow:ellipsis!important}.header-profile-btn .pro-icon{width:16px!important;height:16px!important}.container{padding:14px 12px 105px!important}.bottom-nav{height:70px!important}.nav-item{font-size:8px!important;min-width:52px!important}.nav-item .nav-icon{width:25px!important;height:25px!important}.nav-item .nav-icon svg{width:20px!important;height:20px!important}.nav-item.active .nav-icon svg{width:23px!important;height:23px!important}}
+@media(max-width:380px){.logo,.caths-logo{width:35px!important;height:35px!important;flex-basis:35px!important}.header-center h1{font-size:12px!important}.header-center p{font-size:7px!important}.header-profile-btn{font-size:9px!important;padding:6px 7px!important}.nav-item{font-size:7px!important;min-width:44px!important}.nav-item .nav-icon svg{width:19px!important;height:19px!important}.nav-item.active .nav-icon svg{width:22px!important;height:22px!important}}
+</style>
+
+<style id="index-shell-match">
+/* =========================================================
+   NEWS FEED — MATCH INDEX.HTML APP SHELL
+   Header + bottom navigation only. Content/functionality preserved.
+   ========================================================= */
+:root{
+  --index-blue:#003DA5;
+  --index-darkblue:#00296B;
+  --index-accent:#66b8ff;
+}
+
+body{
+  background:
+    radial-gradient(900px 600px at 8% 8%, rgba(0,120,255,.28), transparent 60%),
+    radial-gradient(800px 560px at 92% 14%, rgba(60,150,255,.16), transparent 58%),
+    radial-gradient(700px 500px at 78% 92%, rgba(0,77,190,.24), transparent 62%),
+    linear-gradient(135deg,#03152f 0%,#062b68 34%,#0a4ca2 66%,#173b78 100%) !important;
+  background-attachment:fixed !important;
+  background-size:cover !important;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-1;
+  background:
+    radial-gradient(circle at 20% 25%, rgba(100,180,255,.10) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 78% 72%, rgba(100,180,255,.08) 0 1px, transparent 1.5px);
+  background-size:180px 180px,240px 240px;
+  opacity:.5;
+}
+
+body::after{
+  content:"";
+  position:fixed;
+  inset:-15%;
+  pointer-events:none;
+  z-index:-1;
+  background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.035) 48%,transparent 60%);
+  transform:rotate(-4deg);
+  opacity:.7;
+}
+
+.header{
+  position:sticky !important;
+  top:10px !important;
+  z-index:9990 !important;
+  width:calc(100% - 24px) !important;
+  max-width:1400px !important;
+  min-height:78px !important;
+  margin:10px auto 0 !important;
+  padding:12px 18px !important;
+  display:grid !important;
+  grid-template-columns:220px 1fr 220px !important;
+  align-items:center !important;
+  gap:15px !important;
+  border:1px solid rgba(255,255,255,.20) !important;
+  border-radius:22px !important;
+  background:linear-gradient(135deg,rgba(255,255,255,.13),rgba(255,255,255,.055)) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(145%) !important;
+  backdrop-filter:blur(22px) saturate(145%) !important;
+  box-shadow:0 14px 35px rgba(0,8,30,.22),inset 0 1px 0 rgba(255,255,255,.16) !important;
+}
+.header::before{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  border-radius:inherit !important;
+  pointer-events:none !important;
+  background:linear-gradient(90deg,rgba(80,170,255,.08),transparent 28%,transparent 72%,rgba(80,170,255,.08)) !important;
+}
+.header > *{position:relative !important;z-index:1 !important}
+
+.logo-group{display:flex !important;align-items:center !important;gap:8px !important}
+.logo,.caths-logo{
+  width:58px !important;
+  height:58px !important;
+  flex:0 0 58px !important;
+  object-fit:contain !important;
+  background:transparent !important;
+  padding:0 !important;
+}
+.caths-logo{transform:none !important}
+.header-center,.title{text-align:center !important;min-width:0 !important}
+.header-center h1,.title h1{
+  font-size:18px !important;
+  font-weight:700 !important;
+  line-height:1.2 !important;
+}
+.header-center p,.title p{
+  font-size:12px !important;
+  line-height:1.3 !important;
+  opacity:.9 !important;
+  margin-top:2px !important;
+}
+.header-right{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
+  gap:10px !important;
+  position:relative !important;
+}
+.header-profile-btn{
+  width:auto !important;
+  margin:0 !important;
+  padding:10px 16px !important;
+  min-height:44px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:8px !important;
+  border:1px solid rgba(255,255,255,.14) !important;
+  border-radius:13px !important;
+  background:rgba(255,255,255,.13) !important;
+  color:#fff !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10) !important;
+  font-weight:700 !important;
+}
+.header-profile-btn:hover{background:rgba(255,255,255,.19) !important}
+.header-profile-btn img{width:29px !important;height:29px !important;border-radius:50% !important;object-fit:cover !important}
+
+.bottom-nav{
+  position:fixed !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  width:100% !important;
+  max-width:none !important;
+  height:82px !important;
+  min-height:82px !important;
+  margin:0 !important;
+  padding:8px 16px calc(8px + env(safe-area-inset-bottom)) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:8px !important;
+  transform:none !important;
+  border:0 !important;
+  border-top:1px solid rgba(255,255,255,.18) !important;
+  border-radius:22px 22px 0 0 !important;
+  background:linear-gradient(180deg,rgba(5,22,52,.93),rgba(2,13,32,.98)) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(150%) !important;
+  backdrop-filter:blur(22px) saturate(150%) !important;
+  box-shadow:0 -14px 35px rgba(0,8,30,.22),inset 0 1px 0 rgba(255,255,255,.10) !important;
+  z-index:99990 !important;
+  overflow:visible !important;
+}
+.bottom-nav::before{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  border-radius:inherit !important;
+  pointer-events:none !important;
+  background:linear-gradient(90deg,rgba(77,169,255,.06),transparent 25%,transparent 75%,rgba(77,169,255,.06)) !important;
+}
+.bottom-nav .nav-item{
+  position:relative !important;
+  z-index:1 !important;
+  flex:1 1 0 !important;
+  width:auto !important;
+  max-width:180px !important;
+  min-width:0 !important;
+  height:62px !important;
+  margin:0 !important;
+  padding:7px 10px !important;
+  border-radius:16px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:4px !important;
+  color:rgba(255,255,255,.72) !important;
+  font-size:10px !important;
+  font-weight:600 !important;
+  text-decoration:none !important;
+  transform:none !important;
+  transition:background .20s ease,color .20s ease,transform .20s ease !important;
+}
+.bottom-nav .nav-item:hover{color:#fff !important;background:rgba(255,255,255,.07) !important}
+.bottom-nav .nav-item.active{
+  color:#66b8ff !important;
+  background:linear-gradient(180deg,rgba(102,184,255,.14),rgba(102,184,255,.055)) !important;
+  transform:translateY(-4px) !important;
+  font-weight:800 !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+.bottom-nav .nav-item.active::after{
+  content:"" !important;
+  position:absolute !important;
+  left:50% !important;
+  bottom:3px !important;
+  width:24px !important;
+  height:3px !important;
+  border-radius:999px !important;
+  background:#66b8ff !important;
+  transform:translateX(-50%) !important;
+  box-shadow:0 0 12px rgba(102,184,255,.55) !important;
+}
+.bottom-nav .nav-icon{
+  width:30px !important;
+  height:28px !important;
+  margin:0 0 1px 0 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  color:currentColor !important;
+}
+.bottom-nav .nav-icon svg{
+  width:22px !important;
+  height:22px !important;
+  fill:none !important;
+  stroke:currentColor !important;
+  stroke-width:1.8 !important;
+  stroke-linecap:round !important;
+  stroke-linejoin:round !important;
+  transition:width .20s ease,height .20s ease !important;
+}
+.bottom-nav .nav-item.active .nav-icon svg{width:25px !important;height:25px !important}
+.bottom-nav .nav-item:nth-child(5) .nav-icon,
+.bottom-nav .nav-item:nth-child(5) #profileNavPhoto{
+  width:34px !important;height:34px !important;min-width:34px !important;min-height:34px !important;
+  margin:0 !important;padding:2px !important;border-radius:50% !important;display:grid !important;place-items:center !important;
+  background:rgba(255,255,255,.10) !important;border:1px solid rgba(255,255,255,.18) !important;
+  overflow:hidden !important;
+}
+.bottom-nav .nav-item:nth-child(5) #profileNavPhoto img{width:30px !important;height:30px !important;border-radius:50% !important;object-fit:cover !important;display:block !important}
+
+@media(max-width:768px){
+  body{padding-bottom:82px !important}
+  .header{
+    top:3px !important;
+    width:calc(100% - 16px) !important;
+    min-height:68px !important;
+    padding:9px 10px !important;
+    grid-template-columns:auto minmax(0,1fr) auto !important;
+    gap:8px !important;
+  }
+  .logo,.caths-logo{width:39px !important;height:39px !important;flex-basis:39px !important}
+  .header-center,.title{padding:0 3px !important}
+  .header-center h1,.title h1{font-size:14px !important;white-space:nowrap !important;overflow:hidden !important;text-overflow:ellipsis !important}
+  .header-center p,.title p{font-size:8px !important;white-space:nowrap !important;overflow:hidden !important;text-overflow:ellipsis !important}
+  .header-profile-btn{font-size:10px !important;padding:7px 9px !important;min-height:38px !important;max-width:115px !important;overflow:hidden !important;text-overflow:ellipsis !important}
+  .bottom-nav{height:70px !important;min-height:70px !important;padding-bottom:max(6px,env(safe-area-inset-bottom)) !important;border-radius:18px 18px 0 0 !important}
+  .bottom-nav .nav-item{height:54px !important;font-size:8px !important}
+  .bottom-nav .nav-icon{width:25px !important;height:25px !important}
+  .bottom-nav .nav-icon svg{width:20px !important;height:20px !important}
+  .bottom-nav .nav-item.active .nav-icon svg{width:23px !important;height:23px !important}
+}
+@media(max-width:420px){
+  .header{top:2px !important;width:calc(100% - 12px) !important}
+  .bottom-nav{height:68px !important;min-height:68px !important}
+  .bottom-nav .nav-item{font-size:7.5px !important}
+}
+</style>
+
 </head>
 
 <body>
@@ -623,7 +905,7 @@ a{-webkit-tap-highlight-color:transparent}
 
   <div class="header-right">
     <button id="headerProfileBtn" class="header-profile-btn" type="button" onclick="toggleHeaderMenu()">
-      👤 <span>Login</span>
+      <svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3"/><path d="M5 20a7 7 0 0 1 14 0"/></svg><span>Login</span>
     </button>
 
     <div id="profileMenu" class="profile-menu">
@@ -635,11 +917,11 @@ a{-webkit-tap-highlight-color:transparent}
         </div>
       </div>
       <div class="menu-divider"></div>
-      <a class="menu-link" href="profile.html">👤 Profile</a>
-      <a class="menu-link" href="friends.html">👥 Friends</a>
-      <a class="menu-link" href="messages.html">💬 Messages</a>
+      <a class="menu-link" href="profile.html"><span class="menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span> Profile</a>
+      <a class="menu-link" href="friends.html"><span class="menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0M15 6.5a3 3 0 0 1 0 5.8M17 15a4.5 4.5 0 0 1 3.5 4.2"/></svg></span> Friends</a>
+      <a class="menu-link" href="messages.html"><span class="menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 5h14v11H8l-3 3z"/></svg></span> Messages</a>
       <div class="menu-divider"></div>
-      <button class="logout-btn" type="button" onclick="logoutUser()">🚪 Log Out</button>
+      <button class="logout-btn" type="button" onclick="logoutUser()"><span class="menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M10 5H5v14h5M14 8l4 4-4 4M9 12h9"/></svg></span> Log Out</button>
     </div>
   </div>
 </header>
@@ -647,14 +929,14 @@ a{-webkit-tap-highlight-color:transparent}
 <main class="container">
   <div class="feed-top">
     <div class="feed-title">
-      <h2>📰 News Feed</h2>
+      <h2>News Feed</h2>
       <p>See public posts and posts shared by your friends.</p>
     </div>
-    <button class="post-top-btn" type="button" onclick="openPostComposer()">＋ Post</button>
+    <button class="post-top-btn" type="button" onclick="openPostComposer()">+ Post</button>
   </div>
 
   <div class="composer-shortcut" onclick="openPostComposer()">
-    <div id="composerAvatar" class="composer-avatar">👤</div>
+    <div id="composerAvatar" class="composer-avatar"></div>
     <div class="composer-input">What's on your mind? Share an update…</div>
     <button class="composer-action" type="button" onclick="event.stopPropagation();openPostComposer()">＋</button>
   </div>
@@ -669,12 +951,12 @@ a{-webkit-tap-highlight-color:transparent}
   </section>
 </main>
 
-<nav class="bottom-nav">
-  <a href="index.html" class="nav-item"><div>🏠</div><span>Home</span></a>
-  <a href="news.html" class="nav-item active"><div>📰</div><span>News Feed</span></a>
-  <a href="voice.html" class="nav-item"><div>🗣️</div><span>Student Voice</span></a>
-  <a href="friends.html" class="nav-item"><div>👥</div><span>Friends</span></a>
-  <a href="profile.html" class="nav-item"><div id="profileNavPhoto">👤</div><span>Profile</span></a>
+<nav class="bottom-nav" aria-label="Primary navigation">
+  <a href="index.html" class="nav-item"><div class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10M9 20v-6h6v6"/></svg></div><span>Home</span></a>
+  <a href="news-feed.html" class="nav-item active"><div class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M7 8h6M7 11h10M7 14h7"/></svg></div><span>News Feed</span></a>
+  <a href="voice.html" class="nav-item"><div class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg></div><span>Student Voice</span></a>
+  <a href="friends.html" class="nav-item"><div class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0M15 6.5a3 3 0 0 1 0 5.8M17 15a4.5 4.5 0 0 1 3.5 4.2"/></svg></div><span>Friends</span></a>
+  <a href="profile.html" class="nav-item"><div class="nav-icon" id="profileNavPhoto" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></div><span>Profile</span></a>
 </nav>
 
 <div id="toast" class="toast"></div>
@@ -683,11 +965,11 @@ a{-webkit-tap-highlight-color:transparent}
 <div id="postModal" class="modal">
   <div class="modal-box">
     <div class="modal-head">
-      <h3>📝 Create Post</h3>
+      <h3>Create Post</h3>
       <button class="close-btn" type="button" onclick="closePostComposer()">✕</button>
     </div>
 
-    <div class="mention-wrap post-mention-wrap"><textarea id="postText" class="post-textarea" maxlength="10000" placeholder="What's on your mind? 😊"></textarea><div id="postMentionBox" class="mention-box"></div></div>
+    <div class="mention-wrap post-mention-wrap"><textarea id="postText" class="post-textarea" maxlength="10000" placeholder="What's on your mind? "></textarea><div id="postMentionBox" class="mention-box"></div></div>
 
     <div class="post-meta-row">
       <span class="char-count"><span id="postCharCount">0</span>/10,000</span>
@@ -695,9 +977,9 @@ a{-webkit-tap-highlight-color:transparent}
     </div>
 
     <select id="postVisibility" class="post-select">
-      <option value="public">🌍 Public — Everyone</option>
-      <option value="friends">👥 Friends Only — Your friends</option>
-      <option value="onlyMe">🔒 Only Me — Private</option>
+      <option value="public">Public — Everyone</option>
+      <option value="friends">Friends Only — Your friends</option>
+      <option value="onlyMe">Only Me — Private</option>
     </select>
 
     <button id="publishPostBtn" class="publish-btn" type="button" onclick="publishPost()">Post</button>
@@ -723,7 +1005,7 @@ a{-webkit-tap-highlight-color:transparent}
 <div id="reactionsModal" class="modal">
   <div class="modal-box">
     <div class="modal-head">
-      <h3>❤️ Reactions</h3>
+      <h3>Like Reactions</h3>
       <button class="close-btn" type="button" onclick="closeReactions()">✕</button>
     </div>
     <div id="reactionsList" class="reactions-list"></div>
@@ -740,7 +1022,7 @@ a{-webkit-tap-highlight-color:transparent}
     </div>
     <p style="font-size:12px;color:#64748b;line-height:1.5">Choose how you want to share this post.</p>
     <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
-      <button class="publish-btn" type="button" onclick="shareAsPost()">📝 Share as a post</button>
+      <button class="publish-btn" type="button" onclick="shareAsPost()"> Share as a post</button>
       <button class="publish-btn" type="button" style="background:#eef4ff;color:#183c8c" onclick="openShareAsMessage()">💬 Share as a message</button>
     </div>
   </div>
@@ -777,9 +1059,9 @@ a{-webkit-tap-highlight-color:transparent}
     <p style="font-size:12px;color:#64748b;line-height:1.6">Change the visibility of this post. The update is saved immediately.</p>
 
     <div style="display:flex;flex-direction:column;gap:8px;margin-top:15px">
-      <button class="privacy-choice" style="padding:13px;border:1px solid #dce4f2;border-radius:13px;background:#fff;text-align:left;cursor:pointer;color:#183c8c;font-weight:700" onclick="savePostVisibility('public')">🌍 Public — Everyone</button>
-      <button class="privacy-choice" style="padding:13px;border:1px solid #dce4f2;border-radius:13px;background:#fff;text-align:left;cursor:pointer;color:#183c8c;font-weight:700" onclick="savePostVisibility('friends')">👥 Friends Only — Your friends</button>
-      <button class="privacy-choice" style="padding:13px;border:1px solid #dce4f2;border-radius:13px;background:#fff;text-align:left;cursor:pointer;color:#183c8c;font-weight:700" onclick="savePostVisibility('onlyMe')">🔒 Only Me — Private</button>
+      <button class="privacy-choice" style="padding:13px;border:1px solid #dce4f2;border-radius:13px;background:#fff;text-align:left;cursor:pointer;color:#183c8c;font-weight:700" onclick="savePostVisibility('public')">Public — Everyone</button>
+      <button class="privacy-choice" style="padding:13px;border:1px solid #dce4f2;border-radius:13px;background:#fff;text-align:left;cursor:pointer;color:#183c8c;font-weight:700" onclick="savePostVisibility('friends')">Friends Only — Your friends</button>
+      <button class="privacy-choice" style="padding:13px;border:1px solid #dce4f2;border-radius:13px;background:#fff;text-align:left;cursor:pointer;color:#183c8c;font-weight:700" onclick="savePostVisibility('onlyMe')">Only Me — Private</button>
     </div>
   </div>
 </div>
@@ -881,6 +1163,14 @@ function avatarHtml(post){
   return `<div class="post-avatar">${letter}</div>`;
 }
 
+function svgIcon(name,size=20){
+  const paths={
+    user:'<circle cx="12" cy="8" r="3"/><path d="M5 20a7 7 0 0 1 14 0"/>',
+    lock:'<rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>'
+  };
+  return '<svg class="pro-icon" width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(paths[name]||paths.user)+'</svg>';
+}
+
 function setHeaderUser(user, profile = null){
   const btn = $('headerProfileBtn');
   const menuPhoto = $('menuPhoto');
@@ -888,12 +1178,12 @@ function setHeaderUser(user, profile = null){
   const composerAvatar = $('composerAvatar');
 
   if(!user){
-    btn.innerHTML = '👤 <span>Login</span>';
+    btn.innerHTML = svgIcon('user',20) + '<span>Login</span>'; 
     $('menuName').textContent = 'User';
     $('menuUsername').textContent = '@username';
     menuPhoto.src = '';
-    navPhoto.textContent = '🔐';
-    composerAvatar.textContent = '👤';
+    navPhoto.innerHTML = svgIcon('lock',20);
+    composerAvatar.innerHTML = svgIcon('user',20);
     return;
   }
 
@@ -913,8 +1203,8 @@ function setHeaderUser(user, profile = null){
   const photoURL = profile?.photoURL || user.photoURL || '';
 
   btn.innerHTML = photoURL
-    ? `<img src="${esc(photoURL)}" alt=""> <span>${esc(name)}</span> ▼`
-    : `👤 <span>${esc(name)}</span> ▼`;
+    ? `<img src="${esc(photoURL)}" alt=""> <span>${esc(name)}</span>`
+    : svgIcon('user',20) + `<span>${esc(name)}</span>`;
 
   $('menuName').textContent = name;
   $('menuUsername').textContent = username;
@@ -928,7 +1218,7 @@ function setHeaderUser(user, profile = null){
     menuPhoto.src = '';
     menuPhoto.alt = '';
     const initial = String(name).trim().charAt(0).toUpperCase() || 'U';
-    navPhoto.textContent = '👤';
+    navPhoto.innerHTML = svgIcon('user',20);
     composerAvatar.textContent = initial;
   }
 }
@@ -1285,7 +1575,7 @@ async function loadFeed(){
       }else{
         list.innerHTML=`
           <div class="state-card">
-            <div class="state-icon">📰</div>
+            <div class="state-icon"></div>
             <h3>Your feed is empty</h3>
             <p>Public posts and posts shared by your friends will appear here.</p>
           </div>`;
@@ -1321,8 +1611,8 @@ async function loadFeed(){
 function renderPost(post){
   const own = firebaseUser?.uid === post.authorUid;
   const visibilityLabel =
-    post.visibility==='friends' ? '👥 Friends Only' :
-    post.visibility==='onlyMe' ? '🔒 Only Me' : '🌍 Public';
+    post.visibility==='friends' ? ' Friends Only' :
+    post.visibility==='onlyMe' ? ' Only Me' : ' Public';
 
   const sharedContext = post.isShared && post.originalAuthorName ? `
     <div class="share-context">
@@ -1354,7 +1644,7 @@ function renderPost(post){
         <div class="reaction-wrap">
           <button id="react-btn-${esc(post.id)}" class="post-action" type="button" onclick="toggleReactionPicker('${esc(post.id)}',event)">React</button>
           <div id="picker-${esc(post.id)}" class="reaction-picker">
-            ${['👍','❤️','😂','😮','😢'].map(e=>`<button class="reaction-emoji" type="button" onclick="reactToPost('${esc(post.id)}','${e}',event)">${e}</button>`).join('')}
+            ${['Like','Like','😂','😮','😢'].map(e=>`<button class="reaction-emoji" type="button" onclick="reactToPost('${esc(post.id)}','${e}',event)">${e}</button>`).join('')}
           </div>
         </div>
         <button class="post-action" type="button" onclick="openComments('${esc(post.id)}')">💬 Comment</button>
@@ -1432,9 +1722,9 @@ async function refreshPostCounts(postId){
       getDoc(doc(db,'posts',postId))
     ]);
 
-    const tally={'👍':0,'❤️':0,'😂':0,'😮':0,'😢':0};
+    const tally={'Like':0,'Like':0,'😂':0,'😮':0,'😢':0};
     reactionsSnap.docs.forEach(d=>{
-      const e=d.data()?.emoji||'👍';
+      const e=d.data()?.emoji||'Like';
       tally[e]=(tally[e]||0)+1;
     });
 
@@ -1555,7 +1845,7 @@ window.openReactions=async function(postId){
         name:profile.name || profile.nickname || profile.displayName || reaction.authorName || 'Student',
         username:profile.username || reaction.username || '',
         photo:profile.photoURL || reaction.photoURL || '',
-        emoji:reaction.emoji || '👍'
+        emoji:reaction.emoji || 'Like'
       };
     }));
 
