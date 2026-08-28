@@ -1,11 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>CATHS-MAIN • Messages</title>
-<link rel="icon" type="image/png" href="sslg-logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="sslg-logo.png" rel="icon" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <style>
 :root{--blue:#003DA5;--dark:#00296B;--yellow:#73B9FF;--white:#fff;--muted:#6b7891;--line:#e6ebf4}
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
@@ -685,7 +686,6 @@ body{overflow:hidden;}
   }
 }
 </style>
-
 <style id="mobile-reaction-side-actions-final">
 /* ===== PHONE ONLY: reaction emoji + three-dots beside the message edge ===== */
 @media (hover:none) and (pointer:coarse) and (max-width:520px){
@@ -839,7 +839,6 @@ body{overflow:hidden;background:
 @media(max-width:420px){.header{width:calc(100% - 10px)!important}.logo-group{width:78px!important;min-width:78px!important}.logo-group .logo{width:34px!important;height:34px!important}.header-right{width:98px!important;min-width:98px!important}.header-center h1{font-size:12px!important}.header-center p{font-size:7px!important}.text-nav-icon{font-size:20px!important}.bottom-nav .nav-item{font-size:7.5px!important}}
 
 </style>
-
 <style id="final-10x-message-fixes">
 /* =========================================================
    FINAL 10X FIX — CONVERSATION HEADER / COMPOSER / REACTIONS
@@ -1134,9 +1133,6 @@ body{overflow:hidden!important;}
   body.mobile-conversation-open .messenger.mobile-chat-open .message-compose{height:58px!important;min-height:58px!important;flex-basis:58px!important}
 }
 </style>
-
-
-
 <style id="final-chat-ui-v5">
 /* =========================================================
    FINAL CHAT UI V5
@@ -1354,8 +1350,6 @@ body{overflow:hidden!important;}
 /* Strong outside-click cleanup for any More menu. */
 html body{--chat-ui-version:5}
 </style>
-
-
 <style id="pc-cp-message-final-pass">
 /* =========================================================
    FINAL PC + CELL PHONE MESSAGE LAYOUT
@@ -1953,7 +1947,7 @@ html body{--chat-ui-version:5}
 }
 
 /* Strong outside-click close for message options and reaction pickers. */
-</style>
+</style><style id="final-v5-pc-spacing-wrapped">
 
 
 /* FINAL V5 — PC breathing room */
@@ -1977,9 +1971,9 @@ html body{--chat-ui-version:5}
     margin-bottom:8px !important;
   }
 }
-</style>
 
-<style id="message-hover-focus-v5">
+
+</style><style id="message-hover-focus-v5">
 /* Message actions hidden by default on PC + phone */
 .message-row .message-quick-actions{
   opacity:0 !important;
@@ -2002,8 +1996,6 @@ html body{--chat-ui-version:5}
   }
 }
 </style>
-
-
 <style id="reaction-button-v5">
 .message-quick-actions{
   z-index:999 !important;
@@ -2033,8 +2025,6 @@ html body{--chat-ui-version:5}
   }
 }
 </style>
-
-
 <style id="reaction-space-css-v5">
 .message-reactions:not(.has-reaction){
   display:none !important;
@@ -2049,132 +2039,114 @@ html body{--chat-ui-version:5}
   min-height:29px !important;
 }
 </style>
-
 </head>
 <body>
 <header class="header">
-  <div class="logo-group"><img src="sslg-logo.png" class="logo" alt="SSLG"><img src="caths-logo.png" class="logo" alt="CATHS"></div>
-  <div class="header-center"><h1>CATHS-MAIN Messages</h1><p>Private messages between friends</p></div>
-  <div class="header-right">
-  <button id="headerProfileBtn" class="header-profile-btn" type="button" aria-label="Profile">
-    <span id="headerProfilePhoto" class="header-profile-photo">◉</span>
-  </button>
-  <div id="headerProfileMenu" class="header-profile-menu" aria-hidden="true">
-    <div class="header-profile-info">
-      <img id="headerMenuPhoto" src="" alt="Profile">
-      <div><strong id="headerMenuName">User</strong><small id="headerMenuEmail"></small></div>
-    </div>
-    <div class="header-profile-divider"></div>
-    <a href="profile.html" class="header-profile-link">Profile</a>
-    <button id="headerLogoutBtn" type="button" class="header-logout-btn">Log Out</button>
-  </div>
+<div class="logo-group"><img alt="SSLG" class="logo" src="sslg-logo.png"/><img alt="CATHS" class="logo" src="caths-logo.png"/></div>
+<div class="header-center"><h1>CATHS-MAIN Messages</h1><p>Private messages between friends</p></div>
+<div class="header-right">
+<button aria-label="Profile" class="header-profile-btn" id="headerProfileBtn" type="button">
+<span class="header-profile-photo" id="headerProfilePhoto">◉</span>
+</button>
+<div aria-hidden="true" class="header-profile-menu" id="headerProfileMenu">
+<div class="header-profile-info">
+<img alt="Profile" id="headerMenuPhoto" src=""/>
+<div><strong id="headerMenuName">User</strong><small id="headerMenuEmail"></small></div>
+</div>
+<div class="header-profile-divider"></div>
+<a class="header-profile-link" href="profile.html">Profile</a>
+<button class="header-logout-btn" id="headerLogoutBtn" type="button">Log Out</button>
+</div>
 </div>
 </header>
-
 <main class="container">
-  <section class="messenger">
-    <aside class="sidebar">
-      <div class="side-title"><h2>💬 Messages</h2><span id="friendCount" class="count-pill">0</span></div>
-      <div class="side-actions">
-        <button id="newGroupBtn" class="side-action-btn" type="button">＋ Group</button>
-        <button id="searchFocusBtn" class="side-action-btn" type="button">🔎 Search</button>
-      </div>
-      <input id="friendSearch" class="search" placeholder="Search conversations..." autocomplete="off">
-      <div id="conversationList" class="friend-list"><div class="loading"><div class="spinner"></div><div>Loading conversations...</div></div></div>
-    </aside>
-
-    <section id="chatPane" class="chat">
-      <div class="chat-empty">
-        <div class="empty-inner"><div class="empty-icon">💬</div><h3>Select a friend</h3><p>Choose a friend from the list to start a private conversation.</p></div>
-      </div>
-    </section>
-  </section>
+<section class="messenger">
+<aside class="sidebar">
+<div class="side-title"><h2>💬 Messages</h2><span class="count-pill" id="friendCount">0</span></div>
+<div class="side-actions">
+<button class="side-action-btn" id="newGroupBtn" type="button">＋ Group</button>
+<button class="side-action-btn" id="searchFocusBtn" type="button">🔎 Search</button>
+</div>
+<input autocomplete="off" class="search" id="friendSearch" placeholder="Search conversations..."/>
+<div class="friend-list" id="conversationList"><div class="loading"><div class="spinner"></div><div>Loading conversations...</div></div></div>
+</aside>
+<section class="chat" id="chatPane">
+<div class="chat-empty">
+<div class="empty-inner"><div class="empty-icon">💬</div><h3>Select a friend</h3><p>Choose a friend from the list to start a private conversation.</p></div>
+</div>
+</section>
+</section>
 </main>
-
-
-<div id="groupCreateModal" class="modal-backdrop">
-  <div class="modal-card">
-    <div class="modal-head-row"><h3>👥 Create Group Chat</h3><button type="button" class="modal-x" onclick="closeGroupCreate()">×</button></div>
-    <p>Create a private group with your friends.</p>
-    <label class="form-label">Group name</label>
-    <input id="groupNameInput" class="modal-input" maxlength="80" placeholder="e.g. CATHS Barkada">
-    <label class="form-label">Add friends</label>
-    <div id="groupFriendChoices" class="select-friends"></div>
-    <button id="createGroupConfirmBtn" class="modal-primary" type="button">Create Group</button>
-  </div>
+<div class="modal-backdrop" id="groupCreateModal">
+<div class="modal-card">
+<div class="modal-head-row"><h3>👥 Create Group Chat</h3><button class="modal-x" onclick="closeGroupCreate()" type="button">×</button></div>
+<p>Create a private group with your friends.</p>
+<label class="form-label">Group name</label>
+<input class="modal-input" id="groupNameInput" maxlength="80" placeholder="e.g. CATHS Barkada"/>
+<label class="form-label">Add friends</label>
+<div class="select-friends" id="groupFriendChoices"></div>
+<button class="modal-primary" id="createGroupConfirmBtn" type="button">Create Group</button>
 </div>
-
-<div id="groupManageModal" class="modal-backdrop">
-  <div class="modal-card">
-    <div class="modal-head-row"><h3>⚙️ Group Settings</h3><button type="button" class="modal-x" onclick="closeGroupManage()">×</button></div>
-    <p id="groupManageDescription">Manage this group and its members.</p>
-
-    <label class="form-label">Group name</label>
-    <input id="groupManageNameInput" class="modal-input" maxlength="80">
-
-    <div class="group-settings-section">
-      <h4>👑 Who can control the group?</h4>
-      <div id="groupControlNote" class="group-control-note">Creator and admins can manage members and admins.</div>
-      <div id="groupAdminPickerWrap" class="group-admin-picker">
-        <select id="groupAdminSelect" class="modal-input"></select>
-        <button id="addAdminBtn" class="group-admin-add" type="button">Add Admin</button>
-      </div>
-    </div>
-
-    <div class="group-settings-section">
-      <h4>👥 Manage members</h4>
-      <div id="groupManageMembersList" class="group-member-manage-list"></div>
-    </div>
-
-    <label class="form-label">Add friends</label>
-    <div id="groupManageFriendChoices" class="select-friends"></div>
-
-    <button id="saveGroupBtn" class="modal-primary" type="button">Save Changes</button>
-
-    <div class="group-settings-section">
-      <h4>⚙️ Conversation</h4>
-      <div class="group-setting-actions">
-        <button id="muteGroupBtn" class="group-setting-btn warn" type="button">🔔 Mute this group</button>
-        <button id="leaveGroupBtn" class="group-setting-btn danger" type="button">🚪 Leave group</button>
-      </div>
-    </div>
-    <button type="button" class="modal-secondary" onclick="closeGroupManage()">Close</button>
-  </div>
 </div>
-
-<div id="forwardModal" class="modal-backdrop">
-  <div class="modal-card">
-    <div class="modal-head-row"><h3>↗️ Forward Message</h3><button type="button" class="modal-x" onclick="closeForward()">×</button></div>
-    <p>Select a conversation.</p>
-    <input id="forwardSearch" class="search" placeholder="Search conversations..." autocomplete="off">
-    <div id="forwardChoices" class="select-friends"></div>
-  </div>
+<div class="modal-backdrop" id="groupManageModal">
+<div class="modal-card">
+<div class="modal-head-row"><h3>⚙️ Group Settings</h3><button class="modal-x" onclick="closeGroupManage()" type="button">×</button></div>
+<p id="groupManageDescription">Manage this group and its members.</p>
+<label class="form-label">Group name</label>
+<input class="modal-input" id="groupManageNameInput" maxlength="80"/>
+<div class="group-settings-section">
+<h4>👑 Who can control the group?</h4>
+<div class="group-control-note" id="groupControlNote">Creator and admins can manage members and admins.</div>
+<div class="group-admin-picker" id="groupAdminPickerWrap">
+<select class="modal-input" id="groupAdminSelect"></select>
+<button class="group-admin-add" id="addAdminBtn" type="button">Add Admin</button>
 </div>
-<div id="groupMembersModal" class="modal-backdrop">
-  <div class="modal-card">
-    <div class="modal-head-row"><h3>👥 Group Members</h3><button type="button" class="modal-x" onclick="closeGroupMembers()">×</button></div>
-    <p id="groupMembersSubtitle">Members in this group</p>
-    <div id="groupMembersList" class="group-members-modal-list"></div>
-  </div>
 </div>
-
-<div id="groupConfirmModal" class="modal-backdrop">
-  <div class="modal-card group-confirm-card">
-    <div id="groupConfirmIcon" class="group-confirm-icon">⚠️</div>
-    <h3 id="groupConfirmTitle">Are you sure?</h3>
-    <p id="groupConfirmText"></p>
-    <div class="group-confirm-actions">
-      <button id="groupConfirmCancel" class="group-confirm-btn cancel" type="button">Cancel</button>
-      <button id="groupConfirmProceed" class="group-confirm-btn danger" type="button">Confirm</button>
-    </div>
-  </div>
+<div class="group-settings-section">
+<h4>👥 Manage members</h4>
+<div class="group-member-manage-list" id="groupManageMembersList"></div>
 </div>
-
-<div id="conversationActionMenu" class="conversation-action-menu" aria-hidden="true"></div>
-<div id="toast" class="toast"></div>
-
-
-
+<label class="form-label">Add friends</label>
+<div class="select-friends" id="groupManageFriendChoices"></div>
+<button class="modal-primary" id="saveGroupBtn" type="button">Save Changes</button>
+<div class="group-settings-section">
+<h4>⚙️ Conversation</h4>
+<div class="group-setting-actions">
+<button class="group-setting-btn warn" id="muteGroupBtn" type="button">🔔 Mute this group</button>
+<button class="group-setting-btn danger" id="leaveGroupBtn" type="button">🚪 Leave group</button>
+</div>
+</div>
+<button class="modal-secondary" onclick="closeGroupManage()" type="button">Close</button>
+</div>
+</div>
+<div class="modal-backdrop" id="forwardModal">
+<div class="modal-card">
+<div class="modal-head-row"><h3>↗️ Forward Message</h3><button class="modal-x" onclick="closeForward()" type="button">×</button></div>
+<p>Select a conversation.</p>
+<input autocomplete="off" class="search" id="forwardSearch" placeholder="Search conversations..."/>
+<div class="select-friends" id="forwardChoices"></div>
+</div>
+</div>
+<div class="modal-backdrop" id="groupMembersModal">
+<div class="modal-card">
+<div class="modal-head-row"><h3>👥 Group Members</h3><button class="modal-x" onclick="closeGroupMembers()" type="button">×</button></div>
+<p id="groupMembersSubtitle">Members in this group</p>
+<div class="group-members-modal-list" id="groupMembersList"></div>
+</div>
+</div>
+<div class="modal-backdrop" id="groupConfirmModal">
+<div class="modal-card group-confirm-card">
+<div class="group-confirm-icon" id="groupConfirmIcon">⚠️</div>
+<h3 id="groupConfirmTitle">Are you sure?</h3>
+<p id="groupConfirmText"></p>
+<div class="group-confirm-actions">
+<button class="group-confirm-btn cancel" id="groupConfirmCancel" type="button">Cancel</button>
+<button class="group-confirm-btn danger" id="groupConfirmProceed" type="button">Confirm</button>
+</div>
+</div>
+</div>
+<div aria-hidden="true" class="conversation-action-menu" id="conversationActionMenu"></div>
+<div class="toast" id="toast"></div>
 <style id="final-mobile-message-fix">
 /* FINAL mobile conversation fix — deliberately placed last so older mobile rules cannot override it. */
 @media (max-width:800px){
@@ -2399,7 +2371,6 @@ html body{--chat-ui-version:5}
   }
 }
 </style>
-
 <style id="mobile-reaction-layout-final-fix">
 /* ===== Mobile reactions: Messenger-style chips below the bubble + 2s long-press picker ===== */
 @media (hover:none) and (pointer:coarse) and (max-width:520px){
@@ -2514,15 +2485,13 @@ html body{--chat-ui-version:5}
   }
 }
 </style>
-
 <nav class="bottom-nav">
-  <a href="index.html" class="nav-item"><div class="text-nav-icon">⌂</div><span>Home</span></a>
-  <a href="news-feed.html" class="nav-item"><div class="text-nav-icon">◫</div><span>News Feed</span></a>
-  <a href="voice.html" class="nav-item"><div class="text-nav-icon">◌</div><span>Student Voice</span></a>
-  <a href="friends.html" class="nav-item"><div class="text-nav-icon">◉</div><span>Friends</span></a>
-  <a href="profile.html" class="nav-item"><div id="messagesNavPhoto" class="messages-nav-photo">◉</div><span>Profile</span></a>
+<a class="nav-item" href="index.html"><div class="text-nav-icon">⌂</div><span>Home</span></a>
+<a class="nav-item" href="news-feed.html"><div class="text-nav-icon">◫</div><span>News Feed</span></a>
+<a class="nav-item" href="voice.html"><div class="text-nav-icon">◌</div><span>Student Voice</span></a>
+<a class="nav-item" href="friends.html"><div class="text-nav-icon">◉</div><span>Friends</span></a>
+<a class="nav-item" href="profile.html"><div class="messages-nav-photo" id="messagesNavPhoto">◉</div><span>Profile</span></a>
 </nav>
-
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import {getAuth,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
@@ -4081,7 +4050,6 @@ onAuthStateChanged(auth,async user=>{
   }
 });
 </script>
-
 <script>
 /* Final outside-click guard: clicking anywhere outside an opened message menu
    immediately closes it. The menu itself and its trigger remain interactive. */
@@ -4108,8 +4076,6 @@ onAuthStateChanged(auth,async user=>{
   });
 })();
 </script>
-
-
 <script>
 (function installPlainReactionButton(){
   document.addEventListener('click', function(ev){
@@ -4124,8 +4090,6 @@ onAuthStateChanged(auth,async user=>{
   }, true);
 })();
 </script>
-
-
 <script id="reaction-space-v5">
 (function installReactionSpaceGuard(){
   function updateReactionContainers(root=document){
@@ -4149,8 +4113,6 @@ onAuthStateChanged(auth,async user=>{
   observer.observe(document.body,{subtree:true,childList:true});
 })();
 </script>
-
-
 <script id="message-interaction-v5">
 (function installMessageInteraction(){
   function hideAll(except){
@@ -4191,8 +4153,6 @@ onAuthStateChanged(auth,async user=>{
   }, true);
 })();
 </script>
-
-
 <script id="settings-fix-v5">
 (function(){
   function getSettingsButton(){
@@ -4229,8 +4189,6 @@ onAuthStateChanged(auth,async user=>{
   });
 })();
 </script>
-
-
 <style id="final-v6-other-user-layout">
 /* =========================================================
    V6 — FINAL MESSAGE CONTROL LAYOUT
