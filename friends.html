@@ -792,23 +792,190 @@ main{
 .profile-btn:hover{background:rgba(255,255,255,.22)}
 
 .verified-badge{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;margin-left:5px;border-radius:50%;background:#1d9bf0;color:#fff;font-size:10px;font-weight:900;line-height:1;vertical-align:middle;box-shadow:0 1px 3px rgba(29,155,240,.28)}
+
+
+/* =========================================================
+   INDEX.HTML VISUAL MATCH — FRIENDS PAGE
+   Keep all Friends functionality; align shell/UI with index.html.
+   ========================================================= */
+body{
+  background:
+    radial-gradient(900px 600px at 8% 8%, rgba(0,120,255,.28), transparent 60%),
+    radial-gradient(800px 560px at 92% 14%, rgba(255,215,0,.16), transparent 58%),
+    radial-gradient(700px 500px at 78% 92%, rgba(0,77,190,.24), transparent 62%),
+    linear-gradient(135deg, #03152f 0%, #062b68 34%, #0a4ca2 66%, #173b78 100%) !important;
+  background-attachment:fixed !important;
+  background-size:cover !important;
+  padding-bottom:106px !important;
+  overflow-x:hidden !important;
+}
+body::before{
+  content:"";
+  position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:
+    radial-gradient(circle at 20% 25%, rgba(100,180,255,.10) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 78% 72%, rgba(255,215,0,.10) 0 1px, transparent 1.5px);
+  background-size:180px 180px,240px 240px;opacity:.5;
+}
+body::after{
+  content:"";position:fixed;inset:-15%;pointer-events:none;z-index:-1;
+  background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.035) 48%,transparent 60%);
+  transform:rotate(-4deg);opacity:.7;
+}
+.header{
+  position:sticky !important;top:2px !important;z-index:9990 !important;
+  width:calc(100% - 24px) !important;max-width:1400px !important;min-height:76px !important;
+  margin:10px auto 0 !important;padding:12px 18px !important;
+  display:grid !important;grid-template-columns:220px 1fr 220px !important;align-items:center !important;gap:15px !important;
+  border:1px solid rgba(255,255,255,.20) !important;border-radius:22px !important;
+  background:linear-gradient(135deg,rgba(255,255,255,.13),rgba(255,255,255,.055)) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(145%) !important;backdrop-filter:blur(22px) saturate(145%) !important;
+  box-shadow:0 16px 34px rgba(0,8,30,.20),inset 0 1px 0 rgba(255,255,255,.18) !important;
+}
+.header::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(90deg,rgba(80,170,255,.08),transparent 28%,transparent 72%,rgba(80,170,255,.08));
+}
+.header-left,.header-right,.title{position:relative;z-index:1}
+.header-left{display:flex !important;align-items:center !important;gap:10px !important}
+.logo{width:58px !important;height:58px !important;object-fit:contain !important}
+.caths-logo{transform:none !important}
+.title{text-align:center !important}
+.title h1{font-size:18px !important;font-weight:700 !important}
+.title p{font-size:12px !important;opacity:.9 !important}
+.header-right{display:flex !important;align-items:center !important;justify-content:flex-end !important;gap:12px !important;position:relative !important}
+.login-btn{
+  width:auto !important;margin:0 !important;padding:9px 14px !important;
+  min-height:46px !important;border:1px solid rgba(255,255,255,.16) !important;border-radius:14px !important;
+  background:linear-gradient(145deg,rgba(255,255,255,.15),rgba(255,255,255,.07)) !important;
+  color:#fff !important;font-weight:700 !important;display:flex !important;align-items:center !important;gap:8px !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 8px 20px rgba(0,0,0,.12) !important;
+}
+.login-btn img{width:34px !important;height:34px !important;border-radius:50% !important;object-fit:cover !important}
+.login-icon{font-size:18px;line-height:1}
+.header .notification-wrap{position:relative !important;display:flex !important;align-items:center !important}
+.header .notification-btn{
+  width:46px !important;height:46px !important;margin:0 !important;padding:0 !important;
+  border:1px solid rgba(255,255,255,.17) !important;border-radius:50% !important;
+  background:linear-gradient(145deg,rgba(255,255,255,.15),rgba(255,255,255,.07)) !important;
+  color:#fff !important;display:grid !important;place-items:center !important;position:relative !important;cursor:pointer !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 8px 20px rgba(0,0,0,.14) !important;
+}
+.header .notification-btn .ui-svg{width:21px !important;height:21px !important;fill:none !important;stroke:currentColor !important;stroke-width:1.9 !important;stroke-linecap:round !important;stroke-linejoin:round !important}
+.notification-badge{
+  position:absolute !important;top:-2px !important;right:-2px !important;min-width:19px !important;height:19px !important;
+  padding:0 5px !important;border:2px solid #10295c !important;border-radius:999px !important;
+  background:linear-gradient(135deg,#ffe66a,#ffd21f) !important;color:#17315e !important;
+  font-size:8px !important;font-weight:800 !important;display:none !important;align-items:center !important;justify-content:center !important;
+}
+.notification-badge.show{display:flex !important}
+.notification-panel{
+  display:none;position:absolute !important;top:56px !important;right:0 !important;width:340px !important;max-width:calc(100vw - 24px) !important;
+  background:rgba(248,250,255,.98) !important;color:#152a4d !important;border:1px solid rgba(255,255,255,.22) !important;
+  border-radius:20px !important;overflow:hidden !important;box-shadow:0 20px 50px rgba(0,0,0,.28),0 3px 12px rgba(0,0,0,.10) !important;z-index:99999 !important}
+.notification-panel.open{display:block !important;animation:profileMenuIn .24s ease forwards}
+.notification-head{display:flex;align-items:center;justify-content:space-between;padding:15px 16px;min-height:52px;background:linear-gradient(180deg,#fff,#f7f9ff)}
+.notification-head strong{font-size:14px !important;color:#0f274f !important}
+.notification-head button{border:0;background:none;color:#2a5ea8;font-size:10px;font-weight:800;cursor:pointer;padding:7px 8px;border-radius:8px}
+.notification-list{max-height:370px;overflow:auto;background:#fff}
+.notification-item{display:flex;gap:11px;padding:12px 14px;border-bottom:1px solid #edf1f7;transition:background .18s ease}
+.notification-item:hover{background:#f8fbff}
+.notification-item.unread{background:#fffaf0}
+.notification-icon{width:38px;height:38px;flex:0 0 38px;border-radius:12px;background:linear-gradient(145deg,#eef4ff,#e5edfb);border:1px solid #dce6f7;display:grid;place-items:center}
+.notification-icon span{width:8px;height:8px;border-radius:50%;background:#4d98ff;box-shadow:0 0 10px rgba(77,152,255,.35)}
+.notification-content{min-width:0}.notification-content strong{display:block;font-size:11px;color:#152a4d}.notification-content p{margin-top:3px;font-size:10px;line-height:1.45;color:#6a7890}
+.notification-empty{padding:34px 18px;text-align:center;color:#718096;font-size:11px}
+
+.bottom-nav{
+  position:fixed !important;left:0 !important;right:0 !important;bottom:0 !important;width:100% !important;max-width:none !important;
+  height:82px !important;min-height:82px !important;margin:0 !important;padding:8px 16px calc(8px + env(safe-area-inset-bottom)) !important;
+  display:flex !important;align-items:center !important;justify-content:center !important;gap:8px !important;
+  border:0 !important;border-top:1px solid rgba(255,255,255,.18) !important;border-radius:22px 22px 0 0 !important;
+  background:linear-gradient(180deg,rgba(5,22,52,.93),rgba(2,13,32,.98)) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(150%) !important;backdrop-filter:blur(22px) saturate(150%) !important;
+  box-shadow:0 -14px 35px rgba(0,8,30,.22),inset 0 1px 0 rgba(255,255,255,.10) !important;
+  z-index:99990 !important;overflow:visible !important
+}
+.bottom-nav .nav-item{
+  position:relative !important;z-index:1 !important;flex:1 1 0 !important;width:auto !important;max-width:180px !important;min-width:0 !important;height:62px !important;margin:0 !important;
+  padding:7px 10px !important;border-radius:16px !important;display:flex !important;flex-direction:column !important;align-items:center !important;justify-content:center !important;gap:4px !important;
+  color:rgba(255,255,255,.72) !important;font-size:10px !important;font-weight:600 !important;text-decoration:none !important;white-space:nowrap !important;
+  transition:background .20s ease,color .20s ease,transform .20s ease !important;
+}
+.bottom-nav .nav-item:hover{color:#fff !important;background:rgba(255,255,255,.07) !important;transform:translateY(-2px) !important}
+.bottom-nav .nav-item.active{
+  color:#8fd0ff !important;background:linear-gradient(180deg,rgba(87,169,255,.19),rgba(87,169,255,.07)) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 8px 22px rgba(20,120,255,.12) !important;transform:none !important
+}
+.bottom-nav .nav-item.active::after{
+  content:"";position:absolute;left:50%;bottom:4px;width:24px;height:3px;border-radius:999px;transform:translateX(-50%);
+  background:#77c4ff;box-shadow:0 0 12px rgba(119,196,255,.65)
+}
+.bottom-nav .nav-item .nav-icon-placeholder{display:none !important}
+.bottom-nav .nav-item::before{font-size:20px !important;line-height:1 !important;opacity:.92 !important;margin:0 !important}
+.bottom-nav .nav-item:nth-child(1)::before{content:"⌂" !important}
+.bottom-nav .nav-item:nth-child(2)::before{content:"◫" !important}
+.bottom-nav .nav-item:nth-child(3)::before{content:"◌" !important}
+.bottom-nav .nav-item:nth-child(4)::before{content:"◉" !important}
+.bottom-nav .nav-item:nth-child(5)::before{content:none !important;display:none !important}
+.bottom-nav .nav-item:nth-child(5) .profile-nav-icon{
+  width:34px !important;height:34px !important;min-width:34px !important;min-height:34px !important;max-width:34px !important;max-height:34px !important;
+  margin:0 !important;padding:2px !important;display:grid !important;place-items:center !important;border-radius:50% !important;overflow:hidden !important;
+  background:rgba(255,255,255,.10) !important;border:1px solid rgba(255,255,255,.18) !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12) !important;font-size:0 !important
+}
+.bottom-nav .nav-item:nth-child(5) .profile-nav-icon img{width:30px !important;height:30px !important;min-width:30px !important;min-height:30px !important;max-width:30px !important;max-height:30px !important;display:block !important;object-fit:cover !important;border-radius:50% !important}
+
+@media(max-width:768px){
+  body{padding-bottom:94px !important}
+  .header{top:1px !important;width:calc(100% - 16px) !important;min-height:66px !important;margin:8px auto 0 !important;padding:8px 10px !important;border-radius:18px !important;grid-template-columns:auto 1fr auto !important;gap:8px !important}
+  .logo{width:42px !important;height:42px !important}.header-left{gap:7px !important}.title h1{font-size:14px !important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.title p{font-size:8px !important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .header-right{gap:7px !important}.login-btn{min-height:40px !important;font-size:10px !important;padding:7px 8px !important;max-width:120px !important;overflow:hidden;text-overflow:ellipsis}.login-icon{font-size:16px}.header .notification-btn{width:40px !important;height:40px !important}.header .notification-btn .ui-svg{width:19px !important;height:19px !important}
+  .notification-panel{position:fixed !important;top:72px !important;right:10px !important;left:auto !important;width:min(330px,calc(100vw - 20px)) !important;max-width:none !important}
+  .bottom-nav{height:74px !important;min-height:74px !important;padding:6px 6px calc(6px + env(safe-area-inset-bottom)) !important;gap:2px !important;border-radius:18px 18px 0 0 !important}
+  .bottom-nav .nav-item{height:58px !important;padding:5px 3px !important;border-radius:13px !important;gap:3px !important;font-size:8.5px !important}
+  .bottom-nav .nav-item::before{font-size:17px !important}.bottom-nav .nav-item:nth-child(5) .profile-nav-icon{width:30px !important;height:30px !important;min-width:30px !important;min-height:30px !important;max-width:30px !important;max-height:30px !important}.bottom-nav .nav-item:nth-child(5) .profile-nav-icon img{width:26px !important;height:26px !important;min-width:26px !important;min-height:26px !important;max-width:26px !important;max-height:26px !important}
+}
+@media(max-width:380px){
+  .header{width:calc(100% - 12px) !important;padding-left:8px !important;padding-right:8px !important}.bottom-nav{height:70px !important;min-height:70px !important}.bottom-nav .nav-item{height:54px !important;font-size:7.5px !important}.bottom-nav .nav-item::before{font-size:16px !important}
+}
 </style>
 </head>
 <body>
 
 <header class="header">
-  <div class="logo-group">
+
+  <div class="header-left">
     <img src="sslg-logo.png" class="logo" alt="SSLG">
     <img src="caths-logo.png" class="logo caths-logo" alt="CATHS">
   </div>
 
-  <div class="header-center">
-    <h1>CATHS-MAIN Friends</h1>
-    <p>Connect with your school community</p>
+  <div class="title">
+    <h1>CATHS-MAIN</h1>
+    <p>Official SSLG Communication Platform</p>
   </div>
 
   <div class="header-right">
-    <button id="headerLoginBtn" class="login-btn" type="button" onclick="toggleHeaderProfile()">👤 <span>Login</span></button>
+    <div class="notification-wrap">
+      <button id="notificationBtn" class="notification-btn" type="button" aria-label="Notifications" onclick="toggleNotifications()">
+        <svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+        <span id="notificationBadge" class="notification-badge">0</span>
+      </button>
+      <div id="notificationPanel" class="notification-panel" aria-live="polite">
+        <div class="notification-head">
+          <strong>Notifications</strong>
+          <button type="button" onclick="markNotificationsRead()">Mark read</button>
+        </div>
+        <div id="notificationList" class="notification-list">
+          <div class="notification-empty">No notifications yet.</div>
+        </div>
+      </div>
+    </div>
+
+    <button id="headerLoginBtn" class="login-btn" type="button" onclick="toggleHeaderProfile()">
+      <span class="login-icon" aria-hidden="true">👤</span>
+      <span>Login</span>
+    </button>
+
     <div id="profileMenu" class="profile-menu">
       <div class="profile-info">
         <img id="menuPhoto" src="" alt="Profile">
@@ -825,6 +992,7 @@ main{
       <button class="logout-button" type="button" onclick="logoutUser()">🚪 Log Out</button>
     </div>
   </div>
+
 </header>
 
 <main class="container">
@@ -904,30 +1072,30 @@ main{
 
 <div class="bottom-nav">
 
-    <a href="index.html" class="nav-item">
-        <div>🏠</div>
-        <span>Home</span>
-    </a>
+  <a href="index.html" class="nav-item">
+    <div class="nav-icon-placeholder" aria-hidden="true"></div>
+    <span>Home</span>
+  </a>
 
-    <a href="news-feed.html" class="nav-item">
-        <div>📰</div>
-        <span>News Feed</span>
-    </a>
+  <a href="news-feed.html" class="nav-item">
+    <div class="nav-icon-placeholder" aria-hidden="true"></div>
+    <span>News Feed</span>
+  </a>
 
-    <a href="voice.html" class="nav-item">
-        <div>🗣️</div>
-        <span>Student Voice</span>
-    </a>
+  <a href="voice.html" class="nav-item">
+    <div class="nav-icon-placeholder" aria-hidden="true"></div>
+    <span>Student Voice</span>
+  </a>
 
-    <a href="friends.html" class="nav-item active" onclick="event.preventDefault(); window.location.href='friends.html';">
-        <div>👥</div>
-        <span>Friends</span>
-    </a>
+  <a href="friends.html" class="nav-item active" onclick="event.preventDefault(); window.location.href='friends.html';">
+    <div class="nav-icon-placeholder" aria-hidden="true"></div>
+    <span>Friends</span>
+  </a>
 
-    <a href="profile.html" class="nav-item">
-        <div class="profile-nav-icon" id="profileNavPhoto">👤</div>
-        <span>Profile</span>
-    </a>
+  <a href="profile.html" class="nav-item">
+    <div class="profile-nav-icon" id="profileNavPhoto">👤</div>
+    <span>Profile</span>
+  </a>
 
 </div>
 
@@ -1002,6 +1170,59 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
+// Reuse the same real-time notifications behavior as index.html.
+window.__cathsFirebase = {db, collection, doc, updateDoc, query, where, limit, onSnapshot};
+let notificationUnsubscribe = null;
+let notificationItems = [];
+
+window.userLoggedIn = false;
+
+window.toggleNotifications = function(){
+  if(!window.userLoggedIn){
+    showToast('Please log in to view notifications.');
+    return;
+  }
+  document.getElementById('notificationPanel')?.classList.toggle('open');
+};
+window.closeNotifications = function(){
+  document.getElementById('notificationPanel')?.classList.remove('open');
+};
+window.markNotificationsRead = async function(){
+  const unread = notificationItems.filter(n=>!n.read);
+  if(!unread.length){ renderNotifications(); return; }
+  try{
+    await Promise.all(unread.map(n=>updateDoc(doc(db,'notifications',n.id),{read:true})));
+    notificationItems = notificationItems.map(n=>({...n,read:true}));
+    renderNotifications();
+  }catch(error){
+    console.warn('Mark notifications read failed:',error);
+  }
+};
+
+function escapeNotificationText(value=''){
+  return String(value ?? '').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+}
+function renderNotifications(){
+  const list=document.getElementById('notificationList');
+  const badge=document.getElementById('notificationBadge');
+  if(!list||!badge) return;
+  const unread=notificationItems.filter(n=>!n.read).length;
+  badge.textContent=unread>99?'99+':String(unread);
+  badge.classList.toggle('show',unread>0);
+  if(!notificationItems.length){list.innerHTML='<div class="notification-empty">No notifications yet.</div>';return;}
+  list.innerHTML=notificationItems.slice(0,50).map(n=>`<div class="notification-item ${n.read?'':'unread'}"><div class="notification-icon"><span></span></div><div class="notification-content"><strong>${escapeNotificationText(n.title||'Notification')}</strong><p>${escapeNotificationText(n.text||'')}</p></div></div>`).join('');
+}
+function startNotificationListener(uid){
+  if(notificationUnsubscribe) notificationUnsubscribe();
+  const q=query(collection(db,'notifications'),where('recipientUid','==',uid),limit(50));
+  notificationUnsubscribe=onSnapshot(q,snap=>{
+    notificationItems=snap.docs.map(d=>{const n=d.data()||{};return {id:d.id,createdAt:n.createdAt?.toMillis?.()||0,title:n.actorName?String(n.actorName):(n.title||'Notification'),text:n.text||({reaction:'reacted to your post.',comment:'commented on your post.',share:'shared your post.',message:'sent you a message.'}[n.type]||'You have a new notification.'),read:n.read===true};}).sort((a,b)=>b.createdAt-a.createdAt);
+    renderNotifications();
+  },err=>{console.warn('Notification listener:',err);renderNotifications();});
+}
+
+document.addEventListener('click',e=>{const wrap=document.querySelector('.notification-wrap');if(wrap&&!wrap.contains(e.target))window.closeNotifications();});
+
 let firebaseUser = null;
 let currentProfile = null;
 let searchTimer = null;
@@ -1052,8 +1273,8 @@ function setHeaderUser(user, profile){
   const nav = $('profileNavPhoto');
   if(user){
     btn.innerHTML = user.photoURL
-      ? `<img src="${escapeHtml(user.photoURL)}" alt=""> <span>${escapeHtml(user.displayName || 'User')}</span> ▼`
-      : `👤 <span>${escapeHtml(user.displayName || 'User')}</span> ▼`;
+      ? `<img src="${escapeHtml(user.photoURL)}" alt=""> <span>${escapeHtml(user.displayName || 'User')}</span><span aria-hidden="true">▼</span>`
+      : `<span class="login-icon" aria-hidden="true">👤</span><span>${escapeHtml(user.displayName || 'User')}</span><span aria-hidden="true">▼</span>`;
     $('menuName').textContent = profile?.nickname || user.displayName || 'User';
     $('menuUsername').textContent = profile?.username ? '@' + profile.username : '@username';
     if(user.photoURL){
@@ -1064,7 +1285,7 @@ function setHeaderUser(user, profile){
       nav.textContent = '👤';
     }
   }else{
-    btn.textContent = '👤 Login';
+    btn.innerHTML = '<span class="login-icon" aria-hidden="true">👤</span><span>Login</span>';
     nav.textContent = '🔐';
   }
 }
@@ -1769,6 +1990,16 @@ $('loginOverlay').addEventListener('click',(event)=>{
 
 onAuthStateChanged(auth, async (user)=>{
   firebaseUser = user;
+  window.userLoggedIn = !!user;
+  if(user?.uid){
+    startNotificationListener(user.uid);
+  }else{
+    if(notificationUnsubscribe) notificationUnsubscribe();
+    notificationUnsubscribe = null;
+    notificationItems = [];
+    renderNotifications();
+    window.closeNotifications();
+  }
   if(!user){
     currentProfile = null;
     setHeaderUser(null,null);
