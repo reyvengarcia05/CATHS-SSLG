@@ -149,6 +149,38 @@ select option{background:#061a3a;color:#fff}
 .quiz-q input{width:auto;margin-right:7px;vertical-align:middle;accent-color:#75bdff}
 
 .note{margin-top:12px;font-size:8.5px;line-height:1.55;color:rgba(255,255,255,.45)}
+.manual-flashcard-modal{position:fixed;inset:0;z-index:1000002;display:grid;place-items:center;padding:18px}
+.manual-flashcard-modal.hidden{display:none}
+.manual-flashcard-backdrop{position:absolute;inset:0;background:rgba(0,7,22,.68);backdrop-filter:blur(10px)}
+.manual-flashcard-card{position:relative;z-index:1;width:min(94vw,650px);max-height:88vh;overflow:auto;padding:22px;border-radius:24px;border:1px solid rgba(165,222,255,.22);background:linear-gradient(145deg,rgba(9,37,79,.97),rgba(3,19,44,.98));box-shadow:0 28px 80px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.12)}
+.manual-flashcard-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:15px}
+.manual-flashcard-head h4{font-size:18px;font-weight:800}
+.manual-flashcard-head p{margin-top:5px;color:var(--muted);font-size:8.5px;line-height:1.5}
+.manual-close{width:34px;height:34px;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#fff;font-size:21px;cursor:pointer;flex:0 0 34px}
+.manual-title-input{width:100%;margin-bottom:12px}
+.manual-cards-list{display:grid;gap:10px}
+.manual-card-row{position:relative;padding:14px;border-radius:16px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.045)}
+.manual-card-row-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}
+.manual-card-row-head strong{font-size:9.5px}
+.manual-remove-card{border:0;background:rgba(255,110,110,.10);color:#ffd1d1;border-radius:9px;padding:6px 8px;font-size:7.5px;font-weight:800;cursor:pointer}
+.manual-field-label{display:block;font-size:7.5px;color:#bfe4ff;font-weight:800;text-transform:uppercase;letter-spacing:.6px;margin:7px 0 5px}
+.manual-input,.manual-textarea{width:100%;border:1px solid rgba(255,255,255,.11);border-radius:11px;background:rgba(255,255,255,.055);color:#fff;outline:0;padding:10px 11px;font-size:9px}
+.manual-textarea{min-height:72px;resize:vertical;line-height:1.5}
+.manual-input:focus,.manual-textarea:focus{border-color:rgba(119,194,255,.45);box-shadow:0 0 0 3px rgba(70,150,255,.08)}
+.manual-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:13px;flex-wrap:wrap}
+.manual-add-btn,.manual-save-btn{border:1px solid rgba(143,211,255,.22);background:linear-gradient(145deg,rgba(67,151,255,.24),rgba(0,41,107,.42));color:#fff;border-radius:12px;padding:10px 13px;cursor:pointer;font-size:8.5px;font-weight:800}
+.manual-add-btn{display:inline-flex;align-items:center;gap:6px}
+.manual-add-btn:disabled{opacity:.45;cursor:not-allowed}
+.manual-save-btn{background:linear-gradient(135deg,#a9dcff,#5baeff);color:#031225;border:0;padding:11px 15px}
+.manual-count{font-size:8px;color:var(--muted);font-weight:700}
+.manual-status{margin-top:10px;font-size:8px;color:#cdeaff;line-height:1.5}
+.manual-open-btn{border:0;background:transparent;color:#bfe4ff;font-size:8px;font-weight:800;cursor:pointer;padding:4px 0}
+.manual-output{margin-top:10px;display:grid;gap:8px}
+.manual-saved-card{padding:11px 12px;border-radius:13px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.045)}
+.manual-saved-card strong{display:block;font-size:9px;margin-bottom:5px}
+.manual-saved-card p{font-size:8.5px;color:rgba(255,255,255,.78);line-height:1.5;margin:0}
+@media(max-width:640px){.manual-flashcard-card{padding:15px;border-radius:19px}.manual-flashcard-head h4{font-size:14px}.manual-flashcard-head p{font-size:7.5px}.manual-card-row{padding:11px}.manual-input,.manual-textarea{font-size:8.5px}.manual-actions{align-items:stretch}.manual-add-btn,.manual-save-btn{width:100%;justify-content:center}.manual-count{width:100%;text-align:center}}
+
 .hidden{display:none!important}
 .spin{animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -836,6 +868,10 @@ window.studyAuthReady = (async () => {
         <span class="tool-icon"><svg viewBox="0 0 24 24"><rect x="4" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a1 1 0 0 1 1 1v11"/></svg></span>
         <strong>Flashcards</strong><small>Front + back cards</small>
       </button>
+      <button class="tool-card" id="ownFlashcardTool" data-type="own-flashcards" type="button">
+        <span class="tool-icon"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="15" height="14" rx="2"/><path d="M8 4h10a2 2 0 0 1 2 2v10M8 10h7M8 14h5"/></svg></span>
+        <strong>Make Your Own Flashcard</strong><small>Create cards yourself • No AI</small>
+      </button>
       <button class="tool-card" data-type="quiz" type="button">
         <span class="tool-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM8 8h8M8 12h5M8 16h8"/></svg></span>
         <strong>Quiz</strong><small>Practice questions</small>
@@ -937,6 +973,24 @@ window.studyAuthReady = (async () => {
     </div>
   </div>
 
+  <section class="manual-flashcard-modal hidden" id="manualFlashcardModal" aria-label="Make your own flashcard">
+    <div class="manual-flashcard-backdrop" id="manualFlashcardBackdrop"></div>
+    <div class="manual-flashcard-card">
+      <div class="manual-flashcard-head">
+        <div><h4>Make Your Own Flashcard</h4><p>Write the term and definition yourself. No AI is used here. You can create up to 50 cards.</p></div>
+        <button class="manual-close" id="manualFlashcardClose" type="button" aria-label="Close">×</button>
+      </div>
+      <input class="manual-input manual-title-input" id="manualFlashcardTitle" type="text" maxlength="120" placeholder="Title of flashcard">
+      <div class="manual-cards-list" id="manualCardsList"></div>
+      <div class="manual-actions">
+        <button class="manual-add-btn" id="manualAddCardBtn" type="button">＋ Add Flashcard</button>
+        <span class="manual-count" id="manualCardCount">1 / 50 cards</span>
+        <button class="manual-save-btn" id="manualSaveFlashcardsBtn" type="button">Save Flashcards</button>
+      </div>
+      <div class="manual-status" id="manualFlashcardStatus"></div>
+    </div>
+  </section>
+
   <section class="workspace">
     <div class="panel">
       <div class="panel-title">
@@ -992,7 +1046,7 @@ window.studyAuthReady = (async () => {
 </main>
 
 <script>
-const toolCards=[...document.querySelectorAll('.tool-card:not(#viewLibraryTool)')];
+const toolCards=[...document.querySelectorAll('.tool-card:not(#viewLibraryTool):not(#ownFlashcardTool)')];
 const modeBadge=document.getElementById('modeBadge');
 const generateBtn=document.getElementById('generateBtn');
 const topicInput=document.getElementById('topic');
@@ -1228,6 +1282,59 @@ async function signIn(){
   try{await window.studyFirebase.signInWithPopup(window.studyFirebase.auth,window.studyFirebase.provider);}catch(e){leaderboardStatus.textContent='Sign-in was cancelled or unavailable. You can still use local XP.';}finally{signinBtn.disabled=false;}
 }
 signinBtn.addEventListener('click',signIn);
+const ownFlashcardTool=document.getElementById('ownFlashcardTool');
+const manualFlashcardModal=document.getElementById('manualFlashcardModal');
+const manualFlashcardBackdrop=document.getElementById('manualFlashcardBackdrop');
+const manualFlashcardClose=document.getElementById('manualFlashcardClose');
+const manualFlashcardTitle=document.getElementById('manualFlashcardTitle');
+const manualCardsList=document.getElementById('manualCardsList');
+const manualAddCardBtn=document.getElementById('manualAddCardBtn');
+const manualCardCount=document.getElementById('manualCardCount');
+const manualSaveFlashcardsBtn=document.getElementById('manualSaveFlashcardsBtn');
+const manualFlashcardStatus=document.getElementById('manualFlashcardStatus');
+let manualCards=[];
+function updateManualCardControls(){const n=manualCards.length;manualCardCount.textContent=`${n} / 50 cards`;manualAddCardBtn.disabled=n>=50;}
+function renderManualCards(){
+  manualCardsList.innerHTML=manualCards.map((c,i)=>`<div class="manual-card-row" data-manual-index="${i}">
+    <div class="manual-card-row-head"><strong>Card ${i+1} - Term</strong>${manualCards.length>1?`<button class="manual-remove-card" type="button" data-remove-manual="${i}">Remove</button>`:''}</div>
+    <label class="manual-field-label">Term</label>
+    <input class="manual-input" data-manual-field="front" data-manual-index="${i}" type="text" maxlength="300" placeholder="Enter the term" value="${esc(c.front||'')}">
+    <label class="manual-field-label">Definition</label>
+    <textarea class="manual-textarea" data-manual-field="back" data-manual-index="${i}" maxlength="1500" placeholder="Write the definition">${esc(c.back||'')}</textarea>
+  </div>`).join('');
+  manualCardsList.querySelectorAll('[data-manual-field]').forEach(el=>el.addEventListener('input',()=>{const i=Number(el.dataset.manualIndex);manualCards[i][el.dataset.manualField]=el.value;}));
+  manualCardsList.querySelectorAll('[data-remove-manual]').forEach(btn=>btn.addEventListener('click',()=>{manualCards.splice(Number(btn.dataset.removeManual),1);renderManualCards();}));
+  updateManualCardControls();
+}
+function openManualFlashcardCreator(initial){
+  manualFlashcardModal.classList.remove('hidden');document.body.classList.add('modal-open');manualFlashcardStatus.textContent='';
+  if(initial&&initial.cards){manualFlashcardTitle.value=initial.title||'';manualCards=(initial.cards||[]).slice(0,50).map(c=>({front:c.front||'',back:c.back||''}));}
+  else {manualFlashcardTitle.value='';manualCards=[{front:'',back:''}];}
+  renderManualCards();
+  setTimeout(()=>manualFlashcardTitle.focus(),50);
+}
+function closeManualFlashcardCreator(){manualFlashcardModal.classList.add('hidden');document.body.classList.remove('modal-open');}
+manualAddCardBtn?.addEventListener('click',()=>{if(manualCards.length>=50)return;manualCards.push({front:'',back:''});renderManualCards();setTimeout(()=>manualCardsList.lastElementChild?.scrollIntoView({behavior:'smooth',block:'center'}),30);});
+async function saveOwnFlashcards(){
+  manualCards=manualCards.map(c=>({front:String(c.front||'').trim(),back:String(c.back||'').trim()}));
+  const title=manualFlashcardTitle.value.trim()||'My Flashcards';
+  if(manualCards.length<1){manualFlashcardStatus.textContent='Add at least one card.';return;}
+  const incomplete=manualCards.findIndex(c=>!c.front||!c.back);
+  if(incomplete>=0){manualFlashcardStatus.textContent=`Please complete Card ${incomplete+1}: both Term and Definition are required.`;renderManualCards();return;}
+  const content={mode:'manual',source:'user',title,cards:manualCards.slice(0,50)};
+  manualSaveFlashcardsBtn.disabled=true;manualSaveFlashcardsBtn.textContent='Saving…';
+  try{
+    await saveGeneratedStudyMaterial({type:'flashcards',topic:title,notes:'User-created flashcards',content});
+    manualFlashcardStatus.textContent=currentUser?'Saved to your study library and this device.':'Saved on this device. Sign in to sync it across devices.';
+    showGameToast?.('Your own flashcard set was saved.');
+  }catch(e){console.error(e);manualFlashcardStatus.textContent='Saved locally. Cloud save could not be completed.';}
+  finally{manualSaveFlashcardsBtn.disabled=false;manualSaveFlashcardsBtn.textContent='Save Flashcards';}
+}
+manualSaveFlashcardsBtn?.addEventListener('click',saveOwnFlashcards);
+ownFlashcardTool?.addEventListener('click',()=>openManualFlashcardCreator());
+manualFlashcardClose?.addEventListener('click',closeManualFlashcardCreator);
+manualFlashcardBackdrop?.addEventListener('click',closeManualFlashcardCreator);
+
 const playGameTool=document.getElementById('playGameTool');
 playGameTool?.addEventListener('click',()=>{
   if(gameModal) gameModal.classList.remove('hidden');
@@ -1401,6 +1508,7 @@ const viewLibraryTool=document.getElementById('viewLibraryTool');
 const studyLibraryClose=document.getElementById('studyLibraryClose');
 function materialIcon(type){return type==='flashcards'?'<svg viewBox="0 0 24 24"><rect x="4" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a1 1 0 0 1 1 1v11"/></svg>':type==='quiz'?'<svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM8 8h8M8 12h5M8 16h8"/></svg>':type==='summary'?'<svg viewBox="0 0 24 24"><path d="M5 4h14v16H5zM8 8h8M8 12h6M8 16h4"/></svg>':type==='studyguide'?'<svg viewBox="0 0 24 24"><path d="m12 3 2.1 5.3L20 10l-4.5 3.7L16.5 19 12 15.9 7.5 19l1-5.3L4 10l5.9-1.7z"/></svg>':'<svg viewBox="0 0 24 24"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg>';}
 function materialLabel(type){return labels[type]||String(type||'Study Material').replace(/(^|[-_])([a-z])/g,(_,a,b)=>b.toUpperCase());}
+function materialDisplayLabel(item){return item?.type==='flashcards'&&item?.content?.mode==='manual'?'My Flashcards':materialLabel(item?.type);}
 function materialDate(ts){try{return ts?.toDate?ts.toDate().toLocaleString():''}catch{return ''}}
 function openStudyLibrary(){studyLibraryPanel.classList.remove('hidden');document.body.classList.add('modal-open');loadStudyLibrary();}
 function closeStudyLibrary(){studyLibraryPanel.classList.add('hidden');document.body.classList.remove('modal-open');}
@@ -1431,7 +1539,7 @@ async function loadStudyLibrary(){
 }
 function materialSavedDate(item){return materialDate(item.createdAt)||(item.savedAt?new Date(item.savedAt).toLocaleString():'Saved');}
 function renderStudyLibraryItems(docs){
-  studyLibraryList.innerHTML=docs.map(item=>`<div class="study-library-item"><div class="study-library-icon">${materialIcon(item.type)}</div><div class="study-library-copy"><strong>${esc(item.topic||'Untitled Study Material')}</strong><small>${esc(materialLabel(item.type))} • ${esc(materialSavedDate(item))}</small></div><button class="study-library-open" type="button" data-open-id="${esc(item.id)}">Open</button></div>`).join('');
+  studyLibraryList.innerHTML=docs.map(item=>`<div class="study-library-item"><div class="study-library-icon">${materialIcon(item.type)}</div><div class="study-library-copy"><strong>${esc(item.topic||'Untitled Study Material')}</strong><small>${esc(materialDisplayLabel(item))} • ${esc(materialSavedDate(item))}</small></div><button class="study-library-open" type="button" data-open-id="${esc(item.id)}">Open</button></div>`).join('');
   studyLibraryList.querySelectorAll('[data-open-id]').forEach(btn=>btn.onclick=()=>openSavedStudyMaterial(docs.find(x=>x.id===btn.dataset.openId)));
 }
 
@@ -1439,7 +1547,10 @@ function openSavedStudyMaterial(item){
   if(!item)return; currentType=item.type||'reviewer'; modeBadge.textContent=materialLabel(currentType); toolCards.forEach(c=>c.classList.toggle('active',c.dataset.type===currentType));
   const data=item.content||{}; const topic=item.topic||'Your Topic';
   if(currentType==='reviewer'){outputBox.innerHTML=`<div class="result"><h5>${esc(topic)} — Reviewer</h5><h6>Key Points</h6><ul>${(data.points||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul><h6>Review Questions</h6><ul>${(data.questions||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;}
-  else if(currentType==='flashcards'){flashCardsData=(data.cards||[]).map((c,i)=>({front:c.front||'',back:c.back||'',sourceIndex:i}));currentFlashIndex=0;flashSessionCorrect=new Set();outputBox.innerHTML=`<div class="result"><h5>${esc(topic)} — Flashcards</h5><div id="flashcardArea"></div></div>`;renderCurrentFlashcard();}
+  else if(currentType==='flashcards'){
+    if(data.mode==='manual'){openManualFlashcardCreator({title:data.title||topic,cards:data.cards||[]});closeStudyLibrary();return;}
+    flashCardsData=(data.cards||[]).map((c,i)=>({front:c.front||'',back:c.back||'',sourceIndex:i}));currentFlashIndex=0;flashSessionCorrect=new Set();outputBox.innerHTML=`<div class="result"><h5>${esc(topic)} — Flashcards</h5><div id="flashcardArea"></div></div>`;renderCurrentFlashcard();
+  }
   else if(currentType==='quiz'){const questions=data.questions||[];outputBox.innerHTML=`<div class="result"><h5>${esc(topic)} — Practice Quiz</h5>${questions.map((q,i)=>`<div class="quiz-q"><strong>${esc(q.question||`Question ${i+1}`)}</strong><div class="quiz-score">Saved correct answer: <b>${esc(q.correct||'')}</b></div></div>`).join('')}<div class="quiz-score">This is your saved quiz record. Generate the topic again to take a fresh attempt.</div></div>`;}
   else if(currentType==='summary'){outputBox.innerHTML=`<div class="result"><h5>${esc(topic)} — Summary</h5><p>${esc(data.summary||'')}</p><h6>Remember</h6><p>${esc((data.remember||[]).join(' • '))}</p></div>`;}
   else {outputBox.innerHTML=`<div class="result"><h5>${esc(topic)} — Study Guide</h5><h6>Suggested Flow</h6><ul>${(data.steps||[]).map((x,i)=>`<li><strong>Step ${i+1}:</strong> ${esc(x)}</li>`).join('')}</ul><h6>Study Tip</h6><p>${esc(data.tip||'')}</p></div>`;}
@@ -1482,7 +1593,7 @@ function selectFriendAndChooseGame(friendUid,friends){
 function openSoloGameSelection(){selectedFriend=null;selectedGame=null;gameChoiceGrid.classList.add('hidden');friendsInviteList.classList.add('hidden');gameSelectGrid.classList.remove('hidden');gameModalTitle.textContent='Choose a Game';gameModalSubtitle.textContent='Play solo and practice at your own pace.';gameToast.classList.add('hidden');}
 function chooseGame(gameId){selectedGame=gameId;const title=gameId==='quiz-battle'?'Quiz Challenge':'Flashcard Race';if(selectedFriend){sendGameInvite(selectedFriend.uid,title);}else{showGameToast(`${title} selected. Solo mode is ready to launch here.`);}}
 async function sendGameInvite(friendUid,gameName){if(!currentUser||!window.studyFirebase)return;try{const {db,addDoc,collection,serverTimestamp}=window.studyFirebase;await addDoc(collection(db,'notifications'),{recipientUid:friendUid,actorUid:currentUser.uid,actorName:currentUser.displayName||'A CATHS student',actorPhotoURL:currentUser.photoURL||'',type:'game_invite',title:(currentUser.displayName||'A friend')+' invited you to play',text:`You were invited to play ${gameName} in CATHS AI Study Assistant.`,read:false,gameId:selectedGame||'study-game',gameName,createdAt:serverTimestamp()});gameSelectGrid.classList.add('hidden');showGameToast(`Game invite sent to ${selectedFriend?.displayName||'your friend'}! ${gameName} selected.`);}catch(e){console.error('Game invite failed:',e);showGameToast('Could not send the invite. Your Firestore notifications permission may need to allow this write.');}}
-document.getElementById('playGameBtn')?.addEventListener('click',openGameModal);gameModalClose?.addEventListener('click',closeGameModal);gameModalBackdrop?.addEventListener('click',closeGameModal);document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!gameModal.classList.contains('hidden'))closeGameModal();});inviteFriendBtn?.addEventListener('click',openFriendInvites);playSoloBtn?.addEventListener('click',openSoloGameSelection);gameSelectGrid?.querySelectorAll('[data-real-game]').forEach(btn=>btn.addEventListener('click',()=>chooseGame(btn.dataset.realGame)));
+document.getElementById('playGameBtn')?.addEventListener('click',openGameModal);gameModalClose?.addEventListener('click',closeGameModal);gameModalBackdrop?.addEventListener('click',closeGameModal);document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!gameModal.classList.contains('hidden'))closeGameModal();if(e.key==='Escape'&&!manualFlashcardModal?.classList.contains('hidden'))closeManualFlashcardCreator();});inviteFriendBtn?.addEventListener('click',openFriendInvites);playSoloBtn?.addEventListener('click',openSoloGameSelection);gameSelectGrid?.querySelectorAll('[data-real-game]').forEach(btn=>btn.addEventListener('click',()=>chooseGame(btn.dataset.realGame)));
 updateXPUI(); updateCountControl();
 </script>
 
