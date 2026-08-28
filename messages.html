@@ -2092,6 +2092,58 @@ html body{--chat-ui-version:5}
 }
 </style>
 
+
+<style id="pc-message-width-v11">
+@media (min-width:801px){
+  /* Keep the drawer in place, but constrain the actual Messages surface. */
+  .container{
+    left:104px !important;
+    right:0 !important;
+    top:92px !important;
+    bottom:84px !important;
+    padding:18px 72px 26px 38px !important;
+    display:flex !important;
+    justify-content:center !important;
+    align-items:flex-start !important;
+    overflow:auto !important;
+  }
+
+  .messenger{
+    width:min(1100px, calc(100% - 28px)) !important;
+    max-width:1100px !important;
+    margin:0 auto !important;
+    height:calc(100vh - 144px) !important;
+    border-radius:24px !important;
+  }
+
+  /* Prevent the composer/send area from expanding outside the messenger. */
+  .messenger,
+  .chat-panel,
+  .conversation-panel,
+  .chat-area{
+    max-width:1100px !important;
+  }
+
+  .bottom-nav{
+    left:14px !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+  }
+}
+
+@media (max-width:1200px) and (min-width:801px){
+  .container{
+    padding-left:28px !important;
+    padding-right:42px !important;
+  }
+
+  .messenger{
+    width:min(1040px, calc(100% - 16px)) !important;
+    max-width:1040px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <header class="header">
