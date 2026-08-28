@@ -862,7 +862,7 @@ window.studyAuthReady = (async () => {
       <button class="grade-filter" type="button" data-grade="11">Grade 11</button>
       <button class="grade-filter" type="button" data-grade="12">Grade 12</button>
     </div>
-    <button class="signin-btn" id="signinBtn" type="button">Sign in with Google</button>
+    <button class="signin-btn hidden" id="signinBtn" type="button" aria-hidden="true">Sign in with Google</button>
     <div class="leaderboard-list" id="leaderboardList"></div>
     </div>
   </section>
@@ -972,6 +972,7 @@ const labels={reviewer:'Reviewer',flashcards:'Flashcards',quiz:'Quiz',summary:'S
 const guestXPKey='cathsStudyXP';
 let xp=Number(localStorage.getItem(guestXPKey)||0);
 let currentUser=null;
+let authResolved=false;
 let profileSyncInFlight=false;
 function getUserXPKey(uid){ return 'cathsStudyXP:'+uid; }
 
@@ -984,6 +985,7 @@ const signinBtn=document.getElementById('signinBtn');
 const currentGradePill=document.getElementById('currentGradePill');
 const gradeFilters=document.getElementById('gradeFilters');
 let currentUserSection='';
+let currentUserGrade='';
 let selectedGradeFilter='all';
 let leaderboardRows=[];
 function gradeFromSection(section){
@@ -1046,6 +1048,14 @@ async function loadCurrentUserXP(user){
     const savedLocal=Number(localStorage.getItem(getUserXPKey(user.uid))||0);
     const savedRemote=xpSnap.exists()?Number(xpSnap.data()?.xp||0):0;
     currentUserSection=userSnap.exists()?String(userSnap.data()?.section||'').trim():String(xpSnap.data()?.section||'').trim();
+    currentUserGrade=gradeFromSection(currentUserSection) || String(xpSnap.data()?.grade||'').trim();
+    // Logged-in users should open the leaderboard on their own grade by default.
+    if(currentUserGrade && (selectedGradeFilter==='all' || !selectedGradeFilter)){
+      selectedGradeFilter=currentUserGrade;
+      if(gradeFilters){
+        gradeFilters.querySelectorAll('.grade-filter').forEach(b=>b.classList.toggle('active',b.dataset.grade===currentUserGrade));
+      }
+    }
     xp=Math.max(savedLocal,savedRemote);
     localStorage.setItem(getUserXPKey(user.uid),String(xp));
     updateXPUI();
@@ -1188,11 +1198,20 @@ async function loadLeaderboard(){
     // Pull a broader set so grade filters work across the whole school.
     const snap=await getDocs(query(collection(db,'studyProfiles'),orderBy('xp','desc'),limit(200)));
     leaderboardRows=[];
-    snap.forEach(d=>leaderboardRows.push({id:d.id,...d.data()}));
+    snap.forEach(d=>{
+      const data=d.data()||{};
+      const rowGrade=String(data.grade||gradeFromSection(data.section||'')).trim();
+      const rowXP=Number(data.xp||0);
+      // Only students who have actually earned Study XP are ranked.
+      if(rowXP>0){
+        leaderboardRows.push({id:d.id,...data,grade:rowGrade,xp:rowXP});
+      }
+    });
 
-    const rows=selectedGradeFilter==='all'
-      ? leaderboardRows
-      : leaderboardRows.filter(r=>String(r.grade||gradeFromSection(r.section||''))===selectedGradeFilter);
+    const activeGrade=selectedGradeFilter==='all' ? '' : selectedGradeFilter;
+    const rows=activeGrade
+      ? leaderboardRows.filter(r=>String(r.grade||'')===activeGrade)
+      : leaderboardRows;
 
     if(currentUser&&currentUser.uid){
       const meIndex=rows.findIndex(r=>r.id===currentUser.uid);
@@ -1268,6 +1287,7 @@ async function initializeStudyAuth(){
     leaderboardStatus.textContent='Restoring your Google account…';
   }else{
     updateUserStatusUI(null);
+    signinBtn.classList.add('hidden');
   }
 
   if(!window.studyFirebase){
@@ -1281,6 +1301,7 @@ async function initializeStudyAuth(){
   }
 
   window.studyFirebase.onAuthStateChanged(window.studyFirebase.auth,async user=>{
+    authResolved=true;
     currentUser=user||null;
     updateUserStatusUI(currentUser);
 
@@ -1289,12 +1310,21 @@ async function initializeStudyAuth(){
       localStorage.setItem('userPhoto',user.photoURL||'');
       localStorage.setItem('userEmail',user.email||'');
       signinBtn.classList.add('hidden');
+      signinBtn.setAttribute('aria-hidden','true');
       leaderboardStatus.textContent='Signed in as '+(user.displayName||'Student')+'.';
       await loadCurrentUserXP(user);
       await loadLeaderboard();
     }else{
-      signinBtn.classList.remove('hidden');
+      if(authResolved){
+        signinBtn.classList.remove('hidden');
+        signinBtn.setAttribute('aria-hidden','false');
+      }
       currentUserSection='';
+      currentUserGrade='';
+      selectedGradeFilter='all';
+      if(gradeFilters){
+        gradeFilters.querySelectorAll('.grade-filter').forEach(b=>b.classList.toggle('active',b.dataset.grade==='all'));
+      }
       updateGradePill('');
       xp=Number(localStorage.getItem(guestXPKey)||0);
       updateXPUI();
