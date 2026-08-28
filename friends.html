@@ -1177,7 +1177,9 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   signOut,
-  onAuthStateChanged
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 import {
   getFirestore,
@@ -1211,6 +1213,12 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
+
+// Use the same browser-local Firebase Auth persistence as index.html.
+// This keeps the Google account signed in when moving between pages.
+const authPersistenceReady = setPersistence(auth, browserLocalPersistence).catch(error => {
+  console.error('Auth persistence setup failed:', error);
+});
 
 // Reuse the same real-time notifications behavior as index.html.
 window.__cathsFirebase = {db, collection, doc, updateDoc, query, where, limit, onSnapshot};
@@ -1909,7 +1917,7 @@ async function loadSentRequests(){
       });
 
       $('sentRequestsList').appendChild(row);
-    });
+    }
   }catch(error){
     console.error(error);
     $('sentRequestsList').innerHTML = '<div class="empty">Could not load sent requests. Check Firestore rules.</div>';
@@ -2055,7 +2063,8 @@ $('loginOverlay').addEventListener('click',(event)=>{
   if(event.target === $('loginOverlay')) closeLoginDialog();
 });
 
-onAuthStateChanged(auth, async (user)=>{
+authPersistenceReady.finally(() => {
+  onAuthStateChanged(auth, async (user)=>{
   firebaseUser = user;
   window.userLoggedIn = !!user;
   if(user?.uid){
@@ -2108,6 +2117,7 @@ onAuthStateChanged(auth, async (user)=>{
   await loadRequests();
   await loadSentRequests();
   await loadFriends();
+  });
 });
 </script>
 
