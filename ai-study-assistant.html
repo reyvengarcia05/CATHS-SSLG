@@ -843,39 +843,41 @@ window.studyAuthReady = (async () => {
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style data-sak-style>
 /* =========================================================
-   SERVE A KNOWLEDGE — INTEGRATED GAME
-   Visual base follows the supplied restaurant reference.
+   SERVE A KNOWLEDGE — REFINED GAME UI
    ========================================================= */
 body.sak-modal-open{overflow:hidden!important}
-.sak-modal{position:fixed;inset:0;z-index:1000030;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.sak-modal{position:fixed;inset:0;z-index:1000030;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.84);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .sak-modal.hidden{display:none!important}
-.sak-backdrop{position:absolute;inset:0;background:radial-gradient(circle at 50% 35%,rgba(255,255,255,.05),transparent 48%)}
+.sak-backdrop{position:absolute;inset:0;background:radial-gradient(circle at 50% 35%,rgba(255,255,255,.06),transparent 48%)}
 .sak-frame{position:relative;z-index:1;width:min(96vw,calc((100dvh - 52px)*1.7777778),1420px);aspect-ratio:16/9;filter:drop-shadow(0 26px 70px rgba(0,0,0,.5))}
-.sak-game{position:relative;width:100%;height:100%;aspect-ratio:16/9;overflow:hidden;background:#000;border:2px solid rgba(255,255,255,.12);border-radius:16px;font-family:'Fredoka','Arial Rounded MT Bold',Arial,sans-serif;color:#111;user-select:none;touch-action:none;isolation:isolate;box-shadow:inset 0 1px 0 rgba(255,255,255,.14)}
+.sak-game{position:relative;width:100%;height:100%;aspect-ratio:16/9;overflow:hidden;background:#000;border:2px solid rgba(255,255,255,.16);border-radius:18px;font-family:'Fredoka','Arial Rounded MT Bold',Arial,sans-serif;color:#111;user-select:none;touch-action:none;isolation:isolate;box-shadow:inset 0 1px 0 rgba(255,255,255,.18)}
 .sak-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:1}
-.sak-top-level{position:absolute;left:.6%;top:.45%;z-index:40;color:#fff;font-size:clamp(22px,2.55vw,43px);font-weight:700;letter-spacing:.2px;text-shadow:-2px -2px 0 #111,2px -2px 0 #111,-2px 2px 0 #111,2px 2px 0 #111}
+.sak-top-level{position:absolute;left:1.05%;top:.9%;z-index:40;color:#fff;font-size:clamp(22px,2.55vw,43px);font-weight:700;letter-spacing:.2px;text-shadow:-2px -2px 0 #111,2px -2px 0 #111,-2px 2px 0 #111,2px 2px 0 #111}
 .sak-hearts-box{position:absolute;left:43%;top:1.05%;width:15%;height:6.1%;z-index:40;border:2px solid #111;border-radius:18px;background:#fff2a5;display:flex;align-items:center;justify-content:center;gap:5%;box-shadow:0 3px 0 rgba(0,0,0,.12)}
 .sak-heart{font-size:clamp(16px,2vw,30px);line-height:1;filter:drop-shadow(0 1px 0 #fff)}
-.sak-next-arrow{position:absolute;right:1%;top:1.5%;width:4.9%;height:8%;z-index:55;border:0;background:transparent;padding:0;cursor:pointer;transform:scale(1);transition:transform .16s ease;touch-action:manipulation}
+.sak-next-arrow{position:absolute;right:1%;top:1.35%;width:4.9%;height:8%;z-index:65;border:0;background:transparent;padding:0;cursor:pointer;transform:scale(1);transition:transform .16s ease,filter .16s ease;touch-action:manipulation}
 .sak-next-arrow img{width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 3px 1px rgba(0,0,0,.2))}
-.sak-next-arrow.ready{animation:sakArrowPulse 1.2s ease-in-out infinite}
+.sak-next-arrow:hover{transform:scale(1.06);filter:brightness(1.05)}
 .sak-next-arrow:active{transform:scale(.92)}
-.sak-next-arrow.disabled{cursor:default;opacity:.7;animation:none}
-@keyframes sakArrowPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
-.sak-animal{position:absolute;z-index:11;width:17.2%;height:auto;display:block;filter:drop-shadow(0 5px 5px rgba(0,0,0,.16));transform-origin:center bottom;transition:transform .18s ease,filter .18s ease;pointer-events:none}
+.sak-animal{position:absolute;z-index:11;width:17.2%;height:auto;display:block;filter:drop-shadow(0 7px 7px rgba(0,0,0,.18));transform-origin:center bottom;transition:transform .18s ease,filter .18s ease,opacity .18s ease;pointer-events:none}
 .sak-a1{left:8.2%;top:23.2%}.sak-a2{left:41.9%;top:22.9%}.sak-a3{left:75.2%;top:23.2%}
 .sak-animal.pop{animation:sakPop .35s ease}.sak-animal.shake{animation:sakShake .32s ease}
 @keyframes sakPop{0%,100%{transform:translateY(0) scale(1)}45%{transform:translateY(-8px) scale(1.045)}}
 @keyframes sakShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}50%{transform:translateX(7px)}75%{transform:translateX(-4px)}}
-.sak-target{position:absolute;z-index:16;top:25.1%;width:18.1%;height:31.2%;border-radius:30%;background:transparent;transition:background .12s,box-shadow .12s;pointer-events:auto}
+.sak-target{position:absolute;z-index:16;top:25.1%;width:18.1%;height:31.2%;border-radius:18px;background:transparent;transition:background .12s,box-shadow .12s;pointer-events:auto}
 .sak-t1{left:7.8%}.sak-t2{left:41.6%}.sak-t3{left:74.9%}
 .sak-target.over{background:rgba(255,255,255,.12);box-shadow:0 0 0 4px rgba(255,240,90,.75),0 0 24px rgba(255,214,53,.28)}
 .sak-target.served{box-shadow:0 0 0 3px rgba(99,226,122,.36),0 0 22px rgba(81,208,104,.18)}
-.sak-bubble{position:absolute;z-index:20;top:9.2%;width:20.2%;height:17.8%;border:3px solid #111;border-radius:20px;padding:1.2% 1.2% 0;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:700;line-height:1.25;color:#111;font-size:clamp(11px,1.15vw,20px);transition:filter .18s ease,opacity .18s ease,transform .18s ease}
-.sak-b1{left:2%;background:#ffe51d;transform:rotate(1.1deg)}.sak-b2{left:35.6%;background:#ed941d;transform:rotate(1deg)}.sak-b3{left:69.8%;background:#5877ef;transform:rotate(1deg)}
-.sak-bubble:after{content:"";position:absolute;bottom:-13%;left:50%;width:18%;height:22%;background:inherit;border-right:3px solid #111;border-bottom:3px solid #111;transform:translateX(-18%) rotate(30deg);clip-path:polygon(0 0,100% 0,100% 100%)}
-.sak-bubble strong{font-weight:700}.sak-bubble .sak-quote{display:block;margin-top:2px}
-.sak-bubble.done{opacity:.55;filter:saturate(.6)}
+
+/* Clean rectangular customer order cards. */
+.sak-bubble{position:absolute;z-index:20;top:9.15%;width:20.5%;min-height:15.6%;box-sizing:border-box;border:2.5px solid #111;border-radius:12px;padding:1.2% 1.25%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-weight:700;line-height:1.18;color:#111;font-size:clamp(10px,1.08vw,18px);transition:filter .18s ease,opacity .18s ease,transform .18s ease;box-shadow:0 7px 14px rgba(0,0,0,.13),inset 0 1px 0 rgba(255,255,255,.35)}
+.sak-b1{left:1.8%;background:#ffe25a}.sak-b2{left:35.4%;background:#efb23c}.sak-b3{left:69.7%;background:#6f89ee}
+.sak-bubble:after{display:none!important}
+.sak-bubble strong{font-weight:700}.sak-bubble .sak-quote{display:block;margin-top:4px;font-weight:800;max-width:100%;overflow-wrap:anywhere}
+.sak-bubble.done{opacity:.5;filter:saturate(.55);transform:translateY(-2px)}
+.sak-order-kicker{display:block;font-size:.58em;letter-spacing:.13em;text-transform:uppercase;opacity:.62;margin-bottom:4px}
+.sak-order-text{display:block;max-width:100%}
+
 .sak-timer{position:absolute;z-index:21;top:25.7%;width:3.15%;height:28.6%;pointer-events:none}
 .sak-tm1{left:27.2%}.sak-tm2{left:60.9%}.sak-tm3{left:94.4%}
 .sak-timer img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
@@ -887,57 +889,54 @@ body.sak-modal-open{overflow:hidden!important}
 .sak-fs3{left:97%;top:26.2%}.sak-fh3{left:97%;top:37.3%}.sak-fd3{left:97%;top:47.7%}
 .sak-face.active{filter:drop-shadow(0 2px 6px rgba(255,255,255,.42)) brightness(1.06)}
 .sak-face.inactive{opacity:.26;filter:grayscale(.8)}
-.sak-jar{position:absolute;z-index:25;left:1.8%;bottom:2.7%;width:10.7%;height:auto;display:block}
-.sak-jar-label{position:absolute;z-index:26;left:1.7%;bottom:30.2%;width:12.5%;height:auto;display:block}
-.sak-exp-fill{position:absolute;z-index:27;left:4.18%;bottom:8.35%;width:6.35%;height:17.1%;border-radius:8px;overflow:hidden;background:transparent;pointer-events:none}
-.sak-exp-fill i{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(#9bf06d,#4cc33b);transition:height .35s ease;box-shadow:0 0 10px rgba(106,225,82,.18)}
-.sak-tray{position:absolute;z-index:24;left:16.2%;right:1.9%;bottom:.8%;height:36.9%;border:3px solid #fff;border-radius:29px 29px 24px 24px;background:linear-gradient(120deg,#54a9ee 0%,#86c7f5 52%,#edf6ff 100%);box-shadow:0 -7px 0 rgba(43,93,145,.22),0 12px 28px rgba(30,79,128,.16);padding:5.4% 1.8% 3.2%}
-.sak-choice{position:absolute;top:25%;width:20.1%;height:55.5%;min-width:20.1%;max-width:20.1%;box-sizing:border-box;flex:none;border:3px solid #111;border-radius:26px;background:#fff;display:flex;align-items:center;justify-content:center;text-align:center;padding:4% 5%;cursor:grab;box-shadow:0 5px 0 rgba(0,0,0,.10);touch-action:none;will-change:transform;transform:none;transform-origin:center center;z-index:28;transition:box-shadow .18s ease,filter .18s ease,opacity .18s ease}
+.sak-jar{position:absolute;z-index:25;left:1.8%;bottom:2.7%;width:10.7%;height:auto;display:block}.sak-jar-label{position:absolute;z-index:26;left:1.7%;bottom:30.2%;width:12.5%;height:auto;display:block}
+.sak-exp-fill{position:absolute;z-index:27;left:4.18%;bottom:8.35%;width:6.35%;height:17.1%;border-radius:8px;overflow:hidden;background:transparent;pointer-events:none}.sak-exp-fill i{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(#9bf06d,#4cc33b);transition:height .35s ease;box-shadow:0 0 10px rgba(106,225,82,.18)}
+.sak-tray{position:absolute;z-index:24;left:16.2%;right:1.9%;bottom:.8%;height:36.9%;border:3px solid #fff;border-radius:25px 25px 21px 21px;background:linear-gradient(135deg,#5ca8e7 0%,#8bc9f4 50%,#eef8ff 100%);box-shadow:0 -7px 0 rgba(43,93,145,.22),0 12px 28px rgba(30,79,128,.16);padding:5.1% 1.6% 3.2%}
+
+/* Choice cards are compact, bounded, and text-fit by JS. */
+.sak-choice{position:absolute;top:24%;width:20.1%;height:58%;min-width:20.1%;max-width:20.1%;box-sizing:border-box;flex:none;border:2.5px solid #17212b;border-radius:18px;background:linear-gradient(180deg,#fff 0%,#f8fbff 100%);display:flex;align-items:center;justify-content:center;text-align:center;padding:9% 7%;cursor:grab;box-shadow:0 6px 0 rgba(0,0,0,.11),0 9px 22px rgba(0,0,0,.08);touch-action:none;will-change:transform;transform:none;transform-origin:center center;z-index:28;transition:box-shadow .18s ease,filter .18s ease,opacity .18s ease,border-color .18s ease}
 .sak-c1{left:2.2%}.sak-c2{left:39.5%}.sak-c3{left:76.7%}
-.sak-choice:hover{filter:brightness(1.015);box-shadow:0 7px 0 rgba(0,0,0,.12)}
+.sak-choice:hover{filter:brightness(1.015);box-shadow:0 8px 0 rgba(0,0,0,.12),0 12px 24px rgba(0,0,0,.09);border-color:#111}
 .sak-choice:active{cursor:grabbing}
 .sak-choice.dragging{cursor:grabbing;z-index:70;box-shadow:0 16px 30px rgba(0,0,0,.25),0 0 0 4px rgba(255,232,24,.45);filter:brightness(1.02)}
 .sak-choice.used{opacity:0;pointer-events:none}
-.sak-letter{position:absolute;top:-17%;left:50%;transform:translateX(-50%);font-size:clamp(24px,2.8vw,44px);font-weight:700;color:#f11d16;-webkit-text-stroke:2px #fff;text-shadow:0 2px 0 #111;pointer-events:none}
-.sak-choice-text{font-size:clamp(9px,.95vw,15px);line-height:1.28;font-weight:600;word-break:normal;overflow-wrap:anywhere;max-height:100%;display:block;pointer-events:none}
+.sak-letter{position:absolute;top:-12.5%;left:50%;transform:translateX(-50%);min-width:18%;padding:0 7px;font-size:clamp(19px,2.35vw,36px);font-weight:800;color:#d35621;-webkit-text-stroke:1.5px #fff;text-shadow:0 2px 0 #111;pointer-events:none}
+.sak-choice-text{display:block;width:100%;max-width:100%;max-height:100%;box-sizing:border-box;font-size:clamp(9px,1vw,15px);line-height:1.18;font-weight:600;word-break:break-word;overflow-wrap:anywhere;hyphens:auto;white-space:normal;overflow:hidden;text-align:center;pointer-events:none}
+
+/* Instruction pill sits beside the back arrow instead of over the customers. */
+.sak-round-tip{position:absolute;z-index:35;right:6.2%;top:1.75%;width:min(31%,380px);box-sizing:border-box;padding:6px 12px;border-radius:9px;background:rgba(255,255,255,.96);border:2px solid #111;font-size:clamp(7px,.72vw,11px);font-weight:800;letter-spacing:.02em;white-space:nowrap;text-align:center;box-shadow:0 4px 10px rgba(0,0,0,.12)}
+
 .sak-feedback{position:absolute;z-index:80;left:55%;top:57%;transform:translate(-50%,-50%);padding:8px 20px;border-radius:999px;color:#fff;font-size:clamp(15px,2.2vw,32px);font-weight:700;text-shadow:0 2px 2px rgba(0,0,0,.2);opacity:0;pointer-events:none;white-space:nowrap}
 .sak-feedback.show{animation:sakFeedback .72s ease both}.sak-good{background:#25b64a}.sak-bad{background:#e7473e}@keyframes sakFeedback{0%{opacity:0;transform:translate(-50%,-50%) scale(.82)}18%,70%{opacity:1;transform:translate(-50%,-50%) scale(1.04)}100%{opacity:0;transform:translate(-50%,-64%) scale(1)}}
-.sak-level-card{position:absolute;inset:0;z-index:90;display:none;place-items:center;background:rgba(0,0,0,.16);backdrop-filter:blur(2px)}
-.sak-level-card.show{display:grid}
-.sak-panel{width:min(46%,600px);padding:26px;border:4px solid #111;border-radius:30px;background:#fff;box-shadow:0 24px 60px rgba(0,0,0,.3);text-align:center}
-.sak-panel h2{margin:0;color:#ef3022;font-size:clamp(24px,3.4vw,44px)}
-.sak-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:16px 0}
-.sak-stat{padding:10px;border:2px solid #111;border-radius:15px;background:#edf8ff}
-.sak-stat small{display:block;color:#555;font-size:10px}.sak-stat strong{display:block;font-size:clamp(17px,1.8vw,26px);margin-top:4px}
-.sak-restart{border:3px solid #111;border-radius:999px;background:#ffe02b;padding:10px 22px;box-shadow:0 5px 0 #111;cursor:pointer;font-weight:700}
-.sak-restart:active{transform:translateY(4px);box-shadow:0 1px 0 #111}
-.sak-exit{position:absolute;right:-8px;top:-8px;z-index:3;width:38px;height:38px;border:2px solid #111;border-radius:50%;background:#fff;color:#111;font-size:22px;font-weight:700;line-height:1;display:grid;place-items:center;cursor:pointer;box-shadow:0 7px 16px rgba(0,0,0,.25)}
-.sak-exit:hover{transform:scale(1.04)}
-.sak-round-tip{position:absolute;z-index:35;right:7.1%;top:9.8%;padding:5px 9px;border-radius:999px;background:rgba(255,255,255,.9);border:2px solid #111;font-size:clamp(7px,.72vw,11px);font-weight:700;box-shadow:0 3px 0 rgba(0,0,0,.12);opacity:.88}
+
+/* 1-2-3-GO start overlay. */
+.sak-countdown{position:absolute;inset:0;z-index:150;display:grid;place-items:center;background:rgba(9,20,32,.46);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);text-align:center;color:#fff}
+.sak-countdown.hidden{display:none!important}
+.sak-countdown-card{min-width:32%;padding:22px 28px;border:3px solid #111;border-radius:24px;background:rgba(255,255,255,.95);box-shadow:0 18px 50px rgba(0,0,0,.28)}
+.sak-countdown-label{font-size:clamp(11px,1.1vw,17px);font-weight:800;letter-spacing:.16em;color:#4d6173;text-transform:uppercase}.sak-countdown-text{margin:4px 0;font-size:clamp(58px,9vw,120px);font-weight:800;line-height:1;color:#111}.sak-countdown-sub{font-size:clamp(10px,1vw,16px);font-weight:700;color:#64778b}.sak-countdown-card.pop .sak-countdown-text{animation:sakCountPop .68s cubic-bezier(.22,1,.36,1)}@keyframes sakCountPop{0%{transform:scale(.55);opacity:.2}60%{transform:scale(1.08);opacity:1}100%{transform:scale(1)}}
+
+/* Quit confirmation. */
+.sak-quit-overlay{position:absolute;inset:0;z-index:180;display:grid;place-items:center;background:rgba(0,0,0,.42);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.sak-quit-overlay.hidden{display:none!important}
+.sak-quit-card{width:min(40%,500px);box-sizing:border-box;padding:26px 24px 22px;border:3px solid #111;border-radius:24px;background:#fff;box-shadow:0 24px 60px rgba(0,0,0,.34);text-align:center}
+.sak-quit-card h3{margin:0;font-size:clamp(20px,2.3vw,32px);line-height:1.05;color:#111}.sak-quit-card p{margin:8px 0 20px;font-size:clamp(10px,1vw,14px);color:#6a7280}
+.sak-quit-actions{display:flex;justify-content:center;gap:12px}.sak-quit-btn{min-width:100px;border:2px solid #111;border-radius:12px;padding:10px 18px;font-family:inherit;font-weight:800;cursor:pointer;box-shadow:0 4px 0 #111;transition:transform .1s,box-shadow .1s}.sak-quit-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #111}.sak-quit-no{background:#edf2f7}.sak-quit-yes{background:#ff6b57;color:#fff}
+
+.sak-level-card{position:absolute;inset:0;z-index:90;display:none;place-items:center;background:rgba(0,0,0,.16);backdrop-filter:blur(2px)}.sak-level-card.show{display:grid}
+.sak-panel{width:min(46%,600px);padding:26px;border:4px solid #111;border-radius:30px;background:#fff;box-shadow:0 24px 60px rgba(0,0,0,.3);text-align:center}.sak-panel h2{margin:0;color:#ef3022;font-size:clamp(24px,3.4vw,44px)}.sak-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:16px 0}.sak-stat{padding:10px;border:2px solid #111;border-radius:15px;background:#edf8ff}.sak-stat small{display:block;color:#555;font-size:10px}.sak-stat strong{display:block;font-size:clamp(17px,1.8vw,26px);margin-top:4px}.sak-restart{border:3px solid #111;border-radius:999px;background:#ffe02b;padding:10px 22px;box-shadow:0 5px 0 #111;cursor:pointer;font-weight:700}.sak-restart:active{transform:translateY(4px);box-shadow:0 1px 0 #111}
+.sak-exit{position:absolute;right:-8px;top:-8px;z-index:200;width:38px;height:38px;border:2px solid #111;border-radius:50%;background:#fff;color:#111;font-size:22px;font-weight:700;line-height:1;display:grid;place-items:center;cursor:pointer;box-shadow:0 7px 16px rgba(0,0,0,.25)}.sak-exit:hover{transform:scale(1.04)}
 .sak-customer-served{opacity:.72;filter:saturate(.72)}
+
 @media(max-width:700px){
- .sak-modal{padding:8px}
- .sak-frame{width:100vw;max-width:100vw}
- .sak-game{border-radius:10px}
- .sak-exit{right:3px;top:3px;width:30px;height:30px;font-size:18px}
- .sak-top-level{font-size:clamp(18px,4.5vw,30px)}
- .sak-hearts-box{border-radius:12px;gap:3%;width:19%;left:40.5%;height:7%}
- .sak-heart{font-size:clamp(11px,3.2vw,20px)}
- .sak-bubble{font-size:clamp(7px,1.9vw,12px);border-width:2px;border-radius:14px;padding-top:1.5%}
- .sak-bubble:after{border-width:2px}
- .sak-choice{border-width:2px;border-radius:18px;padding:3% 4%}
- .sak-letter{font-size:clamp(15px,4vw,25px);-webkit-text-stroke:1px #fff}
- .sak-choice-text{font-size:clamp(6.8px,1.7vw,10px)}
- .sak-tray{border-width:2px;border-radius:19px 19px 16px 16px}
- .sak-panel{width:76%;padding:18px;border-width:3px}
- .sak-panel h2{font-size:clamp(20px,6vw,30px)}
- .sak-feedback{left:50%;font-size:clamp(12px,4vw,22px);padding:6px 14px}
- .sak-round-tip{top:10.2%;right:8%;font-size:6.5px;padding:4px 7px;border-width:1.5px}
+ .sak-modal{padding:8px}.sak-frame{width:100vw;max-width:100vw}.sak-game{border-radius:10px}.sak-exit{right:3px;top:3px;width:30px;height:30px;font-size:18px}
+ .sak-top-level{font-size:clamp(18px,4.5vw,30px)}.sak-hearts-box{border-radius:12px;gap:3%;width:19%;left:40.5%;height:7%}.sak-heart{font-size:clamp(11px,3.2vw,20px)}
+ .sak-round-tip{right:8%;top:2%;width:38%;padding:4px 7px;font-size:6.2px;border-width:1.5px;border-radius:7px}
+ .sak-bubble{font-size:clamp(7px,1.75vw,11px);border-width:1.7px;border-radius:8px;padding:1.25% 1.2%}.sak-order-kicker{font-size:.52em;margin-bottom:2px}.sak-bubble .sak-quote{margin-top:2px}
+ .sak-choice{border-width:1.7px;border-radius:12px;padding:10% 6%}.sak-letter{font-size:clamp(14px,3.8vw,24px);-webkit-text-stroke:1px #fff}.sak-choice-text{font-size:clamp(6.6px,1.65vw,9.8px);line-height:1.16}
+ .sak-tray{border-width:1.8px;border-radius:16px 16px 13px 13px}.sak-feedback{left:50%;font-size:clamp(12px,4vw,22px);padding:6px 14px}
+ .sak-countdown-card{min-width:45%;padding:17px 20px;border-width:2px;border-radius:18px}.sak-quit-card{width:72%;padding:20px 16px;border-width:2px;border-radius:18px}.sak-quit-actions{gap:8px}.sak-quit-btn{min-width:82px;padding:8px 13px}
 }
-@media(max-width:390px){
- .sak-choice-text{font-size:6.4px}
- .sak-bubble{font-size:6.4px}
-}
+@media(max-width:390px){.sak-choice-text{font-size:6.1px}.sak-bubble{font-size:6.2px}.sak-round-tip{font-size:5.8px}}
 </style>
 </head>
 <body>
@@ -1118,8 +1117,27 @@ body.sak-modal-open{overflow:hidden!important}
       <img class="sak-bg" src="restaurant.png" alt="">
       <div class="sak-top-level" id="sakTopLevel">LEVEL 1</div>
       <div class="sak-hearts-box" id="sakHeartsBox" aria-label="Lives"></div>
-      <button class="sak-next-arrow" id="sakNextArrow" type="button" aria-label="Next level"><img src="arrow.png" alt=""></button>
+      <button class="sak-next-arrow" id="sakNextArrow" type="button" aria-label="Back / quit game" title="Back"><img src="arrow.png" alt="Back"></button>
       <div class="sak-round-tip">DRAG EACH DEFINITION TO THE RIGHT CUSTOMER</div>
+
+      <div class="sak-countdown hidden" id="sakCountdown" aria-live="assertive">
+        <div class="sak-countdown-card" id="sakCountdownCard">
+          <div class="sak-countdown-label">GET READY!</div>
+          <div class="sak-countdown-text" id="sakCountdownText">3</div>
+          <div class="sak-countdown-sub" id="sakCountdownSub">LEVEL 1</div>
+        </div>
+      </div>
+
+      <div class="sak-quit-overlay hidden" id="sakQuitOverlay" aria-modal="true" role="dialog" aria-labelledby="sakQuitTitle">
+        <div class="sak-quit-card">
+          <h3 id="sakQuitTitle">Are you sure you want to quit</h3>
+          <p>you'll lose all earn exp</p>
+          <div class="sak-quit-actions">
+            <button class="sak-quit-btn sak-quit-no" id="sakQuitNo" type="button">No</button>
+            <button class="sak-quit-btn sak-quit-yes" id="sakQuitYes" type="button">Yes</button>
+          </div>
+        </div>
+      </div>
 
       <img class="sak-animal sak-a1" id="sakAnimal0" src="bear1.png" alt="Customer 1">
       <img class="sak-animal sak-a2" id="sakAnimal1" src="bear2.png" alt="Customer 2">
@@ -2074,13 +2092,22 @@ updateXPUI(); updateCountControl();
   const sakAccuracyFinal=document.getElementById('sakAccuracyFinal');
   const sakXpFinal=document.getElementById('sakXpFinal');
   const sakRestart=document.getElementById('sakRestart');
+  const sakCountdown=document.getElementById('sakCountdown');
+  const sakCountdownText=document.getElementById('sakCountdownText');
+  const sakCountdownSub=document.getElementById('sakCountdownSub');
+  const sakCountdownCard=document.getElementById('sakCountdownCard');
+  const sakQuitOverlay=document.getElementById('sakQuitOverlay');
+  const sakQuitNo=document.getElementById('sakQuitNo');
+  const sakQuitYes=document.getElementById('sakQuitYes');
 
   let sakActive=false;
   let sakMaterial=null;
   let sakPool=[];
+  let sakLevels=[[],[],[]];
   let sakRound=0;
   let sakMaxRounds=3;
   let sakRoundItems=[];
+  let sakAnimalSets=[];
   let sakHearts=5;
   let sakScore=0;
   let sakAttempts=0;
@@ -2098,15 +2125,29 @@ updateXPUI(); updateCountControl();
   let sakChoiceHome={left:0,top:0};
   let sakRunId=0;
   let sakSavedCompletion=false;
+  let sakXpAwarded=false;
+  let sakCountdownTimer=null;
 
-  function sakShuffle(a){ return [...a].sort(()=>Math.random()-.5); }
-  function sakText(v){ return String(v??'').trim(); }
-  function sakEscapeText(v){ return sakText(v).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+  const ANIMALS=[
+    {name:'Fox', kind:'fox'},
+    {name:'Bunny', kind:'bunny'},
+    {name:'Panda', kind:'panda'},
+    {name:'Cat', kind:'cat'},
+    {name:'Dog', kind:'dog'},
+    {name:'Koala', kind:'koala'},
+    {name:'Monkey', kind:'monkey'},
+    {name:'Frog', kind:'frog'},
+    {name:'Penguin', kind:'penguin'}
+  ];
+
+  function sakShuffle(a){return [...a].sort(()=>Math.random()-.5);}
+  function sakText(v){return String(v??'').trim();}
+  function sakEscapeText(v){return sakText(v).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
 
   function sakExtractTerm(q,i){
     const s=sakText(q);
     const m=s.match(/(?:definition of|define|meaning of)\s+[“"']?([^”"'?.!]+)[”"']?/i);
-    if(m&&sakText(m[1])) return sakText(m[1]).toUpperCase();
+    if(m&&sakText(m[1]))return sakText(m[1]).toUpperCase();
     const compact=s.replace(/^\d+[.)]\s*/,'').split(/[:—-]/)[0].trim();
     return (compact||('CONCEPT '+(i+1))).slice(0,34).toUpperCase();
   }
@@ -2115,7 +2156,7 @@ updateXPUI(); updateCountControl();
     const c=material?.content||{};
     const out=[];
     if(Array.isArray(c.cards)){
-      c.cards.forEach((x,i)=>{const term=sakText(x?.front||x?.term);const definition=sakText(x?.back||x?.definition);if(term&&definition)out.push({term,definition});});
+      c.cards.forEach(x=>{const term=sakText(x?.front||x?.term);const definition=sakText(x?.back||x?.definition);if(term&&definition)out.push({term,definition});});
     }
     if(!out.length&&Array.isArray(c.questions)){
       c.questions.forEach((x,i)=>{const term=sakExtractTerm(x?.question||x?.prompt||'',i);const definition=sakText(x?.correct||x?.answer||x?.definition);if(definition)out.push({term,definition});});
@@ -2131,7 +2172,7 @@ updateXPUI(); updateCountControl();
     }
     if(!out.length&&sakText(material?.notes)){
       const pieces=sakText(material.notes).split(/[.!?]+/).map(s=>s.trim()).filter(Boolean);
-      pieces.forEach((p,i)=>{out.push({term:((p.split(/[:—-]/)[0]||'CONCEPT '+(i+1)).trim()).slice(0,34).toUpperCase(),definition:p});});
+      pieces.forEach((p,i)=>out.push({term:((p.split(/[:—-]/)[0]||'CONCEPT '+(i+1)).trim()).slice(0,34).toUpperCase(),definition:p}));
     }
     const fallback=[
       {term:'TERM',definition:'A word or phrase used to describe a particular concept.'},
@@ -2144,21 +2185,56 @@ updateXPUI(); updateCountControl();
       {term:'CONFLICT',definition:'A struggle between opposing forces in a story.'},
       {term:'FORESHADOWING',definition:'A hint that suggests something that will happen later.'}
     ];
-    const unique=[];const seen=new Set();
-    [...out,...fallback].forEach(x=>{const k=(sakText(x.term)+'|'+sakText(x.definition)).toLowerCase();if(!seen.has(k)){seen.add(k);unique.push(x);}});
-    return unique.slice(0,18);
+    const unique=[];const seen=new Set();const termSeen=new Set();
+    [...out,...fallback].forEach(x=>{
+      const term=sakText(x.term),definition=sakText(x.definition);if(!term||!definition)return;
+      const k=(term+'|'+definition).toLowerCase();const tk=term.toLowerCase();
+      if(seen.has(k)||termSeen.has(tk))return;seen.add(k);termSeen.add(tk);unique.push({term,definition});
+    });
+    return unique;
   }
 
-  function sakChooseRounds(){
-    sakMaxRounds=Math.max(1,Math.min(6,Math.ceil(sakPool.length/3)));
+  function sakPrepareLevels(){
+    const pool=sakShuffle(sakPool);
+    const picked=[];const seen=new Set();
+    for(const item of pool){
+      const key=sakText(item.term).toLowerCase();
+      if(!seen.has(key)){seen.add(key);picked.push(item);}
+      if(picked.length>=9)break;
+    }
+    sakLevels=[0,1,2].map(i=>picked.slice(i*3,(i+1)*3));
+    sakMaxRounds=3;
+  }
+
+  // Inline SVG animal art keeps the game self-contained while changing customers every level.
+  function sakAnimalSvg(kind){
+    const parts={
+      fox:`<ellipse cx="120" cy="112" rx="72" ry="72" fill="#F7A84B"/><path d="M58 70 38 28l45 22m59 20 20-42-45 22" fill="#F7A84B" stroke="#9B541C" stroke-width="5" stroke-linejoin="round"/><path d="M56 103q30 46 64 46t64-46q-13 77-64 77t-64-77Z" fill="#FFF2D8"/><circle cx="92" cy="108" r="7" fill="#111"/><circle cx="148" cy="108" r="7" fill="#111"/><ellipse cx="120" cy="129" rx="10" ry="8" fill="#222"/><path d="M120 136q-8 10-18 6m18-6q8 10 18 6" fill="none" stroke="#222" stroke-width="4" stroke-linecap="round"/>`,
+      bunny:`<ellipse cx="120" cy="112" rx="72" ry="72" fill="#F5B7D4"/><path d="M73 63Q51 5 76 6q24 4 26 55M143 61q2-51 26-55 25-1 3 57" fill="#F5B7D4" stroke="#8B5B74" stroke-width="5" stroke-linejoin="round"/><circle cx="93" cy="110" r="7" fill="#111"/><circle cx="147" cy="110" r="7" fill="#111"/><ellipse cx="120" cy="130" rx="10" ry="8" fill="#75455E"/><path d="M120 136q-8 10-18 6m18-6q8 10 18 6" fill="none" stroke="#75455E" stroke-width="4" stroke-linecap="round"/>`,
+      panda:`<ellipse cx="120" cy="112" rx="72" ry="72" fill="#F8F8F8"/><circle cx="70" cy="54" r="25" fill="#222"/><circle cx="170" cy="54" r="25" fill="#222"/><ellipse cx="86" cy="104" rx="19" ry="27" transform="rotate(28 86 104)" fill="#222"/><ellipse cx="154" cy="104" rx="19" ry="27" transform="rotate(-28 154 104)" fill="#222"/><circle cx="92" cy="108" r="6" fill="#fff"/><circle cx="148" cy="108" r="6" fill="#fff"/><circle cx="92" cy="108" r="3.5" fill="#111"/><circle cx="148" cy="108" r="3.5" fill="#111"/><ellipse cx="120" cy="130" rx="10" ry="8" fill="#111"/>`,
+      cat:`<ellipse cx="120" cy="112" rx="72" ry="72" fill="#B8A8E6"/><path d="M61 71 48 30l40 25m43 16 40-41-13 41" fill="#B8A8E6" stroke="#5D557A" stroke-width="5" stroke-linejoin="round"/><circle cx="94" cy="108" r="7" fill="#111"/><circle cx="146" cy="108" r="7" fill="#111"/><path d="M120 126c-8 0-11 8 0 12 11-4 8-12 0-12Z" fill="#8B5A7A"/><path d="M70 127H45m105 0h25M71 137H50m119 0h-21" stroke="#5D557A" stroke-width="3" stroke-linecap="round"/>`,
+      dog:`<ellipse cx="120" cy="112" rx="72" ry="72" fill="#D99B62"/><path d="M69 78Q37 49 50 27q35 7 52 46m49 5q32-29 19-51-35 7-52 46" fill="#9C6745" stroke="#6E472F" stroke-width="5" stroke-linejoin="round"/><circle cx="94" cy="108" r="7" fill="#111"/><circle cx="146" cy="108" r="7" fill="#111"/><ellipse cx="120" cy="129" rx="11" ry="9" fill="#35261F"/><path d="M120 136q-8 9-18 5m18-5q8 9 18 5" fill="none" stroke="#35261F" stroke-width="4" stroke-linecap="round"/>`,
+      koala:`<ellipse cx="120" cy="112" rx="72" ry="72" fill="#AEB7C1"/><circle cx="66" cy="60" r="24" fill="#8B96A1"/><circle cx="174" cy="60" r="24" fill="#8B96A1"/><circle cx="94" cy="108" r="7" fill="#111"/><circle cx="146" cy="108" r="7" fill="#111"/><ellipse cx="120" cy="128" rx="14" ry="19" fill="#343A40"/><path d="M120 138q-8 7-17 4m17-4q8 7 17 4" fill="none" stroke="#343A40" stroke-width="3"/>`,
+      monkey:`<ellipse cx="120" cy="112" rx="72" ry="72" fill="#B87A4A"/><circle cx="65" cy="80" r="23" fill="#E9C3A0"/><circle cx="175" cy="80" r="23" fill="#E9C3A0"/><ellipse cx="120" cy="118" rx="42" ry="47" fill="#E9C3A0"/><circle cx="95" cy="108" r="7" fill="#111"/><circle cx="145" cy="108" r="7" fill="#111"/><ellipse cx="120" cy="129" rx="10" ry="8" fill="#5B3925"/>`,
+      frog:`<ellipse cx="120" cy="116" rx="74" ry="68" fill="#77C96B"/><circle cx="67" cy="54" r="25" fill="#8DDD78" stroke="#3F7D38" stroke-width="5"/><circle cx="173" cy="54" r="25" fill="#8DDD78" stroke="#3F7D38" stroke-width="5"/><circle cx="67" cy="54" r="9" fill="#111"/><circle cx="173" cy="54" r="9" fill="#111"/><circle cx="94" cy="109" r="7" fill="#111"/><circle cx="146" cy="109" r="7" fill="#111"/><path d="M92 133q28 17 56 0" fill="none" stroke="#2F5C2C" stroke-width="5" stroke-linecap="round"/>`,
+      penguin:`<ellipse cx="120" cy="114" rx="70" ry="75" fill="#242C36"/><ellipse cx="120" cy="126" rx="47" ry="50" fill="#F2F5F7"/><circle cx="92" cy="95" r="7" fill="#fff"/><circle cx="148" cy="95" r="7" fill="#fff"/><circle cx="92" cy="95" r="3.5" fill="#111"/><circle cx="148" cy="95" r="3.5" fill="#111"/><path d="M120 108 136 116 120 124 104 116Z" fill="#FFB52E"/><path d="M68 74 48 46l38 12m86 16 20-28-38 12" fill="#242C36" stroke="#141A20" stroke-width="5" stroke-linejoin="round"/>`
+    };
+    const body=parts[kind]||parts.fox;
+    const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 220"><g>${body}</g></svg>`;
+    return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
+  }
+
+  function sakAssignAnimals(){
+    sakAnimalSets=[0,1,2].map(level=>sakShuffle(ANIMALS).slice(level*3,(level+1)*3));
+    // Guarantee each level receives three unique animals, and all nine are unique overall.
+    const shuffled=sakShuffle(ANIMALS);
+    sakAnimalSets=[shuffled.slice(0,3),shuffled.slice(3,6),shuffled.slice(6,9)];
   }
 
   function sakRenderHearts(){
     if(!sakHeartsBox)return;
     sakHeartsBox.innerHTML='';
-    for(let i=0;i<5;i++){
-      const s=document.createElement('span');s.className='sak-heart';s.textContent=i<sakHearts?'❤️':'🖤';sakHeartsBox.appendChild(s);
-    }
+    for(let i=0;i<5;i++){const el=document.createElement('span');el.className='sak-heart';el.textContent=i<sakHearts?'❤️':'🖤';sakHeartsBox.appendChild(el);}
   }
 
   function sakSetFace(i,level){
@@ -2170,79 +2246,100 @@ updateXPUI(); updateCountControl();
 
   function sakRenderPatience(i){
     const pct=Math.max(0,Math.min(100,(sakPatience[i]/15)*100));
-    if(sakTimerFills[i]) sakTimerFills[i].style.height=pct+'%';
+    if(sakTimerFills[i])sakTimerFills[i].style.height=pct+'%';
     const p=sakPatience[i];sakSetFace(i,p>8?2:p>4?1:0);
   }
 
   function sakShowFeedback(text,good){
-    if(!sakFeedback)return;
-    sakFeedback.textContent=text;sakFeedback.className='sak-feedback show '+(good?'sak-good':'sak-bad');
+    if(!sakFeedback)return;sakFeedback.textContent=text;sakFeedback.className='sak-feedback show '+(good?'sak-good':'sak-bad');
     clearTimeout(sakShowFeedback.t);sakShowFeedback.t=setTimeout(()=>sakFeedback.className='sak-feedback',720);
   }
 
-  function sakSetExp(){ if(sakExpFill) sakExpFill.style.height=Math.max(0,Math.min(100,sakExp))+'%'; }
+  function sakSetExp(){if(sakExpFill)sakExpFill.style.height=Math.max(0,Math.min(100,sakExp))+'%';}
 
-  function sakRoundItemsFor(roundIndex){
-    const start=(roundIndex*3)%sakPool.length;
-    const picked=[];
-    for(let i=0;i<3;i++) picked.push(sakPool[(start+i)%sakPool.length]);
-    return picked;
+  function sakFitChoiceText(card){
+    const text=card.querySelector('.sak-choice-text');if(!text)return;
+    const max=window.innerWidth<=700?9.8:15;const min=window.innerWidth<=700?6:7.5;
+    let size=max;text.style.fontSize=size+'px';text.style.lineHeight='1.18';
+    let guard=0;
+    while(guard<30 && size>min && (text.scrollHeight>text.clientHeight+1 || text.scrollWidth>text.clientWidth+1)){size-=.35;text.style.fontSize=size+'px';guard++;}
   }
+
+  function sakFitAllChoiceTexts(){requestAnimationFrame(()=>sakChoices.forEach(sakFitChoiceText));}
+
+  function sakStartCountdown(level,done){
+    clearInterval(sakCountdownTimer);sakCountdown.classList.remove('hidden');sakCountdownSub.textContent='LEVEL '+level;sakCountdownText.textContent='3';sakCountdownCard.classList.remove('pop');void sakCountdownCard.offsetWidth;sakCountdownCard.classList.add('pop');
+    let seq=3;
+    sakCountdownTimer=setInterval(()=>{
+      seq--;
+      if(seq===0){
+        clearInterval(sakCountdownTimer);sakCountdownText.textContent='GO!';sakCountdownCard.classList.remove('pop');void sakCountdownCard.offsetWidth;sakCountdownCard.classList.add('pop');
+        setTimeout(()=>{sakCountdown.classList.add('hidden');sakCountdownText.textContent='3';done?.();},560);
+        return;
+      }
+      sakCountdownText.textContent=String(seq);sakCountdownCard.classList.remove('pop');void sakCountdownCard.offsetWidth;sakCountdownCard.classList.add('pop');
+    },780);
+  }
+
+  function sakRoundItemsFor(roundIndex){return sakLevels[roundIndex]||[];}
 
   function sakRenderRound(){
     sakRoundItems=sakRoundItemsFor(sakRound);
+    if(sakRoundItems.length<3){sakFinishGame();return;}
     sakServed=new Set();sakExpired=new Set();sakPatience=[15,15,15];sakExp=0;sakSetExp();sakRenderHearts();
     sakTopLevel.textContent='LEVEL '+(sakRound+1);
+
     sakRoundItems.forEach((x,i)=>{
-      sakBubbles[i].innerHTML='<strong>Hi I would like to order<br>the definition of<span class="sak-quote">“'+sakEscapeText(x.term)+'”</span></strong>';
-      sakBubbles[i].classList.remove('done');
-      sakTargets[i].classList.remove('over','served');
-      sakAnimals[i].classList.remove('pop','shake','sak-customer-served');
-      sakRenderPatience(i);
+      sakBubbles[i].innerHTML='<span class="sak-order-kicker">Customer Order</span><span class="sak-order-text">Hi! I would like to order the definition of <span class="sak-quote">“'+sakEscapeText(x.term)+'”</span></span>';
+      sakBubbles[i].classList.remove('done');sakTargets[i].classList.remove('over','served');sakAnimals[i].classList.remove('pop','shake','sak-customer-served');sakRenderPatience(i);
+      const animal=sakAnimalSets[sakRound]?.[i]||ANIMALS[(sakRound*3+i)%ANIMALS.length];
+      sakAnimals[i].src=sakAnimalSvg(animal.kind);sakAnimals[i].alt='Customer '+(i+1)+' '+animal.name;
     });
+
     const shuffled=sakShuffle(sakRoundItems);
     shuffled.forEach((x,i)=>{
-      sakChoices[i].dataset.customer=String(sakRoundItems.indexOf(x));
-      sakChoices[i].dataset.definition=x.definition;
-      sakChoices[i].classList.remove('used','dragging');
-      sakChoices[i].style.transform='none';
+      sakChoices[i].dataset.customer=String(sakRoundItems.indexOf(x));sakChoices[i].dataset.definition=x.definition;sakChoices[i].classList.remove('used','dragging');sakChoices[i].style.transform='none';
       document.getElementById('sakChoice'+i).textContent=x.definition;
     });
-    sakChoices.forEach(c=>{c.style.pointerEvents='auto';});
-    sakNextArrow.classList.remove('ready');sakNextArrow.classList.add('disabled');sakNextArrow.disabled=false;
+    sakChoices.forEach(c=>c.style.pointerEvents='auto');
     sakLastFrame=performance.now();
+    sakFitAllChoiceTexts();
+  }
+
+  function sakAwardCompletionXp(){
+    if(sakXp>0 && !sakXpAwarded){
+      sakXpAwarded=true;
+      try{addXP?.(sakXp);}catch(e){console.warn('Could not award Serve a Knowledge XP:',e);}
+    }
   }
 
   function sakFinishGame(){
-    sakActive=false;
-    cancelAnimationFrame(sakRaf);
+    sakActive=false;cancelAnimationFrame(sakRaf);clearInterval(sakCountdownTimer);sakCountdown.classList.add('hidden');sakQuitOverlay.classList.add('hidden');
     const accuracy=sakAttempts?Math.round((sakCorrect/sakAttempts)*100):0;
-    sakScoreFinal.textContent=sakScore.toLocaleString();
-    sakAccuracyFinal.textContent=accuracy+'%';
-    sakXpFinal.textContent='+'+sakXp;
-    sakResultTitle.textContent=sakHearts>0?'Knowledge Served! 🎉':'Game Over 💡';
-    sakResultSubtitle.textContent=sakHearts>0?'Great work — you completed your Serve a Knowledge rounds.':'Keep practicing and come back stronger.';
+    sakScoreFinal.textContent=sakScore.toLocaleString();sakAccuracyFinal.textContent=accuracy+'%';sakXpFinal.textContent='+'+sakXp;
+    const completed=(sakRound>=2&&sakServed.size===3);
+    if(completed){sakAwardCompletionXp();}
+    sakResultTitle.textContent=completed?'Knowledge Served! 🎉':'Game Over 💡';
+    sakResultSubtitle.textContent=completed?'Great work — you completed all 3 levels.':'Keep practicing and come back stronger.';
     sakLevelCard.classList.add('show');
     if(!sakSavedCompletion && currentUser && window.studyFirebase){
-      sakSavedCompletion=true;
+      // Only mark the activity after the final result is shown; XP itself is awarded only on a full clear.
       try{
         const {db,collection,addDoc,serverTimestamp}=window.studyFirebase;
-        addDoc(collection(db,'studyActivity'),{ownerUid:currentUser.uid,type:'game',topic:sakMaterial?.topic||topicInput.value.trim()||'Serve a Knowledge',createdAt:serverTimestamp(),action:'completed',gameId:'serve-knowledge',gameName:'Serve a Knowledge',score:sakScore,correct:sakCorrect,total:sakAttempts,accuracy,xpEarned:sakXp,mode:'solo'}).catch(()=>{});
-      }catch(e){/* local result remains usable */}
+        addDoc(collection(db,'studyActivity'),{ownerUid:currentUser.uid,type:'game',topic:sakMaterial?.topic||topicInput.value.trim()||'Serve a Knowledge',createdAt:serverTimestamp(),action:'completed',gameId:'serve-knowledge',gameName:'Serve a Knowledge',score:sakScore,correct:sakCorrect,total:sakAttempts,accuracy,xpEarned:completed?sakXp:0,mode:'solo'}).catch(()=>{});
+      }catch(e){}
     }
   }
 
   function sakStartLoop(runId){
     const loop=(now)=>{
-      if(!sakActive || runId!==sakRunId)return;
+      if(!sakActive||runId!==sakRunId)return;
       const delta=Math.min(.1,Math.max(0,(now-sakLastFrame)/1000));sakLastFrame=now;
       for(let i=0;i<3;i++){
         if(sakServed.has(i)||sakExpired.has(i))continue;
-        sakPatience[i]=Math.max(0,sakPatience[i]-delta);
-        sakRenderPatience(i);
+        sakPatience[i]=Math.max(0,sakPatience[i]-delta);sakRenderPatience(i);
         if(sakPatience[i]<=0){
-          sakExpired.add(i);sakBubbles[i].classList.add('done');sakAnimals[i].classList.add('shake');sakShowFeedback('TIME! -1 ❤️',false);
-          sakHearts=Math.max(0,sakHearts-1);sakRenderHearts();
+          sakExpired.add(i);sakBubbles[i].classList.add('done');sakAnimals[i].classList.add('shake');sakShowFeedback('TIME! -1 ❤️',false);sakHearts=Math.max(0,sakHearts-1);sakRenderHearts();
           setTimeout(()=>sakAnimals[i].classList.remove('shake'),340);
           if(sakHearts===0){setTimeout(sakFinishGame,450);return;}
         }
@@ -2253,80 +2350,81 @@ updateXPUI(); updateCountControl();
   }
 
   function sakOpen(material){
-    sakMaterial=material||null;
-    sakPool=sakBuildPool(sakMaterial);
-    sakChooseRounds();
-    sakRound=0;sakHearts=5;sakScore=0;sakAttempts=0;sakCorrect=0;sakXp=0;sakSavedCompletion=false;
-    sakLevelCard.classList.remove('show');
-    sakModal.classList.remove('hidden');document.body.classList.add('sak-modal-open');
-    sakActive=true;sakRunId++;sakRenderRound();sakStartLoop(sakRunId);
+    sakMaterial=material||null;sakPool=sakBuildPool(sakMaterial);sakPrepareLevels();sakAssignAnimals();
+    sakRound=0;sakHearts=5;sakScore=0;sakAttempts=0;sakCorrect=0;sakXp=0;sakSavedCompletion=false;sakXpAwarded=false;sakLevelCard.classList.remove('show');sakQuitOverlay.classList.add('hidden');
+    sakModal.classList.remove('hidden');document.body.classList.add('sak-modal-open');sakActive=true;sakRunId++;sakRenderRound();
+    sakStartCountdown(1,()=>sakStartLoop(sakRunId));
   }
 
-  function sakClose(){
-    sakActive=false;sakRunId++;cancelAnimationFrame(sakRaf);sakDragged=null;
-    sakLevelCard.classList.remove('show');sakModal.classList.add('hidden');document.body.classList.remove('sak-modal-open');
+  function sakAskQuit(){
+    if(!sakActive)return;sakQuitOverlay.classList.remove('hidden');clearInterval(sakCountdownTimer);sakCountdown.classList.add('hidden');
   }
 
-  function sakHomeRect(card){return card.getBoundingClientRect();}
-  function sakTargetAt(x,y){
-    for(let i=0;i<sakTargets.length;i++){
-      const r=sakTargets[i].getBoundingClientRect();
-      if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom)return i;
-    }
-    return -1;
+  function sakConfirmQuit(){
+    clearInterval(sakCountdownTimer);sakActive=false;sakRunId++;cancelAnimationFrame(sakRaf);sakDragged=null;sakLevelCard.classList.remove('show');sakQuitOverlay.classList.add('hidden');sakModal.classList.add('hidden');document.body.classList.remove('sak-modal-open');
+    // XP is banked only after completing all 3 levels, so quitting naturally forfeits any in-game EXP.
+    sakXp=0;sakExp=0;sakXpAwarded=false;sakSetExp();
   }
+
+  function sakClose(){sakAskQuit();}
 
   function sakStartDrag(card,e){
-    if(!sakActive||card.classList.contains('used')||sakLevelCard.classList.contains('show'))return;
-    sakDragged=card;const r=sakHomeRect(card);sakDragOffsetX=e.clientX-r.left-r.width/2;sakDragOffsetY=e.clientY-r.top-r.height/2;sakChoiceHome={left:r.left,top:r.top};
-    card.classList.add('dragging');card.setPointerCapture?.(e.pointerId);
+    if(!sakActive||sakQuitOverlay.classList.contains('hidden')===false||sakCountdown.classList.contains('hidden')===false||card.classList.contains('used')||sakLevelCard.classList.contains('show'))return;
+    sakDragged=card;const r=card.getBoundingClientRect();sakDragOffsetX=e.clientX-r.left-r.width/2;sakDragOffsetY=e.clientY-r.top-r.height/2;sakChoiceHome={left:r.left,top:r.top};card.classList.add('dragging');card.setPointerCapture?.(e.pointerId);
   }
 
   function sakMoveDrag(e){
     if(!sakDragged)return;
-    const r=sakDragged.getBoundingClientRect();
-    const desiredLeft=e.clientX-r.width/2-sakDragOffsetX;const desiredTop=e.clientY-r.height/2-sakDragOffsetY;
+    const r=sakDragged.getBoundingClientRect();const desiredLeft=e.clientX-r.width/2-sakDragOffsetX;const desiredTop=e.clientY-r.height/2-sakDragOffsetY;
     sakDragged.style.transform=`translate3d(${desiredLeft-sakChoiceHome.left}px,${desiredTop-sakChoiceHome.top}px,0)`;
-    const ti=sakTargetAt(e.clientX,e.clientY);sakTargets.forEach((t,i)=>t.classList.toggle('over',i===ti&&!sakServed.has(i)));
+    const ti=sakTargetAt(e.clientX,e.clientY);sakTargets.forEach((t,i)=>t.classList.toggle('over',i===ti&&!sakServed.has(i)&&!sakExpired.has(i)));
+  }
+
+  function sakTargetAt(x,y){
+    for(let i=0;i<sakTargets.length;i++){const r=sakTargets[i].getBoundingClientRect();if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom)return i;}
+    return -1;
   }
 
   function sakEndDrag(e){
     if(!sakDragged)return;
     const card=sakDragged;const ti=sakTargetAt(e.clientX,e.clientY);sakTargets.forEach(t=>t.classList.remove('over'));card.classList.remove('dragging');sakDragged=null;card.style.transform='none';
-    if(ti<0 || sakServed.has(ti))return;
+    if(ti<0||sakServed.has(ti)||sakExpired.has(ti))return;
     const customer=Number(card.dataset.customer);sakAttempts++;
     if(ti===customer){
-      sakCorrect++;sakScore+=100;sakXp+=10;addXP?.(10);sakExp=Math.min(100,sakExp+33.34);sakSetExp();sakServed.add(customer);sakChoices.forEach(c=>{if(c===card)c.classList.add('used');});
-      sakTargets[ti].classList.add('served');sakBubbles[ti].classList.add('done');sakAnimals[ti].classList.add('pop','sak-customer-served');sakShowFeedback('+100 • SERVED!',true);sakPatience[ti]=Math.max(sakPatience[ti],0);sakRenderPatience(ti);setTimeout(()=>sakAnimals[ti].classList.remove('pop'),380);
-      if(sakServed.size===3){sakNextArrow.classList.remove('disabled');sakNextArrow.classList.add('ready');}
+      sakCorrect++;sakScore+=100;sakXp+=10;sakExp=Math.min(100,sakExp+33.34);sakSetExp();sakServed.add(customer);card.classList.add('used');sakTargets[ti].classList.add('served');sakBubbles[ti].classList.add('done');sakAnimals[ti].classList.add('pop','sak-customer-served');sakShowFeedback('+100 • SERVED!',true);sakPatience[ti]=Math.max(sakPatience[ti],0);sakRenderPatience(ti);setTimeout(()=>sakAnimals[ti].classList.remove('pop'),380);
+      if(sakServed.size===3){
+        if(sakRound<2){
+          sakShowFeedback('LEVEL '+(sakRound+1)+' COMPLETE!',true);
+          sakActive=false;cancelAnimationFrame(sakRaf);setTimeout(()=>{if(!sakModal.classList.contains('hidden')){sakRound++;sakRenderRound();sakActive=true;sakRunId++;sakStartCountdown(sakRound+1,()=>sakStartLoop(sakRunId));}},650);
+        }else{
+          sakShowFeedback('ALL 3 LEVELS COMPLETE!',true);setTimeout(sakFinishGame,650);
+        }
+      }
     }else{
-      sakHearts=Math.max(0,sakHearts-1);sakRenderHearts();sakShowFeedback('WRONG! -1 ❤️',false);sakAnimals[ti].classList.add('shake');setTimeout(()=>sakAnimals[ti].classList.remove('shake'),340);
-      if(sakHearts===0)setTimeout(sakFinishGame,500);
+      sakHearts=Math.max(0,sakHearts-1);sakRenderHearts();sakShowFeedback('WRONG! -1 ❤️',false);sakAnimals[ti].classList.add('shake');setTimeout(()=>sakAnimals[ti].classList.remove('shake'),340);if(sakHearts===0)setTimeout(sakFinishGame,500);
     }
   }
 
-  function sakNext(){
-    if(!sakActive||sakLevelCard.classList.contains('show'))return;
-    if(sakServed.size!==3){sakShowFeedback('SERVE ALL 3 CUSTOMERS!',false);return;}
-    if(sakRound+1>=sakMaxRounds){sakFinishGame();return;}
-    sakRound++;sakRenderRound();
-  }
-
   function sakRestartGame(){
-    sakLevelCard.classList.remove('show');sakHearts=5;sakScore=0;sakAttempts=0;sakCorrect=0;sakXp=0;sakRound=0;sakSavedCompletion=false;sakRunId++;sakActive=true;sakRenderRound();sakStartLoop(sakRunId);
+    sakLevelCard.classList.remove('show');sakQuitOverlay.classList.add('hidden');sakPool=sakBuildPool(sakMaterial);sakPrepareLevels();sakAssignAnimals();sakHearts=5;sakScore=0;sakAttempts=0;sakCorrect=0;sakXp=0;sakRound=0;sakSavedCompletion=false;sakXpAwarded=false;sakRunId++;sakActive=true;sakRenderRound();sakStartCountdown(1,()=>sakStartLoop(sakRunId));
   }
 
   sakChoices.forEach(c=>c.addEventListener('pointerdown',e=>{e.preventDefault();sakStartDrag(c,e)}));
   window.addEventListener('pointermove',sakMoveDrag,{passive:false});
   window.addEventListener('pointerup',sakEndDrag,{passive:false});
   window.addEventListener('pointercancel',sakEndDrag,{passive:false});
-  sakNextArrow.addEventListener('click',sakNext);
-  sakExit.addEventListener('click',sakClose);
-  sakBackdrop.addEventListener('click',sakClose);
+  sakNextArrow.addEventListener('click',sakAskQuit);
+  sakExit.addEventListener('click',sakAskQuit);
+  sakBackdrop.addEventListener('click',sakAskQuit);
+  sakQuitNo.addEventListener('click',()=>sakQuitOverlay.classList.add('hidden'));
+  sakQuitYes.addEventListener('click',sakConfirmQuit);
   sakRestart.addEventListener('click',sakRestartGame);
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!sakModal.classList.contains('hidden'))sakClose();});
+  window.addEventListener('resize',sakFitAllChoiceTexts);
+  document.addEventListener('keydown',e=>{
+    if(sakModal.classList.contains('hidden'))return;
+    if(e.key==='Escape'){if(!sakQuitOverlay.classList.contains('hidden'))sakQuitOverlay.classList.add('hidden');else sakAskQuit();}
+  });
 
-  // Make the new game callable from the existing Study Assistant game flow.
   window.openServeKnowledge=sakOpen;
 })();
 </script>
