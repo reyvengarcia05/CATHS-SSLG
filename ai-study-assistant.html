@@ -1241,6 +1241,15 @@ body.sak-modal-open{overflow:hidden!important}
 }
 
 </style>
+<style id="sak-mobile-landscape-patch">
+.sak-modal{width:100vw!important;height:100dvh!important;min-height:100dvh!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;overscroll-behavior:none!important}
+.sak-frame{flex:0 0 auto!important;margin:0!important;left:auto;top:auto}
+.sak-game{width:100%!important;height:100%!important}
+html.sak-html-lock,body.sak-html-lock{overflow:hidden!important;width:100%!important;height:100%!important;overscroll-behavior:none!important}
+@media (orientation:landscape) and (max-width:900px){.sak-frame{width:min(98vw,calc((100dvh - 10px)*1.7777778))!important;max-width:98vw!important;height:auto!important;aspect-ratio:16/9!important;transform:none!important}}
+@media (orientation:portrait) and (max-width:900px){.sak-frame{position:absolute!important;left:50%!important;top:50%!important;width:min(92dvh,calc(92dvw * 1.7777778))!important;max-width:none!important;height:auto!important;aspect-ratio:16/9!important;transform:translate(-50%,-50%) rotate(90deg)!important;transform-origin:center center!important}}
+@media (orientation:portrait) and (max-width:420px){.sak-frame{width:min(89dvh,calc(89dvw * 1.7777778))!important}}
+</style>
 </head>
 <body>
 <main class="page">
@@ -2966,6 +2975,29 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!matchingGameModal.
     sakLastFrame=performance.now();cancelAnimationFrame(sakRaf);sakRaf=requestAnimationFrame(loop);
   }
 
+  let sakFullscreenActive=false;
+  async function sakEnterLandscapeMode(){
+    try{
+      document.documentElement.classList.add('sak-html-lock');
+      document.body.classList.add('sak-html-lock');
+      const portrait=window.matchMedia&&window.matchMedia('(orientation: portrait)').matches;
+      if(portrait && document.documentElement.requestFullscreen && !document.fullscreenElement){
+        try{await document.documentElement.requestFullscreen({navigationUI:'hide'});sakFullscreenActive=true;}catch(_){sakFullscreenActive=false;}
+      }
+      if(screen.orientation?.lock){try{await screen.orientation.lock('landscape');}catch(_){}}
+    }catch(e){console.warn('Landscape mode setup skipped:',e);}
+  }
+  async function sakExitLandscapeMode(){
+    try{
+      if(screen.orientation?.unlock){try{screen.orientation.unlock();}catch(_){}}
+      if(sakFullscreenActive && document.fullscreenElement && document.exitFullscreen){try{await document.exitFullscreen();}catch(_) {}}
+    }finally{
+      sakFullscreenActive=false;
+      document.documentElement.classList.remove('sak-html-lock');
+      document.body.classList.remove('sak-html-lock');
+    }
+  }
+
   function sakOpen(material){
     sakMaterial=material||null;
     sakPool=sakBuildPool(sakMaterial);
@@ -2976,7 +3008,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!matchingGameModal.
     }
     sakHearts=5;sakScore=0;sakAttempts=0;sakCorrect=0;sakXp=0;sakAnsweredCount=0;sakSavedCompletion=false;sakXpAwarded=false;sakLevelCard.classList.remove('show');sakQuitOverlay.classList.add('hidden');
     sakAssignAnimals();
-    sakModal.classList.remove('hidden');document.body.classList.add('sak-modal-open');sakActive=true;sakTransitioning=false;sakRunId++;
+    sakModal.classList.remove('hidden');document.body.classList.add('sak-modal-open');sakActive=true;sakTransitioning=false;sakRunId++;sakEnterLandscapeMode();
     sakRenderRound();
     sakStartCountdown(1,()=>sakStartLoop(sakRunId));
   }
@@ -2988,6 +3020,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!matchingGameModal.
     clearInterval(sakCountdownTimer);sakActive=false;sakRunId++;cancelAnimationFrame(sakRaf);sakDragged=null;sakLevelCard.classList.remove('show');sakQuitOverlay.classList.add('hidden');sakModal.classList.add('hidden');document.body.classList.remove('sak-modal-open');
     // XP is banked only after completing all 3 levels, so quitting naturally forfeits any in-game EXP.
     sakXp=0;sakExp=0;sakXpAwarded=false;sakSetExp();
+    sakExitLandscapeMode();
   }
 
   function sakClose(){sakAskQuit();}
@@ -3003,6 +3036,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!matchingGameModal.
     sakDragOffsetY=e.clientY-r.top;
     sakDragX=e.clientX;
     sakDragY=e.clientY;
+    sakDragged.__sakStartPointerX=e.clientX;
+    sakDragged.__sakStartPointerY=e.clientY;
     card.classList.remove('returning');
     card.classList.add('dragging');
     card.style.transition='none';
@@ -3017,9 +3052,11 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!matchingGameModal.
     if(!sakDragged || (sakDragPointerId!==null && e.pointerId!==undefined && e.pointerId!==sakDragPointerId))return;
     sakDragX=e.clientX;
     sakDragY=e.clientY;
-    // Home is fixed at the moment of pickup; transform is calculated from that one stable reference.
-    const nextX=e.clientX-sakChoiceHome.left-sakDragOffsetX;
-    const nextY=e.clientY-sakChoiceHome.top-sakDragOffsetY;
+    const dx=e.clientX-(sakDragged.__sakStartPointerX??e.clientX);
+    const dy=e.clientY-(sakDragged.__sakStartPointerY??e.clientY);
+    const isPortrait=window.matchMedia&&window.matchMedia('(orientation: portrait)').matches;
+    const nextX=isPortrait?dy:dx;
+    const nextY=isPortrait?-dx:dy;
     sakDragged.style.transform=`translate3d(${nextX}px,${nextY}px,0)`;
     const ti=sakTargetAt(e.clientX,e.clientY);
     sakTargets.forEach((t,i)=>t.classList.toggle('over',i===ti&&!sakServed.has(i)&&!sakExpired.has(i)));
@@ -3053,6 +3090,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!matchingGameModal.
     const dropY=e.clientY ?? sakDragY;
     const ti=sakTargetAt(dropX,dropY);
     sakTargets.forEach(t=>t.classList.remove('over'));
+    try{delete card.__sakStartPointerX;delete card.__sakStartPointerY;}catch(_){}
     sakDragged=null;
     sakDragPointerId=null;
     if(ti<0||!sakCurrentQuestions[ti]||sakServed.has(ti)){
@@ -3095,6 +3133,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!matchingGameModal.
     sakQuitOverlay.classList.add('hidden');
     sakModal.classList.add('hidden');
     document.body.classList.remove('sak-modal-open');
+    sakExitLandscapeMode();
   }
   function sakRestartGame(){
     sakLevelCard.classList.remove('show');sakQuitOverlay.classList.add('hidden');
@@ -3121,6 +3160,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!matchingGameModal.
   sakRestart.addEventListener('click',sakRestartGame);
   sakResultBack?.addEventListener('click',sakBackFromResult);
   window.addEventListener('resize',sakFitAllChoiceTexts);
+  document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&sakActive&&window.matchMedia&&window.matchMedia('(orientation: portrait)').matches){document.documentElement.classList.add('sak-html-lock');document.body.classList.add('sak-html-lock');}});
   document.addEventListener('keydown',e=>{
     if(sakModal.classList.contains('hidden'))return;
     if(e.key==='Escape'){if(!sakQuitOverlay.classList.contains('hidden'))sakQuitOverlay.classList.add('hidden');else sakAskQuit();}
