@@ -885,6 +885,90 @@ window.studyAuthReady = (async () => {
 /* =========================================================
    SERVE A KNOWLEDGE — REFINED GAME UI
    ========================================================= */
+
+/* =========================================================
+   SERVE A KNOWLEDGE — PHONE / ROTATION RESPONSIVE MODE
+   Keeps the game canvas at 16:9, scales cleanly on phones,
+   and rotates the landscape game inside portrait screens.
+   ========================================================= */
+.sak-modal{
+  padding:clamp(8px,2vw,18px);
+  overscroll-behavior:contain;
+}
+.sak-frame{
+  width:min(96vw,calc((100dvh - 42px)*1.7777778),1420px);
+  max-width:1420px;
+  max-height:calc(100dvh - 24px);
+}
+.sak-game{
+  width:100%;
+  height:100%;
+  max-width:100%;
+  max-height:100%;
+}
+
+/* Touch devices: give the game enough room and prevent browser gestures. */
+@media (pointer:coarse){
+  .sak-modal{touch-action:none;}
+  .sak-next-arrow{touch-action:manipulation;}
+  .sak-choice{touch-action:none;-webkit-user-select:none;user-select:none;}
+}
+
+/* Landscape phones / tablets */
+@media (orientation:landscape) and (max-width:900px){
+  .sak-modal{padding:6px;}
+  .sak-frame{
+    width:min(98vw,calc((100dvh - 12px)*1.7777778));
+    max-height:calc(100dvh - 12px);
+  }
+  .sak-game{border-width:1px;border-radius:12px;}
+  .sak-round-tip{font-size:clamp(6px,.9vw,10px);}
+  .sak-top-level{font-size:clamp(18px,2.9vw,30px);}
+  .sak-exit{right:2px;top:2px;width:32px;height:32px;font-size:19px;}
+}
+
+/* Portrait phones: rotate the 16:9 game so it remains large and playable. */
+@media (orientation:portrait) and (max-width:900px){
+  .sak-modal{
+    padding:0;
+    overflow:hidden;
+  }
+  .sak-frame{
+    --phone-game-w:min(90dvh,calc(90dvw * 1.7777778));
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:var(--phone-game-w);
+    aspect-ratio:16 / 9;
+    transform:translate(-50%,-50%) rotate(90deg);
+    transform-origin:center center;
+    filter:drop-shadow(0 16px 45px rgba(0,0,0,.5));
+  }
+  .sak-game{border-width:1px;border-radius:12px;}
+  .sak-exit{
+    width:34px;height:34px;right:3px;top:3px;font-size:19px;
+  }
+  .sak-round-tip{
+    font-size:clamp(5.5px,1.8vw,9px);
+    padding:5px 8px;
+    border-width:1.5px;
+  }
+}
+
+/* Very small portrait phones */
+@media (orientation:portrait) and (max-width:420px){
+  .sak-frame{
+    --phone-game-w:min(88dvh,calc(88dvw * 1.7777778));
+  }
+  .sak-game{border-radius:10px;}
+  .sak-round-tip{font-size:5.4px;padding:4px 7px;}
+}
+
+/* Respect devices that explicitly prefer reduced motion. */
+@media (prefers-reduced-motion:reduce){
+  .sak-frame{transition:none!important;}
+}
+
 body.sak-modal-open{overflow:hidden!important}
 .sak-modal{position:fixed;inset:0;z-index:1000030;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.84);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .sak-modal.hidden{display:none!important}
@@ -1013,6 +1097,149 @@ body.sak-modal-open{overflow:hidden!important}
   .sak-result-actions{gap:8px;max-width:290px}
   .sak-result-btn{padding:9px 12px;border-width:2px;box-shadow:0 3px 0 #111;font-size:12px}
 }
+
+
+/* ===== Serve a Knowledge — exact horizontal choice redesign (reference-matched) ===== */
+.sak-tray{
+  position:absolute !important;
+  z-index:24 !important;
+  left:9.65% !important;
+  right:8.55% !important;
+  bottom:4.05% !important;
+  height:37.25% !important;
+  box-sizing:border-box !important;
+  border:3px solid #111 !important;
+  border-radius:26px !important;
+  background:linear-gradient(135deg,#eaf6ff 0%,#d6ecfa 48%,#f7fcff 100%) !important;
+  box-shadow:0 7px 0 rgba(18,55,88,.18),0 14px 28px rgba(0,0,0,.10),inset 0 1px 0 rgba(255,255,255,.98) !important;
+  padding:1.25% .88% 1.45% !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:space-between !important;
+  gap:1.35% !important;
+  overflow:visible !important;
+}
+.sak-choice,
+.sak-c1,.sak-c2,.sak-c3{
+  position:relative !important;
+  top:auto !important;
+  left:auto !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width:none !important;
+  height:auto !important;
+  flex:1 1 0 !important;
+  box-sizing:border-box !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  gap:0 !important;
+  padding:0 1.8% 0 7.15% !important;
+  border:3px solid #101820 !important;
+  border-radius:24px !important;
+  background:linear-gradient(100deg,#e9f6ff 0%,#cae7fb 24%,#58adf2 100%) !important;
+  color:#05080c !important;
+  text-align:left !important;
+  cursor:grab !important;
+  box-shadow:0 5px 0 rgba(17,39,60,.15),0 8px 18px rgba(0,0,0,.08),inset 0 1px 0 rgba(255,255,255,.98) !important;
+  touch-action:none !important;
+  will-change:transform !important;
+  transform:none !important;
+  transform-origin:center center !important;
+  z-index:28 !important;
+  overflow:visible !important;
+  transition:box-shadow .18s ease,filter .18s ease,opacity .18s ease,border-color .18s ease,background .18s ease !important;
+}
+.sak-choice:hover{
+  background:linear-gradient(100deg,#f5fbff 0%,#d5ecfb 24%,#68b5f4 100%) !important;
+  border-color:#080d12 !important;
+  box-shadow:0 7px 0 rgba(17,39,60,.16),0 11px 22px rgba(0,0,0,.10),inset 0 1px 0 #fff !important;
+  filter:none !important;
+}
+.sak-choice:active{cursor:grabbing !important}
+.sak-choice.dragging{
+  cursor:grabbing !important;
+  z-index:70 !important;
+  background:linear-gradient(100deg,#fffef2 0%,#edf8ff 42%,#dff3ff 100%) !important;
+  box-shadow:0 16px 30px rgba(0,0,0,.22),0 0 0 4px rgba(255,232,24,.42),inset 0 1px 0 #fff !important;
+  filter:brightness(1.02) !important;
+}
+.sak-choice.returning{transition:transform .30s cubic-bezier(.22,.75,.2,1),box-shadow .18s ease,filter .18s ease !important;z-index:69 !important;}
+.sak-choice.used{opacity:0 !important;pointer-events:none !important;transform:scale(.96) !important}
+.sak-letter{
+  position:absolute !important;
+  top:50% !important;
+  left:1.0% !important;
+  transform:translateY(-50%) !important;
+  width:4.35% !important;
+  aspect-ratio:1/1 !important;
+  height:auto !important;
+  min-width:0 !important;
+  padding:0 !important;
+  border-radius:50% !important;
+  display:grid !important;
+  place-items:center !important;
+  box-sizing:border-box !important;
+  background:linear-gradient(145deg,#6f7dff 0%,#365ff0 100%) !important;
+  border:2px solid #dff4ff !important;
+  color:#fff !important;
+  font-size:clamp(15px,1.72vw,29px) !important;
+  line-height:1 !important;
+  font-weight:900 !important;
+  -webkit-text-stroke:0 !important;
+  text-shadow:0 2px 2px rgba(20,44,120,.22) !important;
+  box-shadow:0 3px 9px rgba(30,76,165,.24),inset 0 1px 0 rgba(255,255,255,.58) !important;
+  pointer-events:none !important;
+  z-index:2 !important;
+}
+.sak-choice-text{
+  position:relative !important;
+  z-index:1 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+  width:100% !important;
+  max-width:100% !important;
+  max-height:100% !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  box-sizing:border-box !important;
+  margin:0 !important;
+  padding:0 !important;
+  font-size:clamp(13px,1.32vw,22px) !important;
+  line-height:1.14 !important;
+  font-weight:800 !important;
+  letter-spacing:-.012em !important;
+  color:#060a0f !important;
+  word-break:normal !important;
+  overflow-wrap:anywhere !important;
+  hyphens:none !important;
+  white-space:normal !important;
+  overflow:hidden !important;
+  text-align:left !important;
+  pointer-events:none !important;
+  text-wrap:balance !important;
+  text-shadow:0 1px 0 rgba(255,255,255,.84) !important;
+}
+@media(max-width:900px){
+  .sak-tray{left:8.8% !important;right:7.8% !important;bottom:3.8% !important;height:38.1% !important;border-width:2.4px !important;border-radius:21px !important;padding:1.35% .95% 1.55% !important;gap:1.35% !important}
+  .sak-choice,.sak-c1,.sak-c2,.sak-c3{border-width:2.2px !important;border-radius:19px !important;padding-left:7.8% !important}
+  .sak-letter{width:5.0% !important;border-width:1.7px !important;font-size:clamp(13px,2.45vw,21px) !important}
+  .sak-choice-text{font-size:clamp(10px,1.75vw,15px) !important}
+}
+@media(max-width:700px){
+  .sak-tray{left:5.9% !important;right:5.1% !important;bottom:3.5% !important;height:40.6% !important;border-width:2px !important;border-radius:17px !important;padding:1.7% 1.25% 1.9% !important;gap:1.6% !important}
+  .sak-choice,.sak-c1,.sak-c2,.sak-c3{border-width:1.8px !important;border-radius:14px !important;padding-left:10.5% !important}
+  .sak-letter{left:1.1% !important;width:6.0% !important;border-width:1.2px !important;font-size:clamp(11px,3.2vw,17px) !important}
+  .sak-choice-text{font-size:clamp(7px,1.95vw,11px) !important;line-height:1.12 !important}
+}
+@media(max-width:390px){
+  .sak-tray{left:5% !important;right:4.3% !important;height:41.5% !important;border-radius:14px !important}
+  .sak-choice,.sak-c1,.sak-c2,.sak-c3{border-radius:11px !important;padding-left:12.5% !important}
+  .sak-letter{width:6.9% !important;font-size:clamp(9px,3.45vw,14px) !important}
+  .sak-choice-text{font-size:6.6px !important;line-height:1.1 !important}
+}
+
 </style>
 </head>
 <body>
@@ -2449,9 +2676,12 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!matchingGameModal.
   let sakLastFrame=0;
   let sakRaf=0;
   let sakDragged=null;
+  let sakDragPointerId=null;
   let sakDragOffsetX=0;
   let sakDragOffsetY=0;
   let sakChoiceHome={left:0,top:0};
+  let sakDragX=0;
+  let sakDragY=0;
   let sakRunId=0;
   let sakSavedCompletion=false;
   let sakXpAwarded=false;
@@ -2763,15 +2993,51 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!matchingGameModal.
   function sakClose(){sakAskQuit();}
 
   function sakStartDrag(card,e){
-    if(!sakActive||sakQuitOverlay.classList.contains('hidden')===false||sakCountdown.classList.contains('hidden')===false||card.classList.contains('used')||sakLevelCard.classList.contains('show'))return;
-    sakDragged=card;const r=card.getBoundingClientRect();sakDragOffsetX=e.clientX-r.left-r.width/2;sakDragOffsetY=e.clientY-r.top-r.height/2;sakChoiceHome={left:r.left,top:r.top};card.classList.add('dragging');card.setPointerCapture?.(e.pointerId);
+    if(!sakActive||!sakQuitOverlay.classList.contains('hidden')||!sakCountdown.classList.contains('hidden')||card.classList.contains('used')||sakLevelCard.classList.contains('show'))return;
+    sakDragged=card;
+    sakDragPointerId=e.pointerId;
+    const r=card.getBoundingClientRect();
+    sakChoiceHome={left:r.left,top:r.top};
+    // Preserve the exact grab point so the card feels physically attached to the cursor/finger.
+    sakDragOffsetX=e.clientX-r.left;
+    sakDragOffsetY=e.clientY-r.top;
+    sakDragX=e.clientX;
+    sakDragY=e.clientY;
+    card.classList.remove('returning');
+    card.classList.add('dragging');
+    card.style.transition='none';
+    card.style.transform='translate3d(0,0,0)';
+    card.style.willChange='transform';
+    try{card.setPointerCapture?.(e.pointerId);}catch(_){}
+    const ti=sakTargetAt(e.clientX,e.clientY);
+    sakTargets.forEach((t,i)=>t.classList.toggle('over',i===ti&&!sakServed.has(i)&&!sakExpired.has(i)));
   }
 
   function sakMoveDrag(e){
-    if(!sakDragged)return;
-    const r=sakDragged.getBoundingClientRect();const desiredLeft=e.clientX-r.width/2-sakDragOffsetX;const desiredTop=e.clientY-r.height/2-sakDragOffsetY;
-    sakDragged.style.transform=`translate3d(${desiredLeft-sakChoiceHome.left}px,${desiredTop-sakChoiceHome.top}px,0)`;
-    const ti=sakTargetAt(e.clientX,e.clientY);sakTargets.forEach((t,i)=>t.classList.toggle('over',i===ti&&!sakServed.has(i)&&!sakExpired.has(i)));
+    if(!sakDragged || (sakDragPointerId!==null && e.pointerId!==undefined && e.pointerId!==sakDragPointerId))return;
+    sakDragX=e.clientX;
+    sakDragY=e.clientY;
+    // Home is fixed at the moment of pickup; transform is calculated from that one stable reference.
+    const nextX=e.clientX-sakChoiceHome.left-sakDragOffsetX;
+    const nextY=e.clientY-sakChoiceHome.top-sakDragOffsetY;
+    sakDragged.style.transform=`translate3d(${nextX}px,${nextY}px,0)`;
+    const ti=sakTargetAt(e.clientX,e.clientY);
+    sakTargets.forEach((t,i)=>t.classList.toggle('over',i===ti&&!sakServed.has(i)&&!sakExpired.has(i)));
+    if(e.cancelable)e.preventDefault();
+  }
+
+  function sakReturnChoice(card){
+    if(!card)return;
+    card.classList.remove('dragging');
+    card.classList.add('returning');
+    card.style.transition='transform .34s cubic-bezier(.16,1,.3,1),box-shadow .18s ease,filter .18s ease';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{card.style.transform='translate3d(0,0,0)';}));
+    setTimeout(()=>{
+      card.classList.remove('returning');
+      card.style.transform='translate3d(0,0,0)';
+      card.style.transition='';
+      card.style.willChange='transform';
+    },370);
   }
 
   function sakTargetAt(x,y){
@@ -2781,11 +3047,23 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!matchingGameModal.
 
   function sakEndDrag(e){
     if(!sakDragged)return;
-    const card=sakDragged;const ti=sakTargetAt(e.clientX,e.clientY);
-    sakTargets.forEach(t=>t.classList.remove('over'));card.classList.remove('dragging');sakDragged=null;card.style.transform='none';
-    if(ti<0||!sakCurrentQuestions[ti]||sakServed.has(ti))return;
+    if(sakDragPointerId!==null && e.pointerId!==undefined && e.pointerId!==sakDragPointerId)return;
+    const card=sakDragged;
+    const dropX=e.clientX ?? sakDragX;
+    const dropY=e.clientY ?? sakDragY;
+    const ti=sakTargetAt(dropX,dropY);
+    sakTargets.forEach(t=>t.classList.remove('over'));
+    sakDragged=null;
+    sakDragPointerId=null;
+    if(ti<0||!sakCurrentQuestions[ti]||sakServed.has(ti)){
+      sakReturnChoice(card);
+      return;
+    }
     const customer=Number(card.dataset.customer);sakAttempts++;
     if(ti===customer){
+      card.classList.remove('dragging','returning');
+      card.style.transition='';
+      card.style.transform='translate3d(0,0,0)';
       sakCorrect++;sakScore+=100;sakXp+=10;sakExp=Math.min(100,sakExp+Math.min(100,100/Math.max(1,sakTotalQuestions)));sakSetExp();
       sakServed.add(customer);sakAnsweredCount++;card.classList.add('used');sakTargets[ti].classList.add('served');sakBubbles[ti].classList.add('done');sakAnimals[ti].classList.add('pop','sak-customer-served');sakShowFeedback('+100 • SERVED!',true);
       sakPatience[ti]=0;sakRenderPatience(ti);
@@ -2800,6 +3078,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!matchingGameModal.
         sakServed.delete(ti);sakExpired.delete(ti);sakLoadNextForSlot(ti);sakTransitioning=false;sakActive=true;sakRunId++;sakStartLoop(sakRunId);
       },420);
     }else{
+      // Wrong animal: keep the failed drop visible, then smoothly animate the same choice back home.
+      sakReturnChoice(card);
       sakHearts=Math.max(0,sakHearts-1);sakRenderHearts();sakShowFeedback('WRONG! -1 ❤️',false);sakAnimals[ti].classList.add('shake');setTimeout(()=>sakAnimals[ti].classList.remove('shake'),340);
       if(sakHearts===0)setTimeout(()=>sakFinishGame(false),500);
     }
@@ -2824,10 +3104,15 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!matchingGameModal.
     sakAssignAnimals();sakRound=0;sakRunId++;sakActive=true;
     sakRenderRound();sakStartCountdown(1,()=>sakStartLoop(sakRunId));
   }
-  sakChoices.forEach(c=>c.addEventListener('pointerdown',e=>{e.preventDefault();sakStartDrag(c,e)}));
+  sakChoices.forEach(c=>c.addEventListener('pointerdown',e=>{
+    if(e.button!==undefined && e.button!==0)return;
+    e.preventDefault();
+    sakStartDrag(c,e);
+  }));
   window.addEventListener('pointermove',sakMoveDrag,{passive:false});
   window.addEventListener('pointerup',sakEndDrag,{passive:false});
   window.addEventListener('pointercancel',sakEndDrag,{passive:false});
+  window.addEventListener('blur',()=>{if(sakDragged){sakTargets.forEach(t=>t.classList.remove('over'));const card=sakDragged;sakDragged=null;sakDragPointerId=null;sakReturnChoice(card);}});
   sakNextArrow.addEventListener('click',sakAskQuit);
   sakExit.addEventListener('click',sakAskQuit);
   sakBackdrop.addEventListener('click',sakAskQuit);
