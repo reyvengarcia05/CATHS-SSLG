@@ -862,8 +862,8 @@ body.sak-modal-open{overflow:hidden!important}
 .sak-next-arrow:active{transform:scale(.92)}
 .sak-next-arrow.disabled{cursor:default;opacity:.7;animation:none}
 @keyframes sakArrowPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
-.sak-animal{position:absolute;z-index:11;width:15.8%;height:auto;display:block;filter:drop-shadow(0 5px 5px rgba(0,0,0,.16));transform-origin:center bottom;transition:transform .18s ease,filter .18s ease;pointer-events:none}
-.sak-a1{left:8.9%;top:23.6%}.sak-a2{left:42.7%;top:23.6%}.sak-a3{left:76%;top:23.6%}
+.sak-animal{position:absolute;z-index:11;width:17.2%;height:auto;display:block;filter:drop-shadow(0 5px 5px rgba(0,0,0,.16));transform-origin:center bottom;transition:transform .18s ease,filter .18s ease;pointer-events:none}
+.sak-a1{left:8.2%;top:23.2%}.sak-a2{left:41.9%;top:22.9%}.sak-a3{left:75.2%;top:23.2%}
 .sak-animal.pop{animation:sakPop .35s ease}.sak-animal.shake{animation:sakShake .32s ease}
 @keyframes sakPop{0%,100%{transform:translateY(0) scale(1)}45%{transform:translateY(-8px) scale(1.045)}}
 @keyframes sakShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}50%{transform:translateX(7px)}75%{transform:translateX(-4px)}}
@@ -1115,15 +1115,15 @@ body.sak-modal-open{overflow:hidden!important}
   <div class="sak-frame">
     <button class="sak-exit" id="sakExit" type="button" aria-label="Close Serve a Knowledge">×</button>
     <div class="sak-game" id="sakGame">
-      <img class="sak-bg" src="assets/serve-a-knowledge/restaurant.png" alt="">
+      <img class="sak-bg" src="restaurant.png" alt="">
       <div class="sak-top-level" id="sakTopLevel">LEVEL 1</div>
       <div class="sak-hearts-box" id="sakHeartsBox" aria-label="Lives"></div>
-      <button class="sak-next-arrow" id="sakNextArrow" type="button" aria-label="Next level"><img src="assets/serve-a-knowledge/arrow.png" alt=""></button>
+      <button class="sak-next-arrow" id="sakNextArrow" type="button" aria-label="Next level"><img src="arrow.png" alt=""></button>
       <div class="sak-round-tip">DRAG EACH DEFINITION TO THE RIGHT CUSTOMER</div>
 
-      <img class="sak-animal sak-a1" id="sakAnimal0" src="assets/serve-a-knowledge/bear1.png" alt="Customer 1">
-      <img class="sak-animal sak-a2" id="sakAnimal1" src="assets/serve-a-knowledge/bear2.png" alt="Customer 2">
-      <img class="sak-animal sak-a3" id="sakAnimal2" src="assets/serve-a-knowledge/bear3.png" alt="Customer 3">
+      <img class="sak-animal sak-a1" id="sakAnimal0" src="bear1.png" alt="Customer 1">
+      <img class="sak-animal sak-a2" id="sakAnimal1" src="bear2.png" alt="Customer 2">
+      <img class="sak-animal sak-a3" id="sakAnimal2" src="bear3.png" alt="Customer 3">
 
       <div class="sak-target sak-t1" data-target="0"></div>
       <div class="sak-target sak-t2" data-target="1"></div>
@@ -1133,22 +1133,22 @@ body.sak-modal-open{overflow:hidden!important}
       <div class="sak-bubble sak-b2" id="sakBubble1"></div>
       <div class="sak-bubble sak-b3" id="sakBubble2"></div>
 
-      <div class="sak-timer sak-tm1"><img src="assets/serve-a-knowledge/timer.png" alt=""><div class="sak-timer-fill"><i id="sakTimerFill0"></i></div></div>
-      <div class="sak-timer sak-tm2"><img src="assets/serve-a-knowledge/timer.png" alt=""><div class="sak-timer-fill"><i id="sakTimerFill1"></i></div></div>
-      <div class="sak-timer sak-tm3"><img src="assets/serve-a-knowledge/timer.png" alt=""><div class="sak-timer-fill"><i id="sakTimerFill2"></i></div></div>
+      <div class="sak-timer sak-tm1"><img src="timer.png" alt=""><div class="sak-timer-fill"><i id="sakTimerFill0"></i></div></div>
+      <div class="sak-timer sak-tm2"><img src="timer.png" alt=""><div class="sak-timer-fill"><i id="sakTimerFill1"></i></div></div>
+      <div class="sak-timer sak-tm3"><img src="timer.png" alt=""><div class="sak-timer-fill"><i id="sakTimerFill2"></i></div></div>
 
-      <img class="sak-face sak-fs1" id="sakStar0" src="assets/serve-a-knowledge/face_star.png" alt="">
-      <img class="sak-face sak-fh1" id="sakHappy0" src="assets/serve-a-knowledge/face_happy.png" alt="">
-      <img class="sak-face sak-fd1" id="sakSad0" src="assets/serve-a-knowledge/face_sad.png" alt="">
-      <img class="sak-face sak-fs2" id="sakStar1" src="assets/serve-a-knowledge/face_star.png" alt="">
-      <img class="sak-face sak-fh2" id="sakHappy1" src="assets/serve-a-knowledge/face_happy.png" alt="">
-      <img class="sak-face sak-fd2" id="sakSad1" src="assets/serve-a-knowledge/face_sad.png" alt="">
-      <img class="sak-face sak-fs3" id="sakStar2" src="assets/serve-a-knowledge/face_star.png" alt="">
-      <img class="sak-face sak-fh3" id="sakHappy2" src="assets/serve-a-knowledge/face_happy.png" alt="">
-      <img class="sak-face sak-fd3" id="sakSad2" src="assets/serve-a-knowledge/face_sad.png" alt="">
+      <img class="sak-face sak-fs1" id="sakStar0" src="face_star.png" alt="">
+      <img class="sak-face sak-fh1" id="sakHappy0" src="face_happy.png" alt="">
+      <img class="sak-face sak-fd1" id="sakSad0" src="face_sad.png" alt="">
+      <img class="sak-face sak-fs2" id="sakStar1" src="face_star.png" alt="">
+      <img class="sak-face sak-fh2" id="sakHappy1" src="face_happy.png" alt="">
+      <img class="sak-face sak-fd2" id="sakSad1" src="face_sad.png" alt="">
+      <img class="sak-face sak-fs3" id="sakStar2" src="face_star.png" alt="">
+      <img class="sak-face sak-fh3" id="sakHappy2" src="face_happy.png" alt="">
+      <img class="sak-face sak-fd3" id="sakSad2" src="face_sad.png" alt="">
 
-      <img class="sak-jar" src="assets/serve-a-knowledge/jar.png" alt="EXP Jar">
-      <img class="sak-jar-label" src="assets/serve-a-knowledge/label.png" alt="EXP JAR">
+      <img class="sak-jar" src="jar.png" alt="EXP Jar">
+      <img class="sak-jar-label" src="label.png" alt="EXP JAR">
       <div class="sak-exp-fill"><i id="sakExpFill"></i></div>
 
       <div class="sak-tray" id="sakTray">
