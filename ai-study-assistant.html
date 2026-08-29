@@ -600,6 +600,28 @@ body.leaderboard-open{overflow:hidden;}
 
 
 
+
+/* ===== MATCHING GAME ===== */
+.matching-game-modal{position:fixed;inset:0;z-index:1000020;display:flex;align-items:center;justify-content:center;background:rgba(1,6,20,.86);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding:14px}
+.matching-game-modal.hidden{display:none!important}
+.matching-game-card{position:relative;width:min(96vw,1180px);height:min(94dvh,820px);border:1px solid rgba(154,214,255,.28);border-radius:30px;overflow:hidden;background:radial-gradient(circle at 50% 0%,rgba(101,63,255,.18),transparent 34%),linear-gradient(145deg,#091c43,#040c20 72%);box-shadow:0 36px 120px rgba(0,0,0,.64),inset 0 1px 0 rgba(255,255,255,.1);display:flex;flex-direction:column}
+.matching-game-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 18px;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.14)}
+.matching-brand{display:flex;align-items:center;gap:11px;min-width:0}.matching-brand-icon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(145deg,rgba(67,197,255,.22),rgba(146,76,255,.23));border:1px solid rgba(171,225,255,.2);font-size:19px;box-shadow:0 0 22px rgba(77,157,255,.12)}.matching-brand h4{margin:0;font-size:14px}.matching-brand small{display:block;color:var(--muted);font-size:7.5px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60vw}
+.matching-close{width:36px;height:36px;border:1px solid rgba(255,255,255,.1);border-radius:11px;background:rgba(255,255,255,.055);color:#fff;font-size:20px;cursor:pointer;flex:0 0 36px}
+.matching-hud{display:grid;grid-template-columns:1.5fr repeat(3,.7fr);gap:10px;align-items:center;padding:11px 16px;background:rgba(255,255,255,.025);border-bottom:1px solid rgba(255,255,255,.065)}
+.matching-topic{min-width:0}.matching-topic span,.matching-stat span{display:block;font-size:7px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.matching-topic strong{display:block;font-size:12px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.matching-stat{text-align:center;padding:7px 8px;border-radius:12px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.06)}.matching-stat strong{display:block;font-size:14px;margin-top:2px}.matching-stat.time strong{color:#ff72b4}.matching-progress{position:absolute;left:0;right:0;top:0;height:3px;background:rgba(255,255,255,.06);overflow:hidden}.matching-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#25d7ff,#8f5cff,#ff63b7);box-shadow:0 0 16px rgba(105,122,255,.55);transition:width .3s ease}
+.matching-main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:14px;padding:16px;overflow:auto}
+.matching-board{min-width:0;padding:18px;border-radius:22px;border:1px solid rgba(143,211,255,.13);background:rgba(5,18,42,.48);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.matching-board-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}.matching-board-head h3{margin:0;font-size:17px}.matching-board-head p{margin:4px 0 0;color:var(--muted);font-size:8px}.matching-round-badge{padding:7px 10px;border-radius:999px;background:rgba(128,95,255,.12);border:1px solid rgba(154,125,255,.18);color:#ddd2ff;font-size:7.5px;font-weight:800;white-space:nowrap}
+.matching-columns{display:grid;grid-template-columns:1fr 1.18fr;gap:12px}.matching-column{display:grid;gap:9px;align-content:start}.matching-column-title{display:flex;align-items:center;gap:7px;padding:0 2px 4px;font-size:8px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.matching-column-title.terms{color:#55d8ff}.matching-column-title.defs{color:#ff72c6}
+.match-card{position:relative;width:100%;min-height:72px;padding:12px 12px;border-radius:16px;border:1px solid rgba(255,255,255,.10);background:linear-gradient(145deg,rgba(61,130,255,.13),rgba(255,255,255,.035));color:#fff;text-align:left;cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,opacity .18s ease,background .18s ease;box-shadow:0 10px 22px rgba(0,0,0,.12);overflow:hidden}.match-card.def{background:linear-gradient(145deg,rgba(205,76,187,.13),rgba(255,255,255,.035))}.match-card:hover{transform:translateY(-2px);border-color:rgba(167,224,255,.36);box-shadow:0 14px 28px rgba(42,103,213,.16)}.match-card.selected{border-color:#6edcff;box-shadow:0 0 0 2px rgba(76,206,255,.14) inset,0 0 24px rgba(49,182,255,.18);background:linear-gradient(145deg,rgba(64,164,255,.22),rgba(125,82,255,.15))}.match-card.def.selected{border-color:#ff83d3;box-shadow:0 0 0 2px rgba(255,102,197,.14) inset,0 0 24px rgba(255,94,194,.16);background:linear-gradient(145deg,rgba(223,83,192,.22),rgba(124,77,255,.15))}.match-card.correct{pointer-events:none;animation:matchingCorrect .42s ease forwards}.match-card.wrong{animation:matchingWrong .34s ease}.match-card .match-num{position:absolute;left:10px;top:9px;width:22px;height:22px;display:grid;place-items:center;border-radius:8px;background:rgba(255,255,255,.08);font-size:8px;font-weight:900}.match-card .match-copy{padding-left:31px;font-size:9px;line-height:1.48;font-weight:700}.match-card.def .match-copy{font-weight:600;color:rgba(255,255,255,.9)}
+@keyframes matchingCorrect{0%{transform:scale(1)}45%{transform:scale(1.035);box-shadow:0 0 34px rgba(75,229,199,.38)}100%{opacity:0;transform:scale(.82);height:0;min-height:0;padding-top:0;padding-bottom:0;border-width:0;margin:0}}
+@keyframes matchingWrong{20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(4px)}100%{transform:translateX(0)}}
+.matching-side{display:flex;flex-direction:column;gap:10px}.matching-side-card{padding:14px;border-radius:19px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.045)}.matching-side-card h4{margin:0;font-size:10px}.matching-score-big{text-align:center;padding:5px 0 11px}.matching-score-big small{display:block;color:var(--muted);font-size:7px}.matching-score-big strong{display:block;font-size:28px;margin-top:4px;background:linear-gradient(90deg,#4edfff,#b48cff,#ff7bc5);-webkit-background-clip:text;background-clip:text;color:transparent}.matching-side-row{display:flex;justify-content:space-between;gap:8px;font-size:8px;padding:7px 0;border-top:1px solid rgba(255,255,255,.06)}.matching-side-row b{color:#fff}.matching-side-row span{color:var(--muted)}.matching-reward{display:grid;gap:7px;margin-top:8px}.matching-reward div{display:flex;align-items:center;justify-content:space-between;padding:9px 10px;border-radius:12px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.06);font-size:8px}.matching-action{width:100%;border:1px solid rgba(155,214,255,.18);background:linear-gradient(135deg,rgba(52,161,255,.25),rgba(139,78,255,.24));color:#fff;border-radius:12px;padding:10px;font-size:8.5px;font-weight:900;cursor:pointer}.matching-action.secondary{background:rgba(255,255,255,.045)}
+.matching-result{position:absolute;inset:0;z-index:20;display:none;place-items:center;padding:20px;background:rgba(2,9,24,.76);backdrop-filter:blur(8px)}.matching-result.show{display:grid}.matching-result-box{width:min(92%,520px);padding:28px;border-radius:24px;text-align:center;border:1px solid rgba(158,221,255,.22);background:radial-gradient(circle at 50% 0%,rgba(125,79,255,.2),transparent 40%),linear-gradient(145deg,rgba(9,33,70,.98),rgba(2,11,25,.99));box-shadow:0 28px 90px rgba(0,0,0,.55)}.matching-result-icon{font-size:42px;margin-bottom:7px}.matching-result-box h3{margin:0;font-size:23px}.matching-result-box p{margin:6px 0 17px;color:var(--muted);font-size:9px}.matching-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:18px}.matching-result-stat{padding:11px 8px;border-radius:13px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06)}.matching-result-stat span{display:block;color:var(--muted);font-size:7px}.matching-result-stat strong{display:block;font-size:15px;margin-top:3px}.matching-result-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.matching-result-btn{border:1px solid rgba(153,217,255,.2);background:linear-gradient(135deg,rgba(52,161,255,.28),rgba(139,78,255,.26));color:#fff;border-radius:12px;padding:11px;font-size:8.5px;font-weight:900;cursor:pointer}.matching-result-btn.secondary{background:rgba(255,255,255,.05)}
+@media(max-width:780px){.matching-game-card{width:100%;height:min(96dvh,900px);border-radius:22px}.matching-hud{grid-template-columns:1fr 1fr 1fr;gap:7px}.matching-topic{grid-column:1/-1}.matching-main{grid-template-columns:1fr;padding:10px}.matching-side{display:grid;grid-template-columns:1fr 1fr}.matching-columns{grid-template-columns:1fr}.matching-board{padding:13px}.match-card{min-height:62px}.matching-side-card{padding:11px}.matching-brand small{max-width:46vw}}
+@media(max-width:480px){.matching-game-head{padding:11px 12px}.matching-brand h4{font-size:12px}.matching-brand small{font-size:6.5px}.matching-hud{padding:8px 10px}.matching-stat strong{font-size:12px}.matching-side{grid-template-columns:1fr}.matching-result-grid{grid-template-columns:1fr 1fr}.matching-result-actions{grid-template-columns:1fr}.match-card .match-copy{font-size:8.5px}}
+
 /* ===== QUIZ SHOOTING GAME ===== */
 .quiz-shoot-modal{position:fixed;inset:0;z-index:1000010;display:flex;align-items:center;justify-content:center;background:rgba(1,6,20,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:16px}
 .quiz-shoot-modal.hidden{display:none!important}
@@ -1114,6 +1136,10 @@ body.sak-modal-open{overflow:hidden!important}
           <svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="7" width="13" height="13" rx="2"/><path d="M8 4h11a1 1 0 0 1 1 1v11"/></svg>
           <span>🃏 Flashcard Game</span><small>Play using your saved flashcards</small>
         </button>
+        <button class="game-choice" type="button" data-real-game="matching-game" data-game-type="matching">
+          <svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="7" height="7" rx="2"/><rect x="14" y="4" width="7" height="7" rx="2"/><rect x="3" y="13" width="7" height="7" rx="2"/><rect x="14" y="13" width="7" height="7" rx="2"/><path d="M10 7.5h4M10 16.5h4"/></svg>
+          <span>🧩 Matching Game</span><small>Match each term with its correct definition</small>
+        </button>
         <button class="game-choice" type="button" data-real-game="serve-knowledge" data-game-type="knowledge">
           <svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 14.8 8.2 20.5 9l-4.1 4 1 5.7L12 16l-5.4 2.7 1-5.7-4.1-4 5.7-.8Z"/><path d="M12 7v6M9 10h6"/></svg>
           <span>🧠 Serve a Knowledge</span><small>Drag each definition to the customer who ordered it</small>
@@ -1238,6 +1264,53 @@ body.sak-modal-open{overflow:hidden!important}
             </div>
             <div class="qs-result-actions"><button id="qsReplayBtn" type="button">Play Again</button><button id="qsBackBtn" type="button">Back to Study Tools</button></div>
           </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="matching-game-modal hidden" id="matchingGameModal" role="dialog" aria-modal="true" aria-labelledby="matchingGameTitle">
+    <div class="matching-game-card">
+      <div class="matching-progress"><i id="matchingProgressBar"></i></div>
+      <div class="matching-game-head">
+        <div class="matching-brand"><div class="matching-brand-icon">🧩</div><div><h4 id="matchingGameTitle">Matching Game</h4><small id="matchingGameSubtitle">Match the terms with their correct definitions.</small></div></div>
+        <button class="matching-close" id="matchingGameClose" type="button" aria-label="Close Matching Game">×</button>
+      </div>
+      <div class="matching-hud">
+        <div class="matching-topic"><span>Topic</span><strong id="matchingTopic">Study Material</strong></div>
+        <div class="matching-stat"><span>Pairs</span><strong id="matchingPairs">0 / 0</strong></div>
+        <div class="matching-stat"><span>Streak</span><strong id="matchingStreak">🔥 0</strong></div>
+        <div class="matching-stat time"><span>Time Left</span><strong id="matchingTime">60</strong></div>
+      </div>
+      <div class="matching-main">
+        <div class="matching-board">
+          <div class="matching-board-head"><div><h3>Make the Match</h3><p>Select one term, then select its matching definition.</p></div><div class="matching-round-badge" id="matchingRoundBadge">10 PAIRS</div></div>
+          <div class="matching-columns">
+            <div><div class="matching-column-title terms">▣ Terms</div><div class="matching-column" id="matchingTerms"></div></div>
+            <div><div class="matching-column-title defs">◆ Definitions</div><div class="matching-column" id="matchingDefinitions"></div></div>
+          </div>
+        </div>
+        <aside class="matching-side">
+          <div class="matching-side-card">
+            <div class="matching-score-big"><small>SCORE</small><strong id="matchingScore">0</strong></div>
+            <div class="matching-side-row"><span>Correct</span><b id="matchingCorrect">0</b></div>
+            <div class="matching-side-row"><span>Wrong</span><b id="matchingWrong">0</b></div>
+            <div class="matching-side-row"><span>Accuracy</span><b id="matchingAccuracy">0%</b></div>
+          </div>
+          <div class="matching-side-card">
+            <h4>Rewards</h4>
+            <div class="matching-reward"><div><span>⭐ XP</span><b id="matchingXPReward">+0</b></div><div><span>💎 Gems</span><b id="matchingGemReward">+0</b></div><div><span>🔥 Streak</span><b id="matchingStreakReward">+0</b></div></div>
+          </div>
+          <div class="matching-side-card"><button class="matching-action secondary" id="matchingShuffleBtn" type="button">↻ Shuffle Board</button><button class="matching-action" id="matchingQuitBtn" type="button" style="margin-top:8px">✕ Quit Game</button></div>
+        </aside>
+      </div>
+      <div class="matching-result" id="matchingResult">
+        <div class="matching-result-box">
+          <div class="matching-result-icon" id="matchingResultIcon">🏆</div>
+          <h3 id="matchingResultTitle">Perfect Match!</h3>
+          <p id="matchingResultText">Great job! You matched your study material.</p>
+          <div class="matching-result-grid"><div class="matching-result-stat"><span>Score</span><strong id="matchingFinalScore">0</strong></div><div class="matching-result-stat"><span>Accuracy</span><strong id="matchingFinalAccuracy">0%</strong></div><div class="matching-result-stat"><span>XP Earned</span><strong id="matchingFinalXP">+0</strong></div></div>
+          <div class="matching-result-actions"><button class="matching-result-btn secondary" id="matchingResultClose" type="button">Back to Games</button><button class="matching-result-btn" id="matchingReplayBtn" type="button">Play Again</button></div>
         </div>
       </div>
     </div>
@@ -1991,9 +2064,9 @@ async function openReviewerSelection(gameId){
   renderReviewerChoices(docs);
 }
 async function startSoloGameFromMaterial(item){
-  if(!item)return;selectedStudyMaterial=item;const game=selectedGame;closeGameModal();if(game==='quiz-battle'){openQuizShooting(item);}else if(game==='serve-knowledge'){openServeKnowledge(item);}else{showGameToast('That solo game is not available yet.');}
+  if(!item)return;selectedStudyMaterial=item;const game=selectedGame;closeGameModal();if(game==='quiz-battle'){openQuizShooting(item);}else if(game==='serve-knowledge'){openServeKnowledge(item);}else if(game==='matching-game'){openMatchingGame(item);}else{showGameToast('That solo game is not available yet.');}
 }
-function gameDisplayName(gameId){return gameId==='quiz-battle'?'Quiz Shooting':gameId==='flashcard-race'?'Flashcard Race':gameId==='serve-knowledge'?'Serve a Knowledge':'Study Game';}
+function gameDisplayName(gameId){return gameId==='quiz-battle'?'Quiz Shooting':gameId==='flashcard-race'?'Flashcard Race':gameId==='serve-knowledge'?'Serve a Knowledge':gameId==='matching-game'?'Matching Game':'Study Game';}
 function chooseGame(gameId){selectedGame=gameId;if(selectedFriend){sendGameInvite(selectedFriend.uid,gameDisplayName(gameId));}else{openReviewerSelection(gameId);}}
 async function sendGameInvite(friendUid,gameName){if(!currentUser||!window.studyFirebase)return;try{const {db,addDoc,collection,serverTimestamp}=window.studyFirebase;await addDoc(collection(db,'notifications'),{recipientUid:friendUid,actorUid:currentUser.uid,actorName:currentUser.displayName||'A CATHS student',actorPhotoURL:currentUser.photoURL||'',type:'game_invite',title:(currentUser.displayName||'A friend')+' invited you to play',text:`You were invited to play ${gameName} in CATHS AI Study Assistant.`,read:false,gameId:selectedGame||'study-game',gameName,createdAt:serverTimestamp()});gameSelectGrid.classList.add('hidden');showGameToast(`Game invite sent to ${selectedFriend?.displayName||'your friend'}! ${gameName} selected.`);}catch(e){console.error('Game invite failed:',e);showGameToast('Could not send the invite. Your Firestore notifications permission may need to allow this write.');}}
 document.getElementById('playGameBtn')?.addEventListener('click',openGameModal);gameModalClose?.addEventListener('click',closeGameModal);gameModalBackdrop?.addEventListener('click',closeGameModal);document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!gameModal.classList.contains('hidden'))closeGameModal();if(e.key==='Escape'&&!manualFlashcardModal?.classList.contains('hidden'))closeManualFlashcardCreator();});inviteFriendBtn?.addEventListener('click',openFriendInvites);playSoloBtn?.addEventListener('click',openSoloGameSelection);gameSelectGrid?.querySelectorAll('[data-real-game]').forEach(btn=>btn.addEventListener('click',()=>chooseGame(btn.dataset.realGame)));
@@ -2122,6 +2195,112 @@ quizShootModal?.addEventListener('click',e=>{if(e.target===quizShootModal)closeQ
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!quizShootModal?.classList.contains('hidden'))closeQuizShooting();});
 
 updateXPUI(); updateCountControl();
+/* =========================================================
+   MATCHING GAME — SOLO GAME
+   ========================================================= */
+const matchingGameModal=document.getElementById('matchingGameModal');
+const matchingGameClose=document.getElementById('matchingGameClose');
+const matchingTopic=document.getElementById('matchingTopic');
+const matchingPairs=document.getElementById('matchingPairs');
+const matchingStreak=document.getElementById('matchingStreak');
+const matchingTime=document.getElementById('matchingTime');
+const matchingScore=document.getElementById('matchingScore');
+const matchingCorrect=document.getElementById('matchingCorrect');
+const matchingWrong=document.getElementById('matchingWrong');
+const matchingAccuracy=document.getElementById('matchingAccuracy');
+const matchingXPReward=document.getElementById('matchingXPReward');
+const matchingGemReward=document.getElementById('matchingGemReward');
+const matchingStreakReward=document.getElementById('matchingStreakReward');
+const matchingProgressBar=document.getElementById('matchingProgressBar');
+const matchingRoundBadge=document.getElementById('matchingRoundBadge');
+const matchingTerms=document.getElementById('matchingTerms');
+const matchingDefinitions=document.getElementById('matchingDefinitions');
+const matchingResult=document.getElementById('matchingResult');
+const matchingResultIcon=document.getElementById('matchingResultIcon');
+const matchingResultTitle=document.getElementById('matchingResultTitle');
+const matchingResultText=document.getElementById('matchingResultText');
+const matchingFinalScore=document.getElementById('matchingFinalScore');
+const matchingFinalAccuracy=document.getElementById('matchingFinalAccuracy');
+const matchingFinalXP=document.getElementById('matchingFinalXP');
+const matchingReplayBtn=document.getElementById('matchingReplayBtn');
+const matchingResultClose=document.getElementById('matchingResultClose');
+const matchingShuffleBtn=document.getElementById('matchingShuffleBtn');
+const matchingQuitBtn=document.getElementById('matchingQuitBtn');
+let matchingPairsData=[];let matchingSelectedTerm=null;let matchingSelectedDef=null;let matchingMatched=0;let matchingWrongCount=0;let matchingScoreValue=0;let matchingStreakValue=0;let matchingTimeLeft=60;let matchingTimer=null;let matchingGameMaterial=null;let matchingLocked=false;
+function buildMatchingPairs(sourceMaterial){
+  const content=sourceMaterial?.content||{}; const pairs=[];
+  if(Array.isArray(content.cards)&&content.cards.length){
+    content.cards.forEach((card,index)=>{
+      const term=String(card?.front||'').trim();const definition=String(card?.back||'').trim();
+      if(term&&definition)pairs.push({id:`card-${index}`,term,definition});
+    });
+  }
+  if(!pairs.length&&Array.isArray(content.questions)&&content.questions.length&&Array.isArray(content.points)&&content.points.length){
+    const count=Math.min(content.questions.length,content.points.length);
+    for(let i=0;i<count;i++){const term=String(content.questions[i]||'').trim();const definition=String(content.points[i]||'').trim();if(term&&definition)pairs.push({id:`review-${i}`,term,definition});}
+  }
+  if(!pairs.length&&Array.isArray(content.steps)&&content.steps.length){
+    content.steps.forEach((step,index)=>{const text=String(step||'').trim();if(text)pairs.push({id:`step-${index}`,term:`Study Guide Step ${index+1}`,definition:text});});
+  }
+  return shuffle(pairs).slice(0,10);
+}
+function resetMatchingBoard(){
+  matchingSelectedTerm=null;matchingSelectedDef=null;matchingLocked=false;matchingMatched=0;matchingWrongCount=0;matchingScoreValue=0;matchingStreakValue=0;matchingTimeLeft=60;
+  matchingPairsData=buildMatchingPairs(matchingGameMaterial);renderMatchingBoard();updateMatchingHud();
+}
+function renderMatchingBoard(){
+  const terms=shuffle(matchingPairsData.map(p=>({...p}))); const defs=shuffle(matchingPairsData.map(p=>({...p})));
+  matchingTerms.innerHTML='';matchingDefinitions.innerHTML='';
+  terms.forEach((p,i)=>matchingTerms.appendChild(makeMatchingCard(p,i,false)));
+  defs.forEach((p,i)=>matchingDefinitions.appendChild(makeMatchingCard(p,i,true)));
+}
+function makeMatchingCard(pair,index,isDef){
+  const btn=document.createElement('button');btn.type='button';btn.className='match-card '+(isDef?'def':'');btn.dataset.pairId=pair.id;btn.dataset.side=isDef?'def':'term';
+  btn.innerHTML=`<span class="match-num">${String.fromCharCode(65+index)}</span><span class="match-copy">${esc(isDef?pair.definition:pair.term)}</span>`;
+  btn.addEventListener('click',()=>selectMatchingCard(btn)); return btn;
+}
+function selectMatchingCard(btn){
+  if(matchingLocked||btn.classList.contains('correct'))return;
+  const side=btn.dataset.side;
+  if(side==='term'){
+    matchingTerms.querySelectorAll('.match-card.selected').forEach(el=>el.classList.remove('selected'));btn.classList.add('selected');matchingSelectedTerm=btn;
+  }else{
+    matchingDefinitions.querySelectorAll('.match-card.selected').forEach(el=>el.classList.remove('selected'));btn.classList.add('selected');matchingSelectedDef=btn;
+  }
+  if(matchingSelectedTerm&&matchingSelectedDef)checkMatchingPair();
+}
+function checkMatchingPair(){
+  matchingLocked=true;const termId=matchingSelectedTerm.dataset.pairId;const defId=matchingSelectedDef.dataset.pairId;const correct=termId===defId;
+  if(correct){matchingMatched++;matchingStreakValue++;const bonus=100+Math.min(100,matchingStreakValue*20)+Math.max(0,matchingTimeLeft);matchingScoreValue+=bonus;matchingSelectedTerm.classList.remove('selected');matchingSelectedDef.classList.remove('selected');matchingSelectedTerm.classList.add('correct');matchingSelectedDef.classList.add('correct');}
+  else{matchingWrongCount++;matchingStreakValue=0;matchingScoreValue=Math.max(0,matchingScoreValue-20);matchingSelectedTerm.classList.add('wrong');matchingSelectedDef.classList.add('wrong');}
+  updateMatchingHud();
+  setTimeout(()=>{
+    if(correct){matchingSelectedTerm?.remove();matchingSelectedDef?.remove();}
+    else{matchingSelectedTerm?.classList.remove('selected','wrong');matchingSelectedDef?.classList.remove('selected','wrong');}
+    matchingSelectedTerm=null;matchingSelectedDef=null;matchingLocked=false;
+    if(matchingMatched>=matchingPairsData.length)finishMatchingGame();
+  },correct?420:340);
+}
+function updateMatchingHud(){
+  const total=matchingPairsData.length;const attempts=matchingMatched+matchingWrongCount;const accuracy=attempts?Math.round((matchingMatched/attempts)*100):0;
+  matchingPairs.textContent=`${matchingMatched} / ${total}`;matchingStreak.textContent=`🔥 ${matchingStreakValue}`;matchingTime.textContent=String(matchingTimeLeft);matchingScore.textContent=matchingScoreValue.toLocaleString();matchingCorrect.textContent=matchingMatched;matchingWrong.textContent=matchingWrongCount;matchingAccuracy.textContent=accuracy+'%';
+  matchingXPReward.textContent='+'+(matchingMatched*10);matchingGemReward.textContent='+'+(Math.floor(matchingMatched/2));matchingStreakReward.textContent='+'+(matchingStreakValue>=3?1:0);matchingRoundBadge.textContent=`${total} PAIRS`;matchingProgressBar.style.width=(total?Math.round(matchingMatched/total*100):0)+'%';
+}
+function startMatchingTimer(){clearInterval(matchingTimer);matchingTimer=setInterval(()=>{matchingTimeLeft--;matchingTime.textContent=String(matchingTimeLeft);if(matchingTimeLeft<=0){clearInterval(matchingTimer);matchingTimer=null;finishMatchingGame(true);}},1000);}
+function openMatchingGame(sourceMaterial){
+  matchingGameMaterial=sourceMaterial||selectedStudyMaterial;if(!matchingGameMaterial)return;
+  const built=buildMatchingPairs(matchingGameMaterial);if(built.length<3){alert('This saved material needs at least 3 usable term-and-definition pairs. Choose a flashcard set or create a reviewer with enough content first.');return;}
+  matchingResult.classList.remove('show');matchingTopic.textContent=matchingGameMaterial.topic||'Study Material';resetMatchingBoard();matchingGameModal.classList.remove('hidden');document.body.classList.add('modal-open');startMatchingTimer();
+}
+async function finishMatchingGame(timedOut=false){
+  clearInterval(matchingTimer);matchingTimer=null;matchingLocked=true;const total=matchingPairsData.length;const attempts=matchingMatched+matchingWrongCount;const accuracy=attempts?Math.round(matchingMatched/attempts*100):0;const earnedXP=matchingMatched*10+(matchingMatched===total&&!timedOut?20:0);if(earnedXP)addXP(earnedXP);
+  matchingFinalScore.textContent=matchingScoreValue.toLocaleString();matchingFinalAccuracy.textContent=accuracy+'%';matchingFinalXP.textContent='+'+earnedXP;matchingResultIcon.textContent=matchingMatched===total&&!timedOut?'🏆':matchingMatched>=Math.max(1,Math.ceil(total*.6))?'✨':'💪';matchingResultTitle.textContent=matchingMatched===total&&!timedOut?'Perfect Match!':timedOut?'Time’s Up!':'Round Complete!';matchingResultText.textContent=timedOut?`You matched ${matchingMatched} of ${total} pairs before the timer ended.`:`You matched ${matchingMatched} of ${total} pairs from ${matchingGameMaterial.topic||'your study material'}.`;matchingResult.classList.add('show');updateMatchingHud();
+  if(currentUser&&window.studyFirebase){try{const {db,collection,addDoc,serverTimestamp}=window.studyFirebase;await addDoc(collection(db,'studyActivity'),{ownerUid:currentUser.uid,type:'game',topic:matchingGameMaterial.topic||'Matching Game',createdAt:serverTimestamp(),action:'completed',gameId:'matching-game',gameName:'Matching Game',score:matchingScoreValue,correct:matchingMatched,total,accuracy,xpEarned:earnedXP,mode:'solo'});}catch(e){console.warn('Matching game activity save failed:',e);}}
+}
+function closeMatchingGame(){clearInterval(matchingTimer);matchingTimer=null;matchingGameModal.classList.add('hidden');matchingResult.classList.remove('show');document.body.classList.remove('modal-open');matchingLocked=false;}
+matchingGameClose?.addEventListener('click',closeMatchingGame);matchingQuitBtn?.addEventListener('click',closeMatchingGame);matchingResultClose?.addEventListener('click',closeMatchingGame);matchingGameModal?.addEventListener('click',e=>{if(e.target===matchingGameModal)closeMatchingGame();});matchingShuffleBtn?.addEventListener('click',()=>{if(matchingLocked)return;renderMatchingBoard();});matchingReplayBtn?.addEventListener('click',()=>openMatchingGame(matchingGameMaterial));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!matchingGameModal.classList.contains('hidden'))closeMatchingGame();});
+
 /* =========================================================
    SERVE A KNOWLEDGE — GAME LOGIC
    ========================================================= */
