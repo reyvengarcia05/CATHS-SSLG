@@ -559,6 +559,27 @@ body.leaderboard-open{overflow:hidden;}
   position:relative;
   overflow:hidden;
   isolation:isolate;
+  background:
+    radial-gradient(circle at 50% 15%,rgba(112,202,255,.18),transparent 36%),
+    linear-gradient(145deg,rgba(67,151,255,.14),rgba(255,255,255,.055));
+  border-color:rgba(145,214,255,.24);
+  box-shadow:0 0 0 1px rgba(86,175,255,.05),0 10px 28px rgba(27,105,205,.10),inset 0 1px 0 rgba(255,255,255,.14);
+  transition:transform .25s cubic-bezier(.16,1,.3,1),border-color .25s ease,box-shadow .25s ease;
+}
+.game-tool-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.8;
+  background:
+    radial-gradient(circle at 14% 18%,rgba(189,235,255,.75) 0 1px,transparent 1.8px),
+    radial-gradient(circle at 25% 78%,rgba(137,214,255,.58) 0 1px,transparent 1.7px),
+    radial-gradient(circle at 47% 28%,rgba(216,245,255,.70) 0 1.2px,transparent 2px),
+    radial-gradient(circle at 69% 72%,rgba(125,204,255,.62) 0 1px,transparent 1.8px),
+    radial-gradient(circle at 86% 26%,rgba(210,241,255,.72) 0 1px,transparent 1.8px),
+    radial-gradient(circle at 92% 82%,rgba(117,197,255,.52) 0 1.1px,transparent 1.9px);
+  animation:gameParticleDrift 4.8s ease-in-out infinite;
 }
 .game-tool-card::after{
   content:"";
@@ -566,10 +587,15 @@ body.leaderboard-open{overflow:hidden;}
   width:120px;height:120px;
   right:-52px;bottom:-62px;
   border-radius:50%;
-  border:1px solid rgba(146,214,255,.18);
-  box-shadow:0 0 24px rgba(76,160,255,.12);
+  border:1px solid rgba(146,214,255,.20);
+  box-shadow:0 0 24px rgba(76,160,255,.18),0 0 56px rgba(76,160,255,.10);
   animation:gameOrbPulse 2.8s ease-in-out infinite;
   pointer-events:none;
+}
+.game-tool-card:hover{
+  transform:translateY(-5px);
+  border-color:rgba(175,226,255,.52);
+  box-shadow:0 14px 34px rgba(24,105,218,.20),0 0 26px rgba(73,171,255,.16),inset 0 1px 0 rgba(255,255,255,.18);
 }
 .game-tool-card .tool-icon svg{
   transition:transform .35s cubic-bezier(.16,1,.3,1),filter .35s ease;
@@ -580,6 +606,7 @@ body.leaderboard-open{overflow:hidden;}
 }
 .game-tool-card:active{transform:translateY(1px) scale(.985);}
 @keyframes gameOrbPulse{0%,100%{transform:scale(.72);opacity:.25}50%{transform:scale(1);opacity:.62}}
+@keyframes gameParticleDrift{0%,100%{transform:translate3d(0,0,0);opacity:.62}50%{transform:translate3d(4px,-5px,0);opacity:.95}}
 
 .game-modal-card{
   animation:gameModalIn .42s cubic-bezier(.16,1,.3,1) both;
@@ -595,7 +622,7 @@ body.leaderboard-open{overflow:hidden;}
 @keyframes gameModalIn{from{opacity:0;transform:translateY(14px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes gameBackdropIn{from{opacity:0}to{opacity:1}}
 @media(max-width:640px){
-  .game-tool-card{min-height:112px;}
+  .game-tool-card{min-height:112px;box-shadow:0 8px 22px rgba(27,105,205,.12),inset 0 1px 0 rgba(255,255,255,.14);}
 }
 
 
@@ -927,20 +954,20 @@ window.studyAuthReady = (async () => {
   .sak-exit{right:2px;top:2px;width:32px;height:32px;font-size:19px;}
 }
 
-/* Portrait phones: rotate the 16:9 game so it remains large and playable. */
+/* Portrait phones: keep the game upright and scale it to fit the phone. */
 @media (orientation:portrait) and (max-width:900px){
   .sak-modal{
-    padding:0;
+    padding:8px;
     overflow:hidden;
   }
   .sak-frame{
-    --phone-game-w:min(90dvh,calc(90dvw * 1.7777778));
-    position:absolute;
-    left:50%;
-    top:50%;
-    width:var(--phone-game-w);
+    position:relative;
+    left:auto;
+    top:auto;
+    width:min(96vw,calc(96dvh * 1.7777778));
+    max-width:96vw;
     aspect-ratio:16 / 9;
-    transform:translate(-50%,-50%) rotate(90deg);
+    transform:none;
     transform-origin:center center;
     filter:drop-shadow(0 16px 45px rgba(0,0,0,.5));
   }
@@ -958,7 +985,8 @@ window.studyAuthReady = (async () => {
 /* Very small portrait phones */
 @media (orientation:portrait) and (max-width:420px){
   .sak-frame{
-    --phone-game-w:min(88dvh,calc(88dvw * 1.7777778));
+    width:min(94vw,calc(94dvh * 1.7777778));
+    max-width:94vw;
   }
   .sak-game{border-radius:10px;}
   .sak-round-tip{font-size:5.4px;padding:4px 7px;}
@@ -1242,13 +1270,13 @@ body.sak-modal-open{overflow:hidden!important}
 
 </style>
 <style id="sak-mobile-landscape-patch">
-.sak-modal{width:100vw!important;height:100dvh!important;min-height:100dvh!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;overscroll-behavior:none!important}
-.sak-frame{flex:0 0 auto!important;margin:0!important;left:auto;top:auto}
+.sak-modal{width:100vw!important;height:100dvh!important;min-height:100dvh!important;padding:8px!important;display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;overscroll-behavior:none!important}
+.sak-frame{flex:0 1 auto!important;margin:0!important;left:auto!important;top:auto!important;position:relative!important}
 .sak-game{width:100%!important;height:100%!important}
 html.sak-html-lock,body.sak-html-lock{overflow:hidden!important;width:100%!important;height:100%!important;overscroll-behavior:none!important}
 @media (orientation:landscape) and (max-width:900px){.sak-frame{width:min(98vw,calc((100dvh - 10px)*1.7777778))!important;max-width:98vw!important;height:auto!important;aspect-ratio:16/9!important;transform:none!important}}
-@media (orientation:portrait) and (max-width:900px){.sak-frame{position:absolute!important;left:50%!important;top:50%!important;width:min(92dvh,calc(92dvw * 1.7777778))!important;max-width:none!important;height:auto!important;aspect-ratio:16/9!important;transform:translate(-50%,-50%) rotate(90deg)!important;transform-origin:center center!important}}
-@media (orientation:portrait) and (max-width:420px){.sak-frame{width:min(89dvh,calc(89dvw * 1.7777778))!important}}
+@media (orientation:portrait) and (max-width:900px){.sak-frame{position:relative!important;width:min(96vw,calc(96dvh * 1.7777778))!important;max-width:96vw!important;height:auto!important;aspect-ratio:16/9!important;transform:none!important;transform-origin:center center!important}}
+@media (orientation:portrait) and (max-width:420px){.sak-frame{width:min(94vw,calc(94dvh * 1.7777778))!important;max-width:94vw!important}}
 </style>
 </head>
 <body>
@@ -2975,27 +3003,15 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!matchingGameModal.
     sakLastFrame=performance.now();cancelAnimationFrame(sakRaf);sakRaf=requestAnimationFrame(loop);
   }
 
-  let sakFullscreenActive=false;
   async function sakEnterLandscapeMode(){
-    try{
-      document.documentElement.classList.add('sak-html-lock');
-      document.body.classList.add('sak-html-lock');
-      const portrait=window.matchMedia&&window.matchMedia('(orientation: portrait)').matches;
-      if(portrait && document.documentElement.requestFullscreen && !document.fullscreenElement){
-        try{await document.documentElement.requestFullscreen({navigationUI:'hide'});sakFullscreenActive=true;}catch(_){sakFullscreenActive=false;}
-      }
-      if(screen.orientation?.lock){try{await screen.orientation.lock('landscape');}catch(_){}}
-    }catch(e){console.warn('Landscape mode setup skipped:',e);}
+    // Kept as a compatibility wrapper for the existing game flow.
+    // The game no longer forces fullscreen or locks the device to landscape.
+    document.documentElement.classList.add('sak-html-lock');
+    document.body.classList.add('sak-html-lock');
   }
   async function sakExitLandscapeMode(){
-    try{
-      if(screen.orientation?.unlock){try{screen.orientation.unlock();}catch(_){}}
-      if(sakFullscreenActive && document.fullscreenElement && document.exitFullscreen){try{await document.exitFullscreen();}catch(_) {}}
-    }finally{
-      sakFullscreenActive=false;
-      document.documentElement.classList.remove('sak-html-lock');
-      document.body.classList.remove('sak-html-lock');
-    }
+    document.documentElement.classList.remove('sak-html-lock');
+    document.body.classList.remove('sak-html-lock');
   }
 
   function sakOpen(material){
@@ -3054,10 +3070,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!matchingGameModal.
     sakDragY=e.clientY;
     const dx=e.clientX-(sakDragged.__sakStartPointerX??e.clientX);
     const dy=e.clientY-(sakDragged.__sakStartPointerY??e.clientY);
-    const isPortrait=window.matchMedia&&window.matchMedia('(orientation: portrait)').matches;
-    const nextX=isPortrait?dy:dx;
-    const nextY=isPortrait?-dx:dy;
-    sakDragged.style.transform=`translate3d(${nextX}px,${nextY}px,0)`;
+    sakDragged.style.transform=`translate3d(${dx}px,${dy}px,0)`;
     const ti=sakTargetAt(e.clientX,e.clientY);
     sakTargets.forEach((t,i)=>t.classList.toggle('over',i===ti&&!sakServed.has(i)&&!sakExpired.has(i)));
     if(e.cancelable)e.preventDefault();
