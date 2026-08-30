@@ -2379,6 +2379,7 @@ body{min-height:100dvh;overflow-x:hidden}
     <nav class="cg-nav" aria-label="Main navigation">
       <a class="active" href="#home" data-cg-view="home"><span class="cg-icon-slot" aria-hidden="true"></span><span>Home</span></a>
       <a href="#progress" data-cg-view="progress"><span class="cg-icon-slot" aria-hidden="true"></span><span>Progress</span></a>
+      <a href="#leaderboards" data-cg-view="leaderboards"><span class="cg-icon-slot" aria-hidden="true"></span><span>Leaderboards</span></a>
       <a href="#my-decks" data-cg-view="library"><span class="cg-icon-slot" aria-hidden="true"></span><span>My decks</span></a>
       <a href="#game-reviewers" data-cg-view="game-reviewers"><span class="cg-icon-slot" aria-hidden="true"></span><span>Game Reviewers</span></a>
       <a href="#add-reviewer" data-cg-view="add-reviewer"><span class="cg-icon-slot" aria-hidden="true"></span><span>Add Reviewer</span></a>
@@ -2410,7 +2411,7 @@ body{min-height:100dvh;overflow-x:hidden}
       <button class="cg-source" id="cgMoreBtn" type="button"><span class="cg-source-icon-slot" aria-hidden="true"></span><span>Decks</span></button>
     </div>
     <div class="cg-section-spacer"></div>
-    <input id="cgFileInput" type="file" accept=".txt,.md,.csv,.json,text/plain,text/markdown,text/csv,application/json" hidden>
+    <input id="cgFileInput" type="file" accept=".txt,.md,.csv,.json,.pdf,.png,.jpg,.jpeg,.webp,.gif,.svg,.doc,.docx,.ppt,.pptx,image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,text/plain,text/markdown,text/csv,application/json" hidden>
 
     <section class="cg-nav-view cg-progress-view" id="cgProgressView" aria-label="Progress">
       <div class="progress-dashboard">
@@ -2418,7 +2419,7 @@ body{min-height:100dvh;overflow-x:hidden}
         <div class="progress-profile-card">
           <div class="progress-level-row">
             <div class="progress-avatar-slot" aria-hidden="true"></div>
-            <div class="progress-level-copy"><strong>Veteran</strong><div class="progress-bar-track"><div id="cgProgressXpBar" class="progress-bar-fill" style="width:52%"></div><span id="cgProgressXpBadge" class="progress-xp-badge">807 XP</span></div></div>
+            <div class="progress-level-copy"><strong>Veteran</strong><div class="progress-bar-track"><div id="cgProgressXpBar" class="progress-bar-fill" style="width:0%"></div><span id="cgProgressXpBadge" class="progress-xp-badge">0 XP</span></div></div>
             <div class="progress-level-value">Level <strong id="cgProgressLevel">8</strong>: <span id="cgProgressNext">1k XP</span></div>
           </div>
           <div class="progress-streak-grid">
@@ -2435,6 +2436,29 @@ body{min-height:100dvh;overflow-x:hidden}
           </div>
           <button class="streak-cta" id="cgProgressLeaderboardBtn" type="button">Keep your <span id="cgStreakCta">3</span> day streak</button>
         </div>
+      </div>
+    </section>
+
+    <section class="cg-nav-view cg-leaderboards-view" id="cgLeaderboardsView" aria-label="Leaderboards">
+      <div class="lb-page-head">
+        <div><span class="cg-eyebrow">CATHIANS rankings</span><h2>Leaderboards</h2><p>Compete with your classmates through XP and your longest study streak.</p></div>
+      </div>
+      <div class="lb-filter-wrap" id="lbPageFilters" role="tablist" aria-label="Leaderboard grade filter"></div>
+      <div class="lb-grid">
+        <section class="lb-board-card lb-xp-card" aria-label="XP leaderboard">
+          <div class="lb-board-head">
+            <div><span class="lb-kicker">EXPERIENCE</span><h3>XP Leaderboard</h3><p id="lbXpSubtitle">Overall Study XP</p></div>
+            <div class="lb-head-orb lb-xp-orb">XP</div>
+          </div>
+          <div class="lb-list" id="lbXpList"><div class="lb-empty">Loading XP leaderboard…</div></div>
+        </section>
+        <section class="lb-board-card lb-streak-card" aria-label="Streak leaderboard">
+          <div class="lb-board-head">
+            <div><span class="lb-kicker">CONSISTENCY</span><h3>Streak Leaderboard</h3><p id="lbStreakSubtitle">Overall Longest Streak</p></div>
+            <div class="lb-head-orb lb-fire-orb" data-image-slot="streak"></div>
+          </div>
+          <div class="lb-list" id="lbStreakList"><div class="lb-empty">Loading streak leaderboard…</div></div>
+        </section>
       </div>
     </section>
 
@@ -2845,7 +2869,7 @@ body{min-height:100dvh;overflow-x:hidden}
       </div>
       <div class="matching-result" id="matchingResult">
         <div class="matching-result-box">
-          <div class="matching-result-icon" id="matchingResultIcon">🏆</div>
+          <div class="matching-result-icon" id="matchingResultIcon">WIN</div>
           <h3 id="matchingResultTitle">Perfect Match!</h3>
           <p id="matchingResultText">Great job! You matched your study material.</p>
           <div class="matching-result-grid"><div class="matching-result-stat"><span>Score</span><strong id="matchingFinalScore">0</strong></div><div class="matching-result-stat"><span>Accuracy</span><strong id="matchingFinalAccuracy">0%</strong></div><div class="matching-result-stat"><span>XP Earned</span><strong id="matchingFinalXP">+0</strong></div></div>
@@ -3810,11 +3834,25 @@ function markStudyDay(){
   let days=[];try{days=JSON.parse(localStorage.getItem(key)||'[]')}catch{days=[]}
   const today=new Date().toISOString().slice(0,10);
   if(!days.includes(today)) days.push(today);
-  days=days.slice(-120);
+  days=days.slice(-365);
   localStorage.setItem(key,JSON.stringify(days));
+
+  // Keep a shared current + longest streak on the student profile so
+  // the new streak leaderboard can rank students across devices.
+  if(currentUser&&window.studyFirebase){
+    try{
+      const currentStreak=Math.max(0,calculateLocalStudyStreak());
+      const longestKey='cathsStudyLongestStreak:'+currentUser.uid;
+      const previousLongest=Number(localStorage.getItem(longestKey)||0);
+      const longest=Math.max(previousLongest,currentStreak);
+      localStorage.setItem(longestKey,String(longest));
+      const {db,doc,setDoc,serverTimestamp}=window.studyFirebase;
+      void setDoc(doc(db,'studyProfiles',currentUser.uid),{streak:currentStreak,longestStreak:longest,streakUpdatedAt:serverTimestamp()},{merge:true});
+    }catch(e){console.warn('Streak cloud sync failed:',e);}
+  }
 }
 function updateCgProgressView(){
-  const currentXp=Number(xp||807), streak=Math.max(0,calculateLocalStudyStreak());
+  const currentXp=Math.max(0,Number(xp)||0), streak=Math.max(0,calculateLocalStudyStreak());
   const level=Math.max(1,Math.floor(currentXp/100)+1); const next=(Math.max(1,level))*100; const pct=Math.max(8,Math.min(96,(currentXp%100)));
   const xpBadge=document.getElementById('cgProgressXpBadge'); if(xpBadge)xpBadge.textContent=currentXp.toLocaleString()+' XP';
   const fill=document.getElementById('cgProgressXpBar'); if(fill)fill.style.width=Math.max(12,Math.min(92,pct))+'%';
@@ -4239,7 +4277,7 @@ function openMatchingGame(sourceMaterial){
 }
 async function finishMatchingGame(timedOut=false){
   clearInterval(matchingTimer);matchingTimer=null;matchingLocked=true;const total=matchingPairsData.length;const attempts=matchingMatched+matchingWrongCount;const accuracy=attempts?Math.round(matchingMatched/attempts*100):0;const earnedXP=matchingMatched*10+(matchingMatched===total&&!timedOut?20:0);if(earnedXP)addXP(earnedXP);
-  matchingFinalScore.textContent=matchingScoreValue.toLocaleString();matchingFinalAccuracy.textContent=accuracy+'%';matchingFinalXP.textContent='+'+earnedXP;matchingResultIcon.textContent=matchingMatched===total&&!timedOut?'🏆':matchingMatched>=Math.max(1,Math.ceil(total*.6))?'✨':'💪';matchingResultTitle.textContent=matchingMatched===total&&!timedOut?'Perfect Match!':timedOut?'Time’s Up!':'Round Complete!';matchingResultText.textContent=timedOut?`You matched ${matchingMatched} of ${total} pairs before the timer ended.`:`You matched ${matchingMatched} of ${total} pairs from ${matchingGameMaterial.topic||'your study material'}.`;matchingResult.classList.add('show');updateMatchingHud();
+  matchingFinalScore.textContent=matchingScoreValue.toLocaleString();matchingFinalAccuracy.textContent=accuracy+'%';matchingFinalXP.textContent='+'+earnedXP;matchingResultIcon.textContent=matchingMatched===total&&!timedOut?'WIN':matchingMatched>=Math.max(1,Math.ceil(total*.6))?'GOOD':'ROUND';matchingResultTitle.textContent=matchingMatched===total&&!timedOut?'Perfect Match!':timedOut?'Time’s Up!':'Round Complete!';matchingResultText.textContent=timedOut?`You matched ${matchingMatched} of ${total} pairs before the timer ended.`:`You matched ${matchingMatched} of ${total} pairs from ${matchingGameMaterial.topic||'your study material'}.`;matchingResult.classList.add('show');updateMatchingHud();
   if(currentUser&&window.studyFirebase){try{const {db,collection,addDoc,serverTimestamp}=window.studyFirebase;await addDoc(collection(db,'studyActivity'),{ownerUid:currentUser.uid,type:'game',topic:matchingGameMaterial.topic||'Matching Game',createdAt:serverTimestamp(),action:'completed',gameId:'matching-game',gameName:'Matching Game',score:matchingScoreValue,correct:matchingMatched,total,accuracy,xpEarned:earnedXP,mode:'solo'});}catch(e){console.warn('Matching game activity save failed:',e);}}
 }
 function closeMatchingGame(){clearInterval(matchingTimer);matchingTimer=null;matchingGameModal.classList.add('hidden');matchingResult.classList.remove('show');document.body.classList.remove('modal-open');matchingLocked=false;}
@@ -5845,4 +5883,559 @@ if(typeof oldSelectDeck==='function'){
   });
 })();
 </script>
+
+<style id="cathians-v23-navigation-leaderboards">
+.cg-source-row{transition:max-height .34s cubic-bezier(.22,1,.36,1),opacity .24s ease,transform .34s cubic-bezier(.22,1,.36,1),margin .34s ease!important;}
+.cg-source-row.cg-home-ai-hidden{max-height:0!important;opacity:0!important;transform:translateY(-8px)!important;margin-top:0!important;margin-bottom:0!important;pointer-events:none!important;}
+#cgStudyActionBar{position:absolute!important;right:16px!important;bottom:15px!important;display:flex!important;align-items:center!important;gap:8px!important;opacity:0;transform:translateY(6px);pointer-events:none;transition:opacity .24s ease,transform .28s cubic-bezier(.22,1,.36,1)!important;z-index:8;}
+#cgStudyActionBar.visible{opacity:1!important;transform:none!important;pointer-events:auto!important;}
+#cgStudyActionBar .cg-inline-action,#cgStudyActionBar .cg-enter-btn{position:static!important;width:66px!important;min-width:66px!important;height:40px!important;padding:0 10px!important;border-radius:12px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;border:1px solid #dfe4eb!important;background:#fff!important;color:#172033!important;font:800 11px/1 system-ui,sans-serif!important;box-shadow:0 6px 18px rgba(20,27,42,.06)!important;cursor:pointer!important;opacity:1!important;transform:none!important;pointer-events:auto!important;}
+#cgStudyActionBar .cg-enter-btn{background:#171c2d!important;color:#fff!important;border-color:#171c2d!important;width:72px!important;min-width:72px!important;}
+#cgStudyActionBar .cg-inline-action:hover{background:#f4f6f9!important;border-color:#cfd6e2!important;transform:translateY(-1px)!important;}
+#cgStudyActionBar .cg-enter-btn:hover{background:#2d3854!important;transform:translateY(-1px)!important;}
+.cg-study-box.ai-has-text .cg-plus{opacity:0!important;transform:scale(.88)!important;}
+#cgProgressLeaderboardBtn{position:relative!important;overflow:hidden!important;letter-spacing:.1px!important;transition:transform .25s ease,box-shadow .25s ease,background .25s ease!important;}
+#cgProgressLeaderboardBtn::before{content:"";position:absolute;inset:-2px;background:radial-gradient(circle at 25% 50%,rgba(255,171,51,0) 0 16%,rgba(255,109,31,.30) 40%,rgba(255,179,61,0) 68%);opacity:0;transform:scale(.6);pointer-events:none;}
+#cgProgressLeaderboardBtn.streak-pulse{box-shadow:0 0 0 2px rgba(255,145,46,.18),0 0 24px rgba(255,111,28,.45),0 0 52px rgba(255,177,54,.22)!important;transform:translateY(-2px) scale(1.01)!important;background:linear-gradient(135deg,#171c2d,#2a1d14)!important;}
+#cgProgressLeaderboardBtn.streak-pulse::before{opacity:1;transform:scale(1.8);animation:streakButtonGlow 1.05s ease both;}
+@keyframes streakButtonGlow{0%{opacity:0;transform:scale(.5)}20%{opacity:1}75%{opacity:.75}100%{opacity:0;transform:scale(1.7)}}
+
+.cg-main[data-nav-view="leaderboards"] .cg-home-title,.cg-main[data-nav-view="leaderboards"] .cg-study-hero,.cg-main[data-nav-view="leaderboards"] .cg-study-box,.cg-main[data-nav-view="leaderboards"] .cg-source-row,.cg-main[data-nav-view="leaderboards"] .cg-section-spacer,.cg-main[data-nav-view="leaderboards"] .cg-tools-wrap,.cg-main[data-nav-view="leaderboards"] .workspace,.cg-main[data-nav-view="leaderboards"] .progress-strip{display:none!important;}
+.cg-main[data-nav-view="leaderboards"] .cg-leaderboards-view{display:block!important;opacity:1!important;transform:translateY(0)!important;}
+.cg-nav a[data-cg-view="leaderboards"].active{background:#f5ecff!important;color:#7b43d1!important;}.cg-nav a[data-cg-view="leaderboards"].active .cg-icon-slot{background:#ead8ff!important;}
+
+.cg-leaderboards-view{padding-bottom:56px;}.lb-page-head{margin:34px 0 20px 2px;}.lb-page-head h2{font-size:34px;letter-spacing:-1px;color:#172033;margin-top:2px}.lb-page-head p{font-size:11px;color:#788397;margin-top:7px;font-weight:600}.lb-filter-wrap{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 18px}.lb-filter{border:1px solid #dfe4ec;background:#fff;color:#5e697c;border-radius:12px;padding:9px 12px;font:800 8.5px/1 system-ui,sans-serif;cursor:pointer;transition:.2s ease;box-shadow:0 5px 14px rgba(30,43,69,.035)}.lb-filter:hover{transform:translateY(-1px);border-color:#cfd6e2}.lb-filter.active{color:#fff;background:linear-gradient(135deg,#6b4fe6,#9b63e8);border-color:#7657e8;box-shadow:0 8px 22px rgba(107,79,230,.22),0 0 22px rgba(155,99,232,.16)}
+.lb-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.lb-board-card{position:relative;overflow:hidden;border:1px solid #e0e5ed;border-radius:24px;background:#fff;box-shadow:0 10px 28px rgba(30,43,69,.055)}.lb-board-card::after{content:"";position:absolute;inset:-30% -12%;pointer-events:none;opacity:.65;filter:blur(1px)}.lb-xp-card::after{background:radial-gradient(circle at 78% 14%,rgba(151,92,255,.18),transparent 30%)}.lb-streak-card::after{background:radial-gradient(circle at 78% 14%,rgba(255,105,34,.17),transparent 30%)}
+.lb-board-head{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 20px 15px;border-bottom:1px solid #eceff4}.lb-kicker{font-size:7px;letter-spacing:1.1px;font-weight:900;color:#8c96a7}.lb-board-head h3{margin-top:4px;font-size:18px;color:#172033;letter-spacing:-.3px}.lb-board-head p{margin-top:4px;font-size:8.5px;color:#8791a1;font-weight:700}.lb-head-orb{width:48px;height:48px;flex:0 0 48px;border-radius:15px;display:grid;place-items:center;font:900 11px/1 system-ui,sans-serif}.lb-xp-orb{color:#7b43d1;background:linear-gradient(145deg,#f2e9ff,#e7d5ff);border:1px solid #d6bdf8;box-shadow:0 0 22px rgba(132,78,213,.22),inset 0 1px 0 #fff}.lb-fire-orb{font-size:21px;background:linear-gradient(145deg,#fff0e7,#ffe0cd);border:1px solid #ffc49c;box-shadow:0 0 22px rgba(255,112,39,.20),inset 0 1px 0 #fff}
+.lb-list{position:relative;z-index:1;display:grid;gap:8px;padding:14px 16px 18px;max-height:540px;overflow:auto}.lb-empty{padding:28px 12px;text-align:center;color:#8c96a7;font-size:9px;font-weight:700}.lb-row{position:relative;display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:center;gap:10px;min-height:62px;padding:10px 11px;border-radius:15px;border:1px solid #eceff4;background:linear-gradient(145deg,#fff,#fafbfe);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}.lb-row:hover{transform:translateY(-2px);border-color:#dfe4ec;box-shadow:0 10px 20px rgba(30,43,69,.06)}.lb-row.lb-me{border-color:#b9a7ff;background:linear-gradient(145deg,#fbf9ff,#f6f2ff)}.lb-rank{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#f3f5f8;border:1px solid #e5e9ef;color:#616d80;font:900 9px/1 system-ui,sans-serif}.lb-main-copy{min-width:0}.lb-main-copy strong{display:block;color:#1b2434;font-size:9.7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lb-main-copy small{display:block;margin-top:3px;color:#919baa;font-size:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700}.lb-value{font:900 9px/1.2 system-ui,sans-serif;white-space:nowrap}.lb-xp-value{color:#7a4cc2}.lb-streak-value{color:#ef6a27}
+.lb-row.lb-top-xp{background:linear-gradient(135deg,#fff,#f8f1ff);border-color:#d7baf6;box-shadow:0 0 0 1px rgba(173,108,239,.08),0 10px 26px rgba(128,72,205,.09),0 0 28px rgba(166,93,244,.12)}.lb-row.lb-top-xp .lb-rank{background:linear-gradient(145deg,#ead6ff,#f7edff);border-color:#d3b5f4;color:#7642c1;box-shadow:0 0 15px rgba(136,72,214,.22)}.lb-row.lb-top-streak{background:linear-gradient(135deg,#fff,#fff5ef);border-color:#ffc79e;box-shadow:0 0 0 1px rgba(255,113,35,.08),0 10px 26px rgba(227,91,23,.09),0 0 28px rgba(255,127,48,.13)}.lb-row.lb-top-streak .lb-rank{background:linear-gradient(145deg,#ffe1ca,#fff2e8);border-color:#ffbe92;color:#e85f1f;box-shadow:0 0 16px rgba(245,103,32,.23)}.lb-fire-mini{display:inline-block;margin-left:3px;filter:drop-shadow(0 0 6px rgba(255,103,30,.65))}.lb-xp-fly{position:absolute;right:15px;top:8px;color:#8c47df;font:900 7px/1 system-ui,sans-serif;animation:lbXpFly 2.15s ease-in-out infinite}.lb-top-xp .lb-xp-fly{opacity:1}@keyframes lbXpFly{0%{transform:translate(0,9px) rotate(-7deg);opacity:0}18%{opacity:1}55%{transform:translate(13px,-12px) rotate(6deg);opacity:.92}100%{transform:translate(0,9px) rotate(-7deg);opacity:0}}.lb-fire-particle{position:absolute;width:4px;height:7px;border-radius:50%;background:#ff8a3d;box-shadow:0 0 8px rgba(255,117,32,.65);animation:lbFireParticle 1.35s ease-in-out infinite;pointer-events:none}@keyframes lbFireParticle{0%{transform:translate(0,8px) scale(.8);opacity:0}25%{opacity:.9}100%{transform:translate(7px,-14px) scale(.2);opacity:0}}
+#leaderboardPanel .panel-title h4::after{content:" • STREAK";font-size:8px;letter-spacing:.9px;color:#ef6a27;font-weight:900}#leaderboardPanel .leaderboard-status{color:#7f8796!important}#leaderboardPanel .leader-row.streak-ranked-first{background:linear-gradient(135deg,#fff,#fff5ef)!important;border-color:#ffbd8d!important;box-shadow:0 0 0 1px rgba(255,111,34,.08),0 11px 28px rgba(230,94,23,.11),0 0 30px rgba(255,124,46,.15)!important;position:relative;overflow:hidden}#leaderboardPanel .leader-row.streak-ranked-first .leader-rank{background:linear-gradient(145deg,#ffe1ca,#fff1e8)!important;border-color:#ffbc8e!important;color:#e65f21!important;box-shadow:0 0 18px rgba(239,98,29,.25)!important}#leaderboardPanel .leader-row.streak-ranked-first::after{content:"";position:absolute;right:56px;top:5px;font-size:13px;filter:drop-shadow(0 0 8px rgba(255,111,28,.65));animation:lbFlameBob .9s ease-in-out infinite alternate}@keyframes lbFlameBob{from{transform:translateY(1px) scale(.95);opacity:.75}to{transform:translateY(-2px) scale(1.08);opacity:1}}
+@media(max-width:900px){.lb-grid{grid-template-columns:1fr}.lb-page-head h2{font-size:30px}.lb-list{max-height:none}.lb-board-head{padding:18px 16px 14px}}@media(max-width:760px){#cgStudyActionBar{right:12px!important;bottom:12px!important;gap:6px!important}#cgStudyActionBar .cg-inline-action,#cgStudyActionBar .cg-enter-btn{height:37px!important;width:61px!important;min-width:61px!important;font-size:10px!important;border-radius:11px!important}#cgStudyActionBar .cg-enter-btn{width:68px!important;min-width:68px!important}.cg-leaderboards-view{padding-bottom:92px}.lb-page-head{margin:23px 2px 16px}.lb-page-head h2{font-size:27px}.lb-page-head p{font-size:8.5px;line-height:1.5}.lb-filter-wrap{gap:6px;margin-bottom:14px}.lb-filter{flex:1 1 calc(33.333% - 6px);padding:8px 7px;font-size:7.5px}.lb-board-card{border-radius:20px}.lb-board-head{padding:15px 14px 12px}.lb-board-head h3{font-size:15px}.lb-board-head p{font-size:7.5px}.lb-head-orb{width:42px;height:42px;flex-basis:42px;border-radius:13px}.lb-list{padding:10px 10px 14px;gap:7px}.lb-row{grid-template-columns:33px minmax(0,1fr) auto;gap:8px;min-height:54px;padding:8px 9px;border-radius:13px}.lb-rank{width:28px;height:28px;border-radius:9px;font-size:8px}.lb-main-copy strong{font-size:8.8px}.lb-main-copy small{font-size:6.5px;margin-top:2px}.lb-value{font-size:8px}}
+</style>
+<script id="cathians-v23-navigation-leaderboards-js">
+(function(){
+'use strict';
+const main=document.querySelector('.cg-main'),nav=[...document.querySelectorAll('.cg-nav a[data-cg-view]')],title=document.querySelector('.cg-home-title');
+const lbView=document.getElementById('cgLeaderboardsView'),pageFilters=document.getElementById('lbPageFilters'),xpList=document.getElementById('lbXpList'),streakList=document.getElementById('lbStreakList'),xpSub=document.getElementById('lbXpSubtitle'),streakSub=document.getElementById('lbStreakSubtitle');
+if(!main||!nav.length||!lbView)return;
+const esc=v=>String(v??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const grades=['all',...Array.from({length:11},(_,i)=>String(i+7))];let selected='all';
+function setActive(view){nav.forEach(a=>a.classList.toggle('active',a.dataset.cgView===view));}
+function setView(view){if(view==='profile'){window.location.href='profile.html';return}try{document.getElementById('leaderboardPanel')?.classList.add('hidden');document.body.classList.remove('leaderboard-open')}catch(_){}main.dataset.navView=view;main.classList.remove('study-tools-only','study-tools-open','workspace-active');setActive(view);const labels={home:'Home',progress:'Progress',leaderboards:'Leaderboards',library:'My decks','game-reviewers':'Game Reviewers','add-reviewer':''};if(title)title.textContent=labels[view]||'';if(view==='leaderboards'){document.querySelectorAll('.cg-nav-view').forEach(x=>x.setAttribute('aria-hidden',String(x.id!=='cgLeaderboardsView')));loadPage()}window.scrollTo({top:0,behavior:'smooth'})}
+const lbNav=nav.find(a=>a.dataset.cgView==='leaderboards');if(lbNav){lbNav.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();setView('leaderboards')},{capture:true});lbNav.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setView('leaderboards')}})}
+const oldSet=window.cgSetView;window.cgSetView=function(view){if(view==='leaderboards')setView('leaderboards');else if(typeof oldSet==='function')oldSet(view)};
+function renderFilters(){pageFilters.innerHTML=grades.map(g=>`<button type="button" class="lb-filter ${selected===g?'active':''}" data-lb-grade="${g}">${g==='all'?'Overall':'G'+g}</button>`).join('');pageFilters.querySelectorAll('[data-lb-grade]').forEach(b=>b.addEventListener('click',()=>{selected=b.dataset.lbGrade||'all';renderFilters();loadPage()}))}renderFilters();
+async function getRows(){if(!window.studyFirebase)return[];const{db,collection,getDocs}=window.studyFirebase;const[ps,us]=await Promise.all([getDocs(collection(db,'studyProfiles')),getDocs(collection(db,'users'))]);const um=new Map();us.forEach(d=>um.set(d.id,d.data()||{}));const out=[];ps.forEach(d=>{const data=d.data()||{},u=um.get(d.id)||{},section=String(u.section||data.section||'').trim();const m=section.match(/^(7|8|9|10|11|12|13|14|15|16|17)-/);const g=m?m[1]:String(u.grade||data.grade||'');const xp=Number(data.xp||0),streak=Number(data.streak||0),longest=Math.max(Number(data.longestStreak||0),streak);if(xp>0||streak>0||longest>0)out.push({id:d.id,displayName:u.displayName||u.name||data.displayName||'Student',grade:g,xp,streak,longestStreak:longest})});return out}
+function filt(rows){return selected==='all'?rows:rows.filter(r=>String(r.grade)===selected)}
+function row(r,i,type){const top=i===0,me=window.currentUser&&r.id===window.currentUser.uid,val=type==='xp'?`${r.xp.toLocaleString()} XP`:`${r.longestStreak} day${r.longestStreak===1?'':'s'}`,sub=type==='xp'?`${me?'You • ':''}${r.grade?'G'+r.grade:'Grade unassigned'} • Study XP`:`${me?'You • ':''}${r.grade?'G'+r.grade:'Grade unassigned'} • Longest streak`;let fx=top&&type==='xp'?'<span class="lb-xp-fly">+XP</span>':'';if(top&&type==='streak')fx='<span class="lb-fire-particle" style="right:42px;top:8px;animation-delay:.1s"></span><span class="lb-fire-particle" style="right:27px;top:14px;animation-delay:.42s"></span><span class="lb-fire-particle" style="right:58px;top:12px;animation-delay:.7s"></span>';return`<div class="lb-row ${me?'lb-me ':''}${top&&type==='xp'?'lb-top-xp ':''}${top&&type==='streak'?'lb-top-streak ':''}">${fx}<div class="lb-rank">${i===0?'1':i+1}</div><div class="lb-main-copy"><strong>${esc(r.displayName)}</strong><small>${esc(sub)}</small></div><div class="lb-value ${type==='xp'?'lb-xp-value':'lb-streak-value'}">${val}${type==='streak'&&top?'<span class="lb-fire-mini" aria-hidden="true"></span>':''}</div></div>`}
+function render(rows){const list=filt(rows),xp=[...list].sort((a,b)=>b.xp-a.xp||a.displayName.localeCompare(b.displayName)),st=[...list].sort((a,b)=>b.longestStreak-a.longestStreak||b.streak-a.streak||a.displayName.localeCompare(b.displayName)),scope=selected==='all'?'Overall':`G${selected}`;xpSub.textContent=`${scope} • Study XP`;streakSub.textContent=`${scope} • Longest Streak`;xpList.innerHTML=xp.length?xp.map((r,i)=>row(r,i,'xp')).join(''):'<div class="lb-empty">No XP entries yet for this group.</div>';streakList.innerHTML=st.length?st.map((r,i)=>row(r,i,'streak')).join(''):'<div class="lb-empty">No streak entries yet for this group.</div>'}
+async function loadPage(){xpList.innerHTML='<div class="lb-empty">Loading XP leaderboard…</div>';streakList.innerHTML='<div class="lb-empty">Loading streak leaderboard…</div>';try{render(await getRows())}catch(e){console.error(e);xpList.innerHTML=streakList.innerHTML='<div class="lb-empty">Shared leaderboard is not connected yet.</div>'}}
+window.loadCATHIANSLeaderboards=loadPage;
+const streakBtn=document.getElementById('cgProgressLeaderboardBtn');
+if(streakBtn){
+  document.addEventListener('click',e=>{
+    if(e.target?.closest?.('#cgProgressLeaderboardBtn')){
+      e.preventDefault();e.stopImmediatePropagation();
+      streakBtn.classList.remove('streak-pulse');void streakBtn.offsetWidth;streakBtn.classList.add('streak-pulse');
+      setTimeout(()=>streakBtn.classList.remove('streak-pulse'),1150);
+    }
+  },{capture:true});
+}
+const panel=document.getElementById('leaderboardPanel'),modalList=document.getElementById('leaderboardList'),modalStatus=document.getElementById('leaderboardStatus'),modalFilters=document.getElementById('gradeFilters'),modalTitle=panel?.querySelector('.panel-title h4');
+async function modalStreak(){if(!panel||!modalList)return;modalList.innerHTML='<div class="leaderboard-status">Loading streak leaderboard…</div>';try{const rows=filt(await getRows()).sort((a,b)=>b.longestStreak-a.longestStreak||b.streak-a.streak||a.displayName.localeCompare(b.displayName)),me=window.currentUser?.uid||'';modalList.innerHTML=rows.length?rows.map((r,i)=>`<div class="leader-row ${r.id===me?'me':''} ${i===0?'streak-ranked-first':''}"><div class="leader-rank">${i===0?'1':i+1}</div><div class="leader-name"><strong>${esc(r.displayName)}</strong><small>${r.id===me?'You • ':''}${r.grade?'Grade '+r.grade:'Grade unassigned'} • Longest streak</small></div><div class="leader-xp" style="color:#ef6a27">${r.longestStreak} day${r.longestStreak===1?'':'s'}</div></div>`).join(''):'<div class="leaderboard-status">No streak entries yet for this group.</div>';modalStatus.textContent=selected==='all'?'Overall longest-streak leaderboard.':`Grade ${selected} longest-streak leaderboard.`}catch(e){console.error(e);modalList.innerHTML='<div class="leaderboard-status">Shared streak leaderboard is not connected yet.</div>'}}
+if(panel&&modalFilters){modalFilters.innerHTML=grades.map(g=>`<button class="grade-filter ${selected===g?'active':''}" type="button" data-grade="${g}">${g==='all'?'Overall':`Grade ${g}`}</button>`).join('');modalFilters.querySelectorAll('.grade-filter').forEach(b=>b.onclick=async()=>{selected=b.dataset.grade||'all';modalFilters.querySelectorAll('.grade-filter').forEach(x=>x.classList.toggle('active',x===b));await modalStreak()});if(modalTitle){const textNode=[...modalTitle.childNodes].find(n=>n.nodeType===3);if(textNode)textNode.textContent='CATHIANS Streak Leaderboard'}}
+const progressLeaderboard=document.getElementById('leaderboardBtn');
+if(progressLeaderboard){
+  document.addEventListener('click',e=>{
+    if(e.target?.closest?.('#leaderboardBtn')){
+      e.preventDefault();e.stopImmediatePropagation();
+      panel.classList.remove('hidden');document.body.classList.add('leaderboard-open');
+      modalStreak();
+    }
+  },{capture:true});
+}
+})();
+</script>
+
+<style id="cathians-v24-enhancements">
+/* ===== V24: no-emoji, asset-ready UI polish ===== */
+.cg-ai-working-banner{
+  display:flex;align-items:center;gap:10px;margin:0 0 10px;padding:10px 13px;border:1px solid #eadfba;border-radius:14px;
+  background:linear-gradient(135deg,#fffdf3,#fff8dc);color:#6f5b28;box-shadow:0 7px 18px rgba(90,70,20,.045);font:800 11px/1.4 system-ui,sans-serif;
+}
+.cg-ai-working-dot{width:9px;height:9px;border-radius:50%;background:#d6a53c;box-shadow:0 0 0 5px rgba(214,165,60,.13),0 0 16px rgba(214,165,60,.28);animation:aiWorkingPulse 1.35s ease-in-out infinite}
+.cg-ai-working-banner small{display:block;margin-top:2px;color:#8b7950;font-weight:600;font-size:8px}
+@keyframes aiWorkingPulse{0%,100%{transform:scale(.85);opacity:.65}50%{transform:scale(1.08);opacity:1}}
+
+.cg-study-box{overflow:hidden!important;transition:transform .28s cubic-bezier(.22,1,.36,1),box-shadow .28s ease,border-color .28s ease!important}
+.cg-study-box:focus-within{transform:translateY(-3px)!important;box-shadow:0 18px 38px rgba(44,69,114,.10)!important}
+.cg-study-input{transition:height .25s ease,opacity .2s ease,transform .25s ease!important}
+.cg-plus{display:none!important}
+.cg-home-attachments{display:flex;flex-wrap:wrap;gap:9px;margin-top:10px}
+.cg-attachment-card{position:relative;display:flex;align-items:center;gap:10px;min-width:220px;max-width:100%;padding:9px 11px;border-radius:14px;background:linear-gradient(145deg,#fff,#f9fbfe);border:1px solid color-mix(in srgb,var(--attach-color,#6c63ff) 28%,#e5eaf0);box-shadow:0 8px 22px rgba(30,43,69,.05);animation:attachmentIn .34s cubic-bezier(.22,1,.36,1) both;overflow:hidden}
+.cg-attachment-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--attach-color,#6c63ff)}
+.cg-folder-art{position:relative;width:39px;height:31px;flex:0 0 39px;border-radius:7px;background:color-mix(in srgb,var(--attach-color,#6c63ff) 18%,#fff);border:1px solid color-mix(in srgb,var(--attach-color,#6c63ff) 33%,#dfe5ed);box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}
+.cg-folder-art::before{content:"";position:absolute;left:4px;top:-5px;width:17px;height:9px;border-radius:6px 6px 0 0;background:color-mix(in srgb,var(--attach-color,#6c63ff) 34%,#fff);border:1px solid color-mix(in srgb,var(--attach-color,#6c63ff) 33%,#dfe5ed);border-bottom:0}
+.cg-folder-art::after{content:"";position:absolute;inset:4px 3px 3px;border-radius:5px;background:color-mix(in srgb,var(--attach-color,#6c63ff) 26%,#fff);opacity:.55}
+.cg-attachment-copy{min-width:0;flex:1}.cg-attachment-copy strong{display:block;color:#1b2434;font-size:9.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cg-attachment-copy small{display:block;margin-top:3px;color:#8c96a7;font-size:7px;font-weight:700}
+.cg-attachment-remove{width:24px;height:24px;flex:0 0 24px;border:1px solid #e2e7ee;border-radius:8px;background:#fff;color:#6d7787;cursor:pointer;font:800 13px/1 system-ui,sans-serif}.cg-attachment-remove:hover{background:#f4f6f9;color:#1f2940}
+@keyframes attachmentIn{from{opacity:0;transform:translateY(7px) scale(.98)}to{opacity:1;transform:none}}
+
+/* Stronger fire/glow on the Progress streak control — CSS only, no emoji. */
+#cgProgressLeaderboardBtn{isolation:isolate;background:linear-gradient(135deg,#171c2d,#20273a)!important}
+#cgProgressLeaderboardBtn::before{content:"";position:absolute;inset:-18px;z-index:-2;opacity:0;border-radius:40px;background:radial-gradient(circle at 25% 68%,rgba(255,102,36,.62),transparent 20%),radial-gradient(circle at 48% 56%,rgba(255,185,62,.42),transparent 24%),radial-gradient(circle at 74% 72%,rgba(255,88,24,.42),transparent 21%);filter:blur(10px);transform:scale(.55);pointer-events:none}
+#cgProgressLeaderboardBtn::after{content:"";position:absolute;inset:7px 16px;border-radius:28px;z-index:-1;opacity:0;background:linear-gradient(105deg,transparent 0 14%,rgba(255,124,42,.08) 19%,rgba(255,213,112,.28) 31%,rgba(255,96,24,.12) 43%,transparent 57%);filter:blur(8px);pointer-events:none}
+#cgProgressLeaderboardBtn.streak-pulse{box-shadow:0 0 0 1px rgba(255,145,46,.30),0 0 18px rgba(255,110,28,.58),0 0 40px rgba(255,166,54,.34),0 0 75px rgba(255,92,20,.18)!important;transform:translateY(-3px) scale(1.018)!important;background:linear-gradient(135deg,#171c2d,#302014)!important}
+#cgProgressLeaderboardBtn.streak-pulse::before{opacity:1;animation:strongStreakFire 1.15s ease both}
+#cgProgressLeaderboardBtn.streak-pulse::after{opacity:1;animation:strongStreakSweep 1.0s ease both}
+@keyframes strongStreakFire{0%{opacity:0;transform:scale(.45) translateY(6px)}18%{opacity:1}42%{transform:scale(1.18) translateY(-2px)}66%{opacity:.78;transform:scale(.94) translateY(1px)}100%{opacity:0;transform:scale(1.45) translateY(-7px)}}
+@keyframes strongStreakSweep{0%{transform:translateX(-38%) scaleX(.7);opacity:0}22%{opacity:1}72%{opacity:.75}100%{transform:translateX(40%) scaleX(1.35);opacity:0}}
+
+/* Make My Study Library close button sit safely on the left. */
+.study-library-head{justify-content:flex-start!important;align-items:flex-start!important}
+.study-library-head > .study-library-close{order:-1;margin:0 8px 0 0;position:static!important;flex:0 0 36px!important}
+.study-library-head > div{min-width:0;flex:1}
+@media(max-width:640px){.study-library-head > .study-library-close{flex-basis:32px!important;width:32px!important;height:32px!important;margin-right:7px}}
+
+/* Game Reviewers: one Play a game button that transforms into image-ready choices. */
+.cg-game-card .cg-game-actions{display:block!important;margin-top:14px!important}
+.cg-play-game-transform{width:100%;min-height:46px;border:1px solid #dfe4ec;border-radius:13px;background:linear-gradient(135deg,#fff,#f5f7fb);color:#1d2739;font:800 10px/1 system-ui,sans-serif;cursor:pointer;transition:.24s ease;box-shadow:0 7px 16px rgba(30,43,69,.045)}
+.cg-play-game-transform:hover{transform:translateY(-2px);background:#171c2d;color:#fff;border-color:#171c2d;box-shadow:0 12px 24px rgba(30,43,69,.10)}
+.cg-game-choice-stack{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;max-height:0;opacity:0;overflow:hidden;transform:translateY(-8px);transition:max-height .34s cubic-bezier(.22,1,.36,1),opacity .22s ease,transform .34s ease}
+.cg-game-choice-stack.open{max-height:260px;opacity:1;transform:none;margin-top:8px}
+.cg-game-choice-card{display:flex;flex-direction:column;align-items:stretch;gap:7px;text-align:left;padding:8px;border:1px solid #e3e7ee;border-radius:13px;background:#fff;color:#1c2537;cursor:pointer;transition:.2s ease;box-shadow:0 6px 16px rgba(30,43,69,.045)}
+.cg-game-choice-card:hover{transform:translateY(-2px);border-color:#cbd3df;box-shadow:0 11px 22px rgba(30,43,69,.08)}
+.cg-game-choice-art{width:100%;aspect-ratio:16/9;border-radius:9px;background:linear-gradient(145deg,#f2f4f8,#e8ecf3);border:1px dashed #d5dbe5;position:relative;overflow:hidden}
+.cg-game-choice-art::before{content:"";position:absolute;inset:26% 35%;border-radius:8px;border:2px solid #cbd3df;opacity:.55}
+.cg-game-choice-card span{font-size:8px;font-weight:900;line-height:1.2}.cg-game-choice-card small{font-size:6.5px;color:#8a94a4;line-height:1.35}
+@media(max-width:760px){.cg-game-choice-stack{grid-template-columns:1fr}.cg-game-choice-art{aspect-ratio:3/1}.cg-game-choice-card{flex-direction:row;align-items:center}.cg-game-choice-card .cg-game-choice-art{width:66px;flex:0 0 66px}.cg-game-choice-card small{margin-top:2px}}
+
+/* Leaderboard image slots and no-emoji fire treatment. */
+.lb-fire-orb{position:relative;overflow:hidden;font-size:0!important;background:linear-gradient(145deg,#fff0e7,#ffe0cd)!important}
+.lb-fire-orb::before{content:"";position:absolute;width:18px;height:24px;bottom:7px;left:50%;transform:translateX(-50%) rotate(45deg);border-radius:55% 45% 55% 45%;background:linear-gradient(180deg,#ffd56d 0 34%,#ff8c3f 35% 72%,#ec5b22 73%);filter:drop-shadow(0 0 10px rgba(255,106,30,.45));animation:orbFire 1s ease-in-out infinite alternate}
+.lb-fire-orb::after{content:"";position:absolute;width:8px;height:13px;bottom:12px;left:50%;transform:translateX(-50%) rotate(45deg);border-radius:55% 45% 55% 45%;background:#fff0aa;animation:orbFireInner .8s ease-in-out infinite alternate}
+@keyframes orbFire{from{transform:translateX(-50%) rotate(40deg) scale(.92);opacity:.82}to{transform:translateX(-50%) rotate(50deg) scale(1.05);opacity:1}}
+@keyframes orbFireInner{from{transform:translateX(-50%) rotate(42deg) scale(.85)}to{transform:translateX(-50%) rotate(48deg) scale(1.03)}}
+.lb-fire-mini{width:15px;height:16px;display:inline-block;vertical-align:-3px;margin-left:4px;border-radius:55% 45% 55% 45%;background:linear-gradient(180deg,#ffd56d 0 34%,#ff8c3f 35% 72%,#ec5b22 73%);transform:rotate(45deg) scale(.75);filter:drop-shadow(0 0 7px rgba(255,106,30,.52));animation:miniFire .8s ease-in-out infinite alternate}
+@keyframes miniFire{from{transform:rotate(41deg) scale(.72);opacity:.82}to{transform:rotate(49deg) scale(.84);opacity:1}}
+.lb-row.lb-top-streak::before,.leader-row.streak-ranked-first::before{content:"";position:absolute;inset:auto 8px -11px 8px;height:32px;border-radius:50%;background:radial-gradient(ellipse at center,rgba(255,107,30,.24),transparent 67%);filter:blur(8px);pointer-events:none;animation:rankFireGlow 1.1s ease-in-out infinite alternate}
+@keyframes rankFireGlow{from{opacity:.45;transform:scaleX(.92)}to{opacity:1;transform:scaleX(1.04)}}
+/* Remove emoji-based pseudo flame left by the previous layer. */
+#leaderboardPanel .leader-row.streak-ranked-first::after{content:""!important;display:block!important;width:14px;height:18px;right:56px;top:8px;border-radius:55% 45% 55% 45%;background:linear-gradient(180deg,#ffd56d 0 34%,#ff8c3f 35% 72%,#ec5b22 73%);filter:drop-shadow(0 0 8px rgba(255,111,28,.65));animation:miniFire .85s ease-in-out infinite alternate}
+
+@media(max-width:760px){.cg-ai-working-banner{font-size:9px}.cg-ai-working-banner small{font-size:7px}.cg-attachment-card{min-width:0;width:100%}}
+</style>
+<script id="cathians-v24-enhancements-js">
+(function(){
+'use strict';
+const q=s=>document.querySelector(s), qa=s=>[...document.querySelectorAll(s)];
+
+/* Home: AI working warning + file attachment folders. */
+const homeBox=q('#cgStudyInput');
+const studyBox=homeBox?.closest('.cg-study-box');
+const fileInput=q('#cgFileInput');
+if(studyBox && homeBox){
+  if(!q('#cgAiWorkingBanner')){
+    const banner=document.createElement('div');banner.id='cgAiWorkingBanner';banner.className='cg-ai-working-banner';
+    banner.innerHTML='<span class="cg-ai-working-dot" aria-hidden="true"></span><span>AI assistant is still being developed<small>Your request and uploaded materials stay on this page while the AI backend is being prepared.</small></span>';
+    studyBox.parentNode.insertBefore(banner,studyBox);
+  }
+  if(!q('#cgHomeAttachments')){const a=document.createElement('div');a.id='cgHomeAttachments';a.className='cg-home-attachments';studyBox.appendChild(a)}
+}
+const attachmentBox=q('#cgHomeAttachments');
+const deckColors=['#6c63ff','#ee6a8a','#3fb8a6','#f0b938','#66a6e8','#a96ad8','#5bbf73','#e77d4f'];
+const extLabel=f=>{const e=(f.name.split('.').pop()||'FILE').toUpperCase();return e};
+const colorForFile=f=>{let h=0;for(const ch of f.name)h=(h*31+ch.charCodeAt(0))>>>0;return deckColors[h%deckColors.length]};
+function addAttachmentFolder(file){
+  if(!attachmentBox)return;
+  const card=document.createElement('div');card.className='cg-attachment-card';card.style.setProperty('--attach-color',colorForFile(file));
+  card.innerHTML='<div class="cg-folder-art" aria-hidden="true"></div><div class="cg-attachment-copy"><strong>'+String(file.name).replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))+'</strong><small>'+extLabel(file)+' • '+Math.max(1,Math.round(file.size/1024))+' KB</small></div><button type="button" class="cg-attachment-remove" aria-label="Remove attachment">×</button>';
+  card.querySelector('.cg-attachment-remove').onclick=()=>card.remove();attachmentBox.appendChild(card);
+}
+if(fileInput){
+  fileInput.addEventListener('change',async()=>{
+    const file=fileInput.files?.[0];if(!file)return;
+    addAttachmentFolder(file);
+    const name=file.name.toLowerCase();
+    const isText=/\.(txt|md|csv|json)$/i.test(name);
+    if(isText){try{const text=await file.text();const notes=q('#notes');if(notes){notes.value=text;notes.dispatchEvent(new Event('input',{bubbles:true}))}}catch(_){} }
+    else { const topic=q('#topic'); if(topic&&!topic.value.trim()) topic.value=file.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').trim(); }
+    fileInput.value='';
+  },{capture:true});
+}
+
+/* Stronger streak click animation; do not let legacy leaderboard handler win. */
+const streakBtn=q('#cgProgressLeaderboardBtn');
+if(streakBtn){document.addEventListener('click',e=>{if(e.target?.closest?.('#cgProgressLeaderboardBtn')){e.preventDefault();e.stopImmediatePropagation();streakBtn.classList.remove('streak-pulse');void streakBtn.offsetWidth;streakBtn.classList.add('streak-pulse');window.setTimeout(()=>streakBtn.classList.remove('streak-pulse'),1250)}},{capture:true})}
+
+/* Game Reviewers: replace the 3 permanent buttons with a transformable Play a game control. */
+const originalGameRenderer=window.loadCgGameReviewersView;
+async function renderGameReviewers(){
+  const box=q('#cgGameReviewersGrid');if(!box)return;box.innerHTML='<div class="cg-view-empty">Loading your game reviewers…</div>';
+  let docs=[];try{docs=await (typeof fetchSavedMaterials==='function'?fetchSavedMaterials():[])}catch(_){docs=[]}
+  if(!docs.length){box.innerHTML='<div class="cg-view-empty">No game reviewers yet. Create study material first.</div>';return}
+  const esc=s=>String(s??'').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+  const items=[['quiz-battle','Quiz Shooting','Target-based review game'],['matching-game','Matching','Match terms with definitions'],['serve-knowledge','Serve a Knowledge','Serve answers to complete the round']];
+  box.innerHTML=docs.map((item,index)=>{
+    const choices=items.map(([id,label,sub])=>`<button type="button" class="cg-game-choice-card" data-game="${id}" data-mid="${esc(item.id)}"><div class="cg-game-choice-art" data-image-slot="${id}" aria-hidden="true"></div><span>${label}</span><small>${sub}</small></button>`).join('');
+    return `<article class="cg-game-card color-tint" style="${typeof deckColorStyle==='function'?deckColorStyle(item,index):''}"><div style="display:flex;align-items:center;gap:8px"><span class="cg-deck-color-dot" aria-hidden="true"></span><span class="cg-deck-type">${esc(typeof gameMaterialLabel==='function'?gameMaterialLabel(item):'Study Material')}</span></div><h3>${esc(item.topic||'Untitled Study Material')}</h3><p>Choose a game when you are ready to play.</p><div class="cg-game-actions"><button type="button" class="cg-play-game-transform">Play a game</button><div class="cg-game-choice-stack">${choices}</div></div></article>`;
+  }).join('');
+  box.querySelectorAll('.cg-play-game-transform').forEach(btn=>btn.onclick=()=>{const stack=btn.nextElementSibling;btn.textContent=stack.classList.toggle('open')?'Choose a game':'Play a game';});
+  box.querySelectorAll('.cg-game-choice-card').forEach(btn=>btn.onclick=()=>{const item=docs.find(x=>String(x.id)===String(btn.dataset.mid));if(!item)return;selectedGame=btn.dataset.game;startSoloGameFromMaterial(item);});
+}
+window.loadCgGameReviewersView=renderGameReviewers;
+
+/* Ensure XP displays the real amount and never the old demo fallback. */
+const fixXp=()=>{const x=q('#cgProgressXpBadge');if(x&&typeof xp!=='undefined')x.textContent=Math.max(0,Number(xp)||0).toLocaleString()+' XP';const pill=q('#xpValue');if(pill&&typeof xp!=='undefined')pill.textContent=Math.max(0,Number(xp)||0).toLocaleString()+' XP'};
+fixXp();
+window.setTimeout(fixXp,120);window.setTimeout(fixXp,500);
+
+/* Keep leaderboard page image slots clean if the previous layer has already rendered. */
+qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
+})();
+</script>
+
+
+<style id="cathians-v25-final-decks-streak-polish">
+/* =========================================================
+   V25 — FINAL DECK VIEW + STREAK POLISH
+   No emoji placeholders. All artwork is image-ready.
+   ========================================================= */
+
+/* Home uploaded-material folder = PNG slot with deck-colored treatment. */
+.cg-folder-art{display:grid!important;place-items:center!important;background:var(--attach-color,#6c63ff)!important;border:0!important;box-shadow:0 7px 16px color-mix(in srgb,var(--attach-color,#6c63ff) 22%,transparent)!important;overflow:hidden!important}
+.cg-folder-art::before,.cg-folder-art::after{display:none!important}
+.cg-folder-art img{width:100%;height:100%;object-fit:contain;padding:2px;display:block;filter:drop-shadow(0 4px 8px rgba(0,0,0,.10));}
+
+/* Persistent lively flame treatment for the streak CTA. */
+#cgProgressLeaderboardBtn{
+  isolation:isolate!important;
+  overflow:visible!important;
+  position:relative!important;
+  border:1px solid rgba(255,145,57,.28)!important;
+  background:linear-gradient(135deg,#151a28 0%,#1a2030 58%,#24170f 100%)!important;
+  box-shadow:0 10px 26px rgba(20,25,40,.15),0 0 18px rgba(255,103,29,.16)!important;
+  transition:transform .25s cubic-bezier(.22,1,.36,1),box-shadow .25s ease,filter .25s ease!important;
+}
+#cgProgressLeaderboardBtn::before{
+  content:"";position:absolute;z-index:-2;left:-18px;right:-18px;bottom:-15px;height:78px;border-radius:50%;
+  background:
+    radial-gradient(ellipse at 18% 76%,rgba(255,82,22,.72) 0 7%,transparent 25%),
+    radial-gradient(ellipse at 38% 60%,rgba(255,190,65,.74) 0 8%,transparent 27%),
+    radial-gradient(ellipse at 60% 70%,rgba(255,113,24,.68) 0 7%,transparent 24%),
+    radial-gradient(ellipse at 82% 58%,rgba(255,197,71,.58) 0 6%,transparent 22%);
+  filter:blur(8px);opacity:.82;transform-origin:center bottom;animation:steadyStreakFire 1.18s ease-in-out infinite alternate;
+  pointer-events:none;
+}
+#cgProgressLeaderboardBtn::after{
+  content:"";position:absolute;z-index:-1;inset:4px 9px 5px;border-radius:24px;
+  background:
+    radial-gradient(circle at 16% 78%,rgba(255,145,45,.34) 0 2px,transparent 4px),
+    radial-gradient(circle at 29% 62%,rgba(255,212,111,.5) 0 1.5px,transparent 3.5px),
+    radial-gradient(circle at 45% 80%,rgba(255,104,30,.32) 0 2px,transparent 4px),
+    radial-gradient(circle at 66% 62%,rgba(255,208,102,.44) 0 1.5px,transparent 3px),
+    radial-gradient(circle at 83% 77%,rgba(255,116,26,.34) 0 2px,transparent 4px);
+  opacity:.88;animation:streakDust 1.55s ease-in-out infinite;pointer-events:none;
+}
+#cgProgressLeaderboardBtn.streak-pulse{
+  transform:translateY(-4px) scale(1.025)!important;filter:brightness(1.06)!important;
+  box-shadow:0 0 0 2px rgba(255,146,52,.24),0 0 22px rgba(255,111,28,.75),0 0 52px rgba(255,171,53,.42),0 18px 34px rgba(26,21,18,.2)!important;
+  animation:streakImpact .42s ease both;
+}
+#cgProgressLeaderboardBtn.streak-pulse::before{animation:burstStreakFire 1.25s ease both!important;opacity:1!important}
+#cgProgressLeaderboardBtn.streak-pulse::after{animation:burstStreakDust 1.05s ease both!important;opacity:1!important}
+@keyframes steadyStreakFire{0%{transform:scaleX(.92) translateY(2px);opacity:.68}50%{transform:scaleX(1.03) translateY(-2px);opacity:.9}100%{transform:scaleX(.96) translateY(-5px);opacity:.76}}
+@keyframes streakDust{0%,100%{transform:translateY(2px);opacity:.72}50%{transform:translateY(-5px);opacity:1}}
+@keyframes burstStreakFire{0%{transform:scale(.68) translateY(12px);opacity:0}18%{transform:scale(1.22) translateY(-2px);opacity:1}50%{transform:scale(1.06) translateY(-8px);opacity:1}100%{transform:scale(1.15) translateY(-18px);opacity:0}}
+@keyframes burstStreakDust{0%{transform:scale(.55);opacity:0}22%{transform:scale(1.15);opacity:1}100%{transform:scale(1.42);opacity:0}}
+@keyframes streakImpact{0%{transform:scale(1)}45%{transform:translateY(-5px) scale(1.035)}100%{transform:translateY(-4px) scale(1.025)}}
+
+/* Compact deck cards, matching the reference style. */
+.cg-decks-all.v25-compact-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px!important}
+.cg-deck-card.v25-compact-card{position:relative!important;min-height:174px!important;height:174px!important;padding:0!important;border-radius:22px!important;overflow:hidden!important;cursor:pointer!important;display:flex!important;flex-direction:column!important;background:#fff!important;box-shadow:0 8px 22px rgba(30,43,69,.065)!important;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease!important}
+.cg-deck-card.v25-compact-card::before{width:0!important}
+.cg-deck-card.v25-compact-card .v25-deck-color{height:56px;background:var(--deck-accent,#6c63ff);flex:0 0 56px}
+.cg-deck-card.v25-compact-card .v25-deck-body{padding:17px 17px 16px;display:flex;flex:1;flex-direction:column;justify-content:space-between;min-width:0}
+.cg-deck-card.v25-compact-card h3{padding:0!important;margin:0!important;font-size:15px!important;line-height:1.32!important;color:#1b2434!important;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.cg-deck-card.v25-compact-card .v25-deck-meta{display:flex;justify-content:space-between;gap:8px;align-items:center;color:#667286;font-size:10px;font-weight:700}
+.cg-deck-card.v25-compact-card .v25-deck-count{color:#4f5b70;font-size:10px;font-weight:600}
+.cg-deck-card.v25-compact-card .v25-deck-open-hint{font-size:7.5px;color:#a0a9b7;font-weight:700;opacity:0;transform:translateY(3px);transition:.2s ease}
+.cg-deck-card.v25-compact-card:hover{transform:translateY(-4px)!important;box-shadow:0 17px 32px rgba(30,43,69,.11)!important;border-color:color-mix(in srgb,var(--deck-accent,#6c63ff) 28%,#e0e5ed)!important}
+.cg-deck-card.v25-compact-card:hover .v25-deck-open-hint{opacity:1;transform:none}
+
+@media(max-width:900px){.cg-decks-all.v25-compact-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:760px){.cg-decks-all.v25-compact-grid{grid-template-columns:1fr 1fr!important;gap:10px!important}.cg-deck-card.v25-compact-card{min-height:146px!important;height:146px!important;border-radius:18px!important}.cg-deck-card.v25-compact-card .v25-deck-color{height:43px;flex-basis:43px}.cg-deck-card.v25-compact-card .v25-deck-body{padding:12px!important}.cg-deck-card.v25-compact-card h3{font-size:11px!important}.cg-deck-card.v25-compact-card .v25-deck-meta{font-size:8px}.cg-deck-card.v25-compact-card .v25-deck-count{font-size:8px}.cg-deck-card.v25-compact-card .v25-deck-open-hint{display:none}}
+
+/* Deck detail viewer. */
+.v25-deck-viewer{position:fixed;inset:0;z-index:1000020;background:#f7f8fb;color:#1b2434;overflow:auto;display:none}
+.v25-deck-viewer.open{display:block;animation:v25ViewerIn .22s ease both}
+@keyframes v25ViewerIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.v25-deck-shell{width:min(100%,980px);margin:0 auto;padding:8px 30px 46px}
+.v25-deck-topbar{display:flex;align-items:center;gap:10px;padding:0 0 20px;position:sticky;top:0;background:rgba(247,248,251,.94);backdrop-filter:blur(12px);z-index:4}
+.v25-back-btn,.v25-icon-btn{width:46px;height:46px;border:1px solid #dde3eb;background:#fff;border-radius:50%;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 18px rgba(30,43,69,.05);color:#1b2434}
+.v25-back-btn svg,.v25-icon-btn svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.v25-deck-heading{display:flex;align-items:center;gap:12px;min-width:0;flex:1}
+.v25-deck-heading .v25-swatch{width:28px;height:28px;border-radius:9px;background:var(--deck-accent,#6c63ff);flex:0 0 28px}
+.v25-deck-heading h1{font-size:25px;line-height:1.16;letter-spacing:-.7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0}
+.v25-deck-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.v25-duplicate-btn,.v25-share-btn,.v25-study-btn{border:1px solid #dfe4ec;background:#fff;color:#1b2434;min-height:44px;border-radius:14px;padding:0 14px;display:inline-flex;align-items:center;justify-content:center;gap:7px;font:800 10px/1 system-ui,sans-serif;cursor:pointer;box-shadow:0 6px 16px rgba(30,43,69,.045);white-space:nowrap}
+.v25-duplicate-btn svg,.v25-share-btn svg,.v25-study-btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.v25-study-btn{background:#171c2d;color:#fff;border-color:#171c2d;padding:0 17px}.v25-share-btn:hover,.v25-duplicate-btn:hover{background:#f5f7fa;transform:translateY(-1px)}.v25-study-btn:hover{background:#293248;transform:translateY(-1px)}
+.v25-deck-author{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;margin:6px 0 17px;border:1px solid #e0e5ed;background:#fff;border-radius:999px;font-size:10px;font-weight:700;color:#4f5b70;box-shadow:0 5px 15px rgba(30,43,69,.04)}
+.v25-author-dot{width:26px;height:26px;border-radius:50%;background:linear-gradient(145deg,#eef1f7,#dce3ef);display:grid;place-items:center;font-size:8px;font-weight:900;color:#667286}
+.v25-deck-tabs{display:flex;gap:28px;border-bottom:1px solid #dfe4ec;margin-bottom:28px;overflow:auto}
+.v25-deck-tab{border:0;background:transparent;padding:0 0 14px;font:800 12px/1 system-ui,sans-serif;color:#7a8598;cursor:pointer;white-space:nowrap;position:relative}
+.v25-deck-tab.active{color:#1b2434}.v25-deck-tab.active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--deck-accent,#6c63ff);border-radius:2px}
+.v25-deck-section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.v25-deck-section-head h2{font-size:17px;margin:0}.v25-sort-btn{border:0;background:transparent;color:#6f7c90;cursor:pointer;padding:6px}.v25-sort-btn svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.v25-card-list{display:grid;gap:12px}
+.v25-study-card{border:1px solid #dfe4ec;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 7px 19px rgba(30,43,69,.045)}
+.v25-study-card .front{padding:17px 18px 15px;font-size:13px;font-weight:800;line-height:1.48}.v25-study-card .back{border-top:1px dashed #dde3ea;padding:14px 18px 16px;font-size:11px;color:#445166;line-height:1.55}.v25-study-card .back strong{display:inline;color:#172033}
+.v25-notes-pane,.v25-simple-pane{padding:18px;border:1px solid #dfe4ec;background:#fff;border-radius:20px;color:#445166;font-size:11px;line-height:1.7;white-space:pre-wrap;box-shadow:0 7px 19px rgba(30,43,69,.04)}
+.v25-import-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.v25-import-card{padding:18px;border:1px solid #dfe4ec;border-radius:18px;background:#fff}.v25-import-card strong{font-size:11px;display:block;margin-bottom:5px}.v25-import-card small{font-size:8px;color:#8a94a4;line-height:1.45}
+@media(max-width:760px){.v25-deck-shell{padding:4px 14px 92px}.v25-deck-topbar{gap:7px;padding-bottom:12px}.v25-back-btn,.v25-icon-btn{width:39px;height:39px}.v25-deck-heading .v25-swatch{width:24px;height:24px;flex-basis:24px}.v25-deck-heading h1{font-size:17px}.v25-deck-actions{gap:5px}.v25-duplicate-btn,.v25-share-btn,.v25-study-btn{min-width:39px;width:39px;height:39px;min-height:39px;padding:0;border-radius:11px}.v25-duplicate-btn span,.v25-share-btn span,.v25-study-btn span{display:none}.v25-deck-author{margin-bottom:13px;font-size:9px}.v25-deck-tabs{gap:22px;margin-bottom:20px}.v25-deck-tab{font-size:10px}.v25-deck-section-head h2{font-size:14px}.v25-study-card .front{font-size:10.5px;padding:13px}.v25-study-card .back{font-size:9px;padding:11px 13px}.v25-import-row{grid-template-columns:1fr}}
+
+/* Share modal — reference-style, with Mr.Panda as the AI destination. */
+.v25-share-overlay{position:fixed;inset:0;z-index:1000030;background:rgba(12,18,31,.35);backdrop-filter:blur(10px);display:none;align-items:flex-start;justify-content:center;padding:20px;overflow:auto}
+.v25-share-overlay.open{display:flex;animation:v25ViewerIn .2s ease both}.v25-share-card{width:min(100%,690px);background:#fff;border-radius:28px;box-shadow:0 30px 90px rgba(17,28,49,.24);padding:18px;margin-top:4vh}
+.v25-share-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.v25-share-head h3{text-align:center;flex:1;font-size:17px;margin:0}.v25-share-head p{font-size:8px;color:#7e899c;text-align:center;margin:4px 0 0}.v25-close-btn{width:40px;height:40px;border-radius:50%;border:1px solid #e0e5ed;background:#fff;display:grid;place-items:center;cursor:pointer}.v25-close-btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.v25-share-deck{display:flex;align-items:center;gap:12px;margin:20px 0 14px;padding:14px;border:1px solid #e0e5ed;border-radius:18px}.v25-share-deck .swatch{width:48px;height:48px;border-radius:14px;background:var(--deck-accent,#6c63ff);flex:0 0 48px}.v25-share-deck strong{display:block;font-size:12px}.v25-share-deck small{display:block;margin-top:4px;font-size:8px;color:#7e899c}.v25-share-main-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.v25-share-action{height:53px;border:1px solid #dfe4ec;background:#fff;border-radius:15px;font:800 10px/1 system-ui,sans-serif;color:#1b2434;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}.v25-share-action.primary{background:#171c2d;color:#fff;border-color:#171c2d}.v25-share-action svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.v25-share-search{width:100%;height:51px;margin:14px 0 18px;border:1px solid #dde3eb;border-radius:16px;padding:0 16px;font-size:11px;outline:0}.v25-share-title{font-size:11px;margin:0 0 10px}.v25-share-connection{display:flex;align-items:center;gap:10px;padding:12px 4px}.v25-ai-avatar{width:39px;height:39px;border-radius:13px;background:#f1efff;border:1px solid #ddd8ff;display:grid;place-items:center;color:#6b4fe6;font-size:0}.v25-ai-avatar::after{content:"";width:18px;height:18px;border-radius:5px;border:2px solid currentColor;box-shadow:inset 0 0 0 4px transparent}.v25-share-connection-copy{min-width:0;flex:1}.v25-share-connection-copy strong{display:block;font-size:10px}.v25-share-connection-copy small{display:block;margin-top:2px;font-size:7.5px;color:#8b94a3}.v25-send-panda{border:1px solid #d7cffb;background:#f7f3ff;color:#6c48bf;border-radius:12px;padding:10px 13px;font:800 9px/1 system-ui,sans-serif;cursor:pointer}.v25-send-status{min-height:20px;margin-top:6px;font-size:8px;color:#6c48bf}
+@media(max-width:760px){.v25-share-overlay{padding:10px}.v25-share-card{border-radius:22px;padding:14px}.v25-share-main-actions{grid-template-columns:1fr}.v25-share-head h3{font-size:14px}.v25-share-search{font-size:10px}}
+</style>
+
+<script id="cathians-v25-final-decks-streak-polish-js">
+(function(){
+  'use strict';
+  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+  const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const svg={
+    back:'<svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg>',
+    share:'<svg viewBox="0 0 24 24"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M5 14v5h14v-5"/></svg>',
+    duplicate:'<svg viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M5 16V6a2 2 0 0 1 2-2h10"/></svg>',
+    search:'<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>',
+    bookmark:'<svg viewBox="0 0 24 24"><path d="M6 4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21l-6-3.6L6 21V4.5Z"/></svg>',
+    play:'<svg viewBox="0 0 24 24"><path d="m9 7 8 5-8 5V7Z"/></svg>',
+    close:'<svg viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17"/></svg>',
+    sort:'<svg viewBox="0 0 24 24"><path d="M8 6v12M8 6l-3 3M8 6l3 3M16 18V6M16 18l-3-3M16 18l3-3"/></svg>',
+    copy:'<svg viewBox="0 0 24 24"><rect x="9" y="9" width="10" height="10" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>'
+  };
+
+  /* ---------- Home attachment folder uses an image slot ---------- */
+  $$('.cg-folder-art').forEach(x=>{
+    if(!x.querySelector('img')) x.innerHTML='<img src="folder.png" alt="" aria-hidden="true">';
+  });
+  const attachmentObserver=new MutationObserver(muts=>muts.forEach(m=>m.addedNodes.forEach(n=>{
+    if(n.nodeType===1){
+      if(n.matches?.('.cg-folder-art')&&!n.querySelector('img'))n.innerHTML='<img src="folder.png" alt="" aria-hidden="true">';
+      n.querySelectorAll?.('.cg-folder-art').forEach(x=>{if(!x.querySelector('img'))x.innerHTML='<img src="folder.png" alt="" aria-hidden="true">';});
+    }
+  })));
+  if(document.body)attachmentObserver.observe(document.body,{childList:true,subtree:true});
+
+  /* ---------- Persistent streak visual + click burst ---------- */
+  const streakBtn=$('#cgProgressLeaderboardBtn');
+  if(streakBtn){
+    streakBtn.setAttribute('aria-label','Keep your current study streak');
+    document.addEventListener('click',e=>{
+      const b=e.target?.closest?.('#cgProgressLeaderboardBtn');
+      if(!b)return;
+      e.preventDefault();e.stopImmediatePropagation();
+      b.classList.remove('streak-pulse');void b.offsetWidth;b.classList.add('streak-pulse');
+      setTimeout(()=>b.classList.remove('streak-pulse'),1350);
+    },true);
+  }
+
+  /* ---------- Accurate Progress XP ---------- */
+  function realXP(){
+    try{return Math.max(0,Number(window.xp)||0)}catch{return 0}
+  }
+  function currentStreak(){
+    try{return Math.max(0,Number(typeof calculateLocalStudyStreak==='function'?calculateLocalStudyStreak():0)||0)}catch{return 0}
+  }
+  function updateRealProgress(){
+    const value=realXP(), streak=currentStreak();
+    const badge=$('#cgProgressXpBadge'); if(badge)badge.textContent=value.toLocaleString()+' XP';
+    const xpValue=$('#xpValue'); if(xpValue)xpValue.textContent=value.toLocaleString()+' XP';
+    const topXp=$('#cgTopXp'); if(topXp)topXp.textContent=value.toLocaleString();
+    const level=Math.max(1,Math.floor(value/100)+1), next=level*100, within=value%100, pct=Math.max(0,Math.min(100,within));
+    const fill=$('#cgProgressXpBar');if(fill)fill.style.width=Math.max(8,pct)+'%';
+    const lvl=$('#cgProgressLevel');if(lvl)lvl.textContent=level;
+    const nextEl=$('#cgProgressNext');if(nextEl)nextEl.textContent=next>=1000?(Math.round(next/100)/10)+'k XP':next+' XP';
+    const inline=$('#cgStreakInline');if(inline)inline.textContent=streak;
+    const cta=$('#cgStreakCta');if(cta)cta.textContent=streak;
+    const q=$('#cgStreakQuestions');if(q)q.textContent=streak>0?'1':'2';
+  }
+  const oldProgress=window.updateCgProgressView;
+  window.updateCgProgressView=function(){updateRealProgress();try{oldProgress?.()}catch(_){ }updateRealProgress()};
+  updateRealProgress();setTimeout(updateRealProgress,250);setTimeout(updateRealProgress,900);
+
+  /* ---------- G7–G12 only for every leaderboard ---------- */
+  const grades=['all','7','8','9','10','11','12'];
+  const pageFilterOld=$('#lbPageFilters');
+  const pageFilters=pageFilterOld?(()=>{const n=pageFilterOld.cloneNode(false);pageFilterOld.replaceWith(n);return n})():null;
+  const modalFilterOld=$('#gradeFilters');
+  const modalFilters=modalFilterOld?(()=>{const n=modalFilterOld.cloneNode(false);modalFilterOld.replaceWith(n);return n})():null;
+  let selectedGrade='all';
+  function makeFilters(target,cls){
+    if(!target)return;
+    target.innerHTML=grades.map(g=>`<button type="button" class="${cls} ${selectedGrade===g?'active':''}" data-grade="${g}">${g==='all'?'Overall':'G'+g}</button>`).join('');
+    target.querySelectorAll('[data-grade]').forEach(btn=>btn.addEventListener('click',()=>{selectedGrade=btn.dataset.grade||'all';makeFilters(pageFilters,'lb-filter');makeFilters(modalFilters,'grade-filter');renderAllLeaderboards();}));
+  }
+  async function leaderboardRows(){
+    if(!window.studyFirebase)return[];
+    const {db,collection,getDocs}=window.studyFirebase;
+    const [ps,us]=await Promise.all([getDocs(collection(db,'studyProfiles')),getDocs(collection(db,'users'))]);
+    const users=new Map();us.forEach(d=>users.set(d.id,d.data()||{}));
+    const rows=[];
+    ps.forEach(d=>{
+      const data=d.data()||{},u=users.get(d.id)||{};
+      const section=String(u.section||data.section||'').trim();
+      const m=section.match(/^(7|8|9|10|11|12)-/); const grade=m?m[1]:String(u.grade||data.grade||'').trim();
+      if(!/^(7|8|9|10|11|12)$/.test(grade))return;
+      const xp=Math.max(0,Number(data.xp||0)); const streak=Math.max(0,Number(data.streak||0)); const longest=Math.max(streak,Number(data.longestStreak||0));
+      if(xp<=0&&longest<=0)return;
+      rows.push({id:d.id,displayName:u.displayName||u.name||data.displayName||'Student',grade,xp,streak,longestStreak:longest});
+    });
+    return rows;
+  }
+  function filtered(rows){return selectedGrade==='all'?rows:rows.filter(r=>r.grade===selectedGrade)}
+  function lbRow(r,i,type){
+    const top=i===0,me=window.currentUser?.uid===r.id;
+    const val=type==='xp'?r.xp.toLocaleString()+' XP':r.longestStreak+' day'+(r.longestStreak===1?'':'s');
+    const sub=(me?'You • ':'')+'G'+r.grade+' • '+(type==='xp'?'Study XP':'Longest streak');
+    let fx='';
+    if(top&&type==='xp')fx='<span class="lb-xp-fly">+XP</span>';
+    if(top&&type==='streak')fx='<span class="lb-fire-particle" style="right:42px;top:8px"></span><span class="lb-fire-particle" style="right:26px;top:15px;animation-delay:.3s"></span><span class="lb-fire-particle" style="right:56px;top:12px;animation-delay:.6s"></span>';
+    return `<div class="lb-row ${me?'lb-me ':''}${top&&type==='xp'?'lb-top-xp ':''}${top&&type==='streak'?'lb-top-streak ':''}">${fx}<div class="lb-rank">${i+1}</div><div class="lb-main-copy"><strong>${esc(r.displayName)}</strong><small>${esc(sub)}</small></div><div class="lb-value ${type==='xp'?'lb-xp-value':'lb-streak-value'}">${val}${type==='streak'&&top?'<span class="lb-fire-mini" aria-hidden="true"></span>':''}</div></div>`;
+  }
+  async function renderAllLeaderboards(){
+    try{
+      const all=await leaderboardRows(), rows=filtered(all);
+      const xps=[...rows].sort((a,b)=>b.xp-a.xp||a.displayName.localeCompare(b.displayName));
+      const sts=[...rows].sort((a,b)=>b.longestStreak-a.longestStreak||b.streak-a.streak||a.displayName.localeCompare(b.displayName));
+      const scope=selectedGrade==='all'?'Overall':'G'+selectedGrade;
+      if($('#lbXpSubtitle'))$('#lbXpSubtitle').textContent=scope+' • Study XP';
+      if($('#lbStreakSubtitle'))$('#lbStreakSubtitle').textContent=scope+' • Longest Streak';
+      if($('#lbXpList'))$('#lbXpList').innerHTML=xps.length?xps.map((r,i)=>lbRow(r,i,'xp')).join(''):'<div class="lb-empty">No XP entries yet for this group.</div>';
+      if($('#lbStreakList'))$('#lbStreakList').innerHTML=sts.length?sts.map((r,i)=>lbRow(r,i,'streak')).join(''):'<div class="lb-empty">No streak entries yet for this group.</div>';
+      const meStreak=sts.findIndex(r=>r.id===window.currentUser?.uid);
+      const rank=$('#rankValue');if(rank)rank.textContent=meStreak>=0?'#'+(meStreak+1):'Not ranked';
+    }catch(e){console.error('Leaderboard refresh failed:',e);if($('#lbXpList'))$('#lbXpList').innerHTML='<div class="lb-empty">Shared leaderboard is not connected yet.</div>';if($('#lbStreakList'))$('#lbStreakList').innerHTML='<div class="lb-empty">Shared leaderboard is not connected yet.</div>'}
+  }
+  makeFilters(pageFilters,'lb-filter');makeFilters(modalFilters,'grade-filter');
+  window.loadCATHIANSLeaderboards=renderAllLeaderboards;
+  window.__cathiansRenderAllLeaderboards=renderAllLeaderboards;
+
+  /* ---------- Compact My Decks + reference-style detail viewer ---------- */
+  let activeDeck=null, activeDetailTab='cards', viewer=null, shareOverlay=null;
+  function deckCards(item){
+    const cards=item?.content?.cards;
+    if(Array.isArray(cards)&&cards.length)return cards.map(c=>({front:c?.front||c?.question||'',back:c?.back||c?.answer||''}));
+    const notes=String(item?.notes||'').trim();
+    if(notes)return [{front:item?.topic||'Study Notes',back:notes}];
+    return [{front:item?.topic||'Untitled Study Material',back:'No card content available yet.'}];
+  }
+  function cardCount(item){return deckCards(item).length}
+  function authorName(){return window.currentUser?.displayName||'You'}
+  function ensureViewer(){
+    if(viewer)return viewer;
+    viewer=document.createElement('section');viewer.className='v25-deck-viewer';viewer.setAttribute('aria-hidden','true');
+    viewer.innerHTML=`<div class="v25-deck-shell"><div class="v25-deck-topbar"><button class="v25-back-btn" id="v25DeckBack" aria-label="Back">${svg.back}</button><div class="v25-deck-heading"><span class="v25-swatch" id="v25DeckSwatch"></span><h1 id="v25DeckTitle">My deck</h1></div><div class="v25-deck-actions"><button class="v25-duplicate-btn" id="v25DeckDuplicate">${svg.duplicate}<span>Duplicate</span></button><button class="v25-share-btn" id="v25DeckShare">${svg.share}<span>Share</span></button><button class="v25-study-btn" id="v25DeckStudy">${svg.play}<span>Study deck</span></button></div></div><div class="v25-deck-author"><span class="v25-author-dot" id="v25AuthorDot">A</span><span>by <strong id="v25DeckAuthor">You</strong></span></div><div class="v25-deck-tabs" id="v25DeckTabs"><button class="v25-deck-tab active" data-tab="cards">Cards</button><button class="v25-deck-tab" data-tab="notes">Notes</button><button class="v25-deck-tab" data-tab="lessons">Lessons</button><button class="v25-deck-tab" data-tab="imports">Imports</button><button class="v25-deck-tab" data-tab="leaderboard">Leaderboard</button></div><div id="v25DeckContent"></div></div>`;
+    document.body.appendChild(viewer);
+    viewer.querySelector('#v25DeckBack').onclick=closeViewer;
+    viewer.querySelector('#v25DeckDuplicate').onclick=duplicateActiveDeck;
+    viewer.querySelector('#v25DeckShare').onclick=openShareOverlay;
+    viewer.querySelector('#v25DeckStudy').onclick=()=>{if(activeDeck){closeViewer();try{openSavedStudyMaterial(activeDeck)}catch(_){}}};
+    viewer.querySelectorAll('[data-tab]').forEach(btn=>btn.onclick=()=>{activeDetailTab=btn.dataset.tab;viewer.querySelectorAll('.v25-deck-tab').forEach(x=>x.classList.toggle('active',x===btn));renderDetailContent()});
+    viewer.addEventListener('click',e=>{if(e.target===viewer)closeViewer()});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&viewer?.classList.contains('open'))closeViewer()});
+    return viewer;
+  }
+  function renderDetailContent(){
+    if(!activeDeck)return;
+    const out=$('#v25DeckContent');if(!out)return;
+    const cards=deckCards(activeDeck), notes=String(activeDeck?.notes||'').trim()||cards.map(c=>`${c.front}\n${c.back}`).join('\n\n');
+    if(activeDetailTab==='cards'){
+      out.innerHTML=`<div class="v25-deck-section-head"><h2>Cards (${cards.length})</h2><button class="v25-sort-btn" type="button" aria-label="Sort cards">${svg.sort}</button></div><div class="v25-card-list">${cards.map(c=>`<article class="v25-study-card"><div class="front">${esc(c.front||'Untitled')}</div><div class="back">${esc(c.back||'')}</div></article>`).join('')}</div>`;
+    }else if(activeDetailTab==='notes'){
+      out.innerHTML=`<div class="v25-notes-pane">${esc(notes)}</div>`;
+    }else if(activeDetailTab==='lessons'){
+      const steps=activeDeck?.content?.steps||activeDeck?.content?.questions||[];
+      out.innerHTML=steps.length?`<div class="v25-card-list">${steps.map((x,i)=>`<article class="v25-study-card"><div class="front">${esc(typeof x==='string'?x:(x.question||x.title||'Lesson '+(i+1)))}</div><div class="back">${esc(typeof x==='string'?'Review this concept.':(x.answer||x.explanation||''))}</div></article>`).join('')}</div>`:'<div class="v25-simple-pane">No lessons are saved with this deck yet.</div>';
+    }else if(activeDetailTab==='imports'){
+      out.innerHTML=`<div class="v25-import-row"><div class="v25-import-card"><strong>Source</strong><small>${esc(activeDeck?.type||'Study Material')}</small></div><div class="v25-import-card"><strong>Saved</strong><small>${esc(typeof materialSavedDate==='function'?materialSavedDate(activeDeck):'Saved')}</small></div></div>`;
+    }else{
+      out.innerHTML=`<div class="v25-simple-pane">Leaderboard for this deck is ready for the shared study backend.</div>`;
+    }
+  }
+  function openViewer(item){
+    activeDeck=item||null;if(!activeDeck)return;activeDetailTab='cards';
+    const w=ensureViewer();w.classList.add('open');w.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');
+    w.style.setProperty('--deck-accent',typeof getDeckColor==='function'?getDeckColor(activeDeck,0):'#6c63ff');
+    $('#v25DeckSwatch').style.background='var(--deck-accent)';$('#v25DeckTitle').textContent=activeDeck.topic||'Untitled Study Material';const author=authorName();$('#v25DeckAuthor').textContent=author;$('#v25AuthorDot').textContent=String(author).slice(0,1).toUpperCase();
+    w.querySelectorAll('.v25-deck-tab').forEach((x,i)=>x.classList.toggle('active',i===0));renderDetailContent();
+  }
+  function closeViewer(){if(viewer){viewer.classList.remove('open');viewer.setAttribute('aria-hidden','true')}document.body.classList.remove('modal-open');closeShareOverlay()}
+  async function duplicateActiveDeck(){
+    if(!activeDeck)return;
+    const copy={...activeDeck,id:'local-'+Date.now()+'-'+Math.random().toString(36).slice(2,7),topic:(activeDeck.topic||'Untitled Study Material')+' (Copy)',savedAt:new Date().toISOString()};
+    const key=window.currentUser?('cathsStudyMaterials:'+window.currentUser.uid):'cathsStudyMaterials:guest';
+    try{const arr=JSON.parse(localStorage.getItem(key)||'[]');arr.unshift(copy);localStorage.setItem(key,JSON.stringify(arr.slice(0,100)))}catch(_){ }
+    if(window.currentUser&&window.studyFirebase){try{const {db,collection,addDoc,serverTimestamp}=window.studyFirebase;await addDoc(collection(db,'studyMaterials'),{ownerUid:window.currentUser.uid,topic:copy.topic,type:copy.type||'flashcards',content:copy.content||{},notes:copy.notes||'',createdAt:serverTimestamp()})}catch(_){}}
+    activeDeck=copy;openViewer(copy);window.loadCgDecksView?.();
+  }
+  function ensureShareOverlay(){
+    if(shareOverlay)return shareOverlay;
+    shareOverlay=document.createElement('div');shareOverlay.className='v25-share-overlay';shareOverlay.setAttribute('aria-hidden','true');
+    shareOverlay.innerHTML=`<div class="v25-share-card"><div class="v25-share-head"><div style="width:40px"></div><div><h3>Share deck</h3><p id="v25ShareSubtitle">My Study Deck</p></div><button class="v25-close-btn" id="v25ShareClose" aria-label="Close">${svg.close}</button></div><div class="v25-share-deck"><span class="swatch" id="v25ShareSwatch"></span><div><strong id="v25ShareTitle">My deck</strong><small id="v25ShareCount">0 cards</small></div></div><div class="v25-share-main-actions"><button class="v25-share-action primary" id="v25CopyLink">${svg.copy} Copy link</button><button class="v25-share-action" id="v25ShowCode">${svg.search} Show code</button></div><input class="v25-share-search" id="v25ShareSearch" placeholder="Search for friends or groups" aria-label="Search for friends or groups"><h4 class="v25-share-title">Send to</h4><div class="v25-share-connection"><div class="v25-ai-avatar" aria-hidden="true"></div><div class="v25-share-connection-copy"><strong>Mr.Panda</strong><small>CATHIANS AI Assistant</small></div><button class="v25-send-panda" id="v25SendPanda">Send</button></div><div class="v25-send-status" id="v25SendStatus" aria-live="polite"></div></div>`;
+    document.body.appendChild(shareOverlay);
+    $('#v25ShareClose',shareOverlay);shareOverlay.querySelector('#v25ShareClose').onclick=closeShareOverlay;
+    shareOverlay.addEventListener('click',e=>{if(e.target===shareOverlay)closeShareOverlay()});
+    shareOverlay.querySelector('#v25CopyLink').onclick=async()=>{const title=activeDeck?.topic||'Study deck';const text=location.href+'#deck='+encodeURIComponent(activeDeck?.id||title);try{await navigator.clipboard?.writeText(text);shareOverlay.querySelector('#v25SendStatus').textContent='Deck link copied.'}catch(_){shareOverlay.querySelector('#v25SendStatus').textContent='Copy is not available in this browser.'}};
+    shareOverlay.querySelector('#v25ShowCode').onclick=()=>{shareOverlay.querySelector('#v25SendStatus').textContent='Share code is ready for this deck: '+String(activeDeck?.id||'LOCAL').slice(-8)};
+    shareOverlay.querySelector('#v25SendPanda').onclick=sendToPanda;
+    return shareOverlay;
+  }
+  function openShareOverlay(){
+    if(!activeDeck)return;const o=ensureShareOverlay();o.classList.add('open');o.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');
+    o.style.setProperty('--deck-accent',typeof getDeckColor==='function'?getDeckColor(activeDeck,0):'#6c63ff');o.querySelector('#v25ShareSwatch').style.background='var(--deck-accent)';o.querySelector('#v25ShareTitle').textContent=activeDeck.topic||'Untitled Study Material';o.querySelector('#v25ShareSubtitle').textContent=activeDeck.topic||'Study deck';o.querySelector('#v25ShareCount').textContent=cardCount(activeDeck)+' cards';o.querySelector('#v25SendStatus').textContent='';
+  }
+  function closeShareOverlay(){if(shareOverlay){shareOverlay.classList.remove('open');shareOverlay.setAttribute('aria-hidden','true')}}
+  function sendToPanda(){
+    if(!activeDeck)return;const title=activeDeck.topic||'Study deck';const cards=deckCards(activeDeck);const payload=`Please help me study this deck: ${title}\n\n${cards.slice(0,30).map((c,i)=>`Card ${i+1}: ${c.front}\nAnswer: ${c.back}`).join('\n\n')}`;
+    const input=$('#cgStudyInput');if(input){input.value=payload;input.dispatchEvent(new Event('input',{bubbles:true}))}
+    closeShareOverlay();closeViewer();
+    if(typeof window.cgSetView==='function')window.cgSetView('home');else $('[data-cg-view="home"]')?.click();
+    setTimeout(()=>{const box=$('#cgStudyInput');box?.focus();},180);
+  }
+  async function compactDecks(){
+    const box=$('#cgDecksAll');if(!box)return;box.classList.add('v25-compact-grid');box.innerHTML='<div class="cg-view-empty">Loading your decks…</div>';
+    let docs=[];try{docs=await (typeof fetchSavedMaterials==='function'?fetchSavedMaterials():[])}catch(_){docs=[]}
+    if(!docs.length){box.innerHTML='<div class="cg-view-empty">No saved decks yet. Use Add Reviewer to create your first one.</div>';return}
+    box.innerHTML=docs.map((item,index)=>{const color=typeof getDeckColor==='function'?getDeckColor(item,index):'#6c63ff';const count=cardCount(item);return `<article class="cg-deck-card v25-compact-card" tabindex="0" style="--deck-accent:${color}" data-v25-deck-id="${esc(item.id)}"><div class="v25-deck-color"></div><div class="v25-deck-body"><h3>${esc(item.topic||'Untitled Study Material')}</h3><div class="v25-deck-meta"><span class="v25-deck-count">${count} cards</span><span class="v25-deck-open-hint">Open deck</span></div></div></article>`}).join('');
+    box.querySelectorAll('[data-v25-deck-id]').forEach(card=>{const item=docs.find(x=>String(x.id)===String(card.dataset.v25DeckId));card.onclick=()=>openViewer(item);card.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openViewer(item)}}});
+  }
+  window.loadCgDecksView=compactDecks;
+  /* Keep the home shortcut and nav opening the compact page rather than the older renderer. */
+  document.addEventListener('click',e=>{
+    const navLink=e.target?.closest?.('[data-cg-view="library"]');
+    if(navLink)setTimeout(()=>compactDecks(),140);
+    const oldMore=e.target?.closest?.('#cgMoreBtn');
+    if(oldMore)setTimeout(()=>compactDecks(),140);
+  },true);
+  compactDecks();
+
+  /* Ensure streak modal in Progress remains streak-only and G7-G12. */
+  const progressLb=$('#leaderboardBtn');
+  if(progressLb){document.addEventListener('click',async e=>{if(!e.target?.closest?.('#leaderboardBtn'))return;e.preventDefault();e.stopImmediatePropagation();const panel=$('#leaderboardPanel');panel?.classList.remove('hidden');document.body.classList.add('leaderboard-open');const mf=$('#gradeFilters');if(mf){mf.innerHTML=grades.map(g=>`<button class="grade-filter ${selectedGrade===g?'active':''}" type="button" data-grade="${g}">${g==='all'?'Overall':'G'+g}</button>`).join('');mf.querySelectorAll('[data-grade]').forEach(b=>b.onclick=()=>{selectedGrade=b.dataset.grade||'all';mf.querySelectorAll('.grade-filter').forEach(x=>x.classList.toggle('active',x===b));renderModalStreak()})}await renderModalStreak();},{capture:true})}
+  async function renderModalStreak(){
+    const list=$('#leaderboardList');if(!list)return;list.innerHTML='<div class="leaderboard-status">Loading streak leaderboard…</div>';
+    try{const all=await leaderboardRows(),rows=filtered(all).sort((a,b)=>b.longestStreak-a.longestStreak||b.streak-a.streak||a.displayName.localeCompare(b.displayName));const me=window.currentUser?.uid||'';list.innerHTML=rows.length?rows.map((r,i)=>`<div class="leader-row ${r.id===me?'me':''} ${i===0?'streak-ranked-first':''}"><div class="leader-rank">${i+1}</div><div class="leader-name"><strong>${esc(r.displayName)}</strong><small>${r.id===me?'You • ':''}G${r.grade} • Longest streak</small></div><div class="leader-xp" style="color:#ef6a27">${r.longestStreak} day${r.longestStreak===1?'':'s'}${i===0?'<span class="lb-fire-mini" aria-hidden="true"></span>':''}</div></div>`).join(''):'<div class="leaderboard-status">No streak entries yet for this group.</div>';const s=$('#leaderboardStatus');if(s)s.textContent=selectedGrade==='all'?'Overall longest-streak leaderboard.':'G'+selectedGrade+' longest-streak leaderboard.'}catch(e){console.error(e);list.innerHTML='<div class="leaderboard-status">Shared streak leaderboard is not connected yet.</div>'}
+  }
+
+  /* Re-render page when navigation lands there. */
+  document.addEventListener('click',e=>{if(e.target?.closest?.('[data-cg-view="leaderboards"]'))setTimeout(()=>renderAllLeaderboards(),160)},{capture:true});
+})();
+</script>
+
 </body></html>
