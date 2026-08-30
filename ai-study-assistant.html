@@ -3174,12 +3174,377 @@ body{min-height:100dvh;overflow-x:hidden}
   .cg-gadget-circle,.cg-gadget-circle img{border:0!important;outline:0!important;box-shadow:none!important;}
 }
 </style>
+
+<style id="cathians-image-balance-mobile-polish">
+/* ===== Balanced 1.png–8.png artwork sizing ===== */
+/* Keep all supplied PNG artwork visible, proportional, and free of containers/outlines. */
+.cg-brand-mark,
+.cg-icon-slot,
+.cg-icon-slot img,
+.cg-pill-image-slot,
+.cg-pill-image-slot img,
+.cg-gadget-circle img,
+.cg-mobile-add-reviewer img{
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+  object-fit:contain!important;
+}
+
+.cg-brand-mark{
+  width:54px!important;
+  height:54px!important;
+  display:grid!important;
+  place-items:center!important;
+  overflow:visible!important;
+}
+.cg-brand-mark img{
+  width:46px!important;
+  height:46px!important;
+  display:block!important;
+}
+
+.cg-nav .cg-icon-slot{
+  width:48px!important;
+  height:48px!important;
+  min-width:48px!important;
+  min-height:48px!important;
+  flex:0 0 48px!important;
+  display:grid!important;
+  place-items:center!important;
+  overflow:visible!important;
+}
+.cg-nav .cg-icon-slot img{
+  width:44px!important;
+  height:44px!important;
+  max-width:none!important;
+  max-height:none!important;
+  display:block!important;
+  object-fit:contain!important;
+  filter:drop-shadow(0 5px 8px rgba(35,45,66,.10));
+}
+.cg-nav a:hover .cg-icon-slot img,
+.cg-nav a.active .cg-icon-slot img{
+  transform:translateY(-1px) scale(1.045)!important;
+}
+
+.cg-gadget-circle img{
+  width:36px!important;
+  height:36px!important;
+}
+.cg-gadget-slot,
+.cg-gadget-slot img{
+  width:30px!important;
+  height:30px!important;
+}
+.cg-coin-gadget,
+.cg-coin-gadget img{
+  width:26px!important;
+  height:26px!important;
+}
+
+@media (max-width:1100px) and (min-width:761px){
+  .cg-nav .cg-icon-slot{
+    width:45px!important;height:45px!important;min-width:45px!important;min-height:45px!important;flex-basis:45px!important;
+  }
+  .cg-nav .cg-icon-slot img{width:41px!important;height:41px!important;}
+  .cg-brand-mark{width:50px!important;height:50px!important;}
+  .cg-brand-mark img{width:43px!important;height:43px!important;}
+}
+
+/* ===== More attractive phone layout ===== */
+@media (max-width:760px){
+  body{padding-bottom:0!important;}
+  .page{
+    padding:10px 12px 104px 12px!important;
+    width:100%!important;
+  }
+
+  /* Six equal destinations — never hide the sixth item. */
+  .cg-shell{
+    left:7px!important;
+    right:7px!important;
+    bottom:7px!important;
+    width:auto!important;
+    height:76px!important;
+    padding:6px!important;
+    border:1px solid rgba(18,28,46,.08)!important;
+    border-radius:24px!important;
+    background:rgba(255,255,255,.96)!important;
+    box-shadow:0 16px 38px rgba(18,30,55,.13),0 3px 10px rgba(18,30,55,.05)!important;
+    z-index:9000!important;
+    backdrop-filter:blur(18px)!important;
+    -webkit-backdrop-filter:blur(18px)!important;
+  }
+
+  .cg-nav{
+    display:grid!important;
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+    gap:2px!important;
+    width:100%!important;
+    height:100%!important;
+    align-items:stretch!important;
+  }
+
+  .cg-nav a,
+  .cg-nav a:last-child{
+    display:flex!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:100%!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:5px 1px 4px!important;
+    border:0!important;
+    border-radius:17px!important;
+    flex:initial!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:2px!important;
+    overflow:visible!important;
+    transform:none!important;
+  }
+
+  .cg-nav a.active{
+    background:#f0f2f6!important;
+    box-shadow:0 4px 12px rgba(18,30,55,.05)!important;
+  }
+  .cg-nav a:hover{transform:none!important;}
+
+  .cg-nav a .cg-icon-slot{
+    width:33px!important;
+    height:33px!important;
+    min-width:33px!important;
+    min-height:33px!important;
+    flex:0 0 33px!important;
+    margin:0!important;
+    border:0!important;
+    background:transparent!important;
+    border-radius:0!important;
+    display:grid!important;
+    place-items:center!important;
+    overflow:visible!important;
+  }
+  .cg-nav a .cg-icon-slot img{
+    width:32px!important;
+    height:32px!important;
+    max-width:none!important;
+    max-height:none!important;
+    display:block!important;
+    object-fit:contain!important;
+  }
+
+  .cg-nav a span:last-child{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    padding:0!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+    text-align:center!important;
+    line-height:1.1!important;
+    font-size:6.9px!important;
+    font-weight:800!important;
+    letter-spacing:-.04px!important;
+    color:#69768c!important;
+  }
+  .cg-nav a.active span:last-child{color:#101829!important;}
+
+  /* Top artwork stays larger without crowding the phone header. */
+  .cg-top-actions{
+    gap:7px!important;
+    margin-bottom:11px!important;
+    padding:2px 1px 5px!important;
+    overflow-x:auto!important;
+    scrollbar-width:none!important;
+  }
+  .cg-top-actions::-webkit-scrollbar{display:none}
+  .cg-gadget-circle{
+    width:44px!important;
+    height:44px!important;
+    min-width:44px!important;
+    flex:0 0 44px!important;
+  }
+  .cg-gadget-circle img{width:34px!important;height:34px!important;}
+
+  .cg-mobile-add-reviewer{
+    width:42px!important;
+    height:42px!important;
+    min-width:42px!important;
+    flex:0 0 42px!important;
+  }
+  .cg-mobile-add-reviewer img{width:31px!important;height:31px!important;}
+
+  .cg-gadget-slot{width:25px!important;height:25px!important;}
+  .cg-gadget-slot img{width:25px!important;height:25px!important;}
+  .cg-coin-gadget{width:25px!important;height:25px!important;}
+  .cg-coin-gadget img{width:25px!important;height:25px!important;}
+
+  /* Give the study hero a cleaner, more spacious phone treatment. */
+  .cg-home-title{
+    font-size:29px!important;
+    line-height:1.08!important;
+    margin:18px 0 13px!important;
+  }
+  .cg-study-hero{
+    min-height:190px!important;
+    padding:18px!important;
+    border-radius:24px!important;
+    gap:10px!important;
+    box-shadow:0 12px 28px rgba(18,30,55,.06)!important;
+  }
+  .floating-cat-container{
+    flex:0 0 39%!important;
+    width:39%!important;
+    min-width:0!important;
+  }
+  .cg-hero-copy{
+    min-width:0!important;
+  }
+  .cg-hero-copy h2{
+    font-size:25px!important;
+    line-height:1.1!important;
+  }
+  .cg-hero-copy p{
+    font-size:9.5px!important;
+    line-height:1.55!important;
+  }
+
+  .cg-study-box{
+    min-height:116px!important;
+    margin-top:10px!important;
+    padding:17px!important;
+    border-radius:22px!important;
+  }
+  .cg-source-row{
+    gap:8px!important;
+    margin-top:9px!important;
+  }
+  .cg-source{
+    min-width:0!important;
+    height:58px!important;
+    border-radius:17px!important;
+    font-size:10.5px!important;
+  }
+}
+
+@media (max-width:380px){
+  .page{padding-left:10px!important;padding-right:10px!important;padding-bottom:100px!important;}
+  .cg-shell{height:73px!important;left:6px!important;right:6px!important;bottom:6px!important;padding:5px!important;border-radius:22px!important;}
+  .cg-nav{gap:1px!important;}
+  .cg-nav a,.cg-nav a:last-child{border-radius:15px!important;padding:4px 0 3px!important;}
+  .cg-nav a .cg-icon-slot{width:29px!important;height:29px!important;min-width:29px!important;min-height:29px!important;flex-basis:29px!important;}
+  .cg-nav a .cg-icon-slot img{width:28px!important;height:28px!important;}
+  .cg-nav a span:last-child{font-size:6.1px!important;}
+  .cg-home-title{font-size:27px!important;}
+  .cg-study-hero{min-height:178px!important;padding:15px!important;}
+  .cg-hero-copy h2{font-size:22px!important;}
+  .cg-hero-copy p{font-size:8.7px!important;}
+}
+</style>
+
+
+<style id="final-image-box-cleanup">
+/* Remove ALL visual boxes/highlights directly behind supplied PNG artwork. */
+.cg-brand-mark,
+.cg-brand-mark img,
+.cg-icon-slot,
+.cg-icon-slot img,
+.cg-pill-image-slot,
+.cg-pill-image-slot img,
+.cg-gadget-circle,
+.cg-gadget-circle img,
+.cg-gadget-slot,
+.cg-gadget-slot img,
+.cg-coin-gadget,
+.cg-coin-gadget img,
+.cg-mobile-add-reviewer,
+.cg-mobile-add-reviewer img,
+.cg-profile-button-avatar,
+.cg-profile-button-avatar img,
+.cg-png-slot,
+.cg-png-slot img,
+.cg-image-slot,
+.cg-image-slot img{
+  background:transparent!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+}
+
+/* Keep artwork itself clean and naturally sized. */
+.cg-brand-mark img,
+.cg-icon-slot img,
+.cg-pill-image-slot img,
+.cg-gadget-circle img,
+.cg-gadget-slot img,
+.cg-coin-gadget img,
+.cg-mobile-add-reviewer img,
+.cg-png-slot img,
+.cg-image-slot img{
+  display:block!important;
+  background:transparent!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  object-fit:contain!important;
+}
+
+/* Do not let active navigation create a highlight around the PNG icon. */
+.cg-nav a.active .cg-icon-slot,
+.cg-nav a:last-child .cg-icon-slot{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+
+@media(max-width:760px){
+  .cg-nav .cg-icon-slot,
+  .cg-nav .cg-icon-slot img{
+    background:transparent!important;
+    border:0!important;
+    outline:0!important;
+    box-shadow:none!important;
+  }
+}
+</style>
+
+<style id="cathians-xp-and-streak-art-fix">
+/* Top XP uses the exact same visual treatment as the XP leaderboard orb. */
+.cg-top-xp-orb{
+  width:28px;height:28px;flex:0 0 28px;display:grid;place-items:center;
+  border-radius:9px;
+  font:900 8px/1 system-ui,sans-serif;
+  color:#7b43d1;
+  background:linear-gradient(145deg,#f2e9ff,#e7d5ff);
+  border:1px solid #d6bdf8;
+  box-shadow:0 0 12px rgba(132,78,213,.18),inset 0 1px 0 #fff;
+}
+
+/* Streak leaderboard uses the supplied fire artwork instead of the orange CSS oval. */
+.lb-fire-orb{font-size:0!important;overflow:hidden!important;background:transparent!important;border:0!important;box-shadow:none!important;}
+.lb-fire-orb::before,.lb-fire-orb::after{content:none!important;display:none!important;}
+.lb-fire-orb img{
+  width:39px;height:39px;display:block;object-fit:contain;
+  border:0!important;outline:0!important;box-shadow:none!important;background:transparent!important;
+  filter:drop-shadow(0 5px 8px rgba(255,106,30,.20));
+  transform:none!important;
+}
+@media(max-width:760px){
+  .cg-top-xp-orb{width:24px;height:24px;flex-basis:24px;font-size:7px;border-radius:8px;}
+  .lb-fire-orb img{width:34px;height:34px;}
+}
+</style>
 </head>
 <body>
 <main class="page">
   <aside class="cg-shell" aria-label="CATHIANS navigation">
     <div class="cg-brand">
-      <div class="cg-brand-mark" aria-hidden="true"><img src="1.png" alt=""></div>
+      <div class="cg-brand-mark" aria-hidden="true"><img src="caths-logo.png" alt="CATHS"></div>
       <div class="cg-brand-name">CATHIANS</div>
     </div>
     <nav class="cg-nav" aria-label="Main navigation">
@@ -3197,7 +3562,7 @@ body{min-height:100dvh;overflow-x:hidden}
       <div class="cg-circle cg-gadget-circle" title="Fire" aria-label="Fire"><img src="1.png" alt="Fire"></div>
       <a class="cg-mobile-add-reviewer" href="#add-reviewer" data-cg-view="add-reviewer" aria-label="Add Reviewer" title="Add Reviewer" onclick="event.preventDefault();document.querySelector('.cg-nav a[data-cg-view="add-reviewer"]')?.click();"><img src="3.png" alt="Add Reviewer"></a>
       <div class="cg-pill cg-live-pill"><span class="cg-pill-image-slot cg-gadget-slot"><img src="2.png" alt=""></span><span>CATHIANS Live</span></div>
-      <div class="cg-pill cg-xp-pill"><span class="cg-pill-image-slot cg-gadget-slot"><img src="3.png" alt=""></span><span id="cgTopXp">0</span></div>
+      <div class="cg-pill cg-xp-pill"><span class="cg-top-xp-orb" aria-hidden="true">XP</span><span id="cgTopXp">0</span></div>
       <button class="cg-pill cg-coin-pill" id="cgCoinShopBtn" type="button" title="Open Coin Shop" aria-label="Open Coin Shop"><span class="coin-dot cg-coin-gadget" aria-hidden="true"><img src="3.png" alt=""></span><span id="cgTopCoins">100</span></button>
       <div class="cg-circle cg-notification-gadget" title="Notifications" aria-label="Notifications">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>
@@ -3274,7 +3639,7 @@ body{min-height:100dvh;overflow-x:hidden}
         <section class="lb-board-card lb-streak-card" aria-label="Streak leaderboard">
           <div class="lb-board-head">
             <div><span class="lb-kicker">CONSISTENCY</span><h3>Streak Leaderboard</h3><p id="lbStreakSubtitle">Overall Longest Streak</p></div>
-            <div class="lb-head-orb lb-fire-orb" data-image-slot="streak"></div>
+            <div class="lb-head-orb lb-fire-orb" data-image-slot="streak"><img src="1.png" alt="Fire"></div>
           </div>
           <div class="lb-list" id="lbStreakList"><div class="lb-empty">Loading streak leaderboard…</div></div>
         </section>
