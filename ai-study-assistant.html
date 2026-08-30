@@ -2542,104 +2542,80 @@ body{min-height:100dvh;overflow-x:hidden}
 })();
 </script>
 
-<style id="cathians-v30-mr-panda">
-/* 🐼 MR. PANDA — Full Animation */
-.mr-panda-container{position:relative;width:220px;height:220px;flex:0 0 220px;display:flex;align-items:center;justify-content:center}
-.mr-panda{position:relative;width:100%;height:100%;transform-origin:center bottom;transition:all 1.5s ease-in-out}
-.mr-panda img{position:absolute;top:0;left:0;width:100%;height:auto;transform-origin:center bottom;max-width:none;user-select:none;-webkit-user-drag:none;pointer-events:none}
-.panda-lying{transform:rotate(-15deg) translateY(10px)}
-.panda-standing{transform:rotate(0deg) translateY(0px);animation:floatBreath 3s ease-in-out infinite}
-.panda-hand{opacity:0;transform:rotate(0deg) translateX(15px) translateY(-10px);transition:all .8s ease-in-out;transform-origin:75% 20%}
-.panda-hand.waving{opacity:1;animation:wave 1s ease-in-out infinite}
-.panda-eye{opacity:0;transform-origin:center;transition:opacity .3s}
-.panda-eye.winking{opacity:1;animation:wink .4s ease-in-out}
-.panda-smile{opacity:0;transform-origin:center;transition:all .8s ease-in-out}
-.panda-smile.yawn{opacity:1;transform:scale(1.2)}
-.panda-smile.smile{opacity:1;transform:scale(1)}
-.panda-bamboo{transform-origin:center;transition:transform 1.5s ease-in-out}
-.panda-bamboo.sway{animation:bambooSway 3s ease-in-out infinite}
-.mr-panda-shadow{position:absolute;left:50%;bottom:6px;width:92px;height:16px;transform:translateX(-50%);border-radius:50%;background:rgba(0,0,0,.12);animation:shadowPulse 3.2s ease-in-out infinite;pointer-events:none;z-index:0}
-@keyframes wave{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-30deg)}75%{transform:rotate(25deg)}}
-@keyframes wink{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.1)}}
-@keyframes bambooSway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
-@keyframes floatBreath{0%{transform:rotate(0deg) translateY(0) scale(1)}50%{transform:rotate(0deg) translateY(-8px) scale(1.03)}100%{transform:rotate(0deg) translateY(0) scale(1)}}
-@keyframes shadowPulse{0%,100%{transform:translateX(-50%) scale(1);opacity:.12}50%{transform:translateX(-50%) scale(.88);opacity:.06}}
-
-/* Replace the previous panda sizing rules */
+<style id="cathians-v30-floating-cat">
+/* 🐱 FLOATING CAT — image asset + ground shadow only */
+.floating-cat-container{
+  position:relative;
+  width:220px;
+  height:220px;
+  flex:0 0 220px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  overflow:visible;
+}
+.floating-cat{
+  position:relative;
+  width:184px;
+  height:auto;
+  display:block;
+  z-index:2;
+  user-select:none;
+  -webkit-user-drag:none;
+  pointer-events:none;
+  object-fit:contain;
+  filter:
+    drop-shadow(0 12px 12px rgba(34,42,90,.10))
+    drop-shadow(0 4px 7px rgba(117,91,255,.10));
+  transform:translateY(0) scale(1);
+  animation:catFloat 3.2s cubic-bezier(.45,0,.25,1) infinite;
+  transform-origin:center center;
+}
+.floating-cat-shadow{
+  position:absolute;
+  left:50%;
+  bottom:5px;
+  width:112px;
+  height:18px;
+  z-index:1;
+  transform:translateX(-50%) scaleX(1);
+  border-radius:50%;
+  background:radial-gradient(ellipse at center,
+    rgba(48,38,96,.22) 0%,
+    rgba(102,86,170,.13) 38%,
+    rgba(102,86,170,0) 75%);
+  filter:blur(2px);
+  animation:catShadow 3.2s cubic-bezier(.45,0,.25,1) infinite;
+  pointer-events:none;
+}
+@keyframes catFloat{
+  0%,100%{transform:translateY(0) scale(1)}
+  50%{transform:translateY(-14px) scale(1.015)}
+}
+@keyframes catShadow{
+  0%,100%{transform:translateX(-50%) scaleX(1);opacity:.78}
+  50%{transform:translateX(-50%) scaleX(.72);opacity:.42}
+}
 @media(max-width:760px){
-  .mr-panda-container{width:128px;height:150px;flex:0 0 128px}
-  .mr-panda{transform:scale(.78);transform-origin:center bottom}
-  .mr-panda-container .mr-panda-shadow{width:72px}
-  .cg-study-hero{display:grid!important;grid-template-columns:128px minmax(0,1fr)!important;align-items:center!important}
+  .floating-cat-container{width:128px;height:150px;flex-basis:128px}
+  .floating-cat{width:122px}
+  .floating-cat-shadow{width:74px;height:13px}
+  .cg-study-hero{
+    display:grid!important;
+    grid-template-columns:128px minmax(0,1fr)!important;
+    align-items:center!important;
+  }
 }
 @media(max-width:430px){
-  .mr-panda-container{width:105px;height:135px;flex:0 0 105px}
-  .mr-panda{transform:scale(.66);transform-origin:center bottom}
-  .cg-study-hero{grid-template-columns:105px minmax(0,1fr)!important;gap:6px!important}
-}
-
-
-/* Preserve existing deck/action polish while replacing only the Panda system. */
-.v25-compact-card{border-top:4px solid var(--deck-accent)!important;background:linear-gradient(180deg,color-mix(in srgb,var(--deck-accent) 8%,#fff),#fff)!important}
-.v25-deck-color{background:var(--deck-accent)!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--deck-accent) 14%,transparent)!important}
-.v27-card-actions .v27-card-copy{background:#f5f7fa!important}
-.v27-card-actions .v27-card-edit{background:#eef4ff!important;color:#254f9a!important;border-color:#cbdcff!important}
-.v27-card-actions .v27-card-play{background:linear-gradient(135deg,#171c2d,#2e3854)!important;color:#fff!important;border-color:#171c2d!important}
-.v27-flow-back-top{position:sticky;top:0;z-index:20;padding-top:2px}
-</style>
-
-<script id="cathians-v30-mr-panda-script">
-// 🐼 MR. PANDA — NAKAHIGA → TUMATAYO → HIKAB → KAKAWAY → WINK!
-(function(){
-  function initMrPanda(){
-    const panda=document.getElementById('mrPanda');
-    const hand=document.getElementById('pandaHand');
-    const eye=document.getElementById('pandaEye');
-    const mouth=document.getElementById('pandaMouth');
-    const bamboo=document.querySelector('.panda-bamboo');
-    if(!panda||!hand||!eye||!mouth||!bamboo)return;
-
-    // Clear any prior state so the sequence always starts correctly.
-    panda.classList.remove('panda-standing');
-    panda.classList.add('panda-lying');
-    hand.classList.remove('waving');
-    eye.classList.remove('winking');
-    mouth.classList.remove('yawn','smile');
-    bamboo.classList.remove('sway');
-
-    window.setTimeout(()=>{
-      panda.classList.remove('panda-lying');
-      panda.classList.add('panda-standing');
-    },1500);
-
-    window.setTimeout(()=>{
-      mouth.classList.add('yawn');
-    },3000);
-
-    window.setTimeout(()=>{
-      mouth.classList.remove('yawn');
-      mouth.classList.add('smile');
-      bamboo.classList.add('sway');
-    },4500);
-
-    window.setTimeout(()=>{
-      hand.classList.add('waving');
-    },6000);
-
-    window.setTimeout(()=>{
-      window.setInterval(()=>{
-        eye.classList.remove('winking');
-        void eye.offsetWidth;
-        eye.classList.add('winking');
-        window.setTimeout(()=>eye.classList.remove('winking'),400);
-      },5000);
-    },6000);
+  .floating-cat-container{width:105px;height:135px;flex-basis:105px}
+  .floating-cat{width:102px}
+  .floating-cat-shadow{width:63px;height:11px}
+  .cg-study-hero{
+    grid-template-columns:105px minmax(0,1fr)!important;
+    gap:6px!important;
   }
-
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initMrPanda,{once:true});
-  else initMrPanda();
-})();
-</script>
+}
+</style>
 
 <style id="cathians-v29-popup-close-streak-fire">
 /* =========================================================
@@ -2785,21 +2761,9 @@ body{min-height:100dvh;overflow-x:hidden}
     </div>
     <h1 class="cg-home-title">Home</h1>
     <section class="cg-study-hero" aria-label="Study home">
-      <div class="mr-panda-container" aria-label="Mr. Panda study assistant">
-        <div class="mr-panda panda-lying" id="mrPanda">
-          <!-- 🎋 Kawayan -->
-          <img src="mr_panda_bamboo.png" class="panda-bamboo" alt="Bamboo">
-          <!-- 🐼 Katawan -->
-          <img src="mr_panda_body.png" class="panda-body" id="pandaBody" alt="Panda Body">
-          <!-- 😉 Mata na kumukurap -->
-          <img src="mr_panda_eye.png" class="panda-eye" id="pandaEye" alt="Winking Eye">
-          <!-- 😊 Ngiti / Hikab -->
-          <img src="mr_panda_smile.png" class="panda-smile" id="pandaMouth" alt="Mouth">
-          <!-- 🖐️ Kamay na kumakaway -->
-          <img src="mr_panda_hand.png" class="panda-hand" id="pandaHand" alt="Waving Hand">
-          <!-- 💡 Shadow sa ilalim -->
-          <div class="mr-panda-shadow" aria-hidden="true"></div>
-        </div>
+      <div class="floating-cat-container" aria-label="Cute floating cat study assistant">
+        <img class="floating-cat" src="cat.png" alt="Cute floating cat">
+        <div class="floating-cat-shadow" aria-hidden="true"></div>
       </div>
       <div class="cg-hero-copy"><h2>How can I help you<span>study today?</span></h2><p>Tell me what you need to learn, then use the tools below to build your study material.</p></div>
     </section>
@@ -6597,12 +6561,12 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
 .v25-import-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.v25-import-card{padding:18px;border:1px solid #dfe4ec;border-radius:18px;background:#fff}.v25-import-card strong{font-size:11px;display:block;margin-bottom:5px}.v25-import-card small{font-size:8px;color:#8a94a4;line-height:1.45}
 @media(max-width:760px){.v25-deck-shell{padding:4px 14px 92px}.v25-deck-topbar{gap:7px;padding-bottom:12px}.v25-back-btn,.v25-icon-btn{width:39px;height:39px}.v25-deck-heading .v25-swatch{width:24px;height:24px;flex-basis:24px}.v25-deck-heading h1{font-size:17px}.v25-deck-actions{gap:5px}.v25-duplicate-btn,.v25-share-btn,.v25-study-btn{min-width:39px;width:39px;height:39px;min-height:39px;padding:0;border-radius:11px}.v25-duplicate-btn span,.v25-share-btn span,.v25-study-btn span{display:none}.v25-deck-author{margin-bottom:13px;font-size:9px}.v25-deck-tabs{gap:22px;margin-bottom:20px}.v25-deck-tab{font-size:10px}.v25-deck-section-head h2{font-size:14px}.v25-study-card .front{font-size:10.5px;padding:13px}.v25-study-card .back{font-size:9px;padding:11px 13px}.v25-import-row{grid-template-columns:1fr}}
 
-/* Share modal — reference-style, with Mr.Panda as the AI destination. */
+/* Share modal — reference-style, with CATHIANS AI as the AI destination. */
 .v25-share-overlay{position:fixed;inset:0;z-index:1000030;background:rgba(12,18,31,.35);backdrop-filter:blur(10px);display:none;align-items:flex-start;justify-content:center;padding:20px;overflow:auto}
 .v25-share-overlay.open{display:flex;animation:v25ViewerIn .2s ease both}.v25-share-card{width:min(100%,690px);background:#fff;border-radius:28px;box-shadow:0 30px 90px rgba(17,28,49,.24);padding:18px;margin-top:4vh}
 .v25-share-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.v25-share-head h3{text-align:center;flex:1;font-size:17px;margin:0}.v25-share-head p{font-size:8px;color:#7e899c;text-align:center;margin:4px 0 0}.v25-close-btn{width:40px;height:40px;border-radius:50%;border:1px solid #e0e5ed;background:#fff;display:grid;place-items:center;cursor:pointer}.v25-close-btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .v25-share-deck{display:flex;align-items:center;gap:12px;margin:20px 0 14px;padding:14px;border:1px solid #e0e5ed;border-radius:18px}.v25-share-deck .swatch{width:48px;height:48px;border-radius:14px;background:var(--deck-accent,#6c63ff);flex:0 0 48px}.v25-share-deck strong{display:block;font-size:12px}.v25-share-deck small{display:block;margin-top:4px;font-size:8px;color:#7e899c}.v25-share-main-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.v25-share-action{height:53px;border:1px solid #dfe4ec;background:#fff;border-radius:15px;font:800 10px/1 system-ui,sans-serif;color:#1b2434;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}.v25-share-action.primary{background:#171c2d;color:#fff;border-color:#171c2d}.v25-share-action svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.v25-share-search{width:100%;height:51px;margin:14px 0 18px;border:1px solid #dde3eb;border-radius:16px;padding:0 16px;font-size:11px;outline:0}.v25-share-title{font-size:11px;margin:0 0 10px}.v25-share-connection{display:flex;align-items:center;gap:10px;padding:12px 4px}.v25-ai-avatar{width:39px;height:39px;border-radius:13px;background:#f1efff;border:1px solid #ddd8ff;display:grid;place-items:center;color:#6b4fe6;font-size:0}.v25-ai-avatar::after{content:"";width:18px;height:18px;border-radius:5px;border:2px solid currentColor;box-shadow:inset 0 0 0 4px transparent}.v25-share-connection-copy{min-width:0;flex:1}.v25-share-connection-copy strong{display:block;font-size:10px}.v25-share-connection-copy small{display:block;margin-top:2px;font-size:7.5px;color:#8b94a3}.v25-send-panda{border:1px solid #d7cffb;background:#f7f3ff;color:#6c48bf;border-radius:12px;padding:10px 13px;font:800 9px/1 system-ui,sans-serif;cursor:pointer}.v25-send-status{min-height:20px;margin-top:6px;font-size:8px;color:#6c48bf}
+.v25-share-search{width:100%;height:51px;margin:14px 0 18px;border:1px solid #dde3eb;border-radius:16px;padding:0 16px;font-size:11px;outline:0}.v25-share-title{font-size:11px;margin:0 0 10px}.v25-share-connection{display:flex;align-items:center;gap:10px;padding:12px 4px}.v25-ai-avatar{width:39px;height:39px;border-radius:13px;background:#f1efff;border:1px solid #ddd8ff;display:grid;place-items:center;color:#6b4fe6;font-size:0}.v25-ai-avatar::after{content:"";width:18px;height:18px;border-radius:5px;border:2px solid currentColor;box-shadow:inset 0 0 0 4px transparent}.v25-share-connection-copy{min-width:0;flex:1}.v25-share-connection-copy strong{display:block;font-size:10px}.v25-share-connection-copy small{display:block;margin-top:2px;font-size:7.5px;color:#8b94a3}.v25-send-assistant{border:1px solid #d7cffb;background:#f7f3ff;color:#6c48bf;border-radius:12px;padding:10px 13px;font:800 9px/1 system-ui,sans-serif;cursor:pointer}.v25-send-status{min-height:20px;margin-top:6px;font-size:8px;color:#6c48bf}
 @media(max-width:760px){.v25-share-overlay{padding:10px}.v25-share-card{border-radius:22px;padding:14px}.v25-share-main-actions{grid-template-columns:1fr}.v25-share-head h3{font-size:14px}.v25-share-search{font-size:10px}}
 </style>
 
@@ -6790,13 +6754,13 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
   function ensureShareOverlay(){
     if(shareOverlay)return shareOverlay;
     shareOverlay=document.createElement('div');shareOverlay.className='v25-share-overlay';shareOverlay.setAttribute('aria-hidden','true');
-    shareOverlay.innerHTML=`<div class="v25-share-card"><div class="v25-share-head"><div style="width:40px"></div><div><h3>Share deck</h3><p id="v25ShareSubtitle">My Study Deck</p></div><button class="v25-close-btn" id="v25ShareClose" aria-label="Close">${svg.close}</button></div><div class="v25-share-deck"><span class="swatch" id="v25ShareSwatch"></span><div><strong id="v25ShareTitle">My deck</strong><small id="v25ShareCount">0 cards</small></div></div><div class="v25-share-main-actions"><button class="v25-share-action primary" id="v25CopyLink">${svg.copy} Copy link</button><button class="v25-share-action" id="v25ShowCode">${svg.search} Show code</button></div><input class="v25-share-search" id="v25ShareSearch" placeholder="Search for friends or groups" aria-label="Search for friends or groups"><h4 class="v25-share-title">Send to</h4><div class="v25-share-connection"><div class="v25-ai-avatar" aria-hidden="true"></div><div class="v25-share-connection-copy"><strong>Mr.Panda</strong><small>CATHIANS AI Assistant</small></div><button class="v25-send-panda" id="v25SendPanda">Send</button></div><div class="v25-send-status" id="v25SendStatus" aria-live="polite"></div></div>`;
+    shareOverlay.innerHTML=`<div class="v25-share-card"><div class="v25-share-head"><div style="width:40px"></div><div><h3>Share deck</h3><p id="v25ShareSubtitle">My Study Deck</p></div><button class="v25-close-btn" id="v25ShareClose" aria-label="Close">${svg.close}</button></div><div class="v25-share-deck"><span class="swatch" id="v25ShareSwatch"></span><div><strong id="v25ShareTitle">My deck</strong><small id="v25ShareCount">0 cards</small></div></div><div class="v25-share-main-actions"><button class="v25-share-action primary" id="v25CopyLink">${svg.copy} Copy link</button><button class="v25-share-action" id="v25ShowCode">${svg.search} Show code</button></div><input class="v25-share-search" id="v25ShareSearch" placeholder="Search for friends or groups" aria-label="Search for friends or groups"><h4 class="v25-share-title">Send to</h4><div class="v25-share-connection"><div class="v25-ai-avatar" aria-hidden="true"></div><div class="v25-share-connection-copy"><strong>CATHIANS AI</strong><small>CATHIANS AI Assistant</small></div><button class="v25-send-assistant" id="v25SendAssistant">Send</button></div><div class="v25-send-status" id="v25SendStatus" aria-live="polite"></div></div>`;
     document.body.appendChild(shareOverlay);
     $('#v25ShareClose',shareOverlay);shareOverlay.querySelector('#v25ShareClose').onclick=closeShareOverlay;
     shareOverlay.addEventListener('click',e=>{if(e.target===shareOverlay)closeShareOverlay()});
     shareOverlay.querySelector('#v25CopyLink').onclick=async()=>{const title=activeDeck?.topic||'Study deck';const text=location.href+'#deck='+encodeURIComponent(activeDeck?.id||title);try{await navigator.clipboard?.writeText(text);shareOverlay.querySelector('#v25SendStatus').textContent='Deck link copied.'}catch(_){shareOverlay.querySelector('#v25SendStatus').textContent='Copy is not available in this browser.'}};
     shareOverlay.querySelector('#v25ShowCode').onclick=()=>{shareOverlay.querySelector('#v25SendStatus').textContent='Share code is ready for this deck: '+String(activeDeck?.id||'LOCAL').slice(-8)};
-    shareOverlay.querySelector('#v25SendPanda').onclick=sendToPanda;
+    shareOverlay.querySelector('#v25SendAssistant').onclick=sendToAssistant;
     return shareOverlay;
   }
   function openShareOverlay(){
@@ -6804,7 +6768,7 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     o.style.setProperty('--deck-accent',typeof getDeckColor==='function'?getDeckColor(activeDeck,0):'#6c63ff');o.querySelector('#v25ShareSwatch').style.background='var(--deck-accent)';o.querySelector('#v25ShareTitle').textContent=activeDeck.topic||'Untitled Study Material';o.querySelector('#v25ShareSubtitle').textContent=activeDeck.topic||'Study deck';o.querySelector('#v25ShareCount').textContent=cardCount(activeDeck)+' cards';o.querySelector('#v25SendStatus').textContent='';
   }
   function closeShareOverlay(){if(shareOverlay){shareOverlay.classList.remove('open');shareOverlay.setAttribute('aria-hidden','true')}}
-  function sendToPanda(){
+  function sendToAssistant(){
     if(!activeDeck)return;const title=activeDeck.topic||'Study deck';const cards=deckCards(activeDeck);const payload=`Please help me study this deck: ${title}\n\n${cards.slice(0,30).map((c,i)=>`Card ${i+1}: ${c.front}\nAnswer: ${c.back}`).join('\n\n')}`;
     const input=$('#cgStudyInput');if(input){input.value=payload;input.dispatchEvent(new Event('input',{bubbles:true}))}
     closeShareOverlay();closeViewer();
