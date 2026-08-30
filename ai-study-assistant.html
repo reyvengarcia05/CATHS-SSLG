@@ -2130,7 +2130,7 @@ img,svg{max-width:100%;height:auto}
   .cg-shell{left:7px!important;right:7px!important;bottom:calc(7px + var(--safe-bottom))!important;min-height:64px!important;border-radius:20px!important}
   .cg-nav{gap:2px!important}
   .cg-nav a{min-height:52px!important;border-radius:15px!important;font-size:7px!important}
-  .cg-icon-slot{width:25px!important;height:25px!important;flex-basis:25px!important}
+  .cg-icon-slot{width:24px!important;height:24px!important;flex-basis:24px!important}
   .cg-main{padding-inline:9px!important}
   .cg-home-title{font-size:24px!important}
   .cg-study-hero{padding:11px!important;border-radius:19px!important}
@@ -2159,7 +2159,7 @@ img,svg{max-width:100%;height:auto}
   body{padding-bottom:calc(72px + var(--safe-bottom))!important}
   .cg-shell{min-height:58px!important;bottom:calc(6px + var(--safe-bottom))!important}
   .cg-nav a{min-height:46px!important;flex-direction:row!important;gap:6px!important;font-size:8px!important}
-  .cg-icon-slot{width:25px!important;height:25px!important;flex-basis:25px!important}
+  .cg-icon-slot{width:24px!important;height:24px!important;flex-basis:24px!important}
   .cg-main{padding-top:calc(8px + var(--safe-top))!important}
   .cg-study-hero{flex-direction:row!important;align-items:center!important}
   .cg-png-slot,.cg-mascot{width:42%!important;height:118px!important}
@@ -2372,7 +2372,7 @@ body{min-height:100dvh;overflow-x:hidden}
 <style id="cathians-v27-user-patches">
 /* V27 — navigation, deck actions, game image slots, and Home source fixes */
 @media(max-width:760px){
-  .cg-nav{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:3px!important;width:100%!important}
+  .cg-nav{display:grid!important;grid-template-columns:repeat(6,1fr)!important;gap:3px!important;width:100%!important}
   .cg-nav a{min-width:0!important;width:100%!important;flex:none!important;padding:7px 2px!important}
   .cg-nav a .cg-icon-slot{width:30px!important;height:30px!important;flex-basis:30px!important}
 }
@@ -2732,32 +2732,484 @@ body{min-height:100dvh;overflow-x:hidden}
 }
 </style>
 
+
+<style id="cathians-user-gadget-image-layer">
+/* User-requested supplied gadget art: no placeholder icon boxes. */
+.cg-brand-mark img{width:34px!important;height:34px!important;object-fit:contain!important;filter:none!important}
+.cg-nav .cg-icon-slot{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;display:grid!important;place-items:center!important;overflow:visible!important}
+.cg-nav .cg-icon-slot img{width:36px!important;height:36px!important;object-fit:contain!important;display:block!important;filter:drop-shadow(0 5px 7px rgba(35,45,66,.12));transition:transform .22s cubic-bezier(.22,1,.36,1),filter .22s ease}
+.cg-nav a:hover .cg-icon-slot img,.cg-nav a.active .cg-icon-slot img{transform:translateY(-1px) scale(1.05);filter:drop-shadow(0 7px 9px rgba(35,45,66,.16))}
+.cg-top-actions{gap:9px!important;flex-wrap:nowrap!important}
+.cg-gadget-circle{display:grid!important;place-items:center!important;overflow:hidden!important}
+.cg-gadget-circle img{width:31px;height:31px;object-fit:contain;display:block;filter:drop-shadow(0 4px 6px rgba(35,45,66,.12))}
+.cg-live-pill,.cg-xp-pill,.cg-coin-pill{gap:8px!important}
+.cg-gadget-slot{width:28px!important;height:28px!important;display:grid!important;place-items:center!important;overflow:hidden!important}
+.cg-gadget-slot img{width:28px;height:28px;object-fit:contain;display:block}
+.cg-coin-gadget{display:grid!important;place-items:center!important;width:24px!important;height:24px!important;background:transparent!important;border:0!important;box-shadow:none!important;overflow:hidden!important}
+.cg-coin-gadget img{width:24px;height:24px;object-fit:contain;display:block}
+.cg-notification-gadget{display:grid!important;place-items:center!important}
+.cg-notification-gadget svg{width:21px;height:21px;fill:none;stroke:#273147;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.cg-profile-button{min-height:48px;display:flex;align-items:center;gap:8px;padding:4px 10px 4px 5px;border:1px solid var(--c-border);border-radius:18px;background:#fff;color:var(--c-text);text-decoration:none;box-shadow:0 4px 16px rgba(25,33,52,.035);transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;min-width:140px;max-width:190px}
+.cg-profile-button:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(25,33,52,.08);border-color:#d6dbe4}
+.cg-profile-button-avatar{width:38px;height:38px;border-radius:13px;background:#f3f4f7;display:grid;place-items:center;overflow:hidden;flex:0 0 38px}
+.cg-profile-button-avatar img{width:100%;height:100%;object-fit:cover;display:none}
+.cg-profile-button-avatar.has-photo img{display:block}
+.cg-profile-button-copy{min-width:0;display:block;line-height:1.15}
+.cg-profile-button-copy strong{display:block;font-size:10px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:112px}
+.cg-profile-button-copy small{display:block;margin-top:3px;font-size:7px;color:#8b95a6;font-weight:700}
+.cg-back-button{min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 13px;border-radius:16px;background:#171c2d;border:1px solid #171c2d;color:#fff;text-decoration:none;font-size:10px;font-weight:800;box-shadow:0 7px 18px rgba(23,28,45,.10);transition:transform .22s ease,box-shadow .22s ease}
+.cg-back-button:hover{transform:translateY(-2px);box-shadow:0 11px 23px rgba(23,28,45,.15)}
+.cg-back-button svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* Keep supplied artwork visual—not boxed—in the top action row. */
+.cg-top-actions .cg-circle,.cg-top-actions .cg-pill{backdrop-filter:none!important}
+@media(max-width:1100px){.cg-profile-button{min-width:120px;max-width:150px}.cg-profile-button-copy strong{max-width:88px}.cg-back-button{padding:0 11px}}
+@media(max-width:760px){
+  .cg-top-actions{gap:6px!important;overflow-x:auto!important;justify-content:flex-start!important;padding:1px 1px 5px!important;scrollbar-width:none!important}
+  .cg-top-actions::-webkit-scrollbar{display:none}
+  .cg-gadget-circle{width:40px!important;height:40px!important;flex:0 0 40px!important}
+  .cg-gadget-circle img{width:28px;height:28px}
+  .cg-live-pill,.cg-xp-pill,.cg-coin-pill{min-height:40px!important;padding:0 10px!important;flex:0 0 auto!important}
+  .cg-gadget-slot{width:24px!important;height:24px!important}
+  .cg-gadget-slot img{width:24px;height:24px}
+  .cg-notification-gadget{width:40px!important;height:40px!important;flex:0 0 40px!important}
+  .cg-notification-gadget svg{width:19px;height:19px}
+  .cg-profile-button{min-height:40px;max-width:136px;min-width:100px;padding-right:8px;gap:6px;border-radius:15px;flex:0 0 auto}
+  .cg-profile-button-avatar{width:31px;height:31px;flex-basis:31px;border-radius:10px}
+  .cg-profile-button-copy strong{font-size:8px;max-width:76px}
+  .cg-profile-button-copy small{font-size:6px}
+  .cg-back-button{min-height:40px;padding:0 10px;border-radius:14px;font-size:8px;flex:0 0 auto}
+  .cg-back-button svg{width:14px;height:14px}
+  .cg-nav .cg-icon-slot img{width:31px!important;height:31px!important}
+}
+@media(max-width:420px){
+  .cg-top-actions{margin-bottom:10px!important}
+  .cg-nav .cg-icon-slot img{width:28px!important;height:28px!important}
+  .cg-nav a span:last-child{font-size:7.5px!important}
+}
+</style>
+<script id="cathians-profile-button-sync">
+(function(){
+  const nameEl=document.getElementById('cgProfileButtonName');
+  const avatarEl=document.getElementById('cgProfileButtonAvatar');
+  const avatarWrap=avatarEl?.parentElement;
+  const legacyName=document.getElementById('userStatusName');
+  const legacyAvatar=document.getElementById('userAvatar');
+  const legacyFallback=document.getElementById('userAvatarFallback');
+  const legacyStatus=document.getElementById('userStatusText');
+  function sync(){
+    if(nameEl && legacyName) nameEl.textContent=legacyName.textContent.trim()||'Guest';
+    if(legacyStatus){
+      const s=legacyStatus.textContent.trim();
+      const target=document.getElementById('cgProfileButtonStatus');
+      if(target) target.textContent=s==='Not signed in'?'Profile':s;
+    }
+    const src=legacyAvatar && !legacyAvatar.classList.contains('hidden') ? legacyAvatar.getAttribute('src') : '';
+    if(avatarEl && avatarWrap){
+      if(src){avatarEl.src=src;avatarWrap.classList.add('has-photo')}
+      else {avatarEl.removeAttribute('src');avatarWrap.classList.remove('has-photo')}
+    }
+    if(legacyFallback && !src && avatarWrap){
+      avatarWrap.style.background=legacyFallback.style.background||'#f3f4f7';
+      avatarWrap.textContent=legacyFallback.textContent.trim()||'G';
+    } else if(avatarWrap && src){avatarWrap.textContent='';}
+  }
+  sync();
+  if(legacyName){new MutationObserver(sync).observe(legacyName,{characterData:true,childList:true,subtree:true})}
+  if(legacyAvatar){new MutationObserver(sync).observe(legacyAvatar,{attributes:true,attributeFilter:['src','class']})}
+  if(legacyStatus){new MutationObserver(sync).observe(legacyStatus,{characterData:true,childList:true,subtree:true})}
+})();
+</script>
+<style id="final-clean-nav-fix">
+
+/* FINAL UI FIX — clean image edges + 6 equal bottom navigation items */
+.cg-icon-slot,
+.cg-button-icon-slot,
+.cg-add-icon-slot,
+.cg-plus-slot,
+.cg-source-icon-slot,
+.cg-pill-image-slot,
+.cg-image-slot,
+.cg-profile-mini,
+.cg-gadget-circle,
+.cg-gadget-slot,
+.cg-pill .cg-gadget-slot {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+.cg-icon-slot::before,
+.cg-icon-slot::after,
+.cg-button-icon-slot::before,
+.cg-button-icon-slot::after,
+.cg-add-icon-slot::before,
+.cg-add-icon-slot::after,
+.cg-plus-slot::before,
+.cg-plus-slot::after,
+.cg-source-icon-slot::before,
+.cg-source-icon-slot::after,
+.cg-pill-image-slot::before,
+.cg-pill-image-slot::after,
+.cg-image-slot::before,
+.cg-image-slot::after,
+.cg-profile-mini::before,
+.cg-profile-mini::after {
+  display: none !important;
+  content: none !important;
+}
+.cg-icon-slot img,
+.cg-pill-image-slot img,
+.cg-image-slot img,
+.cg-profile-mini img,
+.cg-gadget-circle img,
+.cg-gadget-slot img {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+@media (max-width:760px){
+  /* Six equal items in one bottom navigation bar */
+  .page{padding:0 14px 96px 14px !important;}
+  .cg-shell{
+    position:fixed !important;
+    left:10px !important;
+    right:10px !important;
+    top:auto !important;
+    bottom:10px !important;
+    width:auto !important;
+    height:70px !important;
+    padding:6px !important;
+    border:1px solid #e4e8ef !important;
+    border-radius:22px !important;
+    display:flex !important;
+    flex-direction:row !important;
+    align-items:stretch !important;
+    background:#fff !important;
+    z-index:9000 !important;
+    box-shadow:0 14px 35px rgba(18,30,55,.12) !important;
+  }
+  .cg-brand,.cg-decks,.cg-add{display:none !important;}
+  .cg-nav{
+    display:grid !important;
+    grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+    gap:2px !important;
+    width:100% !important;
+    height:100% !important;
+    flex:1 1 auto !important;
+    align-items:stretch !important;
+    justify-content:stretch !important;
+  }
+  .cg-nav a{
+    width:100% !important;
+    min-width:0 !important;
+    min-height:0 !important;
+    height:100% !important;
+    padding:6px 2px !important;
+    margin:0 !important;
+    border:0 !important;
+    border-radius:16px !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:2px !important;
+    text-align:center !important;
+    font-size:8px !important;
+    font-weight:700 !important;
+    transform:none !important;
+    overflow:hidden !important;
+  }
+  .cg-nav a:hover{transform:none !important;}
+  .cg-nav a::before{display:none !important;}
+  .cg-nav a span:last-child{
+    display:block !important;
+    width:100% !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+    white-space:nowrap !important;
+    line-height:1.05 !important;
+    font-size:7.5px !important;
+  }
+  .cg-nav .cg-icon-slot{
+    width:30px !important;
+    height:30px !important;
+    flex:0 0 30px !important;
+    display:grid !important;
+    place-items:center !important;
+    border:0 !important;
+    background:transparent !important;
+    border-radius:0 !important;
+    overflow:visible !important;
+  }
+  .cg-nav .cg-icon-slot img{
+    width:27px !important;
+    height:27px !important;
+    object-fit:contain !important;
+    display:block !important;
+    border:0 !important;
+    outline:0 !important;
+    box-shadow:none !important;
+    filter:drop-shadow(0 3px 5px rgba(35,45,66,.10)) !important;
+  }
+  .cg-nav a.active{background:#f0f2f6 !important;box-shadow:none !important;}
+  .cg-nav a.active .cg-icon-slot{background:transparent !important;}
+}
+</style>
+
+<style id="cathians-final-image-nav-fix">
+/* Final image cleanup: artwork floats directly on the surface, with no image-box outline. */
+.cg-icon-slot,
+.cg-icon-slot img,
+.cg-brand-mark,
+.cg-brand-mark img,
+.cg-pill-image-slot,
+.cg-pill-image-slot img,
+.cg-gadget-circle img,
+.cg-profile-button-avatar,
+.cg-profile-button-avatar img,
+.cg-png-slot,
+.cg-png-slot img{
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+}
+.cg-icon-slot,
+.cg-pill-image-slot{
+  background:transparent!important;
+}
+.cg-icon-slot img,
+.cg-pill-image-slot img,
+.cg-gadget-circle img{
+  display:block!important;
+  border:0!important;
+  outline:0!important;
+  background:transparent!important;
+  object-fit:contain!important;
+}
+
+/* Final mobile CATHIANS navigation: exactly 6 equal-width destinations. */
+@media(max-width:760px){
+  .cg-shell{
+    left:8px!important;
+    right:8px!important;
+    bottom:8px!important;
+    width:auto!important;
+    height:70px!important;
+    padding:5px!important;
+    border-radius:23px!important;
+  }
+  .cg-nav{
+    display:grid!important;
+    grid-template-columns:repeat(5,1fr)!important;
+    .cg-nav a:last-child{display:none!important;}
+    gap:0!important;
+    width:100%!important;
+    align-items:stretch!important;
+  }
+  .cg-nav a{
+    width:100%!important;
+    min-width:0!important;
+    min-height:58px!important;
+    height:58px!important;
+    padding:6px 1px!important;
+    margin:0!important;
+    border:0!important;
+    border-radius:16px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:3px!important;
+    font-size:6.6px!important;
+    line-height:1.05!important;
+    overflow:hidden!important;
+    transform:none!important;
+  }
+  .cg-nav a:hover{transform:none!important}
+  .cg-nav a span:last-child{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:normal!important;
+    text-align:center!important;
+    text-wrap:balance!important;
+  }
+  .cg-icon-slot{
+    width:25px!important;
+    height:25px!important;
+    flex:0 0 25px!important;
+    border-radius:0!important;
+    margin:0!important;
+    display:grid!important;
+    place-items:center!important;
+    background:transparent!important;
+  }
+  .cg-icon-slot img{
+    width:25px!important;
+    height:25px!important;
+    max-width:100%!important;
+    max-height:100%!important;
+    object-fit:contain!important;
+  }
+  .cg-nav a.active .cg-icon-slot,
+  .cg-nav a:last-child .cg-icon-slot{
+    background:transparent!important;
+  }
+}
+@media(max-width:380px){
+  .cg-shell{left:5px!important;right:5px!important;bottom:6px!important;height:68px!important;padding:4px!important;border-radius:21px!important}
+  .cg-nav{gap:1px!important}
+  .cg-nav a{min-height:58px!important;height:58px!important;padding:5px 0!important;font-size:6.2px!important;border-radius:15px!important}
+  .cg-icon-slot{width:24px!important;height:24px!important;flex-basis:24px!important}
+  .cg-icon-slot img{width:24px!important;height:24px!important}
+}
+
+/* FINAL 6-ITEM MOBILE EQUALIZER */
+@media (max-width:760px){
+  .cg-shell{box-sizing:border-box!important;}
+  .cg-nav{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:0!important;width:100%!important;flex:1 1 100%!important;}
+  .cg-nav>a[data-cg-view]{box-sizing:border-box!important;width:100%!important;min-width:0!important;max-width:none!important;margin:0!important;padding:5px 0!important;}
+  .cg-nav>a[data-cg-view] .cg-icon-slot{width:24px!important;height:24px!important;flex:0 0 24px!important;margin:0 auto!important;background:transparent!important;border:0!important;outline:0!important;box-shadow:none!important;}
+  .cg-nav>a[data-cg-view] .cg-icon-slot img{width:24px!important;height:24px!important;display:block!important;object-fit:contain!important;border:0!important;outline:0!important;box-shadow:none!important;}
+  .cg-nav>a[data-cg-view] span:last-child{display:block!important;width:100%!important;max-width:100%!important;padding:0 1px!important;font-size:6.2px!important;line-height:1.05!important;white-space:normal!important;text-align:center!important;overflow:visible!important;text-overflow:clip!important;text-wrap:balance!important;}
+}
+@media (min-width:391px) and (max-width:760px){
+  .cg-nav>a[data-cg-view] span:last-child{font-size:6.6px!important;}
+}
+</style>
+
+
+<style id="cathians-final-mobile-nav-fix">
+/* FINAL MOBILE NAV: exactly 6 equal-width items, labels always visible. */
+@media (max-width:760px){
+  .cg-shell{
+    left:8px!important;
+    right:8px!important;
+    bottom:8px!important;
+    width:auto!important;
+    height:72px!important;
+    padding:5px!important;
+  }
+  .cg-nav{
+    display:grid!important;
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+    gap:2px!important;
+    width:100%!important;
+    height:100%!important;
+    align-items:stretch!important;
+    justify-content:initial!important;
+  }
+  .cg-nav a{
+    min-width:0!important;
+    width:100%!important;
+    min-height:0!important;
+    height:100%!important;
+    margin:0!important;
+    padding:5px 1px 4px!important;
+    border-radius:15px!important;
+    display:flex!important;
+    flex:initial!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:2px!important;
+    overflow:hidden!important;
+    transform:none!important;
+  }
+  .cg-nav a span:last-child{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+    text-align:center!important;
+    line-height:1.05!important;
+    font-size:6.6px!important;
+    font-weight:800!important;
+    letter-spacing:-.05px!important;
+  }
+  .cg-nav a .cg-icon-slot{
+    width:28px!important;
+    height:28px!important;
+    min-width:28px!important;
+    min-height:28px!important;
+    flex:0 0 28px!important;
+    display:grid!important;
+    place-items:center!important;
+    margin:0!important;
+  }
+  .cg-nav a .cg-icon-slot img{
+    width:27px!important;
+    height:27px!important;
+    object-fit:contain!important;
+  }
+  .cg-nav a:last-child{margin-top:0!important;}
+}
+@media (max-width:380px){
+  .cg-shell{height:70px!important;left:6px!important;right:6px!important;bottom:6px!important;}
+  .cg-nav{gap:1px!important;}
+  .cg-nav a{padding-left:0!important;padding-right:0!important;gap:1px!important;border-radius:14px!important;}
+  .cg-nav a span:last-child{font-size:6px!important;}
+  .cg-nav a .cg-icon-slot{width:25px!important;height:25px!important;min-width:25px!important;min-height:25px!important;flex-basis:25px!important;}
+  .cg-nav a .cg-icon-slot img{width:24px!important;height:24px!important;}
+}
+</style>
+
+<style id="cathians-mobile-add-reviewer-and-outline-fix">
+/* Mobile: Add Reviewer moves beside Fire/Streak; the bottom bar keeps five equal items. */
+.cg-mobile-add-reviewer{display:none;}
+.cg-mobile-add-reviewer img{display:block;width:28px;height:28px;object-fit:contain;border:0!important;outline:0!important;box-shadow:none!important;background:transparent!important;}
+@media(max-width:760px){
+  .cg-mobile-add-reviewer{display:grid!important;place-items:center!important;width:40px!important;height:40px!important;flex:0 0 40px!important;padding:0!important;margin:0!important;border:0!important;outline:0!important;background:transparent!important;border-radius:50%!important;box-shadow:none!important;text-decoration:none!important;}
+  .cg-mobile-add-reviewer:active{transform:scale(.94)!important;}
+  .cg-mobile-add-reviewer img{width:29px!important;height:29px!important;}
+  .cg-nav{grid-template-columns:repeat(5,minmax(0,1fr))!important;}
+  .cg-nav a:last-child{display:none!important;}
+  .cg-shell{border:0!important;outline:0!important;}
+  .cg-nav a,.cg-nav .cg-icon-slot,.cg-nav .cg-icon-slot img{border:0!important;outline:0!important;box-shadow:none!important;}
+  .cg-gadget-circle,.cg-gadget-circle img{border:0!important;outline:0!important;box-shadow:none!important;}
+}
+</style>
 </head>
 <body>
 <main class="page">
   <aside class="cg-shell" aria-label="CATHIANS navigation">
     <div class="cg-brand">
-      <div class="cg-brand-mark" aria-hidden="true"></div>
+      <div class="cg-brand-mark" aria-hidden="true"><img src="1.png" alt=""></div>
       <div class="cg-brand-name">CATHIANS</div>
     </div>
     <nav class="cg-nav" aria-label="Main navigation">
-      <a class="active" href="#home" data-cg-view="home"><span class="cg-icon-slot" aria-hidden="true"></span><span>Home</span></a>
-      <a href="#progress" data-cg-view="progress"><span class="cg-icon-slot" aria-hidden="true"></span><span>Progress</span></a>
-      <a href="#leaderboards" data-cg-view="leaderboards"><span class="cg-icon-slot" aria-hidden="true"></span><span>Leaderboards</span></a>
-      <a href="#my-decks" data-cg-view="library"><span class="cg-icon-slot" aria-hidden="true"></span><span>My decks</span></a>
-      <a href="#game-reviewers" data-cg-view="game-reviewers"><span class="cg-icon-slot" aria-hidden="true"></span><span>Game Reviewers</span></a>
-      <a href="#add-reviewer" data-cg-view="add-reviewer"><span class="cg-icon-slot" aria-hidden="true"></span><span>Add Reviewer</span></a>
+      <a class="active" href="#home" data-cg-view="home"><span class="cg-icon-slot"><img src="4.png" alt=""></span><span>Home</span></a>
+      <a href="#progress" data-cg-view="progress"><span class="cg-icon-slot"><img src="5.png" alt=""></span><span>Progress</span></a>
+      <a href="#leaderboards" data-cg-view="leaderboards"><span class="cg-icon-slot"><img src="6.png" alt=""></span><span>Leaderboards</span></a>
+      <a href="#my-decks" data-cg-view="library"><span class="cg-icon-slot"><img src="7.png" alt=""></span><span>My decks</span></a>
+      <a href="#game-reviewers" data-cg-view="game-reviewers"><span class="cg-icon-slot"><img src="8.png" alt=""></span><span>Game Reviewers</span></a>
+      <a href="#add-reviewer" data-cg-view="add-reviewer"><span class="cg-icon-slot"><img src="3.png" alt=""></span><span>Add Reviewer</span></a>
     </nav>
 
   </aside>
   <div class="cg-main" id="home" data-nav-view="home">
     <div class="cg-top-actions">
-      <div class="cg-circle cg-image-slot" title="Recent activity" aria-label="Recent activity"></div>
-      <div class="cg-pill"><span class="cg-pill-image-slot" aria-hidden="true"></span><span>CATHIANS Live</span></div>
-      <div class="cg-pill"><span class="cg-pill-image-slot" aria-hidden="true"></span><span id="cgTopXp">0</span></div>
-      <button class="cg-pill cg-coin-pill" id="cgCoinShopBtn" type="button" title="Open Coin Shop" aria-label="Open Coin Shop"><span class="coin-dot" aria-hidden="true"></span><span id="cgTopCoins">100</span></button>
-      <div class="cg-circle cg-image-slot" title="Notifications" aria-label="Notifications"></div>
-      <div class="cg-profile-mini" aria-label="Profile image placeholder"></div>
+      <div class="cg-circle cg-gadget-circle" title="Fire" aria-label="Fire"><img src="1.png" alt="Fire"></div>
+      <a class="cg-mobile-add-reviewer" href="#add-reviewer" data-cg-view="add-reviewer" aria-label="Add Reviewer" title="Add Reviewer" onclick="event.preventDefault();document.querySelector('.cg-nav a[data-cg-view="add-reviewer"]')?.click();"><img src="3.png" alt="Add Reviewer"></a>
+      <div class="cg-pill cg-live-pill"><span class="cg-pill-image-slot cg-gadget-slot"><img src="2.png" alt=""></span><span>CATHIANS Live</span></div>
+      <div class="cg-pill cg-xp-pill"><span class="cg-pill-image-slot cg-gadget-slot"><img src="3.png" alt=""></span><span id="cgTopXp">0</span></div>
+      <button class="cg-pill cg-coin-pill" id="cgCoinShopBtn" type="button" title="Open Coin Shop" aria-label="Open Coin Shop"><span class="coin-dot cg-coin-gadget" aria-hidden="true"><img src="3.png" alt=""></span><span id="cgTopCoins">100</span></button>
+      <div class="cg-circle cg-notification-gadget" title="Notifications" aria-label="Notifications">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg>
+      </div>
+      <a class="cg-profile-button" id="cgProfileButton" href="profile.html" title="Open your profile" aria-label="Open your profile">
+        <span class="cg-profile-button-avatar"><img id="cgProfileButtonAvatar" src="" alt=""></span>
+        <span class="cg-profile-button-copy"><strong id="cgProfileButtonName">Guest</strong><small id="cgProfileButtonStatus">Profile</small></span>
+      </a>
+      <a class="cg-back-button" href="index.html" aria-label="Back to Home" title="Back to Home">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>
+        <span>Back</span>
+      </a>
     </div>
     <h1 class="cg-home-title">Home</h1>
     <section class="cg-study-hero" aria-label="Study home">
