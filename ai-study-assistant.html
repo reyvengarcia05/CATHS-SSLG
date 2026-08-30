@@ -2368,6 +2368,394 @@ body{min-height:100dvh;overflow-x:hidden}
 @media(max-width:900px){.progress-level-row{grid-template-columns:auto minmax(0,1fr);}.progress-level-value{grid-column:2;justify-self:end}.progress-streak-grid{grid-template-columns:1fr}.streak-calendar-panel{border-right:0;border-bottom:1px solid #e3e7ed}.streak-ring-panel{padding:30px 20px}.cg-deck-ai{flex:1}.cg-deck-open,.cg-deck-delete{flex:1}}
 @media(max-width:760px){.progress-dashboard-title{margin:24px 4px 16px}.progress-dashboard-title h2{font-size:28px}.progress-level-row{padding:18px 16px;gap:11px}.progress-avatar-slot{width:48px;height:48px}.progress-xp-badge{left:34%;font-size:10px;padding:5px 10px}.progress-level-value{font-size:11px}.streak-calendar-panel{padding:18px 14px}.streak-head h3{font-size:20px}.calendar-week,.calendar-days{gap:7px}.streak-ring{width:158px;height:158px}.streak-cta{height:52px;margin:14px 12px 18px;width:calc(100% - 24px)}.cg-deck-actions{flex-direction:column!important}.cg-deck-open,.cg-deck-ai,.cg-deck-delete{width:100%!important}}
 </style>
+
+<style id="cathians-v27-user-patches">
+/* V27 — navigation, deck actions, game image slots, and Home source fixes */
+@media(max-width:760px){
+  .cg-nav{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:3px!important;width:100%!important}
+  .cg-nav a{min-width:0!important;width:100%!important;flex:none!important;padding:7px 2px!important}
+  .cg-nav a .cg-icon-slot{width:30px!important;height:30px!important;flex-basis:30px!important}
+}
+.v27-back-nav{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:9px 13px;border:1px solid #dfe4eb;border-radius:13px;background:#fff;color:#172033;font:800 10px/1 system-ui,sans-serif;cursor:pointer;box-shadow:0 6px 18px rgba(30,43,69,.06)}
+.v27-back-nav:hover{transform:translateY(-1px);background:#f7f8fb}
+.v27-flow-back-top{display:flex;justify-content:flex-start;margin:0 0 12px}
+.v27-save-toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(12px);z-index:1000099;padding:11px 16px;border-radius:14px;background:#171c2d;color:#fff;font:800 10px/1 system-ui,sans-serif;box-shadow:0 14px 35px rgba(0,0,0,.22);opacity:0;pointer-events:none;transition:.22s ease}
+.v27-save-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.v27-edit-overlay{position:fixed;inset:0;z-index:1000080;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(12,20,34,.42);backdrop-filter:blur(12px)}
+.v27-edit-card{width:min(94vw,720px);max-height:90dvh;overflow:auto;background:#fff;border:1px solid #dfe4eb;border-radius:24px;box-shadow:0 30px 90px rgba(20,27,42,.25);padding:22px;color:#172033}
+.v27-edit-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
+.v27-edit-head h3{font-size:18px;margin:0}.v27-edit-head p{font-size:9px;color:#7a8598;margin:5px 0 0}.v27-edit-close{width:36px;height:36px;border:1px solid #dfe4eb;border-radius:11px;background:#fff;color:#172033;font-size:20px;cursor:pointer}
+.v27-edit-card label{display:block;font-size:9px;font-weight:800;color:#68758a;margin:10px 0 6px}.v27-edit-card input,.v27-edit-card textarea{width:100%;border:1px solid #dfe4eb;background:#fbfcfd;color:#172033;border-radius:13px;padding:11px;font-size:10px;outline:0}.v27-edit-card textarea{min-height:110px;resize:vertical}
+.v27-edit-cards{display:grid;gap:9px;margin-top:8px}.v27-edit-row{border:1px solid #e3e7ed;border-radius:16px;padding:11px;background:#fafbfc}.v27-edit-row b{display:block;font-size:8px;color:#6d788a;margin-bottom:7px}.v27-edit-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.v27-edit-actions button{min-height:40px;padding:9px 14px;border-radius:12px;font:800 9px/1 system-ui,sans-serif;cursor:pointer}.v27-edit-cancel{border:1px solid #dfe4eb;background:#fff;color:#172033}.v27-edit-save{border:0;background:#171c2d;color:#fff}
+.v25-study-btn.v27-play-btn{background:#171c2d;color:#fff;border-color:#171c2d}
+.v25-duplicate-btn.v27-copy-btn{background:#f3f5f8;color:#172033;border-color:#dfe4eb}
+@media(max-width:760px){.v27-edit-card{padding:15px;border-radius:20px}.v27-edit-head h3{font-size:15px}.v27-edit-actions{flex-direction:column}.v27-edit-actions button{width:100%}.v27-flow-back-top{margin-bottom:9px}.v27-back-nav{width:100%;justify-content:center}}
+</style>
+<script id="cathians-v27-patches">
+(function(){
+  const $=s=>document.querySelector(s), qa=s=>[...document.querySelectorAll(s)];
+  const escV=v=>String(v??'').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+  const toast=(text)=>{let t=$('.v27-save-toast');if(!t){t=document.createElement('div');t.className='v27-save-toast';document.body.appendChild(t);}t.textContent=text;t.classList.add('show');clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove('show'),1500);};
+  const goHome=()=>{try{closeAddReviewerFlow?.();}catch(_){};try{closeYoutube?.();}catch(_){};try{closeStudyLibrary?.();}catch(_){};try{closeGameModal?.();}catch(_){};try{window.cgSetView?.('home');}catch(_){};document.querySelector('[data-cg-view="home"]')?.click();window.scrollTo({top:0,behavior:'smooth'});};
+
+  /* Home: final Paste + YouTube handler. Operates directly on the Home study box. */
+  document.addEventListener('click',async e=>{
+    const paste=e.target?.closest?.('#cgPasteBtn');
+    const yt=e.target?.closest?.('#cgYoutubeBtn');
+    if(!paste&&!yt)return;
+    e.preventDefault();e.stopImmediatePropagation();
+    const home=$('#cgStudyInput'), notes=$('#notes'), topic=$('#topic');
+    if(paste){
+      if(!home)return;
+      home.focus({preventScroll:true});
+      let text='';
+      try{text=await navigator.clipboard.readText();}catch(_){text=window.prompt('Paste your notes here:','')||'';}
+      if(!text)return;
+      const start=home.selectionStart??home.value.length;
+      const end=home.selectionEnd??start;
+      home.value=home.value.slice(0,start)+text+home.value.slice(end);
+      home.selectionStart=home.selectionEnd=start+text.length;
+      home.dispatchEvent(new Event('input',{bubbles:true}));
+      if(notes&&notes.value!==home.value){notes.value=home.value;notes.dispatchEvent(new Event('input',{bubbles:true}));}
+      toast('Text pasted into your study box.');
+      return;
+    }
+    const modal=$('#youtubeSourceModal'),url=$('#youtubeSourceUrl');
+    if(!modal||!url)return;
+    modal.classList.remove('hidden');document.body.classList.add('modal-open');
+    const status=$('#youtubeSourceStatus');if(status)status.textContent='';
+    url.value='';
+    setTimeout(()=>url.focus(),60);
+  },true);
+
+  const ytUseFinal=$('#youtubeSourceUse');
+  if(ytUseFinal&&!ytUseFinal.dataset.v28HomeReady){
+    ytUseFinal.dataset.v28HomeReady='1';
+    ytUseFinal.onclick=()=>{
+      const urlEl=$('#youtubeSourceUrl'),modal=$('#youtubeSourceModal'),status=$('#youtubeSourceStatus'),home=$('#cgStudyInput'),topic=$('#topic'),notes=$('#notes');
+      const url=(urlEl?.value||'').trim();
+      const valid=/^https?:\/\/(?:www\.)?(?:youtube\.com\/(?:watch\?v=|shorts\/|live\/)|youtu\.be\/)[^\s]+/i.test(url);
+      if(!valid){if(status)status.textContent='Enter a valid YouTube video link.';urlEl?.focus();return;}
+      if(home){
+        const source='YouTube Video: '+url;
+        home.value=home.value.trim()?home.value.trim()+'\n\n'+source:source;
+        home.dispatchEvent(new Event('input',{bubbles:true}));
+        if(notes&&notes.value!==home.value){notes.value=home.value;notes.dispatchEvent(new Event('input',{bubbles:true}));}
+        if(topic&&!topic.value.trim())topic.value='YouTube Study Source';
+      }
+      if(status){status.textContent='YouTube link added to your study box.';status.style.color='#3e6d54';}
+      setTimeout(()=>{modal?.classList.add('hidden');document.body.classList.remove('modal-open');},450);
+    };
+  }
+
+  /* Add Reviewer: permanent back-to-navigation button in the flow. */
+  const flowCard=$('#addReviewerFlowModal .cathians-flow-card');
+  if(flowCard&&!flowCard.querySelector('.v27-flow-back-top')){
+    const wrap=document.createElement('div');wrap.className='v27-flow-back-top';wrap.innerHTML='<button type="button" class="v27-back-nav" id="v27AddReviewerBack">← Back to Home</button>';
+    flowCard.insertBefore(wrap,flowCard.firstChild);
+    $('#v27AddReviewerBack').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();goHome();});
+  }
+  /* Also add Back to Home to the hidden Add Reviewer page in case a theme exposes it. */
+  const arView=$('#cgAddReviewerView');
+  if(arView&&!arView.querySelector('.v27-back-nav')){
+    const b=document.createElement('button');b.type='button';b.className='v27-back-nav';b.textContent='← Back to Home';b.onclick=goHome;arView.prepend(b);
+  }
+
+  /* Distinct deck colors. */
+  const deckPalette=['#5B63F4','#E45B84','#2FB39C','#E0A62B','#4A90E2','#A765D8','#58A85C','#E8754F','#1FA7C6','#C45CBE','#6D7FD8','#D26E37','#3AA36D','#8D68C5'];
+  const distinctColor=(item,index)=>deckPalette[index%deckPalette.length];
+  window.__v27DeckColor=distinctColor;
+
+  /* My Decks: compact cards with distinct colors and real action buttons. */
+  async function renderDecksV27(){
+    const box=$('#cgDecksAll');if(!box)return;box.classList.add('v25-compact-grid');box.innerHTML='<div class="cg-view-empty">Loading your decks…</div>';
+    let docs=[];try{docs=await (typeof fetchSavedMaterials==='function'?fetchSavedMaterials():[])}catch(_){docs=[]}
+    if(!docs.length){box.innerHTML='<div class="cg-view-empty">No saved decks yet. Use Add Reviewer to create your first one.</div>';return;}
+    const cardCountV=item=>{try{return typeof cardCount==='function'?cardCount(item):(item?.content?.cards?.length||0)}catch(_){return 0}};
+    box.innerHTML=docs.map((item,index)=>{const color=distinctColor(item,index);return `<article class="cg-deck-card v25-compact-card" tabindex="0" style="--deck-accent:${color}" data-v27-deck-id="${escV(item.id)}"><div class="v25-deck-color"></div><div class="v25-deck-body"><h3>${escV(item.topic||'Untitled Study Material')}</h3><div class="v25-deck-meta"><span class="v25-deck-count">${cardCountV(item)} cards</span><span class="v25-deck-open-hint">Open deck</span></div><div class="v27-card-actions"><button class="v27-card-copy" type="button" data-v27-copy="${escV(item.id)}">Copy</button><button class="v27-card-edit" type="button" data-v27-edit="${escV(item.id)}">Edit Decks</button><button class="v27-card-play" type="button" data-v27-play="${escV(item.id)}">Play</button></div></div></article>`}).join('');
+    box.querySelectorAll('[data-v27-deck-id]').forEach(card=>{card.onclick=e=>{if(e.target.closest('button'))return;const item=docs.find(x=>String(x.id)===String(card.dataset.v27DeckId));window.__v27OpenDeck?.(item);};card.onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('button')){e.preventDefault();const item=docs.find(x=>String(x.id)===String(card.dataset.v27DeckId));window.__v27OpenDeck?.(item);}}});
+    box.querySelectorAll('[data-v27-copy]').forEach(btn=>btn.onclick=async e=>{e.stopPropagation();const item=docs.find(x=>String(x.id)===String(btn.dataset.v27Copy));if(!item)return;const payload=location.href+'#deck='+encodeURIComponent(item.id||item.topic||'deck');try{await navigator.clipboard.writeText(payload);toast('Deck link copied.')}catch(_){toast('Copy is not available in this browser.')}});
+    box.querySelectorAll('[data-v27-edit]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();const item=docs.find(x=>String(x.id)===String(btn.dataset.v27Edit));if(item)openEditDeck(item);});
+    box.querySelectorAll('[data-v27-play]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();const item=docs.find(x=>String(x.id)===String(btn.dataset.v27Play));if(item)playDeckGame(item);});
+  }
+  window.loadCgDecksView=renderDecksV27;
+
+  /* Card action styling */
+  const style=document.createElement('style');style.textContent='.v27-card-actions{display:flex;gap:6px;margin-top:11px}.v27-card-actions button{flex:1;min-height:34px;border:1px solid #dfe4eb;border-radius:10px;background:#fff;color:#172033;font:800 8px/1 system-ui,sans-serif;cursor:pointer}.v27-card-actions .v27-card-play{background:#171c2d;color:#fff;border-color:#171c2d}.v27-card-actions button:hover{transform:translateY(-1px)}@media(max-width:760px){.v27-card-actions{gap:5px}.v27-card-actions button{font-size:7px;min-height:32px;padding:5px 2px}}';document.head.appendChild(style);
+
+  /* Deck viewer actions: Copy + Edit Decks + Play a Game. */
+  function prepareViewer(){
+    const dup=$('#v25DeckDuplicate'), share=$('#v25DeckShare'), study=$('#v25DeckStudy');
+    if(!dup||dup.dataset.v27Ready)return;
+    dup.dataset.v27Ready='1';dup.classList.add('v27-copy-btn');dup.querySelector('span')&&(dup.querySelector('span').textContent='Copy');
+    if(share)share.style.display='none';
+    if(study){study.classList.add('v27-play-btn');study.querySelector('span')&&(study.querySelector('span').textContent='Play a Game');}
+    if(!study.parentElement.querySelector('#v27ViewerEdit')){const b=document.createElement('button');b.className='v25-duplicate-btn';b.id='v27ViewerEdit';b.type='button';b.innerHTML='<span>Edit Decks</span>';study.parentElement.insertBefore(b,study);b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(window.__v27ActiveDeck)openEditDeck(window.__v27ActiveDeck);});}
+    dup.onclick=async e=>{e.preventDefault();e.stopPropagation();const item=window.__v27ActiveDeck;if(!item)return;const payload=location.href+'#deck='+encodeURIComponent(item.id||item.topic||'deck');try{await navigator.clipboard.writeText(payload);toast('Deck link copied.')}catch(_){toast('Copy is not available in this browser.')}};
+    study.onclick=e=>{e.preventDefault();e.stopPropagation();if(window.__v27ActiveDeck)playDeckGame(window.__v27ActiveDeck);};
+  }
+  function installViewerHook(){const w=$('.v25-deck-viewer');if(!w)return;prepareViewer();}
+  const observer=new MutationObserver(()=>installViewerHook());observer.observe(document.body,{childList:true,subtree:true});
+
+  /* Open viewer wrapper: reuse original viewer and retain the active deck reference. */
+  const tryWrapOpen=()=>{if(typeof window.openSavedStudyMaterial==='function'&&!window.__v27WrappedSaved){const old=window.openSavedStudyMaterial;window.openSavedStudyMaterial=function(item){window.__v27ActiveDeck=item||null;return old(item)};window.__v27WrappedSaved=true;}};
+  setTimeout(tryWrapOpen,100);setTimeout(tryWrapOpen,700);
+  window.__v27OpenDeck=item=>{window.__v27ActiveDeck=item||null;try{if(typeof openViewer==='function')openViewer(item);else if(typeof window.openSavedStudyMaterial==='function')window.openSavedStudyMaterial(item);}catch(_){try{window.openSavedStudyMaterial?.(item)}catch(__){}}};
+  function getStorageKey(){try{return currentUser?('cathsStudyMaterials:'+currentUser.uid):'cathsStudyMaterials:guest'}catch(_){return 'cathsStudyMaterials:guest'}}
+  async function persistEdit(item,topic,notes,cards){
+    const content=JSON.parse(JSON.stringify(item.content||{}));if(Array.isArray(cards))content.cards=cards;
+    const updated={...item,topic,notes,content,savedAt:new Date().toISOString()};
+    try{const key=getStorageKey();const arr=JSON.parse(localStorage.getItem(key)||'[]');const idx=arr.findIndex(x=>String(x.id)===String(item.id));if(idx>=0){arr[idx]={...arr[idx],topic,notes,content,savedAt:updated.savedAt};localStorage.setItem(key,JSON.stringify(arr));}}catch(e){console.warn('Local deck edit failed:',e)}
+    if(currentUser&&window.studyFirebase&&item.id&&!String(item.id).startsWith('local-')){try{const {db,doc,setDoc,serverTimestamp}=window.studyFirebase;await setDoc(doc(db,'studyMaterials',String(item.id)),{topic,notes,content,editedAt:serverTimestamp()},{merge:true});}catch(e){console.warn('Cloud deck edit failed:',e);}}
+    return updated;
+  }
+  function openEditDeck(item){
+    document.querySelector('.v27-edit-overlay')?.remove();
+    const cards=Array.isArray(item?.content?.cards)?item.content.cards.map(c=>({front:c.front||'',back:c.back||''})):null;
+    const overlay=document.createElement('div');overlay.className='v27-edit-overlay';overlay.innerHTML=`<div class="v27-edit-card" role="dialog" aria-modal="true"><div class="v27-edit-head"><div><h3>Edit Deck</h3><p>Update this deck without leaving My Decks.</p></div><button class="v27-edit-close" type="button" aria-label="Close">×</button></div><label>Deck title</label><input id="v27EditTitle" value="${escV(item?.topic||'Untitled Study Material')}"><label>Notes / description</label><textarea id="v27EditNotes">${escV(item?.notes||'')}</textarea>${cards?`<label>Flashcards</label><div class="v27-edit-cards">${cards.map((c,i)=>`<div class="v27-edit-row"><b>Card ${i+1}</b><input data-front="${i}" value="${escV(c.front)}" placeholder="Term"><textarea data-back="${i}">${escV(c.back)}</textarea></div>`).join('')}</div>`:''}<div class="v27-edit-actions"><button type="button" class="v27-edit-cancel">Cancel</button><button type="button" class="v27-edit-save">Save Changes</button></div></div>`;
+    document.body.appendChild(overlay);document.body.classList.add('modal-open');
+    const close=()=>{overlay.remove();document.body.classList.remove('modal-open')};overlay.querySelector('.v27-edit-close').onclick=close;overlay.querySelector('.v27-edit-cancel').onclick=close;overlay.addEventListener('click',e=>{if(e.target===overlay)close()});
+    overlay.querySelector('.v27-edit-save').onclick=async()=>{const btn=overlay.querySelector('.v27-edit-save');btn.disabled=true;btn.textContent='Saving…';toast('Saving your deck…');const title=overlay.querySelector('#v27EditTitle').value.trim()||'Untitled Study Material';const notes=overlay.querySelector('#v27EditNotes').value.trim();let newCards=cards;if(cards){newCards=cards.map((c,i)=>({front:overlay.querySelector(`[data-front="${i}"]`)?.value.trim()||'',back:overlay.querySelector(`[data-back="${i}"]`)?.value.trim()||''}));}const updated=await persistEdit(item,title,notes,newCards);window.__v27ActiveDeck=updated;btn.textContent='Saved';setTimeout(()=>{close();toast('Deck saved.');renderDecksV27();try{if($('.v25-deck-viewer')?.classList.contains('open')){if(typeof openViewer==='function')openViewer(updated)}}catch(_){}} ,220);};
+  }
+  window.__v27OpenEditDeck=openEditDeck;
+  function playDeckGame(item){
+    if(!item)return;
+    window.__v27ActiveDeck=item;window.__v27GameDeck=item;
+    try{if(typeof selectedStudyMaterial!=='undefined')selectedStudyMaterial=item;}catch(_){}
+    try{window.__v27CloseViewer?.();}catch(_){}
+    try{if(typeof closeViewer==='function')closeViewer();}catch(_){}
+    try{if(typeof openGameModal==='function')openGameModal();else $('#playGameBtn')?.click()}catch(_){}
+    setTimeout(()=>{try{if(typeof openSoloGameSelection==='function')openSoloGameSelection();}catch(_){}},80);
+  }
+  window.__v27PlayDeckGame=playDeckGame;
+  document.addEventListener('click',e=>{
+    const gameBtn=e.target?.closest?.('[data-real-game]');if(!gameBtn||!window.__v27GameDeck)return;
+    e.preventDefault();e.stopImmediatePropagation();
+    const game=gameBtn.dataset.realGame;window.__v27GameDeck && (selectedStudyMaterial=window.__v27GameDeck,selectedGame=game);
+    try{startSoloGameFromMaterial(window.__v27GameDeck)}catch(_){toast('Game could not be opened.');}
+    window.__v27GameDeck=null;
+  },true);
+
+  /* Home Decks shortcut remains a selector/library, not automatic deck viewer. */
+  document.addEventListener('click',e=>{const b=e.target?.closest?.('#cgMoreBtn');if(!b)return;e.preventDefault();e.stopImmediatePropagation();window.cgSetView?.('library');setTimeout(()=>renderDecksV27(),100);},true);
+  window.setTimeout(()=>{renderDecksV27();qa('#cgMoreBtn').forEach(()=>{});},600);
+})();
+</script>
+
+<style id="cathians-v30-mr-panda">
+/* 🐼 MR. PANDA — Full Animation */
+.mr-panda-container{position:relative;width:220px;height:220px;flex:0 0 220px;display:flex;align-items:center;justify-content:center}
+.mr-panda{position:relative;width:100%;height:100%;transform-origin:center bottom;transition:all 1.5s ease-in-out}
+.mr-panda img{position:absolute;top:0;left:0;width:100%;height:auto;transform-origin:center bottom;max-width:none;user-select:none;-webkit-user-drag:none;pointer-events:none}
+.panda-lying{transform:rotate(-15deg) translateY(10px)}
+.panda-standing{transform:rotate(0deg) translateY(0px);animation:floatBreath 3s ease-in-out infinite}
+.panda-hand{opacity:0;transform:rotate(0deg) translateX(15px) translateY(-10px);transition:all .8s ease-in-out;transform-origin:75% 20%}
+.panda-hand.waving{opacity:1;animation:wave 1s ease-in-out infinite}
+.panda-eye{opacity:0;transform-origin:center;transition:opacity .3s}
+.panda-eye.winking{opacity:1;animation:wink .4s ease-in-out}
+.panda-smile{opacity:0;transform-origin:center;transition:all .8s ease-in-out}
+.panda-smile.yawn{opacity:1;transform:scale(1.2)}
+.panda-smile.smile{opacity:1;transform:scale(1)}
+.panda-bamboo{transform-origin:center;transition:transform 1.5s ease-in-out}
+.panda-bamboo.sway{animation:bambooSway 3s ease-in-out infinite}
+.mr-panda-shadow{position:absolute;left:50%;bottom:6px;width:92px;height:16px;transform:translateX(-50%);border-radius:50%;background:rgba(0,0,0,.12);animation:shadowPulse 3.2s ease-in-out infinite;pointer-events:none;z-index:0}
+@keyframes wave{0%,100%{transform:rotate(0deg)}25%{transform:rotate(-30deg)}75%{transform:rotate(25deg)}}
+@keyframes wink{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.1)}}
+@keyframes bambooSway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@keyframes floatBreath{0%{transform:rotate(0deg) translateY(0) scale(1)}50%{transform:rotate(0deg) translateY(-8px) scale(1.03)}100%{transform:rotate(0deg) translateY(0) scale(1)}}
+@keyframes shadowPulse{0%,100%{transform:translateX(-50%) scale(1);opacity:.12}50%{transform:translateX(-50%) scale(.88);opacity:.06}}
+
+/* Replace the previous panda sizing rules */
+@media(max-width:760px){
+  .mr-panda-container{width:128px;height:150px;flex:0 0 128px}
+  .mr-panda{transform:scale(.78);transform-origin:center bottom}
+  .mr-panda-container .mr-panda-shadow{width:72px}
+  .cg-study-hero{display:grid!important;grid-template-columns:128px minmax(0,1fr)!important;align-items:center!important}
+}
+@media(max-width:430px){
+  .mr-panda-container{width:105px;height:135px;flex:0 0 105px}
+  .mr-panda{transform:scale(.66);transform-origin:center bottom}
+  .cg-study-hero{grid-template-columns:105px minmax(0,1fr)!important;gap:6px!important}
+}
+
+
+/* Preserve existing deck/action polish while replacing only the Panda system. */
+.v25-compact-card{border-top:4px solid var(--deck-accent)!important;background:linear-gradient(180deg,color-mix(in srgb,var(--deck-accent) 8%,#fff),#fff)!important}
+.v25-deck-color{background:var(--deck-accent)!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--deck-accent) 14%,transparent)!important}
+.v27-card-actions .v27-card-copy{background:#f5f7fa!important}
+.v27-card-actions .v27-card-edit{background:#eef4ff!important;color:#254f9a!important;border-color:#cbdcff!important}
+.v27-card-actions .v27-card-play{background:linear-gradient(135deg,#171c2d,#2e3854)!important;color:#fff!important;border-color:#171c2d!important}
+.v27-flow-back-top{position:sticky;top:0;z-index:20;padding-top:2px}
+</style>
+
+<script id="cathians-v30-mr-panda-script">
+// 🐼 MR. PANDA — NAKAHIGA → TUMATAYO → HIKAB → KAKAWAY → WINK!
+(function(){
+  function initMrPanda(){
+    const panda=document.getElementById('mrPanda');
+    const hand=document.getElementById('pandaHand');
+    const eye=document.getElementById('pandaEye');
+    const mouth=document.getElementById('pandaMouth');
+    const bamboo=document.querySelector('.panda-bamboo');
+    if(!panda||!hand||!eye||!mouth||!bamboo)return;
+
+    // Clear any prior state so the sequence always starts correctly.
+    panda.classList.remove('panda-standing');
+    panda.classList.add('panda-lying');
+    hand.classList.remove('waving');
+    eye.classList.remove('winking');
+    mouth.classList.remove('yawn','smile');
+    bamboo.classList.remove('sway');
+
+    window.setTimeout(()=>{
+      panda.classList.remove('panda-lying');
+      panda.classList.add('panda-standing');
+    },1500);
+
+    window.setTimeout(()=>{
+      mouth.classList.add('yawn');
+    },3000);
+
+    window.setTimeout(()=>{
+      mouth.classList.remove('yawn');
+      mouth.classList.add('smile');
+      bamboo.classList.add('sway');
+    },4500);
+
+    window.setTimeout(()=>{
+      hand.classList.add('waving');
+    },6000);
+
+    window.setTimeout(()=>{
+      window.setInterval(()=>{
+        eye.classList.remove('winking');
+        void eye.offsetWidth;
+        eye.classList.add('winking');
+        window.setTimeout(()=>eye.classList.remove('winking'),400);
+      },5000);
+    },6000);
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initMrPanda,{once:true});
+  else initMrPanda();
+})();
+</script>
+
+<style id="cathians-v29-popup-close-streak-fire">
+/* =========================================================
+   V29 — universal popup X + image-inspired streak fire
+   ========================================================= */
+:root{--close-ink:#263043;--close-bg:#f5f6f8;--close-line:#dfe4eb}
+
+/* Universal popup close button: clean right-side X, no circle. */
+.manual-close,.cathians-flow-close,.cathians-confirm-close,.source-modal-close,
+.study-library-close,.coin-shop-close,.game-modal-close,.quiz-shoot-close,
+.matching-close,.v25-close-btn,.v27-edit-close,.panel-close{
+  width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;
+  flex:0 0 38px!important;
+  display:grid!important;place-items:center!important;
+  border:1px solid transparent!important;
+  border-radius:10px!important;
+  background:transparent!important;
+  color:var(--close-ink)!important;
+  font:900 25px/1 system-ui,sans-serif!important;
+  cursor:pointer!important;
+  opacity:1!important;visibility:visible!important;
+  box-shadow:none!important;
+  transition:background .18s ease,border-color .18s ease,transform .18s ease,color .18s ease!important;
+}
+.manual-close:hover,.cathians-flow-close:hover,.cathians-confirm-close:hover,.source-modal-close:hover,
+.study-library-close:hover,.coin-shop-close:hover,.game-modal-close:hover,.quiz-shoot-close:hover,
+.matching-close:hover,.v25-close-btn:hover,.v27-edit-close:hover,.panel-close:hover{
+  background:var(--close-bg)!important;border-color:var(--close-line)!important;color:#111827!important;transform:scale(1.04)!important;
+}
+.manual-close:active,.cathians-flow-close:active,.cathians-confirm-close:active,.source-modal-close:active,
+.study-library-close:active,.coin-shop-close:active,.game-modal-close:active,.quiz-shoot-close:active,
+.matching-close:active,.v25-close-btn:active,.v27-edit-close:active,.panel-close:active{transform:scale(.94)!important}
+
+.manual-flashcard-head,.source-modal-head,.study-library-head,.game-modal-head,.coin-shop-head,
+.quiz-shoot-head,.matching-game-head,.v25-share-head,.v27-edit-head,.panel-title{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:14px;
+}
+.source-modal-close{position:relative!important;top:auto!important;right:auto!important;float:none!important;margin:0!important}
+.game-modal-close,.coin-shop-close,.quiz-shoot-close,.matching-close{position:absolute!important;top:14px!important;right:14px!important;margin:0!important;z-index:80!important}
+.v25-close-btn,.v27-edit-close{position:relative!important;top:auto!important;right:auto!important}
+.panel-close{margin-left:auto!important}
+
+/* Image-inspired fiery Keep your # streak button. */
+#cgProgressLeaderboardBtn{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:visible!important;
+  border:3px solid #f21f16!important;
+  border-radius:30px!important;
+  color:#fff!important;
+  background:#27142a!important;
+  box-shadow:0 0 0 2px #f4f0ee,0 0 0 5px #ef251b,0 10px 24px rgba(239,37,27,.16)!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.28)!important;
+  z-index:1!important;
+}
+#cgProgressLeaderboardBtn::before{
+  content:"";
+  position:absolute;
+  left:3%;right:3%;
+  bottom:56%;
+  height:88px;
+  z-index:-2;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at 4% 96%,#ff5319 0 7%,transparent 8%),
+    radial-gradient(ellipse at 10% 78%,#ff8c19 0 9%,transparent 10%),
+    radial-gradient(ellipse at 18% 95%,#ff3317 0 8%,transparent 9%),
+    radial-gradient(ellipse at 28% 68%,#ff971d 0 11%,transparent 12%),
+    radial-gradient(ellipse at 39% 92%,#ff4518 0 8%,transparent 9%),
+    radial-gradient(ellipse at 48% 62%,#ffad22 0 10%,transparent 11%),
+    radial-gradient(ellipse at 59% 88%,#ff3c16 0 9%,transparent 10%),
+    radial-gradient(ellipse at 69% 67%,#ff8a19 0 11%,transparent 12%),
+    radial-gradient(ellipse at 79% 92%,#ff4618 0 8%,transparent 9%),
+    radial-gradient(ellipse at 88% 72%,#ff9d1c 0 10%,transparent 11%),
+    radial-gradient(ellipse at 97% 94%,#ff4a17 0 7%,transparent 8%);
+  filter:blur(1.2px);
+  transform-origin:center bottom;
+  animation:mrStreakFire 1.05s ease-in-out infinite alternate;
+}
+#cgProgressLeaderboardBtn::after{
+  content:"";
+  position:absolute;
+  left:5%;right:5%;top:10px;bottom:9px;
+  border-radius:24px;
+  z-index:-1;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 8% 22%,rgba(255,198,89,.72) 0 2px,transparent 3px),
+    radial-gradient(circle at 17% 12%,rgba(255,121,27,.78) 0 1.8px,transparent 3px),
+    radial-gradient(circle at 29% 28%,rgba(255,197,85,.60) 0 1.6px,transparent 3px),
+    radial-gradient(circle at 42% 8%,rgba(255,92,19,.75) 0 2px,transparent 3px),
+    radial-gradient(circle at 57% 20%,rgba(255,209,105,.68) 0 1.7px,transparent 3px),
+    radial-gradient(circle at 71% 9%,rgba(255,121,27,.75) 0 2px,transparent 3px),
+    radial-gradient(circle at 86% 23%,rgba(255,206,101,.63) 0 1.7px,transparent 3px);
+  animation:mrStreakSparks 1.4s ease-in-out infinite;
+}
+#cgProgressLeaderboardBtn.streak-pulse{
+  transform:translateY(-3px) scale(1.018)!important;
+  box-shadow:0 0 0 2px #fff8f3,0 0 0 5px #ff291a,0 0 28px rgba(255,70,21,.78),0 0 60px rgba(255,173,35,.38)!important;
+}
+#cgProgressLeaderboardBtn.streak-pulse::before{animation:mrStreakFireBurst .72s ease-out both}
+#cgProgressLeaderboardBtn.streak-pulse::after{animation:mrStreakSparksBurst .82s ease-out both}
+@keyframes mrStreakFire{0%{transform:scaleX(.96) translateY(3px);filter:blur(1.4px) brightness(.96)}50%{transform:scaleX(1.025) translateY(-2px);filter:blur(1px) brightness(1.05)}100%{transform:scaleX(.985) translateY(-6px);filter:blur(1.2px) brightness(1)}}
+@keyframes mrStreakFireBurst{0%{opacity:.58;transform:scaleX(.86) translateY(8px)}30%{opacity:1;transform:scaleX(1.08) translateY(-4px)}70%{opacity:.94;transform:scaleX(1.02) translateY(-7px)}100%{opacity:.35;transform:scaleX(1.14) translateY(-12px)}}
+@keyframes mrStreakSparks{0%,100%{opacity:.68;transform:translateY(1px)}50%{opacity:1;transform:translateY(-3px)}}
+@keyframes mrStreakSparksBurst{0%{opacity:0;transform:translateY(8px) scale(.72)}25%{opacity:1}100%{opacity:0;transform:translateY(-10px) scale(1.08)}}
+
+@media(max-width:760px){
+  .manual-close,.cathians-flow-close,.cathians-confirm-close,.source-modal-close,
+  .study-library-close,.coin-shop-close,.game-modal-close,.quiz-shoot-close,
+  .matching-close,.v25-close-btn,.v27-edit-close,.panel-close{width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;font-size:23px!important}
+  #cgProgressLeaderboardBtn{border-width:3px!important;box-shadow:0 0 0 2px #f4f0ee,0 0 0 5px #ef251b,0 8px 20px rgba(239,37,27,.16)!important}
+  #cgProgressLeaderboardBtn::before{height:72px;bottom:55%}
+}
+</style>
+
 </head>
 <body>
 <main class="page">
@@ -2397,7 +2785,22 @@ body{min-height:100dvh;overflow-x:hidden}
     </div>
     <h1 class="cg-home-title">Home</h1>
     <section class="cg-study-hero" aria-label="Study home">
-      <div class="cg-mascot cg-png-slot" aria-label="PNG image placeholder"></div>
+      <div class="mr-panda-container" aria-label="Mr. Panda study assistant">
+        <div class="mr-panda panda-lying" id="mrPanda">
+          <!-- 🎋 Kawayan -->
+          <img src="mr_panda_bamboo.png" class="panda-bamboo" alt="Bamboo">
+          <!-- 🐼 Katawan -->
+          <img src="mr_panda_body.png" class="panda-body" id="pandaBody" alt="Panda Body">
+          <!-- 😉 Mata na kumukurap -->
+          <img src="mr_panda_eye.png" class="panda-eye" id="pandaEye" alt="Winking Eye">
+          <!-- 😊 Ngiti / Hikab -->
+          <img src="mr_panda_smile.png" class="panda-smile" id="pandaMouth" alt="Mouth">
+          <!-- 🖐️ Kamay na kumakaway -->
+          <img src="mr_panda_hand.png" class="panda-hand" id="pandaHand" alt="Waving Hand">
+          <!-- 💡 Shadow sa ilalim -->
+          <div class="mr-panda-shadow" aria-hidden="true"></div>
+        </div>
+      </div>
       <div class="cg-hero-copy"><h2>How can I help you<span>study today?</span></h2><p>Tell me what you need to learn, then use the tools below to build your study material.</p></div>
     </section>
     <div class="cg-study-box">
@@ -6438,4 +6841,53 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
 })();
 </script>
 
-</body></html>
+
+<script id="cathians-v28-final-deck-navigation-fixes">
+(function(){
+  const $=s=>document.querySelector(s);
+  const esc=v=>String(v??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+  const toast=text=>{let t=$('.v27-save-toast');if(!t){t=document.createElement('div');t.className='v27-save-toast';document.body.appendChild(t)}t.textContent=text;t.classList.add('show');clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove('show'),1500)};
+  const palette=['#5B63F4','#E45B84','#2FB39C','#E0A62B','#4A90E2','#A765D8','#58A85C','#E8754F','#1FA7C6','#C45CBE','#6D7FD8','#D26E37','#3AA36D','#8D68C5'];
+  const colorAt=i=>palette[i%palette.length];
+
+  function ensureAddReviewerBack(){
+    const flow=$('#addReviewerFlowModal .cathians-flow-card');
+    if(flow&&!flow.querySelector('#v28AddReviewerBack')){
+      const wrap=document.createElement('div');wrap.className='v27-flow-back-top';
+      wrap.innerHTML='<button type="button" class="v27-back-nav" id="v28AddReviewerBack">← Back to Home</button>';
+      flow.insertBefore(wrap,flow.firstChild);
+      wrap.querySelector('button').onclick=e=>{e.preventDefault();e.stopPropagation();try{closeAddReviewerFlow?.()}catch(_){};document.querySelector('[data-cg-view="home"]')?.click()};
+    }
+    const page=$('#cgAddReviewerView');
+    if(page&&!page.querySelector('#v28AddReviewerPageBack')){
+      const b=document.createElement('button');b.id='v28AddReviewerPageBack';b.className='v27-back-nav';b.type='button';b.textContent='← Back to Home';b.onclick=()=>document.querySelector('[data-cg-view="home"]')?.click();
+      page.prepend(b);
+    }
+  }
+  ensureAddReviewerBack();new MutationObserver(ensureAddReviewerBack).observe(document.body,{childList:true,subtree:true});
+
+  async function loadDecks(){
+    const box=$('#cgDecksAll');if(!box)return;
+    let docs=[];try{docs=await (typeof fetchSavedMaterials==='function'?fetchSavedMaterials():[])}catch(_){}
+    if(!docs.length){box.innerHTML='<div class="cg-view-empty">No saved decks yet. Use Add Reviewer to create your first one.</div>';return;}
+    const count=item=>{try{return typeof cardCount==='function'?cardCount(item):(item?.content?.cards?.length||0)}catch(_){return 0}};
+    box.classList.add('v25-compact-grid');
+    box.innerHTML=docs.map((item,index)=>{
+      const color=colorAt(index);
+      return `<article class="cg-deck-card v25-compact-card" tabindex="0" style="--deck-accent:${color}" data-v28-deck-id="${esc(item.id)}"><div class="v25-deck-color"></div><div class="v25-deck-body"><h3>${esc(item.topic||'Untitled Study Material')}</h3><div class="v25-deck-meta"><span class="v25-deck-count">${count(item)} cards</span><span class="v25-deck-open-hint">Open deck</span></div><div class="v27-card-actions"><button type="button" class="v27-card-copy" data-v28-copy="${esc(item.id)}">Copy</button><button type="button" class="v27-card-edit" data-v28-edit="${esc(item.id)}">Edit Decks</button><button type="button" class="v27-card-play" data-v28-play="${esc(item.id)}">Play</button></div></div></article>`;
+    }).join('');
+
+    box.querySelectorAll('[data-v28-deck-id]').forEach(card=>{
+      card.onclick=e=>{if(e.target.closest('button'))return;const item=docs.find(x=>String(x.id)===String(card.dataset.v28DeckId));window.__v27OpenDeck?.(item)};
+      card.onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('button')){e.preventDefault();const item=docs.find(x=>String(x.id)===String(card.dataset.v28DeckId));window.__v27OpenDeck?.(item)}};
+    });
+    box.querySelectorAll('[data-v28-copy]').forEach(btn=>btn.onclick=async e=>{e.stopPropagation();const item=docs.find(x=>String(x.id)===String(btn.dataset.v28Copy));if(!item)return;const payload=location.href+'#deck='+encodeURIComponent(item.id||item.topic||'deck');try{await navigator.clipboard.writeText(payload);toast('Deck link copied.')}catch(_){toast('Copy is not available in this browser.')}});
+    box.querySelectorAll('[data-v28-edit]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();const item=docs.find(x=>String(x.id)===String(btn.dataset.v28Edit));if(item)window.__v27OpenEditDeck?.(item)});
+    box.querySelectorAll('[data-v28-play]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();const item=docs.find(x=>String(x.id)===String(btn.dataset.v28Play));if(item)window.__v28LaunchDeckGame?window.__v28LaunchDeckGame(item):window.__v27PlayDeckGame?.(item)});
+  }
+  window.loadCgDecksView=loadDecks;
+  setTimeout(()=>loadDecks(),500);
+})();
+</script>
+</body>
+</html>
