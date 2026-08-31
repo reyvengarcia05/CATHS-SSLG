@@ -9339,21 +9339,14 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
 
 
 
-<!-- Universal popup/navigation transition — NAV FIRST, POPUP SECOND -->
+<!-- Universal popup/navigation transition — safe, top-level overlays only -->
 <style id="cathians-universal-popup-navigation">
-  /*
-     Exact sequence:
-       1) navigation slides + fades completely away
-       2) popup appears
-     On close:
-       3) popup disappears
-       4) navigation slides + fades back in
-  */
+  /* Navigation leaves FIRST. Popup is revealed only after the nav has finished. */
   .cg-shell{
     transition:
-      transform .46s cubic-bezier(.22,1,.36,1),
-      opacity .34s ease,
-      visibility .34s ease,
+      transform .42s cubic-bezier(.22,1,.36,1),
+      opacity .32s ease,
+      visibility .32s ease,
       box-shadow .30s ease!important;
     will-change:transform,opacity,visibility;
   }
@@ -9365,39 +9358,6 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     pointer-events:none!important;
   }
 
-  /* Keep any newly-opened overlay invisible until navigation is gone. */
-  body.cathians-overlay-staging [role="dialog"],
-  body.cathians-overlay-staging [aria-modal="true"],
-  body.cathians-overlay-staging [id*="Modal"],
-  body.cathians-overlay-staging [id*="modal"],
-  body.cathians-overlay-staging [id*="Popup"],
-  body.cathians-overlay-staging [id*="popup"],
-  body.cathians-overlay-staging [id*="Popover"],
-  body.cathians-overlay-staging [id*="popover"],
-  body.cathians-overlay-staging [id*="Notification"],
-  body.cathians-overlay-staging [id*="notification"],
-  body.cathians-overlay-staging [class*="-modal"],
-  body.cathians-overlay-staging [class*="-popup"],
-  body.cathians-overlay-staging [class*="-popover"],
-  body.cathians-overlay-staging [class*="-notification"],
-  body.cathians-overlay-staging [class*="-confirm"],
-  body.cathians-overlay-staging [class*="-warning"],
-  body.cathians-overlay-staging [class*="-alert"],
-  body.cathians-overlay-staging .v27-save-toast,
-  body.cathians-overlay-staging .game-toast{
-    opacity:0!important;
-    visibility:hidden!important;
-    pointer-events:none!important;
-  }
-
-  .cathians-popup-reveal{
-    animation:cathiansUniversalPopupReveal .26s cubic-bezier(.16,1,.3,1) both!important;
-  }
-  @keyframes cathiansUniversalPopupReveal{
-    from{opacity:0;transform:translate3d(0,10px,0) scale(.985)}
-    to{opacity:1;transform:translate3d(0,0,0) scale(1)}
-  }
-
   @media(max-width:760px){
     body.cathians-overlay-open .cg-shell{
       transform:translate3d(0,calc(100% + 30px),0)!important;
@@ -9407,9 +9367,24 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     }
   }
 
+  /* Only the actual overlay root is staged; nested cards/content are untouched. */
+  body.cathians-overlay-staging .cathians-overlay-root{
+    opacity:0!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+
+  .cathians-overlay-reveal{
+    animation:cathiansOverlayFadeIn .24s ease both!important;
+  }
+  @keyframes cathiansOverlayFadeIn{
+    from{opacity:0}
+    to{opacity:1}
+  }
+
   @media(prefers-reduced-motion:reduce){
     .cg-shell{transition:none!important}
-    .cathians-popup-reveal{animation:none!important}
+    .cathians-overlay-reveal{animation:none!important}
   }
 </style>
 <script id="cathians-universal-popup-navigation-js">
@@ -9417,24 +9392,34 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
   'use strict';
 
   const NAV_SELECTOR='.cg-shell';
-  const NAV_EXIT_MS=460;
+  const NAV_EXIT_MS=430;
   let raf=0;
   let revealTimer=0;
   let restoreTimer=0;
   let overlayOpen=false;
+  let lastRoots=[];
 
-  const popupSelector=[
-    '[role="dialog"]','[aria-modal="true"]',
-    '[id*="Modal"]','[id*="modal"]','[id*="Popup"]','[id*="popup"]',
-    '[id*="Popover"]','[id*="popover"]','[id*="Notification"]','[id*="notification"]',
-    '[class*="-modal"]','[class*="-popup"]','[class*="-popover"]',
-    '[class*="-notification"]','[class*="-confirm"]','[class*="-warning"]','[class*="-alert"]',
-    '.v27-save-toast','.game-toast'
-  ].join(',');
-
-  const EXCLUDED_SELECTOR=[
-    NAV_SELECTOR,'#cgNotifBtn','#cgProfileBtn','#cgCoinBtn','#cgMoreBtn'
-  ].join(',');
+  /* Known popup roots in this app. Explicit roots prevent nested popup children
+     from being treated as separate overlays and avoids transform glitches. */
+  const ROOT_SELECTORS=[
+    '#leaderboardPanel',
+    '#youtubeSourceModal',
+    '#coinShopModal',
+    '#studyLibraryPanel',
+    '#cgPermanentDeleteModal',
+    '#cgRecycleBinModal',
+    '#gameModal',
+    '#quizShootModal',
+    '#matchingGameModal',
+    '#sakModal',
+    '#addReviewerFlowModal',
+    '#manualFlashcardModal',
+    '.v27-edit-overlay',
+    '.v25-deck-viewer',
+    '.v25-deck-share-overlay',
+    '.cg-toast',
+    '.v27-save-toast'
+  ];
 
   function isVisible(el){
     if(!el || !(el instanceof Element)) return false;
@@ -9443,47 +9428,65 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     return cs.display!=='none' && cs.visibility!=='hidden' && Number(cs.opacity)>0;
   }
 
-  function isOverlayLike(el){
+  function isPopupRoot(el){
+    if(!el || !(el instanceof Element) || el.matches(NAV_SELECTOR) || el.closest(NAV_SELECTOR)) return false;
     if(!isVisible(el)) return false;
-    if(el.matches(EXCLUDED_SELECTOR) || el.closest(NAV_SELECTOR)) return false;
     const cs=getComputedStyle(el);
-    const pos=cs.position;
-    const z=parseInt(cs.zIndex,10);
-    const highLayer=Number.isFinite(z) && z>=100;
-    return (pos==='fixed' || pos==='absolute') &&
-           (highLayer || el.matches('[role="dialog"],[aria-modal="true"]'));
+    return cs.position==='fixed' || cs.position==='absolute' || el.matches('[role="dialog"],[aria-modal="true"]');
   }
 
-  function openOverlays(){
-    return [...document.querySelectorAll(popupSelector)].filter(isOverlayLike);
+  function getRoots(){
+    const out=[];
+    ROOT_SELECTORS.forEach(sel=>{
+      document.querySelectorAll(sel).forEach(el=>{
+        if(isPopupRoot(el) && !out.includes(el)) out.push(el);
+      });
+    });
+
+    /* Catch future top-level dialogs without pulling in nested dialog content. */
+    document.querySelectorAll('[role="dialog"],[aria-modal="true"]').forEach(el=>{
+      if(!isPopupRoot(el)) return;
+      const ancestor=el.parentElement?.closest('[role="dialog"],[aria-modal="true"]');
+      if(!ancestor || !isVisible(ancestor)){
+        if(!out.includes(el)) out.push(el);
+      }
+    });
+    return out;
   }
 
-  function revealOverlays(){
-    openOverlays().forEach(el=>{
-      el.classList.remove('cathians-popup-reveal');
+  function markRoots(roots){
+    lastRoots=roots.slice();
+    roots.forEach(el=>el.classList.add('cathians-overlay-root'));
+  }
+
+  function revealRoots(){
+    getRoots().forEach(el=>{
+      el.classList.remove('cathians-overlay-reveal');
       void el.offsetWidth;
-      el.classList.add('cathians-popup-reveal');
-      window.setTimeout(()=>el.classList.remove('cathians-popup-reveal'),300);
+      el.classList.add('cathians-overlay-reveal');
+      window.setTimeout(()=>el.classList.remove('cathians-overlay-reveal'),280);
     });
   }
 
   function sync(){
     raf=0;
-    const hasOpen=openOverlays().length>0;
+    const roots=getRoots();
+    const hasOpen=roots.length>0;
 
     if(hasOpen){
       window.clearTimeout(restoreTimer);
       if(!overlayOpen){
         overlayOpen=true;
         window.clearTimeout(revealTimer);
+        markRoots(roots);
 
-        /* Stage FIRST: nav starts its slide/fade before popup is revealed. */
+        /* Navigation starts leaving immediately. Roots are staged invisibly. */
         document.body.classList.add('cathians-overlay-open','cathians-overlay-staging');
 
         revealTimer=window.setTimeout(()=>{
           if(!overlayOpen) return;
           document.body.classList.remove('cathians-overlay-staging');
-          revealOverlays();
+          revealRoots();
         },NAV_EXIT_MS);
       }
       return;
@@ -9494,9 +9497,12 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
       window.clearTimeout(revealTimer);
       document.body.classList.remove('cathians-overlay-staging');
 
-      /* Popup is already gone; then restore navigation smoothly. */
       restoreTimer=window.setTimeout(()=>{
-        if(!overlayOpen) document.body.classList.remove('cathians-overlay-open');
+        if(!overlayOpen){
+          document.body.classList.remove('cathians-overlay-open');
+          lastRoots.forEach(el=>el.classList.remove('cathians-overlay-reveal','cathians-overlay-root'));
+          lastRoots=[];
+        }
       },60);
     }
   }
@@ -9522,222 +9528,8 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
   document.addEventListener('click',schedule,true);
   window.addEventListener('resize',schedule,{passive:true});
   window.addEventListener('load',schedule,{once:true});
-  window.setInterval(schedule,700);
 })();
 </script>
-
-
-<!-- Final game text-contrast polish -->
-<style id="cathians-final-game-text-contrast">
-  /* =========================================================
-     FINAL GAME TEXT CONTRAST
-     Keep every game readable regardless of inherited page styles.
-     ========================================================= */
-
-  /* Game chooser */
-  #gameModal .game-modal-card{
-    background:linear-gradient(145deg,#0b2348,#061326 78%) !important;
-    color:#ffffff !important;
-  }
-  #gameModal .game-modal-title,
-  #gameModal .game-modal-subtitle,
-  #gameModal .game-choice,
-  #gameModal .game-choice span,
-  #gameModal .game-modal-back,
-  #gameModal .friends-back-btn,
-  #gameModal .reviewer-select-item,
-  #gameModal .reviewer-select-copy strong,
-  #gameModal .reviewer-select-action,
-  #gameModal .friend-copy strong,
-  #gameModal .friend-invite-action{
-    color:#ffffff !important;
-  }
-  #gameModal .game-modal-subtitle,
-  #gameModal .game-choice small,
-  #gameModal .reviewer-select-copy small,
-  #gameModal .friend-copy small{
-    color:#d5e4f4 !important;
-  }
-  #gameModal .game-choice,
-  #gameModal .reviewer-select-item,
-  #gameModal .friend-invite-row,
-  #gameModal .game-modal-back,
-  #gameModal .friends-back-btn{
-    text-shadow:none !important;
-  }
-  #gameModal .game-choice .ui-svg,
-  #gameModal .game-modal-back .ui-svg{
-    stroke:#ffffff !important;
-  }
-  #gameModal .game-modal-close{
-    color:#ffffff !important;
-    background:rgba(255,255,255,.10) !important;
-    border-color:rgba(255,255,255,.12) !important;
-  }
-
-  /* Quiz Shooting */
-  #quizShootModal .quiz-shoot-card{
-    background:radial-gradient(circle at 50% 8%,rgba(69,157,255,.20),transparent 28%),linear-gradient(160deg,#071a37,#020a18 72%) !important;
-    color:#ffffff !important;
-  }
-  #quizShootModal .quiz-shoot-head,
-  #quizShootModal .quiz-shoot-head h4,
-  #quizShootModal .quiz-shoot-head small,
-  #quizShootModal .quiz-shoot-question,
-  #quizShootModal .quiz-shoot-question strong,
-  #quizShootModal .quiz-shoot-question small,
-  #quizShootModal .qs-target,
-  #quizShootModal .qs-target .target-copy,
-  #quizShootModal .qs-result-box,
-  #quizShootModal .qs-result-box h3,
-  #quizShootModal .qs-result-box p,
-  #quizShootModal .qs-result-stat,
-  #quizShootModal .qs-result-stat strong,
-  #quizShootModal .qs-result-actions button{
-    color:#ffffff !important;
-  }
-  #quizShootModal .quiz-shoot-question{
-    background:rgba(4,17,35,.92) !important;
-    border-color:rgba(175,225,255,.20) !important;
-  }
-  #quizShootModal .quiz-shoot-question small,
-  #quizShootModal .qs-stat span,
-  #quizShootModal .qs-result-stat span{
-    color:#b9d7ec !important;
-  }
-  #quizShootModal .qs-target{
-    color:#ffffff !important;
-    text-shadow:0 1px 2px rgba(0,0,0,.42) !important;
-  }
-  #quizShootModal .qs-result-box{
-    color:#ffffff !important;
-    background:linear-gradient(145deg,rgba(10,33,69,.98),rgba(2,11,24,.99)) !important;
-  }
-  #quizShootModal .qs-result-actions button{
-    color:#ffffff !important;
-  }
-  #quizShootModal .quiz-shoot-close{
-    color:#ffffff !important;
-    background:rgba(255,255,255,.08) !important;
-    border-color:rgba(255,255,255,.14) !important;
-  }
-  #quizShootModal .qs-banner.good{color:#c8efff !important;}
-  #quizShootModal .qs-banner.bad{color:#ffc2c2 !important;}
-
-  /* Matching Game */
-  #matchingGameModal .matching-game-card{
-    color:#ffffff !important;
-  }
-  #matchingGameModal .matching-game-head,
-  #matchingGameModal .matching-brand h4,
-  #matchingGameModal .matching-brand small,
-  #matchingGameModal .matching-topic,
-  #matchingGameModal .matching-topic strong,
-  #matchingGameModal .matching-stat,
-  #matchingGameModal .matching-stat strong,
-  #matchingGameModal .matching-board-head h3,
-  #matchingGameModal .matching-board-head p,
-  #matchingGameModal .matching-side-card,
-  #matchingGameModal .matching-side-card h4,
-  #matchingGameModal .matching-score-big strong,
-  #matchingGameModal .matching-side-row b,
-  #matchingGameModal .matching-reward div,
-  #matchingGameModal .matching-action,
-  #matchingGameModal .matching-result-box,
-  #matchingGameModal .matching-result-box h3,
-  #matchingGameModal .matching-result-box p,
-  #matchingGameModal .matching-result-stat,
-  #matchingGameModal .matching-result-stat strong,
-  #matchingGameModal .matching-result-btn{
-    color:#ffffff !important;
-  }
-  #matchingGameModal .matching-topic span,
-  #matchingGameModal .matching-stat span,
-  #matchingGameModal .matching-side-card small,
-  #matchingGameModal .matching-side-row span,
-  #matchingGameModal .matching-score-big small,
-  #matchingGameModal .matching-board-head p,
-  #matchingGameModal .matching-result-stat span{
-    color:#bdd5e8 !important;
-  }
-  #matchingGameModal .match-card,
-  #matchingGameModal .match-card .match-copy,
-  #matchingGameModal .match-card.def .match-copy{
-    color:#ffffff !important;
-    text-shadow:0 1px 2px rgba(0,0,0,.32) !important;
-  }
-  #matchingGameModal .match-card .match-num{
-    color:#ffffff !important;
-  }
-  #matchingGameModal .matching-close{
-    color:#ffffff !important;
-    background:rgba(255,255,255,.08) !important;
-    border-color:rgba(255,255,255,.14) !important;
-  }
-
-  /* Serve a Knowledge: preserve dark text only where the background is white,
-     while keeping every surrounding label/overlay bright. */
-  #sakModal .sak-game,
-  #sakModal .sak-top-level,
-  #sakModal .sak-feedback,
-  #sakModal .sak-countdown,
-  #sakModal .sak-quit-card,
-  #sakModal .sak-panel{
-    color:#ffffff;
-  }
-  #sakModal .sak-round-tip,
-  #sakModal .sak-countdown-card,
-  #sakModal .sak-quit-card,
-  #sakModal .sak-panel,
-  #sakModal .sak-choice{
-    text-shadow:none !important;
-  }
-  #sakModal .sak-choice-text{
-    color:#15202b !important;
-    font-weight:800 !important;
-    text-shadow:none !important;
-  }
-  #sakModal .sak-letter{
-    color:#ffffff !important;
-    text-shadow:0 2px 0 #111 !important;
-  }
-  #sakModal .sak-round-tip{
-    color:#15202b !important;
-  }
-  #sakModal .sak-countdown-label,
-  #sakModal .sak-countdown-sub{
-    color:#4d6173 !important;
-  }
-  #sakModal .sak-countdown-text{
-    color:#111827 !important;
-  }
-  #sakModal .sak-quit-card h3,
-  #sakModal .sak-quit-card p,
-  #sakModal .sak-panel h2,
-  #sakModal .sak-stat small,
-  #sakModal .sak-stat strong{
-    color:#15202b !important;
-  }
-  #sakModal .sak-quit-no,
-  #sakModal .sak-result-back{
-    color:#15202b !important;
-  }
-  #sakModal .sak-result-play{
-    color:#111827 !important;
-  }
-
-  /* Global game safeguard: do not allow the page's light-theme overrides to
-     force a dark/low-contrast color inside game UIs. */
-  #gameModal .game-choice:hover,
-  #quizShootModal .qs-target:hover,
-  #matchingGameModal .match-card:hover{
-    color:#ffffff !important;
-  }
-
-  @media(prefers-reduced-motion:reduce){
-    #gameModal *,#quizShootModal *,#matchingGameModal *,#sakModal *{transition:none !important;}
-  }
-</style>
 
 <!-- Mobile Add Reviewer bubble: fade out before popup, fade back after close -->
 <style id="cathians-mobile-add-reviewer-popup-sequence">
