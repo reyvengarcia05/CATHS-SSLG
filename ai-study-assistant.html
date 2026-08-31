@@ -2543,7 +2543,7 @@ body{min-height:100dvh;overflow-x:hidden}
 </script>
 
 <style id="cathians-v30-floating-cat">
-/* 🐱 FLOATING CAT — image asset + ground shadow only */
+/* 🎬 FLOATING VIDEO — video asset + ground shadow only */
 .floating-cat-container{
   position:relative;
   width:220px;
@@ -2554,7 +2554,7 @@ body{min-height:100dvh;overflow-x:hidden}
   justify-content:center;
   overflow:visible;
 }
-.floating-cat{
+.floating-cat-video{
   position:relative;
   width:184px;
   height:auto;
@@ -2598,7 +2598,7 @@ body{min-height:100dvh;overflow-x:hidden}
 }
 @media(max-width:760px){
   .floating-cat-container{width:128px;height:150px;flex-basis:128px}
-  .floating-cat{width:122px}
+  .floating-cat-video{width:122px}
   .floating-cat-shadow{width:74px;height:13px}
   .cg-study-hero{
     display:grid!important;
@@ -2608,7 +2608,7 @@ body{min-height:100dvh;overflow-x:hidden}
 }
 @media(max-width:430px){
   .floating-cat-container{width:105px;height:135px;flex-basis:105px}
-  .floating-cat{width:102px}
+  .floating-cat-video{width:102px}
   .floating-cat-shadow{width:63px;height:11px}
   .cg-study-hero{
     grid-template-columns:105px minmax(0,1fr)!important;
@@ -2762,7 +2762,7 @@ body{min-height:100dvh;overflow-x:hidden}
     <h1 class="cg-home-title">Home</h1>
     <section class="cg-study-hero" aria-label="Study home">
       <div class="floating-cat-container" aria-label="Cute floating cat study assistant">
-        <img class="floating-cat" src="cat.png" alt="Cute floating cat">
+        <video class="floating-cat-video" src="cat-video.mp4" autoplay muted loop playsinline preload="auto" aria-label="Floating study assistant video"></video>
         <div class="floating-cat-shadow" aria-hidden="true"></div>
       </div>
       <div class="cg-hero-copy"><h2>How can I help you<span>study today?</span></h2><p>Tell me what you need to learn, then use the tools below to build your study material.</p></div>
