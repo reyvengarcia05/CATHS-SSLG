@@ -4938,6 +4938,54 @@ input:focus,textarea:focus,select:focus{
 })();
 </script>
 
+
+<style id="cathians-viewer-trash-button">
+/* Trash/Delete button beside Duplicate inside an opened deck viewer */
+.v25-deck-actions .v25-trash-btn{
+  min-height:36px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:0 12px;
+  border:1px solid rgba(220,80,100,.25);
+  border-radius:11px;
+  background:linear-gradient(145deg,#fff7f8,#fff);
+  color:#c83349;
+  font:800 8px/1 Poppins,system-ui,sans-serif;
+  cursor:pointer;
+  transition:transform .2s ease,background .2s ease,border-color .2s ease,box-shadow .2s ease;
+}
+.v25-deck-actions .v25-trash-btn svg{
+  width:14px;
+  height:14px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.v25-deck-actions .v25-trash-btn:hover{
+  transform:translateY(-1px);
+  background:linear-gradient(145deg,#fff0f2,#fff);
+  border-color:rgba(207,50,72,.48);
+  box-shadow:0 8px 18px rgba(190,45,67,.12);
+}
+.v25-deck-actions .v25-trash-btn:active{
+  transform:scale(.96);
+}
+@media(max-width:760px){
+  .v25-deck-actions .v25-trash-btn{
+    min-height:34px;
+    padding:0 10px;
+    font-size:7.5px;
+  }
+  .v25-deck-actions .v25-trash-btn svg{
+    width:13px;height:13px;
+  }
+}
+</style>
+
 </head>
 <body>
 <main class="page">
@@ -6731,6 +6779,7 @@ async function deleteSavedDeck(item){
       showGameToast?.('Removed on this device, but the cloud copy could not be deleted.');
     }
   }
+  if(window.__v27ActiveDeck&&String(window.__v27ActiveDeck.id)===deckId){try{closeViewer?.()}catch(_){}window.__v27ActiveDeck=null;}
   loadCgDecksView();
   loadStudyLibrary?.();
   showGameToast?.('Deck deleted.');
@@ -9183,10 +9232,11 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
   function ensureViewer(){
     if(viewer)return viewer;
     viewer=document.createElement('section');viewer.className='v25-deck-viewer';viewer.setAttribute('aria-hidden','true');
-    viewer.innerHTML=`<div class="v25-deck-shell"><div class="v25-deck-topbar"><button class="v25-back-btn" id="v25DeckBack" aria-label="Back">${svg.back}</button><div class="v25-deck-heading"><span class="v25-swatch" id="v25DeckSwatch"></span><h1 id="v25DeckTitle">My deck</h1></div><div class="v25-deck-actions"><button class="v25-duplicate-btn" id="v25DeckDuplicate">${svg.duplicate}<span>Duplicate</span></button><button class="v25-share-btn" id="v25DeckShare">${svg.share}<span>Share</span></button><button class="v25-study-btn" id="v25DeckStudy">${svg.play}<span>Study deck</span></button></div></div><div class="v25-deck-author"><span class="v25-author-dot" id="v25AuthorDot">A</span><span>by <strong id="v25DeckAuthor">You</strong></span></div><div class="v25-deck-tabs" id="v25DeckTabs"><button class="v25-deck-tab active" data-tab="cards">Cards</button><button class="v25-deck-tab" data-tab="notes">Notes</button><button class="v25-deck-tab" data-tab="lessons">Lessons</button><button class="v25-deck-tab" data-tab="imports">Imports</button><button class="v25-deck-tab" data-tab="leaderboard">Leaderboard</button></div><div id="v25DeckContent"></div></div>`;
+    viewer.innerHTML=`<div class="v25-deck-shell"><div class="v25-deck-topbar"><button class="v25-back-btn" id="v25DeckBack" aria-label="Back">${svg.back}</button><div class="v25-deck-heading"><span class="v25-swatch" id="v25DeckSwatch"></span><h1 id="v25DeckTitle">My deck</h1></div><div class="v25-deck-actions"><button class="v25-duplicate-btn" id="v25DeckDuplicate">${svg.duplicate}<span>Duplicate</span></button><button class="v25-trash-btn" id="v25DeckTrash" type="button" aria-label="Delete deck" title="Delete deck"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"></path><path d="M9 7V4h6v3"></path><path d="M7 7l1 13h8l1-13"></path><path d="M10 11v5"></path><path d="M14 11v5"></path></svg><span>Delete</span></button><button class="v25-share-btn" id="v25DeckShare">${svg.share}<span>Share</span></button><button class="v25-study-btn" id="v25DeckStudy">${svg.play}<span>Study deck</span></button></div></div><div class="v25-deck-author"><span class="v25-author-dot" id="v25AuthorDot">A</span><span>by <strong id="v25DeckAuthor">You</strong></span></div><div class="v25-deck-tabs" id="v25DeckTabs"><button class="v25-deck-tab active" data-tab="cards">Cards</button><button class="v25-deck-tab" data-tab="notes">Notes</button><button class="v25-deck-tab" data-tab="lessons">Lessons</button><button class="v25-deck-tab" data-tab="imports">Imports</button><button class="v25-deck-tab" data-tab="leaderboard">Leaderboard</button></div><div id="v25DeckContent"></div></div>`;
     document.body.appendChild(viewer);
     viewer.querySelector('#v25DeckBack').onclick=closeViewer;
     viewer.querySelector('#v25DeckDuplicate').onclick=duplicateActiveDeck;
+    viewer.querySelector('#v25DeckTrash').onclick=()=>{if(activeDeck&&typeof openDeleteDeckModal==='function'){openDeleteDeckModal(activeDeck);}};
     viewer.querySelector('#v25DeckShare').onclick=openShareOverlay;
     viewer.querySelector('#v25DeckStudy').onclick=()=>{if(activeDeck){closeViewer();try{openSavedStudyMaterial(activeDeck)}catch(_){}}};
     viewer.querySelectorAll('[data-tab]').forEach(btn=>btn.onclick=()=>{activeDetailTab=btn.dataset.tab;viewer.querySelectorAll('.v25-deck-tab').forEach(x=>x.classList.toggle('active',x===btn));renderDetailContent()});
