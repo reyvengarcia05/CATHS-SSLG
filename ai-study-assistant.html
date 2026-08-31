@@ -2761,8 +2761,8 @@ body{min-height:100dvh;overflow-x:hidden}
     </div>
     <h1 class="cg-home-title">Home</h1>
     <section class="cg-study-hero" aria-label="Study home">
-      <div class="floating-cat-container" aria-label="Floating panda study assistant">
-        <video class="floating-cat-video" src="panda.gif" autoplay muted loop playsinline preload="auto" aria-label="Floating panda animation"></video>
+      <div class="floating-cat-container" aria-label="Cute floating cat study assistant">
+        <img class="floating-cat-video" src="panda.gif" alt="Floating panda study assistant" loading="eager" decoding="async">
         <div class="floating-cat-shadow" aria-hidden="true"></div>
       </div>
       <div class="cg-hero-copy"><h2>How can I help you<span>study today?</span></h2><p>Tell me what you need to learn, then use the tools below to build your study material.</p></div>
@@ -7128,5 +7128,62 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
   .cg-top-actions .cg-profile-btn .user-status-copy{display:none}
 }
 </style>
+
+<style id="panda-gif-final-fix">
+.floating-cat-container{
+  position:relative!important;
+  width:250px!important;
+  height:190px!important;
+  flex:0 0 250px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:transparent!important;
+  border:0!important;
+  overflow:visible!important;
+}
+.floating-cat-video{
+  display:block!important;
+  width:250px!important;
+  max-width:100%!important;
+  height:auto!important;
+  object-fit:contain!important;
+  border:0!important;
+  outline:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  pointer-events:none!important;
+  user-select:none!important;
+  -webkit-user-drag:none!important;
+  position:relative!important;
+  z-index:2!important;
+  transform:translateY(0) scale(1)!important;
+  animation:pandaFloat 3.2s cubic-bezier(.45,0,.25,1) infinite!important;
+}
+.floating-cat-shadow{z-index:1!important;}
+.cg-study-hero{
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:34px!important;
+}
+@keyframes pandaFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-14px) scale(1.015)}}
+@media(max-width:980px){
+  .floating-cat-container{width:200px!important;height:165px!important;flex-basis:200px!important}
+  .floating-cat-video{width:200px!important}
+}
+@media(max-width:760px){
+  .cg-study-hero{display:grid!important;grid-template-columns:128px minmax(0,1fr)!important;gap:12px!important;justify-content:initial!important}
+  .floating-cat-container{width:128px!important;height:150px!important;flex-basis:128px!important}
+  .floating-cat-video{width:122px!important}
+}
+@media(max-width:430px){
+  .cg-study-hero{grid-template-columns:105px minmax(0,1fr)!important;gap:8px!important}
+  .floating-cat-container{width:105px!important;height:135px!important;flex-basis:105px!important}
+  .floating-cat-video{width:102px!important}
+}
+</style>
+
 </body>
 </html>
