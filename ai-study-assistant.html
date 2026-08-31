@@ -3821,113 +3821,175 @@ async function saveGeneratedStudyMaterial(payload){
   }
 }
 
-async function callCathsAI(userPrompt){
-  const API_URL = "https://caths-ai.reyvengarcia05.workers.dev";
-  if(!currentUser){
-    try{
-      const restored = await window.studyAuthStateReady;
-      if(restored) currentUser = restored;
-    }catch(e){}
+async function callCathsAI(prompt){
+  const API_URL="https://caths-ai.reyvengarcia05.workers.dev";
+
+  let user=currentUser;
+  if(!user && window.studyAuthStateReady){
+    user=await window.studyAuthStateReady;
+    currentUser=user||null;
   }
-  if(!currentUser){
+
+  if(!user){
     throw new Error("Please sign in with your student account first.");
   }
 
-  const idToken = await currentUser.getIdToken();
-  const response = await fetch(API_URL,{
+  const token=await user.getIdToken();
+
+  const response=await fetch(API_URL,{
     method:"POST",
     headers:{
       "Content-Type":"application/json",
-      "Authorization":"Bearer "+idToken
+      "Authorization":"Bearer "+token
     },
-    body:JSON.stringify({message:userPrompt})
+    body:JSON.stringify({message:prompt})
   });
 
-  const data = await response.json().catch(()=>({}));
+  const data=await response.json().catch(()=>({}));
+
   if(!response.ok){
-    throw new Error(data?.error || "The AI service could not process the request.");
+    throw new Error(data?.error||"The AI service could not process the request.");
   }
 
-  const output = String(data?.output || "").trim();
-  if(!output) throw new Error("The AI returned an empty response.");
+  const output=String(data?.output||"").trim();
+
+  if(!output){
+    throw new Error("The AI returned an empty response.");
+  }
+
   return output;
 }
 
-function extractJSON(raw){
-  let value = String(raw||"").trim();
-
-  // Remove common Markdown fences around JSON.
-  value = value.replace(/^```(?:json)?\s*/i,"").replace(/\s*```$/,"").trim();
+function parseAIJson(raw){
+  let value=String(raw||"").trim()
+    .replace(/^```(?:json)?\s*/i,"")
+    .replace(/\s*```$/,"")
+    .trim();
 
   try{
     return JSON.parse(value);
   }catch(_){}
 
-  const first = value.indexOf("{");
-  const last = value.lastIndexOf("}");
-  if(first>=0 && last>first){
-    try{return JSON.parse(value.slice(first,last+1));}catch(_){}
+  const firstObj=value.indexOf("{");
+  const lastObj=value.lastIndexOf("}");
+  if(firstObj>=0&&lastObj>firstObj){
+    try{return JSON.parse(value.slice(firstObj,lastObj+1));}catch(_){}
   }
 
-  const a = value.indexOf("[");
-  const b = value.lastIndexOf("]");
-  if(a>=0 && b>a){
-    try{return JSON.parse(value.slice(a,b+1));}catch(_){}
+  const firstArr=value.indexOf("[");
+  const lastArr=value.lastIndexOf("]");
+  if(firstArr>=0&&lastArr>firstArr){
+    try{return JSON.parse(value.slice(firstArr,lastArr+1));}catch(_){}
   }
 
-  throw new Error("The AI returned an invalid structured response.");
+  throw new Error("The AI returned an invalid response format.");
 }
 
 async function generateAIStudyMaterial(type,topic,notes,count){
-  const typeRules = {
-    reviewer: {
-      format:`{"points":["..."],"questions":["..."]}`,
-      task:"Create a clear reviewer with 5-8 important key points and 5 practice questions based ONLY on the notes."
-    },
-    flashcards: {
-      format:`{"cards":[{"front":"...","back":"..."}]}`,
-      task:`Create exactly ${count} useful flashcards based ONLY on the notes. Each card needs a concise question/term on front and an accurate answer/definition on back.`
-    },
-    quiz: {
-      format:`{"questions":[{"question":"...","options":["...","...","...","..."],"answer":0}]}`,
-      task:`Create exactly ${count} multiple-choice questions based ONLY on the notes. Each must have exactly 4 options and "answer" must be the zero-based index of the correct option.`
-    },
-    summary: {
-      format:`{"summary":"...","remember":["...","..."]}`,
-      task:"Write a concise, accurate summary based ONLY on the notes, followed by 2-5 things the student should remember."
-    },
-    studyguide: {
-      format:`{"steps":["..."],"tip":"..."}`,
-      task:"Create a practical step-by-step study guide based ONLY on the notes, with 4-7 steps and one useful study tip."
-    }
+  const tasks={
+    reviewer:`Create a reviewer with 5-8 key points and 5 practice questions.`,
+    flashcards:`Create exactly ${count} flashcards. Each card needs a concise front and accurate back.`,
+    quiz:`Create exactly ${count} multiple-choice questions. Every question must have exactly 4 options and answer must be the zero-based correct option index.`,
+    summary:`Create a concise summary and 2-5 important things to remember.`,
+    studyguide:`Create a practical 4-7 step study guide and one study tip.`
   };
 
-  const rules = typeRules[type] || typeRules.reviewer;
-  const prompt = `
-You are CATHS-MAIN AI Study Assistant.
-Topic: ${topic}
+  const shapes={
+    reviewer:`{"points":["..."],"questions":["..."]}`,
+    flashcards:`{"cards":[{"front":"...","back":"..."}]}`,
+    quiz:`{"questions":[{"question":"...","options":["...","...","...","..."],"answer":0}]}`,
+    summary:`{"summary":"...","remember":["..."]}`,
+    studyguide:`{"steps":["..."],"tip":"..."}`
+  };
+
+  const prompt=`
+You are the CATHS-MAIN AI Study Assistant.
+Help a student study from the supplied notes.
+
+Topic:
+${topic}
+
 Notes:
 ${notes}
 
 Task:
-${rules.task}
+${tasks[type]||tasks.reviewer}
 
-Important:
+Rules:
 - Use ONLY information supported by the notes.
-- Do not invent facts.
-- Keep language student-friendly.
+- Do not invent facts that are not in the notes.
+- Keep the language clear and student-friendly.
 - Return ONLY valid JSON.
-- Do not use Markdown fences.
+- Do not use Markdown code fences.
 - Required JSON shape:
-${rules.format}
+${shapes[type]||shapes.reviewer}
   `.trim();
 
-  const raw = await callCathsAI(prompt);
-  return extractJSON(raw);
+  return parseAIJson(await callCathsAI(prompt));
+}
+
+function renderAIFlashcards(topic,cards){
+  flashCardsData=(Array.isArray(cards)?cards:[]).map(c=>({
+    front:String(c?.front||""),
+    back:String(c?.back||"")
+  })).filter(c=>c.front||c.back).slice(0,50);
+
+  if(!flashCardsData.length){
+    throw new Error("The AI did not return any flashcards.");
+  }
+
+  currentFlashIndex=0;
+  flashSessionCorrect=new Set();
+
+  outputBox.innerHTML=`<div class="result"><h5>${esc(topic)} — Flashcards</h5><div id="flashcardArea"></div></div>`;
+  renderCurrentFlashcard();
+}
+
+function renderAIQuiz(topic,questions){
+  const qs=(Array.isArray(questions)?questions:[]).map(q=>({
+    question:String(q?.question||"Question"),
+    opts:Array.isArray(q?.options)?q.options.slice(0,4).map(v=>String(v)) : [],
+    correct:Math.max(0,Math.min(3,Number(q?.answer)||0))
+  })).filter(q=>q.opts.length===4).slice(0,30);
+
+  if(!qs.length){
+    throw new Error("The AI did not return valid quiz questions.");
+  }
+
+  const html=qs.map((q,i)=>`
+    <div class="quiz-q">
+      <strong>${i+1}. ${esc(q.question)}</strong>
+      ${q.opts.map((o,j)=>`<label><input type="radio" name="q${i}" value="${j}"> ${esc(o)}</label>`).join('')}
+      <input type="hidden" id="correct${i}" value="${q.correct}">
+    </div>
+  `).join('');
+
+  outputBox.innerHTML=`
+    <div class="result">
+      <h5>${esc(topic)} — Practice Quiz</h5>
+      ${html}
+      <button class="quiz-submit" id="submitQuizBtn" type="button">Submit Quiz</button>
+      <div id="quizScore"></div>
+    </div>
+  `;
+
+  document.getElementById("submitQuizBtn").onclick=()=>{
+    let score=0;
+    qs.forEach((q,i)=>{
+      const selected=document.querySelector(`input[name="q${i}"]:checked`);
+      if(selected&&Number(selected.value)===q.correct)score++;
+    });
+    const earned=score*5;
+    if(earned)addXP(earned);
+    document.getElementById("quizScore").innerHTML=
+      `<div class="quiz-score">Score: <b>${score}/${qs.length}</b> • XP earned: <b>${earned}</b></div>`;
+  };
+
+  return qs;
 }
 
 async function makePreview(){
-  const topic=topicInput.value.trim()||'Your Topic';
+  const topic=topicInput.value.trim()||"Your Topic";
   const notes=notesInput.value.trim();
 
   if(!notes){
@@ -3938,96 +4000,58 @@ async function makePreview(){
   try{
     outputBox.innerHTML='<div class="empty-state"><div><div class="mini-robot spin">◌</div><strong>AI is preparing your study material…</strong><p>Please wait while CATHS-MAIN AI analyzes your notes.</p></div></div>';
 
-    const count = getCount();
-    const content = await generateAIStudyMaterial(currentType,topic,notes,count);
-    let savedContent = content;
+    const count=getCount();
+    const ai=await generateAIStudyMaterial(currentType,topic,notes,count);
+    let savedContent={};
 
-    if(currentType==='reviewer'){
-      const points=Array.isArray(content?.points)?content.points:[];
-      const questions=Array.isArray(content?.questions)?content.questions:[];
+    if(currentType==="reviewer"){
+      const points=Array.isArray(ai?.points)?ai.points:[];
+      const questions=Array.isArray(ai?.questions)?ai.questions:[];
+      if(!points.length)throw new Error("The AI did not return reviewer content.");
+
       outputBox.innerHTML=
-        '<div class="result"><h5>'+esc(topic)+' — Reviewer</h5>'+
-        '<h6>Key Points</h6><ul>'+
-        points.map(x=>'<li>'+esc(String(x))+'</li>').join('')+
-        '</ul><h6>Review Questions</h6><ul>'+
-        questions.map(x=>'<li>'+esc(String(x))+'</li>').join('')+
-        '</ul></div>';
-    }
+        `<div class="result"><h5>${esc(topic)} — Reviewer</h5>`+
+        `<h6>Key Points</h6><ul>${points.map(x=>`<li>${esc(String(x))}</li>`).join("")}</ul>`+
+        `<h6>Review Questions</h6><ul>${questions.map(x=>`<li>${esc(String(x))}</li>`).join("")}</ul></div>`;
 
-    else if(currentType==='flashcards'){
-      const cards=Array.isArray(content?.cards)?content.cards:[];
-      if(!cards.length) throw new Error("The AI did not return any flashcards.");
-      flashCardsData=cards.slice(0,count).map(c=>({
-        front:String(c?.front||''),
-        back:String(c?.back||'')
-      }));
-      currentFlashIndex=0;
-      flashSessionCorrect=new Set();
-      renderFlashcards(topic,notes);
+      savedContent={points,questions};
+
+    }else if(currentType==="flashcards"){
+      renderAIFlashcards(topic,ai?.cards);
       savedContent={cards:flashCardsData.map(c=>({front:c.front,back:c.back}))};
-    }
 
-    else if(currentType==='quiz'){
-      const qs=Array.isArray(content?.questions)?content.questions:[];
-      if(!qs.length) throw new Error("The AI did not return any quiz questions.");
-      const normalized=qs.slice(0,count).map(q=>({
-        question:String(q?.question||'Question'),
-        opts:Array.isArray(q?.options)?q.options.slice(0,4).map(v=>String(v)) : [],
-        correct:Number.isFinite(Number(q?.answer))?Number(q.answer):0
-      })).map(q=>{
-        if(q.opts.length!==4) return {...q,opts:[...q.opts,'Not specified'].slice(0,4)};
-        return q;
-      });
+    }else if(currentType==="quiz"){
+      const qs=renderAIQuiz(topic,ai?.questions);
+      savedContent={questions:qs.map(q=>({
+        question:q.question,
+        options:q.opts,
+        answer:q.correct
+      }))};
+
+    }else if(currentType==="summary"){
+      const summary=String(ai?.summary||"").trim();
+      const remember=Array.isArray(ai?.remember)?ai.remember:[];
+      if(!summary)throw new Error("The AI did not return a summary.");
 
       outputBox.innerHTML=
-        '<div class="result"><h5>'+esc(topic)+' — Practice Quiz</h5>'+
-        normalized.map((q,i)=>
-          '<div class="quiz-q">'+
-          '<strong>'+esc((i+1)+'. '+q.question)+'</strong>'+
-          q.opts.map((o,j)=>
-            '<label><input type="radio" name="q'+i+'" value="'+j+'"> '+esc(o)+'</label>'
-          ).join('')+
-          '<input type="hidden" id="correct'+i+'" value="'+q.correct+'">'+
-          '</div>'
-        ).join('')+
-        '<button class="quiz-submit" id="submitQuizBtn" type="button">Submit Quiz</button>'+
-        '<div id="quizScore"></div></div>';
+        `<div class="result"><h5>${esc(topic)} — Summary</h5>`+
+        `<p>${esc(summary)}</p>`+
+        `<h6>Remember</h6><p>${remember.map(x=>esc(String(x))).join(" • ")}</p></div>`;
 
-      document.getElementById('submitQuizBtn').onclick=()=>{
-        let score=0;
-        normalized.forEach((q,i)=>{
-          const selected=document.querySelector(`input[name="q${i}"]:checked`);
-          if(selected && Number(selected.value)===q.correct) score++;
-        });
-        const earned=score*5;
-        if(earned)addXP(earned);
-        const scoreEl=document.getElementById('quizScore');
-        if(scoreEl) scoreEl.innerHTML=
-          '<div class="quiz-score">Score: <b>'+score+'/'+normalized.length+
-          '</b> • XP earned: <b>'+earned+'</b></div>';
-      };
+      savedContent={summary,remember};
 
-      savedContent={questions:normalized};
-    }
+    }else if(currentType==="studyguide"){
+      const steps=Array.isArray(ai?.steps)?ai.steps:[];
+      const tip=String(ai?.tip||"");
+      if(!steps.length)throw new Error("The AI did not return a study guide.");
 
-    else if(currentType==='summary'){
-      const summary=String(content?.summary||'');
-      const remember=Array.isArray(content?.remember)?content.remember:[];
       outputBox.innerHTML=
-        '<div class="result"><h5>'+esc(topic)+' — Summary</h5>'+
-        '<p>'+esc(summary)+'</p>'+
-        '<h6>Remember</h6>'+
-        '<p>'+remember.map(x=>esc(String(x))).join(' • ')+'</p></div>';
-    }
+        `<div class="result"><h5>${esc(topic)} — Study Guide</h5>`+
+        `<h6>Suggested Flow</h6><ul>`+
+        steps.map((x,i)=>`<li><strong>Step ${i+1}:</strong> ${esc(String(x))}</li>`).join("")+
+        `</ul><h6>Study Tip</h6><p>${esc(tip)}</p></div>`;
 
-    else if(currentType==='studyguide'){
-      const steps=Array.isArray(content?.steps)?content.steps:[];
-      const tip=String(content?.tip||'');
-      outputBox.innerHTML=
-        '<div class="result"><h5>'+esc(topic)+' — Study Guide</h5>'+
-        '<h6>Suggested Flow</h6><ul>'+
-        steps.map((x,i)=>'<li><strong>Step '+(i+1)+':</strong> '+esc(String(x))+'</li>').join('')+
-        '</ul><h6>Study Tip</h6><p>'+esc(tip)+'</p></div>';
+      savedContent={steps,tip};
     }
 
     await saveGeneratedStudyMaterial({
@@ -4040,11 +4064,9 @@ async function makePreview(){
   }catch(error){
     console.error("CATHS AI generation error:",error);
     outputBox.innerHTML=
-      '<div class="empty-state"><div>'+
-      '<div class="mini-robot">⚠</div>'+
-      '<strong>AI could not generate the material</strong>'+
-      '<p>'+esc(error?.message||'Please try again.')+'</p>'+
-      '</div></div>';
+      `<div class="empty-state"><div><div class="mini-robot">⚠</div>`+
+      `<strong>AI could not generate the material</strong>`+
+      `<p>${esc(error?.message||"Please try again.")}</p></div></div>`;
   }
 }
 
@@ -6238,7 +6260,7 @@ if(homeBox && studyBox){
     thread=document.createElement('section');
     thread.id='cgAiThread';
     thread.className='cg-ai-thread';
-    thread.innerHTML='<div class="cg-ai-thread-head"><strong>CATHIANS AI Assistant</strong><span>Preview</span></div><div class="cg-ai-unavailable"><strong>AI currently unavailable.</strong><span>Coming soon — we are preparing the CATHIANS AI Assistant. Your request is kept editable for now.</span></div><div class="cg-ai-message"><strong>Coming soon Excited?</strong><br>The CATHIANS AI Assistant is being prepared. You can still type and keep building your study request while the AI is unavailable.</div><div class="cg-ai-note">Your message stays editable. No AI response is generated yet.</div>';
+    thread.innerHTML='<div class="cg-ai-thread-head"><strong>CATHIANS AI Assistant</strong><span>AI Connected</span></div><div class="cg-ai-message"><strong>Ask me anything about your study topic.</strong><br>I can explain concepts, help you review, and answer questions from your request.</div><div class="cg-ai-note">AI responses are generated through the secure CATHS-MAIN AI backend.</div>';
     studyBox.parentElement.insertBefore(thread, studyBox.nextElementSibling);
   }
   const syncEnter=()=>{
@@ -6254,26 +6276,21 @@ if(homeBox && studyBox){
   });
   syncEnter();
   const send=async()=>{
-    const userText=homeBox.value.trim();
-    if(!userText)return;
+    const question=homeBox.value.trim();
+    if(!question)return;
 
     thread.classList.add('visible');
-
-    const messageEl=thread.querySelector('.cg-ai-message');
-    const unavailable=thread.querySelector('.cg-ai-unavailable');
-    if(unavailable) unavailable.remove();
-
-    messageEl.innerHTML='<strong>CATHIANS AI Assistant</strong><br><span>Thinking…</span>';
+    const messageBox=thread.querySelector('.cg-ai-message');
+    messageBox.innerHTML='<strong>CATHIANS AI Assistant</strong><br>Thinking…';
 
     try{
-      const authUser = window.studyAuthStateReady ? await window.studyAuthStateReady : null;
-      if(!authUser){
-        messageEl.innerHTML='<strong>Sign in required</strong><br>Please sign in first so CATHS-MAIN AI can answer your question.';
-        thread.scrollIntoView({behavior:'smooth',block:'nearest'});
+      const user=currentUser || (window.studyAuthStateReady ? await window.studyAuthStateReady : null);
+      if(!user){
+        messageBox.innerHTML='<strong>Sign in required</strong><br>Please sign in first so CATHS-MAIN AI can answer your question.';
         return;
       }
 
-      const token=await authUser.getIdToken();
+      const token=await user.getIdToken();
       const response=await fetch("https://caths-ai.reyvengarcia05.workers.dev",{
         method:"POST",
         headers:{
@@ -6281,26 +6298,21 @@ if(homeBox && studyBox){
           "Authorization":"Bearer "+token
         },
         body:JSON.stringify({
-          message:`You are the CATHS-MAIN AI Study Assistant. Answer this student question clearly and simply. Question: ${userText}`
+          message:"You are the CATHS-MAIN AI Study Assistant. Answer the student's question clearly and simply. Student question: "+question
         })
       });
 
       const data=await response.json().catch(()=>({}));
-      if(!response.ok) throw new Error(data?.error||'AI request failed.');
+      if(!response.ok)throw new Error(data?.error||"The AI service could not process the request.");
 
-      messageEl.innerHTML=
-        '<strong>CATHIANS AI Assistant</strong><br>'+
-        escHtml(data?.output||'I could not generate an answer right now.');
+      messageBox.innerHTML='<strong>CATHIANS AI Assistant</strong><br>'+escHtml(data?.output||"I could not generate an answer right now.");
     }catch(error){
-      console.error('Home AI error:',error);
-      messageEl.innerHTML=
-        '<strong>CATHIANS AI Assistant</strong><br>'+
-        'Sorry, I could not reach the AI right now. Please try again.';
+      console.error("CATHS home AI error:",error);
+      messageBox.innerHTML='<strong>CATHIANS AI Assistant</strong><br>Sorry, I could not reach the AI right now. Please try again.';
     }
 
     thread.scrollIntoView({behavior:'smooth',block:'nearest'});
   };
-
   enter.addEventListener('click',send);
   inlineUpload?.addEventListener('click',()=>el('cgFileInput')?.click());
   inlineDecks?.addEventListener('click',()=>{
