@@ -4823,6 +4823,121 @@ input:focus,textarea:focus,select:focus{
 })();
 </script>
 
+
+<style id="cathians-progress-clean-fire-final">
+/* =========================================================
+   PROGRESS ONLY — fire.png with glow, NO particles
+   ========================================================= */
+
+/* Remove every known particle element from Progress. */
+#cgProgressView .cathians-fire-particles,
+#cgProgressView .cathians-fire-particle,
+#cgProgressView .lb-fire-particle,
+#cgProgressView [class*="particle"],
+#cgProgressView [class*="ember"]{
+  display:none!important;
+  visibility:hidden!important;
+  animation:none!important;
+  opacity:0!important;
+  box-shadow:none!important;
+}
+
+/* Remove particle pseudo-elements only in Progress. */
+#cgProgressView .streak-flame::before,
+#cgProgressView .streak-flame::after,
+#cgProgressView .progress-avatar-slot::before,
+#cgProgressView .progress-avatar-slot::before{
+  content:none!important;
+  display:none!important;
+  animation:none!important;
+}
+
+/* Keep the actual fire.png visible with a clean transparent background. */
+#cgProgressView .streak-flame{
+  background:url("fire.png") center/contain no-repeat!important;
+  background-color:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  filter:
+    drop-shadow(0 0 7px rgba(255,133,47,.24))
+    drop-shadow(0 0 16px rgba(255,184,71,.13))!important;
+  animation:cathiansProgressFireGlow 1.9s ease-in-out infinite!important;
+}
+
+/* Veteran/progress fire image remains, but without particle layer. */
+#cgProgressView .progress-avatar-slot{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+  isolation:isolate!important;
+}
+#cgProgressView .progress-avatar-slot::after{
+  content:""!important;
+  position:absolute!important;
+  inset:8px!important;
+  background:url("fire.png") center/contain no-repeat!important;
+  border:0!important;
+  border-radius:0!important;
+  filter:
+    drop-shadow(0 0 6px rgba(255,133,47,.22))
+    drop-shadow(0 0 13px rgba(255,184,71,.12))!important;
+  animation:cathiansProgressFireGlowSmall 1.8s ease-in-out infinite!important;
+}
+
+@keyframes cathiansProgressFireGlow{
+  0%,100%{
+    transform:scale(1);
+    opacity:.96;
+    filter:
+      drop-shadow(0 0 6px rgba(255,133,47,.21))
+      drop-shadow(0 0 14px rgba(255,184,71,.11));
+  }
+  50%{
+    transform:scale(1.035);
+    opacity:1;
+    filter:
+      drop-shadow(0 0 8px rgba(255,153,61,.29))
+      drop-shadow(0 0 18px rgba(255,184,71,.15));
+  }
+}
+@keyframes cathiansProgressFireGlowSmall{
+  0%,100%{transform:scale(.98);opacity:.94}
+  50%{transform:scale(1.035);opacity:1}
+}
+</style>
+
+<script id="cathians-progress-remove-particles-runtime">
+(function(){
+  'use strict';
+
+  function cleanProgressParticles(){
+    const progress=document.getElementById('cgProgressView');
+    if(!progress)return;
+
+    progress.querySelectorAll(
+      '.cathians-fire-particles,'+
+      '.cathians-fire-particle,'+
+      '.lb-fire-particle,'+
+      '[class*="particle"],'+
+      '[class*="ember"]'
+    ).forEach(el=>el.remove());
+  }
+
+  cleanProgressParticles();
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',cleanProgressParticles,{once:true});
+  }
+
+  const observer=new MutationObserver(cleanProgressParticles);
+  const progress=document.getElementById('cgProgressView');
+  if(progress)observer.observe(progress,{childList:true,subtree:true});
+
+  window.addEventListener('load',cleanProgressParticles,{once:true});
+})();
+</script>
+
 </head>
 <body>
 <main class="page">
