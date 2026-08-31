@@ -9107,6 +9107,29 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     modal.setAttribute('aria-hidden','true');
     document.body.classList.remove('modal-open');
   }
+  function removeRenderedDeck(id){
+    const target=String(id||'');
+    if(!target)return;
+    ['#cgDecksAll','#cgGameReviewersGrid'].forEach(selector=>{
+      document.querySelectorAll(`${selector} .cg-deck-card,${selector} .cg-game-card`).forEach(card=>{
+        const ids=[
+          card.dataset.deckId,
+          card.dataset.v25DeckId,
+          card.dataset.v27DeckId,
+          card.dataset.v28DeckId,
+          card.querySelector('[data-deck-id]')?.dataset.deckId,
+          card.querySelector('[data-mid]')?.dataset.mid
+        ].filter(Boolean).map(String);
+        if(ids.includes(target)){
+          card.style.transition='opacity .22s ease, transform .22s ease, max-height .22s ease, margin .22s ease';
+          card.style.opacity='0';
+          card.style.transform='translateY(-4px) scale(.98)';
+          setTimeout(()=>card.remove(),220);
+        }
+      });
+    });
+  }
+
   async function removeDeck(item){
     if(!item)return;
     const id=String(item.id||'');
@@ -9126,8 +9149,11 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
       }catch(e){cloudOk=false;console.warn('Recycle Bin cloud delete failed:',e)}
     }
     if(localOk&&(cloudOk||!cloudAttempted)){
+      /* Permanently remove it without reloading the deck view. Re-fetching
+         immediately can briefly show a stale cloud copy; update the current
+         cards in-place instead. */
+      removeRenderedDeck(id);
       window.showGameToast?.('Deck deleted.');
-      try{await window.loadCgDecksView?.();}catch(_){}
       await render();
     }else{
       await render();
