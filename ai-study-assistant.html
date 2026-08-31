@@ -7956,22 +7956,6 @@ if(typeof oldSelectDeck==='function'){
 
 .cg-main[data-nav-view="leaderboards"] .cg-home-title,.cg-main[data-nav-view="leaderboards"] .cg-study-hero,.cg-main[data-nav-view="leaderboards"] .cg-study-box,.cg-main[data-nav-view="leaderboards"] .cg-source-row,.cg-main[data-nav-view="leaderboards"] .cg-section-spacer,.cg-main[data-nav-view="leaderboards"] .cg-tools-wrap,.cg-main[data-nav-view="leaderboards"] .workspace,.cg-main[data-nav-view="leaderboards"] .progress-strip{display:none!important;}
 .cg-main[data-nav-view="leaderboards"] .cg-leaderboards-view{display:block!important;opacity:1!important;transform:translateY(0)!important;}
-/* Leaderboards — match the smooth page-entry animation used by the other navigation views. */
-.cg-main[data-nav-view="leaderboards"] .cg-leaderboards-view > *{
-  animation:leaderboardPageItemIn .46s cubic-bezier(.22,1,.36,1) both;
-}
-.cg-main[data-nav-view="leaderboards"] .cg-leaderboards-view .lb-page-head{animation-delay:.02s}
-.cg-main[data-nav-view="leaderboards"] .cg-leaderboards-view .lb-filter-wrap{animation-delay:.07s}
-.cg-main[data-nav-view="leaderboards"] .cg-leaderboards-view .lb-board-card:nth-child(1){animation-delay:.12s}
-.cg-main[data-nav-view="leaderboards"] .cg-leaderboards-view .lb-board-card:nth-child(2){animation-delay:.18s}
-@keyframes leaderboardPageItemIn{
-  from{opacity:0;transform:translateY(14px) scale(.985)}
-  to{opacity:1;transform:translateY(0) scale(1)}
-}
-@media(prefers-reduced-motion:reduce){
-  .cg-main[data-nav-view="leaderboards"] .cg-leaderboards-view > *{animation:none!important}
-}
-
 .cg-nav a[data-cg-view="leaderboards"].active{background:#f5ecff!important;color:#7b43d1!important;}.cg-nav a[data-cg-view="leaderboards"].active .cg-icon-slot{background:#ead8ff!important;}
 
 .cg-leaderboards-view{padding-bottom:56px;}.lb-page-head{margin:34px 0 20px 2px;}.lb-page-head h2{font-size:34px;letter-spacing:-1px;color:#172033;margin-top:2px}.lb-page-head p{font-size:11px;color:#788397;margin-top:7px;font-weight:600}.lb-filter-wrap{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 18px}.lb-filter{border:1px solid #dfe4ec;background:#fff;color:#5e697c;border-radius:12px;padding:9px 12px;font:800 8.5px/1 system-ui,sans-serif;cursor:pointer;transition:.2s ease;box-shadow:0 5px 14px rgba(30,43,69,.035)}.lb-filter:hover{transform:translateY(-1px);border-color:#cfd6e2}.lb-filter.active{color:#fff;background:linear-gradient(135deg,#6b4fe6,#9b63e8);border-color:#7657e8;box-shadow:0 8px 22px rgba(107,79,230,.22),0 0 22px rgba(155,99,232,.16)}
@@ -7991,27 +7975,7 @@ if(!main||!nav.length||!lbView)return;
 const esc=v=>String(v??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const grades=['all',...Array.from({length:11},(_,i)=>String(i+7))];let selected='all';
 function setActive(view){nav.forEach(a=>a.classList.toggle('active',a.dataset.cgView===view));}
-let leaderboardViewTimer=null;
-function setView(view){
-  if(view==='profile'){window.location.href='profile.html';return}
-  try{document.getElementById('leaderboardPanel')?.classList.add('hidden');document.body.classList.remove('leaderboard-open')}catch(_){ }
-  if(leaderboardViewTimer)window.clearTimeout(leaderboardViewTimer);
-  main.classList.add('cg-transitioning');
-  leaderboardViewTimer=window.setTimeout(()=>{
-    main.dataset.navView=view;
-    main.classList.remove('study-tools-only','study-tools-open','workspace-active');
-    setActive(view);
-    const labels={home:'Home',progress:'Progress',leaderboards:'Leaderboards',library:'My decks','game-reviewers':'Game Reviewers','add-reviewer':'Add Reviewers'};
-    if(title)title.textContent=labels[view]||'';
-    if(view==='leaderboards'){
-      document.querySelectorAll('.cg-nav-view').forEach(x=>x.setAttribute('aria-hidden',String(x.id!=='cgLeaderboardsView')));
-      loadPage();
-    }
-    window.scrollTo({top:0,behavior:'smooth'});
-    window.requestAnimationFrame(()=>main.classList.remove('cg-transitioning'));
-    leaderboardViewTimer=null;
-  },140);
-}
+function setView(view){if(view==='profile'){window.location.href='profile.html';return}try{document.getElementById('leaderboardPanel')?.classList.add('hidden');document.body.classList.remove('leaderboard-open')}catch(_){}main.dataset.navView=view;main.classList.remove('study-tools-only','study-tools-open','workspace-active');setActive(view);const labels={home:'Home',progress:'Progress',leaderboards:'Leaderboards',library:'My decks','game-reviewers':'Game Reviewers','add-reviewer':'Add Reviewers'};if(title)title.textContent=labels[view]||'';if(view==='leaderboards'){document.querySelectorAll('.cg-nav-view').forEach(x=>x.setAttribute('aria-hidden',String(x.id!=='cgLeaderboardsView')));loadPage()}window.scrollTo({top:0,behavior:'smooth'})}
 const lbNav=nav.find(a=>a.dataset.cgView==='leaderboards');if(lbNav){lbNav.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();setView('leaderboards')},{capture:true});lbNav.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setView('leaderboards')}})}
 const oldSet=window.cgSetView;window.cgSetView=function(view){if(view==='leaderboards')setView('leaderboards');else if(typeof oldSet==='function')oldSet(view)};
 function renderFilters(){pageFilters.innerHTML=grades.map(g=>`<button type="button" class="lb-filter ${selected===g?'active':''}" data-lb-grade="${g}">${g==='all'?'Overall':'G'+g}</button>`).join('');pageFilters.querySelectorAll('[data-lb-grade]').forEach(b=>b.addEventListener('click',()=>{selected=b.dataset.lbGrade||'all';renderFilters();loadPage()}))}renderFilters();
