@@ -3778,6 +3778,610 @@ input:focus,textarea:focus,select:focus{
 }
 </style>
 
+
+<style id="cathians-top-deck-delete">
+/* =========================================================
+   My Decks — top-right delete action + smooth deletion
+   ========================================================= */
+
+.cg-deck-card.v25-compact-card{
+  position:relative!important;
+}
+
+.v25-deck-color{
+  position:relative!important;
+  overflow:visible!important;
+}
+
+/* Delete button sits at the top-right of the colored deck header. */
+.cathians-top-deck-delete-btn{
+  position:absolute!important;
+  right:11px!important;
+  top:11px!important;
+  z-index:5!important;
+  height:30px!important;
+  min-width:62px!important;
+  padding:0 10px!important;
+  border:1px solid rgba(255,255,255,.46)!important;
+  border-radius:10px!important;
+  background:rgba(7,27,70,.20)!important;
+  color:#fff!important;
+  backdrop-filter:blur(7px)!important;
+  -webkit-backdrop-filter:blur(7px)!important;
+  font:800 8px/1 system-ui,sans-serif!important;
+  letter-spacing:.15px!important;
+  cursor:pointer!important;
+  box-shadow:0 5px 14px rgba(0,0,0,.10)!important;
+  transition:transform .2s ease,background .2s ease,box-shadow .2s ease!important;
+}
+.cathians-top-deck-delete-btn:hover{
+  transform:translateY(-1px) scale(1.03)!important;
+  background:rgba(195,35,54,.88)!important;
+  border-color:rgba(255,255,255,.65)!important;
+  box-shadow:0 8px 18px rgba(148,24,41,.24)!important;
+}
+.cathians-top-deck-delete-btn:active{
+  transform:scale(.96)!important;
+}
+
+/* Existing bottom delete controls are unnecessary now. */
+.cg-deck-card .cg-deck-delete,
+.cg-deck-card .v27-card-delete{
+  display:none!important;
+}
+
+/* Smooth collapsing/fading removal. */
+.cg-deck-card.deck-delete-exit{
+  pointer-events:none!important;
+  animation:cathiansDeckDelete .42s cubic-bezier(.22,1,.36,1) forwards!important;
+}
+@keyframes cathiansDeckDelete{
+  0%{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    filter:blur(0);
+    max-height:190px;
+    margin-bottom:0;
+  }
+  45%{
+    opacity:.58;
+    transform:translateY(-6px) scale(.985);
+    filter:blur(.25px);
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-18px) scale(.94);
+    filter:blur(3px);
+    max-height:0;
+    margin-top:-8px;
+    margin-bottom:-8px;
+  }
+}
+
+/* Modal polish for deck deletion. */
+#deleteDeckModal .cathians-confirm-card{
+  transform:translateY(8px) scale(.97);
+  opacity:0;
+  transition:transform .22s ease,opacity .22s ease!important;
+}
+#deleteDeckModal:not(.hidden) .cathians-confirm-card{
+  transform:translateY(0) scale(1);
+  opacity:1;
+}
+#deleteDeckModal .confirm-eyebrow{
+  color:#1976ff!important;
+}
+#deleteDeckModal .danger{
+  background:linear-gradient(135deg,#e44a5c,#c9273d)!important;
+  color:#fff!important;
+  border:0!important;
+  box-shadow:0 9px 20px rgba(201,39,61,.18)!important;
+}
+#deleteDeckModal .danger:hover{
+  transform:translateY(-1px)!important;
+  filter:brightness(1.04);
+}
+@media(max-width:760px){
+  .cathians-top-deck-delete-btn{
+    right:8px!important;
+    top:8px!important;
+    height:26px!important;
+    min-width:55px!important;
+    padding:0 8px!important;
+    font-size:7px!important;
+    border-radius:9px!important;
+  }
+}
+</style>
+
+<script id="cathians-top-deck-delete-js">
+(function(){
+  'use strict';
+
+  const SELECTOR=[
+    '#cgDecksAll .cg-deck-card.v25-compact-card',
+    '#cgDecksAll .cg-deck-card'
+  ].join(',');
+
+  const escTitle=v=>String(v??'').trim()||'Untitled Study Material';
+
+  function decorateDeck(card){
+    if(!card || card.querySelector('.cathians-top-deck-delete-btn')) return;
+
+    const id=card.dataset.v28DeckId||card.dataset.v27DeckId||card.dataset.v25DeckId||'';
+    if(!id) return;
+
+    const title=card.querySelector('h3')?.textContent?.trim()||'Untitled Study Material';
+    const header=card.querySelector('.v25-deck-color')||card;
+
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='cathians-top-deck-delete-btn';
+    button.textContent='Delete';
+    button.setAttribute('aria-label','Delete deck '+escTitle(title));
+    button.title='Delete deck';
+
+    button.addEventListener('click',function(e){
+      e.preventDefault();
+      e.stopPropagation();
+
+      let item={
+        id,
+        topic:title
+      };
+
+      /* Preserve the full deck object when the renderer exposes it. */
+      const all=[...document.querySelectorAll('#cgDecksAll .cg-deck-card')];
+      const idx=all.indexOf(card);
+      if(Array.isArray(window.__cathiansDeckDocs) && window.__cathiansDeckDocs[idx]){
+        item=window.__cathiansDeckDocs[idx];
+      }
+
+      if(typeof window.openDeleteDeckModal==='function'){
+        window.openDeleteDeckModal(item);
+      }
+    });
+
+    header.appendChild(button);
+  }
+
+  function decorateAll(){
+    document.querySelectorAll(SELECTOR).forEach(decorateDeck);
+  }
+
+  /* Capture rendered deck data so the top button can pass the full object. */
+  const oldLoad=window.loadCgDecksView;
+  if(typeof oldLoad==='function'){
+    window.loadCgDecksView=async function(){
+      const result=await oldLoad.apply(this,arguments);
+      setTimeout(()=>{
+        window.__cathiansDeckDocs=[];
+        try{
+          const cards=[...document.querySelectorAll('#cgDecksAll .cg-deck-card')];
+          window.__cathiansDeckDocs=cards.map(c=>({
+            id:c.dataset.v28DeckId||c.dataset.v27DeckId||c.dataset.v25DeckId||'',
+            topic:c.querySelector('h3')?.textContent?.trim()||'Untitled Study Material'
+          }));
+        }catch(_){}
+        decorateAll();
+      },30);
+      return result;
+    };
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',decorateAll,{once:true});
+  }else{
+    decorateAll();
+  }
+
+  const observer=new MutationObserver(decorateAll);
+  observer.observe(document.body,{childList:true,subtree:true});
+})();
+</script>
+
+
+<style id="cathians-delete-visible-v2">
+/* Always-visible top-right Delete button on every deck card */
+#cgDecksAll .cg-deck-card{
+  position:relative!important;
+  overflow:visible!important;
+}
+#cgDecksAll .cathians-delete-visible-btn{
+  position:absolute!important;
+  top:10px!important;
+  right:10px!important;
+  z-index:50!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  height:30px!important;
+  min-width:58px!important;
+  padding:0 10px!important;
+  border:1px solid rgba(255,255,255,.60)!important;
+  border-radius:10px!important;
+  background:rgba(15,43,84,.72)!important;
+  color:#fff!important;
+  font:800 8px/1 Poppins,system-ui,sans-serif!important;
+  cursor:pointer!important;
+  box-shadow:0 6px 15px rgba(0,0,0,.16)!important;
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+  transform:none!important;
+  transition:background .2s ease,transform .2s ease,box-shadow .2s ease!important;
+}
+#cgDecksAll .cathians-delete-visible-btn:hover{
+  background:#d72d45!important;
+  transform:translateY(-1px)!important;
+  box-shadow:0 9px 20px rgba(180,29,51,.28)!important;
+}
+#cgDecksAll .cathians-delete-visible-btn:active{
+  transform:scale(.96)!important;
+}
+
+/* Give the card heading room so it doesn't collide with the button. */
+#cgDecksAll .v25-deck-body h3{
+  padding-right:72px!important;
+}
+#cgDecksAll .cg-deck-card h3{
+  padding-right:72px!important;
+}
+
+@media(max-width:760px){
+  #cgDecksAll .cathians-delete-visible-btn{
+    top:7px!important;
+    right:7px!important;
+    min-width:52px!important;
+    height:26px!important;
+    padding:0 8px!important;
+    font-size:7px!important;
+    border-radius:8px!important;
+  }
+  #cgDecksAll .v25-deck-body h3,
+  #cgDecksAll .cg-deck-card h3{
+    padding-right:62px!important;
+  }
+}
+</style>
+
+<script id="cathians-delete-visible-v2-js">
+(function(){
+  'use strict';
+
+  function getDeckId(card){
+    return card?.dataset?.v28DeckId ||
+           card?.dataset?.v27DeckId ||
+           card?.dataset?.v25DeckId ||
+           card?.querySelector('[data-delete-deck-id]')?.dataset?.deleteDeckId ||
+           '';
+  }
+
+  function decorate(){
+    const box=document.getElementById('cgDecksAll');
+    if(!box) return;
+
+    box.querySelectorAll('.cg-deck-card').forEach(card=>{
+      if(card.querySelector('.cathians-delete-visible-btn')) return;
+
+      const id=getDeckId(card);
+      if(!id) return;
+
+      const title=(card.querySelector('h3')?.textContent||'Untitled Study Material').trim();
+
+      const btn=document.createElement('button');
+      btn.type='button';
+      btn.className='cathians-delete-visible-btn';
+      btn.textContent='Delete';
+      btn.title='Delete deck';
+      btn.setAttribute('aria-label','Delete deck '+title);
+
+      btn.addEventListener('click',e=>{
+        e.preventDefault();
+        e.stopPropagation();
+
+        const item={
+          id:id,
+          topic:title
+        };
+
+        if(typeof window.openDeleteDeckModal==='function'){
+          window.openDeleteDeckModal(item);
+        }
+      });
+
+      card.appendChild(btn);
+    });
+  }
+
+  function init(){
+    decorate();
+    setTimeout(decorate,100);
+    setTimeout(decorate,400);
+    setTimeout(decorate,900);
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',init,{once:true});
+  }else{
+    init();
+  }
+
+  const observer=new MutationObserver(decorate);
+  observer.observe(document.body,{childList:true,subtree:true});
+
+  window.addEventListener('load',decorate,{once:true});
+})();
+</script>
+
+
+<style id="cathians-mobile-nav-5-items">
+/* =========================================================
+   MOBILE NAV — 5 primary destinations + floating Add Reviewer
+   Desktop navigation remains unchanged.
+   ========================================================= */
+
+@media(max-width:760px){
+
+  /* Five equal-width bottom-navigation items. */
+  .cg-shell{
+    left:10px!important;
+    right:10px!important;
+    top:auto!important;
+    bottom:10px!important;
+    width:auto!important;
+    height:82px!important;
+    min-height:82px!important;
+    padding:7px!important;
+    border-radius:25px!important;
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    background:rgba(255,255,255,.94)!important;
+    border:1px solid rgba(147,203,255,.30)!important;
+    box-shadow:
+      0 16px 38px rgba(15,70,135,.16),
+      0 4px 14px rgba(25,118,255,.07)!important;
+    backdrop-filter:blur(18px)!important;
+    -webkit-backdrop-filter:blur(18px)!important;
+    z-index:99000!important;
+  }
+
+  .cg-brand,
+  .cg-decks,
+  .cg-add{
+    display:none!important;
+  }
+
+  .cg-nav{
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    flex:1 1 auto!important;
+    width:100%!important;
+    height:100%!important;
+    gap:4px!important;
+    align-items:stretch!important;
+  }
+
+  .cg-nav a{
+    min-width:0!important;
+    min-height:68px!important;
+    height:68px!important;
+    padding:6px 3px!important;
+    border-radius:19px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+    align-items:center!important;
+    gap:4px!important;
+    font-size:9px!important;
+    font-weight:800!important;
+    line-height:1.05!important;
+    text-align:center!important;
+    transform:none!important;
+    color:#617b9b!important;
+    overflow:hidden!important;
+  }
+
+  .cg-nav a::before{
+    display:none!important;
+  }
+
+  .cg-nav a .cg-icon-slot{
+    width:40px!important;
+    height:40px!important;
+    flex:0 0 40px!important;
+    border-radius:13px!important;
+    background:transparent!important;
+    border:0!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    transform:none!important;
+  }
+
+  .cg-nav a .cg-icon-slot img{
+    width:100%!important;
+    height:100%!important;
+    object-fit:contain!important;
+    display:block!important;
+  }
+
+  .cg-nav a span:last-child{
+    display:block!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    max-width:100%!important;
+  }
+
+  .cg-nav a.active{
+    color:#176fff!important;
+    background:linear-gradient(145deg,#edf7ff,#e2f1ff)!important;
+    box-shadow:
+      inset 0 0 0 1px rgba(101,181,255,.20),
+      0 7px 18px rgba(25,118,255,.09)!important;
+  }
+
+  .cg-nav a.active .cg-icon-slot{
+    background:transparent!important;
+  }
+
+  /* Hide Add Reviewer from the 5-item mobile nav only. */
+  .cg-nav a[data-cg-view="add-reviewer"]{
+    display:none!important;
+  }
+
+  /* Large floating Add Reviewer circle, inspired by the reference. */
+  #cathiansMobileAddReviewer{
+    position:fixed!important;
+    right:18px!important;
+    bottom:104px!important;
+    z-index:98999!important;
+    width:72px!important;
+    height:72px!important;
+    min-width:72px!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:50%!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    background:
+      radial-gradient(circle at 30% 25%,rgba(80,167,255,.30),transparent 35%),
+      linear-gradient(145deg,#071a46,#102e69)!important;
+    box-shadow:
+      0 15px 30px rgba(4,27,72,.30),
+      0 0 0 5px rgba(96,178,255,.08),
+      0 0 25px rgba(25,118,255,.13)!important;
+    cursor:pointer!important;
+    transition:transform .24s cubic-bezier(.22,1,.36,1),box-shadow .24s ease!important;
+  }
+
+  #cathiansMobileAddReviewer:hover{
+    transform:translateY(-3px) scale(1.045)!important;
+    box-shadow:
+      0 19px 36px rgba(4,27,72,.34),
+      0 0 0 6px rgba(96,178,255,.10),
+      0 0 32px rgba(25,118,255,.18)!important;
+  }
+
+  #cathiansMobileAddReviewer:active{
+    transform:scale(.95)!important;
+  }
+
+  #cathiansMobileAddReviewer img{
+    width:49px!important;
+    height:49px!important;
+    object-fit:contain!important;
+    display:block!important;
+    filter:drop-shadow(0 5px 9px rgba(0,0,0,.20))!important;
+  }
+
+  #cathiansMobileAddReviewer .cathians-add-label{
+    position:absolute!important;
+    bottom:-19px!important;
+    left:50%!important;
+    transform:translateX(-50%)!important;
+    white-space:nowrap!important;
+    font:800 7px/1 system-ui,sans-serif!important;
+    color:#31577f!important;
+    opacity:.88!important;
+  }
+
+  /* Give the page enough room for the larger floating/nav controls. */
+  .page{
+    padding-bottom:118px!important;
+  }
+  .cg-main{
+    padding-bottom:35px!important;
+  }
+}
+
+/* Hide the floating Add Reviewer control outside mobile. */
+@media(min-width:761px){
+  #cathiansMobileAddReviewer{
+    display:none!important;
+  }
+}
+</style>
+
+<script id="cathians-mobile-nav-images">
+(function(){
+  'use strict';
+
+  function setupNavImages(){
+    const game=document.querySelector('.cg-nav a[data-cg-view="game-reviewers"] .cg-icon-slot img');
+    if(game){
+      game.src='2.png';
+      game.alt='';
+      game.loading='eager';
+      game.decoding='async';
+      game.style.objectFit='contain';
+    }
+
+    const addNav=document.querySelector('.cg-nav a[data-cg-view="add-reviewer"] .cg-icon-slot');
+    if(addNav){
+      let img=addNav.querySelector('img');
+      if(!img){
+        img=document.createElement('img');
+        img.alt='';
+        img.loading='eager';
+        img.decoding='async';
+        img.style.cssText='width:100%;height:100%;object-fit:contain;display:block;';
+        addNav.appendChild(img);
+      }
+      img.src='8.png';
+    }
+  }
+
+  function setupFloatingAdd(){
+    if(window.innerWidth>760) return;
+
+    let btn=document.getElementById('cathiansMobileAddReviewer');
+    if(!btn){
+      btn=document.createElement('button');
+      btn.id='cathiansMobileAddReviewer';
+      btn.type='button';
+      btn.setAttribute('aria-label','Add Reviewer');
+      btn.title='Add Reviewer';
+      btn.innerHTML='<img src="8.png" alt=""><span class="cathians-add-label">Add Reviewer</span>';
+
+      btn.addEventListener('click',function(e){
+        e.preventDefault();
+        e.stopPropagation();
+
+        /* Use the app's existing navigation so the original Add Reviewer
+           flow, including its popup, continues to work. */
+        if(typeof window.cgSetView==='function'){
+          window.cgSetView('add-reviewer');
+        }else{
+          document.querySelector('.cg-nav a[data-cg-view="add-reviewer"]')?.click();
+        }
+      });
+
+      document.body.appendChild(btn);
+    }
+  }
+
+  function init(){
+    setupNavImages();
+    setupFloatingAdd();
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',init,{once:true});
+  }else{
+    init();
+  }
+
+  window.addEventListener('load',init,{once:true});
+  window.addEventListener('resize',function(){
+    setupFloatingAdd();
+  });
+})();
+</script>
+
 </head>
 <body>
 <main class="page">
@@ -5542,14 +6146,37 @@ const deleteDeckConfirm=document.getElementById('deleteDeckConfirm');
 const deleteDeckCancel=document.getElementById('deleteDeckCancel');
 const deleteDeckClose=document.getElementById('deleteDeckClose');
 let pendingDeleteDeck=null;
-function openDeleteDeckModal(item){pendingDeleteDeck=item||null;if(!pendingDeleteDeck)return;deleteDeckTitle.textContent='Are you sure you want to delete this flashcard?';deleteDeckMessage.textContent=`“${pendingDeleteDeck.topic||'Untitled Study Material'}” will be removed from your decks.`;deleteDeckModal.classList.remove('hidden');deleteDeckModal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');}
+function openDeleteDeckModal(item){pendingDeleteDeck=item||null;if(!pendingDeleteDeck)return;deleteDeckTitle.textContent='Are you sure you want to delete this deck?';deleteDeckMessage.textContent=`“${pendingDeleteDeck.topic||'Untitled Study Material'}” will be removed from your decks.`;deleteDeckModal.classList.remove('hidden');deleteDeckModal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');}
 function closeDeleteDeckModal(){deleteDeckModal.classList.add('hidden');deleteDeckModal.setAttribute('aria-hidden','true');pendingDeleteDeck=null;document.body.classList.remove('modal-open');}
 async function deleteSavedDeck(item){
   if(!item)return;
+  const deckId=String(item.id||'');
+  const cards=[...document.querySelectorAll('[data-v28-deck-id],[data-v27-deck-id],[data-v25-deck-id]')];
+  const card=cards.find(el=>String(el.dataset.v28DeckId||el.dataset.v27DeckId||el.dataset.v25DeckId||'')===deckId);
+  closeDeleteDeckModal();
+
+  /* Smooth deck-removal animation before the list refreshes. */
+  if(card){
+    card.classList.add('deck-delete-exit');
+    await new Promise(resolve=>setTimeout(resolve,420));
+  }
+
   const storageKey=currentUser?('cathsStudyMaterials:'+currentUser.uid):'cathsStudyMaterials:guest';
-  try{const local=JSON.parse(localStorage.getItem(storageKey)||'[]');localStorage.setItem(storageKey,JSON.stringify(local.filter(x=>String(x.id)!==String(item.id))));}catch(e){console.warn(e);}
-  if(currentUser&&window.studyFirebase&&!String(item.id).startsWith('local-')){try{const {db,doc,deleteDoc}=window.studyFirebase;await deleteDoc(doc(db,'studyMaterials',item.id));}catch(e){console.warn('Cloud deck delete failed:',e);showGameToast?.('Removed on this device, but the cloud copy could not be deleted.');}}
-  closeDeleteDeckModal();loadCgDecksView();loadStudyLibrary?.();
+  try{
+    const local=JSON.parse(localStorage.getItem(storageKey)||'[]');
+    localStorage.setItem(storageKey,JSON.stringify(local.filter(x=>String(x.id)!==deckId)));
+  }catch(e){console.warn(e);}
+  if(currentUser&&window.studyFirebase&&!deckId.startsWith('local-')){
+    try{
+      const {db,doc,deleteDoc}=window.studyFirebase;
+      await deleteDoc(doc(db,'studyMaterials',deckId));
+    }catch(e){
+      console.warn('Cloud deck delete failed:',e);
+      showGameToast?.('Removed on this device, but the cloud copy could not be deleted.');
+    }
+  }
+  loadCgDecksView();
+  loadStudyLibrary?.();
   showGameToast?.('Deck deleted.');
 }
 deleteDeckConfirm?.addEventListener('click',()=>{const item=pendingDeleteDeck;deleteSavedDeck(item);});
