@@ -9312,38 +9312,55 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     pointer-events:none!important;
   }
 
-  /* Hold the popup invisible while the navigation completes its exit. */
+  /* Keep the popup in a stable starting state while navigation exits. */
   body.cathians-overlay-staging [role="dialog"],
   body.cathians-overlay-staging [aria-modal="true"],
   body.cathians-overlay-staging [id*="Modal"],
   body.cathians-overlay-staging [id*="modal"],
   body.cathians-overlay-staging [id*="Popup"],
   body.cathians-overlay-staging [id*="popup"],
-  body.cathians-overlay-staging [id*="Popover"],
-  body.cathians-overlay-staging [id*="popover"],
-  body.cathians-overlay-staging [id*="Notification"],
-  body.cathians-overlay-staging [id*="notification"],
   body.cathians-overlay-staging [class*="-modal"],
   body.cathians-overlay-staging [class*="-popup"],
-  body.cathians-overlay-staging [class*="-popover"],
-  body.cathians-overlay-staging [class*="-notification"],
   body.cathians-overlay-staging [class*="-confirm"],
   body.cathians-overlay-staging [class*="-warning"],
   body.cathians-overlay-staging [class*="-alert"],
-  body.cathians-overlay-staging .v27-save-toast,
-  body.cathians-overlay-staging .game-toast{
+  body.cathians-overlay-staging .v25-deck-viewer,
+  body.cathians-overlay-staging .v25-share-overlay,
+  body.cathians-overlay-staging .v27-edit-overlay{
     opacity:0!important;
     visibility:hidden!important;
+    transform:translate3d(0,8px,0) scale(.985)!important;
     pointer-events:none!important;
+    animation:none!important;
   }
 
-  /* Give the revealed overlay a fresh, subtle entrance after the nav is gone. */
-  .cathians-popup-reveal{
-    animation:cathiansUniversalPopupReveal .24s cubic-bezier(.16,1,.3,1) both!important;
+  /* One smooth transition for the actual reveal. No keyframe restart = no blink. */
+  body.cathians-overlay-open [role="dialog"],
+  body.cathians-overlay-open [aria-modal="true"],
+  body.cathians-overlay-open [id*="Modal"],
+  body.cathians-overlay-open [id*="modal"],
+  body.cathians-overlay-open [id*="Popup"],
+  body.cathians-overlay-open [id*="popup"],
+  body.cathians-overlay-open [class*="-modal"],
+  body.cathians-overlay-open [class*="-popup"],
+  body.cathians-overlay-open [class*="-confirm"],
+  body.cathians-overlay-open [class*="-warning"],
+  body.cathians-overlay-open [class*="-alert"],
+  body.cathians-overlay-open .v25-deck-viewer,
+  body.cathians-overlay-open .v25-share-overlay,
+  body.cathians-overlay-open .v27-edit-overlay{
+    opacity:1!important;
+    visibility:visible!important;
+    transform:translate3d(0,0,0) scale(1)!important;
+    transition:opacity .34s ease,transform .40s cubic-bezier(.16,1,.3,1),visibility 0s linear!important;
+    will-change:opacity,transform;
+    backface-visibility:hidden;
+    -webkit-backface-visibility:hidden;
+    animation:none!important;
   }
-  @keyframes cathiansUniversalPopupReveal{
-    from{opacity:0;transform:translateY(8px) scale(.985)}
-    to{opacity:1;transform:translateY(0) scale(1)}
+
+  .cathians-popup-reveal{
+    animation:none!important;
   }
 
   @media(max-width:760px){
@@ -9363,19 +9380,17 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     body.cathians-overlay-staging [id*="modal"],
     body.cathians-overlay-staging [id*="Popup"],
     body.cathians-overlay-staging [id*="popup"],
-    body.cathians-overlay-staging [id*="Popover"],
-    body.cathians-overlay-staging [id*="popover"],
     body.cathians-overlay-staging [class*="-modal"],
     body.cathians-overlay-staging [class*="-popup"],
-    body.cathians-overlay-staging [class*="-popover"],
-    body.cathians-overlay-staging [class*="-notification"],
     body.cathians-overlay-staging [class*="-confirm"],
     body.cathians-overlay-staging [class*="-warning"],
     body.cathians-overlay-staging [class*="-alert"],
-    body.cathians-overlay-staging .v27-save-toast,
-    body.cathians-overlay-staging .game-toast{
+    body.cathians-overlay-staging .v25-deck-viewer,
+    body.cathians-overlay-staging .v25-share-overlay,
+    body.cathians-overlay-staging .v27-edit-overlay{
       opacity:0!important;
       visibility:hidden!important;
+      transform:translate3d(0,8px,0) scale(.985)!important;
     }
     .cathians-popup-reveal{animation:none!important}
   }
@@ -9397,19 +9412,14 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     '[id*="modal"]',
     '[id*="Popup"]',
     '[id*="popup"]',
-    '[id*="Popover"]',
-    '[id*="popover"]',
-    '[id*="Notification"]',
-    '[id*="notification"]',
     '[class*="-modal"]',
     '[class*="-popup"]',
-    '[class*="-popover"]',
-    '[class*="-notification"]',
     '[class*="-confirm"]',
     '[class*="-warning"]',
     '[class*="-alert"]',
-    '.v27-save-toast',
-    '.game-toast'
+    '.v25-deck-viewer',
+    '.v25-share-overlay',
+    '.v27-edit-overlay'
   ].join(',');
 
   const EXCLUDED_SELECTOR = [
@@ -9435,6 +9445,10 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     if(el.matches(EXCLUDED_SELECTOR)) return false;
     if(el.closest(NAV_SELECTOR)) return false;
 
+    /* Only transition the outermost popup. Nested dialogs/cards should not
+       re-trigger the global navigation animation and cause visible flicker. */
+    if(el.parentElement?.closest(popupSelector)) return false;
+
     const cs=getComputedStyle(el);
     const position=cs.position;
     const z=parseInt(cs.zIndex,10);
@@ -9452,10 +9466,10 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
   function revealOverlays(){
     const overlays=openOverlays();
     overlays.forEach(el=>{
-      el.classList.remove('cathians-popup-reveal');
-      void el.offsetWidth;
+      /* CSS transitions handle the reveal. Do not force a reflow or restart
+         an entrance animation; doing so produced the blinking effect. */
       el.classList.add('cathians-popup-reveal');
-      window.setTimeout(()=>el.classList.remove('cathians-popup-reveal'),280);
+      window.setTimeout(()=>el.classList.remove('cathians-popup-reveal'),450);
     });
   }
 
@@ -9723,6 +9737,59 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
 
   @media(prefers-reduced-motion:reduce){
     #gameModal *,#quizShootModal *,#matchingGameModal *,#sakModal *{transition:none !important;}
+  }
+</style>
+
+
+<!-- Final smooth-popup stability pass: one entrance transition, no blink/reflow restarts. -->
+<style id="cathians-final-smooth-popup-fix">
+  /* The global popup layer controls appearance; child game feedback animations
+     (animal/answer effects) are intentionally left untouched. */
+  body.cathians-overlay-open > [role="dialog"],
+  body.cathians-overlay-open > [aria-modal="true"],
+  body.cathians-overlay-open > [id*="Modal"],
+  body.cathians-overlay-open > [id*="modal"],
+  body.cathians-overlay-open > [id*="Popup"],
+  body.cathians-overlay-open > [id*="popup"],
+  body.cathians-overlay-open > [class*="-modal"],
+  body.cathians-overlay-open > [class*="-popup"],
+  body.cathians-overlay-open > .v25-deck-viewer,
+  body.cathians-overlay-open > .v25-share-overlay,
+  body.cathians-overlay-open > .v27-edit-overlay{
+    animation:none!important;
+    backface-visibility:hidden!important;
+    -webkit-backface-visibility:hidden!important;
+    transform-origin:center center!important;
+  }
+
+  body.cathians-overlay-staging > [role="dialog"],
+  body.cathians-overlay-staging > [aria-modal="true"],
+  body.cathians-overlay-staging > [id*="Modal"],
+  body.cathians-overlay-staging > [id*="modal"],
+  body.cathians-overlay-staging > [id*="Popup"],
+  body.cathians-overlay-staging > [id*="popup"],
+  body.cathians-overlay-staging > [class*="-modal"],
+  body.cathians-overlay-staging > [class*="-popup"],
+  body.cathians-overlay-staging > .v25-deck-viewer,
+  body.cathians-overlay-staging > .v25-share-overlay,
+  body.cathians-overlay-staging > .v27-edit-overlay{
+    animation:none!important;
+  }
+
+  @media(prefers-reduced-motion:reduce){
+    body.cathians-overlay-open > [role="dialog"],
+    body.cathians-overlay-open > [aria-modal="true"],
+    body.cathians-overlay-open > [id*="Modal"],
+    body.cathians-overlay-open > [id*="modal"],
+    body.cathians-overlay-open > [id*="Popup"],
+    body.cathians-overlay-open > [id*="popup"],
+    body.cathians-overlay-open > [class*="-modal"],
+    body.cathians-overlay-open > [class*="-popup"],
+    body.cathians-overlay-open > .v25-deck-viewer,
+    body.cathians-overlay-open > .v25-share-overlay,
+    body.cathians-overlay-open > .v27-edit-overlay{
+      transition:none!important;
+    }
   }
 </style>
 
