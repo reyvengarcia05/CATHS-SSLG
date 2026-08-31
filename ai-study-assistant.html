@@ -6560,6 +6560,8 @@ if(progressLeaderboard){
 
 <style id="cathians-v24-enhancements">
 /* ===== V24: no-emoji, asset-ready UI polish ===== */
+/* Keep the development warning on Home only; hide it on every other navigation view. */
+.cg-main:not([data-nav-view="home"]) #cgAiWorkingBanner{display:none!important}
 .cg-ai-working-banner{
   display:flex;align-items:center;gap:10px;margin:0 0 10px;padding:10px 13px;border:1px solid #eadfba;border-radius:14px;
   background:linear-gradient(135deg,#fffdf3,#fff8dc);color:#6f5b28;box-shadow:0 7px 18px rgba(90,70,20,.045);font:800 11px/1.4 system-ui,sans-serif;
@@ -6640,6 +6642,17 @@ if(studyBox && homeBox){
     const banner=document.createElement('div');banner.id='cgAiWorkingBanner';banner.className='cg-ai-working-banner';
     banner.innerHTML='<span class="cg-ai-working-dot" aria-hidden="true"></span><span>AI assistant is still being developed<small>Your request and uploaded materials stay on this page while the AI backend is being prepared.</small></span>';
     studyBox.parentNode.insertBefore(banner,studyBox);
+  }
+  const updateAiBannerVisibility=()=>{
+    const banner=q('#cgAiWorkingBanner');
+    const main=document.querySelector('.cg-main');
+    if(banner) banner.style.display=(!main || main.dataset.navView==='home')?'':'none';
+  };
+  updateAiBannerVisibility();
+  const mainForAiBanner=document.querySelector('.cg-main');
+  if(mainForAiBanner && !mainForAiBanner.dataset.aiBannerObserver){
+    mainForAiBanner.dataset.aiBannerObserver='1';
+    new MutationObserver(updateAiBannerVisibility).observe(mainForAiBanner,{attributes:true,attributeFilter:['data-nav-view']});
   }
   if(!q('#cgHomeAttachments')){const a=document.createElement('div');a.id='cgHomeAttachments';a.className='cg-home-attachments';studyBox.appendChild(a)}
 }
