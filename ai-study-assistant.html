@@ -3330,6 +3330,222 @@ input:focus,textarea:focus,select:focus{
 }
 </style>
 
+
+<style id="cathians-subtle-fire-zoom">
+/* Unified, subtle zoom animation for every fire.png asset */
+@keyframes cathiansFireSoftZoom{
+  0%,100%{
+    transform:scale(1);
+    opacity:.96;
+  }
+  50%{
+    transform:scale(1.035);
+    opacity:1;
+  }
+}
+
+/* Large streak fire */
+.streak-flame{
+  animation:cathiansFireSoftZoom 1.9s ease-in-out infinite!important;
+}
+
+/* Leaderboard fire */
+.lb-fire-orb::before{
+  animation:cathiansFireSoftZoom 1.9s ease-in-out infinite!important;
+}
+
+/* Small fire indicators */
+.lb-fire-mini{
+  animation:cathiansFireSoftZoom 1.5s ease-in-out infinite!important;
+}
+
+/* Fire reward */
+.reward-fire::before{
+  animation:cathiansFireSoftZoom 1.5s ease-in-out infinite!important;
+}
+
+/* Veteran/progress fire */
+.progress-avatar-slot::after{
+  animation:cathiansFireSoftZoom 1.7s ease-in-out infinite!important;
+}
+
+/* Keep the animation subtle on small screens too */
+@media(max-width:760px){
+  .streak-flame,
+  .lb-fire-orb::before,
+  .lb-fire-mini,
+  .reward-fire::before,
+  .progress-avatar-slot::after{
+    animation-duration:1.8s!important;
+  }
+}
+</style>
+
+
+<style id="cathians-fire-glow-no-box">
+/* Remove every visible rectangular/container background around fire.png.
+   Keep only the asset itself with a soft glow. */
+.progress-avatar-slot,
+.reward-fire,
+.lb-fire-orb{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+  overflow:visible!important;
+}
+.progress-avatar-slot::after{
+  background:url("fire.png") center/contain no-repeat!important;
+  filter:drop-shadow(0 0 7px rgba(255,133,47,.22)) drop-shadow(0 0 16px rgba(255,184,71,.13))!important;
+}
+.reward-fire::before{
+  background:url("fire.png") center/contain no-repeat!important;
+  filter:drop-shadow(0 0 6px rgba(255,133,47,.20)) drop-shadow(0 0 12px rgba(255,184,71,.11))!important;
+}
+.lb-fire-orb::before{
+  background:url("fire.png") center/contain no-repeat!important;
+  filter:drop-shadow(0 0 7px rgba(255,133,47,.22)) drop-shadow(0 0 16px rgba(255,184,71,.12))!important;
+}
+.streak-ring-inner{
+  position:relative!important;
+}
+.streak-flame{
+  background:url("fire.png") center/contain no-repeat!important;
+  filter:drop-shadow(0 0 8px rgba(255,133,47,.22)) drop-shadow(0 0 18px rgba(255,184,71,.12))!important;
+}
+/* No white/colored tile behind the fire asset. */
+.lb-fire-orb,.progress-avatar-slot,.reward-fire,.streak-flame{
+  background-color:transparent!important;
+}
+</style>
+
+
+<style id="cathians-fire-particles">
+/* =========================================================
+   Fire particles behind every fire.png
+   Soft, small, non-distracting embers.
+   ========================================================= */
+
+/* Create a particle layer behind the image without adding a box. */
+.streak-flame,
+.lb-fire-orb,
+.lb-fire-mini,
+.reward-fire,
+.progress-avatar-slot{
+  position:relative!important;
+  isolation:isolate!important;
+}
+
+/* Large streak fire */
+.streak-flame::before{
+  content:""!important;
+  position:absolute!important;
+  inset:-26px!important;
+  z-index:-1!important;
+  pointer-events:none!important;
+  background:
+    radial-gradient(circle at 20% 72%,rgba(255,143,52,.85) 0 2px,transparent 3px),
+    radial-gradient(circle at 30% 37%,rgba(255,189,76,.75) 0 1.5px,transparent 3px),
+    radial-gradient(circle at 67% 25%,rgba(255,122,38,.78) 0 2px,transparent 3px),
+    radial-gradient(circle at 78% 65%,rgba(255,188,77,.75) 0 1.4px,transparent 3px),
+    radial-gradient(circle at 50% 6%,rgba(255,120,35,.62) 0 1.5px,transparent 3px);
+  filter:blur(.15px) drop-shadow(0 0 5px rgba(255,118,34,.44));
+  animation:cathiansFireParticles 1.65s ease-in-out infinite;
+}
+
+/* Leaderboard header fire */
+.lb-fire-orb::after{
+  content:""!important;
+  position:absolute!important;
+  inset:-17px!important;
+  z-index:-1!important;
+  pointer-events:none!important;
+  background:
+    radial-gradient(circle at 18% 72%,rgba(255,143,52,.85) 0 1.5px,transparent 3px),
+    radial-gradient(circle at 32% 32%,rgba(255,189,76,.72) 0 1.2px,transparent 3px),
+    radial-gradient(circle at 72% 28%,rgba(255,122,38,.76) 0 1.5px,transparent 3px),
+    radial-gradient(circle at 82% 70%,rgba(255,188,77,.68) 0 1.2px,transparent 3px);
+  filter:drop-shadow(0 0 5px rgba(255,118,34,.42));
+  animation:cathiansFireParticles .95s ease-in-out infinite;
+}
+
+/* Small inline fire: only a few tiny embers */
+.lb-fire-mini::before{
+  content:""!important;
+  position:absolute!important;
+  inset:-7px!important;
+  z-index:-1!important;
+  pointer-events:none!important;
+  background:
+    radial-gradient(circle at 17% 65%,rgba(255,143,52,.82) 0 1px,transparent 2px),
+    radial-gradient(circle at 79% 30%,rgba(255,189,76,.76) 0 1px,transparent 2px),
+    radial-gradient(circle at 58% 12%,rgba(255,122,38,.68) 0 1px,transparent 2px);
+  filter:drop-shadow(0 0 3px rgba(255,118,34,.38));
+  animation:cathiansFireParticles .9s ease-in-out infinite;
+}
+
+/* Reward fire */
+.reward-fire::after{
+  content:""!important;
+  position:absolute!important;
+  inset:-8px!important;
+  z-index:-1!important;
+  pointer-events:none!important;
+  background:
+    radial-gradient(circle at 22% 65%,rgba(255,143,52,.82) 0 1px,transparent 2px),
+    radial-gradient(circle at 78% 26%,rgba(255,189,76,.72) 0 1px,transparent 2px),
+    radial-gradient(circle at 52% 7%,rgba(255,122,38,.64) 0 1px,transparent 2px);
+  filter:drop-shadow(0 0 3px rgba(255,118,34,.34));
+  animation:cathiansFireParticles 1s ease-in-out infinite;
+}
+
+/* Progress/Veteran fire */
+.progress-avatar-slot::before{
+  content:""!important;
+  position:absolute!important;
+  inset:-11px!important;
+  z-index:-1!important;
+  pointer-events:none!important;
+  background:
+    radial-gradient(circle at 17% 68%,rgba(255,143,52,.82) 0 1.2px,transparent 2.5px),
+    radial-gradient(circle at 30% 28%,rgba(255,189,76,.72) 0 1px,transparent 2.5px),
+    radial-gradient(circle at 73% 24%,rgba(255,122,38,.72) 0 1.2px,transparent 2.5px),
+    radial-gradient(circle at 84% 69%,rgba(255,188,77,.68) 0 1px,transparent 2.5px);
+  filter:drop-shadow(0 0 4px rgba(255,118,34,.35));
+  animation:cathiansFireParticles 1.25s ease-in-out infinite;
+}
+
+@keyframes cathiansFireParticles{
+  0%,100%{
+    transform:translateY(2px) scale(.92);
+    opacity:.42;
+  }
+  25%{
+    transform:translate(-2px,-2px) scale(1);
+    opacity:.76;
+  }
+  55%{
+    transform:translate(2px,-7px) scale(1.04);
+    opacity:.92;
+  }
+  100%{
+    transform:translate(-1px,-12px) scale(.82);
+    opacity:0;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .streak-flame::before,
+  .lb-fire-orb::after,
+  .lb-fire-mini::before,
+  .reward-fire::after,
+  .progress-avatar-slot::before{
+    animation:none!important;
+    opacity:.7!important;
+  }
+}
+</style>
+
 </head>
 <body>
 <main class="page">
