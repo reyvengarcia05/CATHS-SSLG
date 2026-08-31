@@ -8966,105 +8966,6 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
 
 
 
-<!-- Final game-popup/navigation transition fix -->
-<style id="cathians-final-game-navigation-transition">
-  /* Keep the game chooser perfectly centered above every page layer. */
-  #gameModal{
-    position:fixed!important;
-    inset:0!important;
-    width:100vw!important;
-    height:100dvh!important;
-    margin:0!important;
-    padding:18px!important;
-    display:grid!important;
-    place-items:center!important;
-    align-items:center!important;
-    justify-items:center!important;
-    z-index:1000600!important;
-    overflow:hidden!important;
-  }
-  #gameModal.hidden{display:none!important}
-  #gameModal .game-modal-card{
-    position:relative!important;
-    top:auto!important;
-    right:auto!important;
-    bottom:auto!important;
-    left:auto!important;
-    margin:0!important;
-    width:min(92vw,430px)!important;
-    max-width:430px!important;
-    max-height:min(88dvh,760px)!important;
-    overflow:auto!important;
-    transform-origin:center center!important;
-    animation: cathiansGameCardIn .38s cubic-bezier(.16,1,.3,1) both!important;
-  }
-
-  /* Desktop side navigation slides smoothly to the left. */
-  .cg-shell{
-    transition:transform .42s cubic-bezier(.22,1,.36,1), opacity .30s ease, visibility .30s ease!important;
-    will-change:transform,opacity!important;
-  }
-  body.cathians-game-open .cg-shell{
-    transform:translateX(calc(-100% - 22px))!important;
-    opacity:0!important;
-    visibility:hidden!important;
-    pointer-events:none!important;
-  }
-
-  @keyframes cathiansGameCardIn{
-    from{opacity:0;transform:translateY(12px) scale(.95)}
-    to{opacity:1;transform:translateY(0) scale(1)}
-  }
-
-  /* Mobile bottom navigation slides smoothly downward. */
-  @media(max-width:760px){
-    #gameModal{
-      padding:12px!important;
-    }
-    #gameModal .game-modal-card{
-      width:min(100%,390px)!important;
-      max-width:390px!important;
-      max-height:calc(100dvh - 24px)!important;
-    }
-    .cg-shell{
-      transition:transform .42s cubic-bezier(.22,1,.36,1), opacity .30s ease, visibility .30s ease!important;
-    }
-    body.cathians-game-open .cg-shell{
-      transform:translateY(calc(100% + 26px))!important;
-      opacity:0!important;
-      visibility:hidden!important;
-      pointer-events:none!important;
-    }
-  }
-
-  @media(prefers-reduced-motion:reduce){
-    .cg-shell{transition:none!important}
-    #gameModal .game-modal-card{animation:none!important}
-  }
-</style>
-<script id="cathians-final-game-navigation-transition-js">
-(function(){
-  'use strict';
-  const modal=document.getElementById('gameModal');
-  if(!modal)return;
-
-  const syncGameNavigation=()=>{
-    document.body.classList.toggle('cathians-game-open',!modal.classList.contains('hidden'));
-  };
-
-  syncGameNavigation();
-  new MutationObserver(syncGameNavigation).observe(modal,{attributes:true,attributeFilter:['class']});
-
-  /* Keep navigation hidden while the game flow is active, including game selection steps. */
-  document.addEventListener('click',function(e){
-    const launcher=e.target?.closest?.('#playGameBtn,[data-real-game]');
-    if(launcher)setTimeout(syncGameNavigation,0);
-  },true);
-
-  window.addEventListener('resize',syncGameNavigation,{passive:true});
-})();
-</script>
-
 <!-- Recycle Bin — My Decks only -->
 <style id="cathians-recycle-bin">
   #cgLibraryView .cg-view-heading{position:relative}
@@ -9339,27 +9240,46 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
 
 
 
-<!-- Universal popup/navigation transition — safe, top-level overlays only -->
-<style id="cathians-universal-popup-navigation">
-  /* Navigation leaves FIRST. Popup is revealed only after the nav has finished. */
+<!-- Final global popup + navigation system: nav exits first, popup reveals second -->
+<style id="cathians-final-popup-navigation-system">
+  /* The navigation itself is never transformed by popup animations. */
   .cg-shell{
     transition:
       transform .42s cubic-bezier(.22,1,.36,1),
-      opacity .32s ease,
-      visibility .32s ease,
+      opacity .30s ease,
+      visibility .30s ease,
       box-shadow .30s ease!important;
     will-change:transform,opacity,visibility;
   }
 
-  body.cathians-overlay-open .cg-shell{
-    transform:translate3d(calc(-100% - 26px),0,0)!important;
+  /* Any real popup/overlay makes the navigation leave the screen. */
+  body.cathians-popup-open .cg-shell{
+    transform:translate3d(calc(-100% - 28px),0,0)!important;
     opacity:0!important;
     visibility:hidden!important;
     pointer-events:none!important;
   }
 
+  /* Only popup ROOTS receive staging. Their internal children are untouched. */
+  .cathians-popup-stage{
+    opacity:0!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+  .cathians-popup-reveal{
+    animation:cathiansPopupReveal .24s ease both!important;
+  }
+  @keyframes cathiansPopupReveal{from{opacity:0}to{opacity:1}}
+
+  /* The old game rule used a strong ID selector that could keep a hidden game visible. */
+  #gameModal.hidden{
+    display:none!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+
   @media(max-width:760px){
-    body.cathians-overlay-open .cg-shell{
+    body.cathians-popup-open .cg-shell{
       transform:translate3d(0,calc(100% + 30px),0)!important;
       opacity:0!important;
       visibility:hidden!important;
@@ -9367,41 +9287,26 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     }
   }
 
-  /* Only the actual overlay root is staged; nested cards/content are untouched. */
-  body.cathians-overlay-staging .cathians-overlay-root{
-    opacity:0!important;
-    visibility:hidden!important;
-    pointer-events:none!important;
-  }
-
-  .cathians-overlay-reveal{
-    animation:cathiansOverlayFadeIn .24s ease both!important;
-  }
-  @keyframes cathiansOverlayFadeIn{
-    from{opacity:0}
-    to{opacity:1}
-  }
-
   @media(prefers-reduced-motion:reduce){
     .cg-shell{transition:none!important}
-    .cathians-overlay-reveal{animation:none!important}
+    .cathians-popup-reveal{animation:none!important}
   }
 </style>
-<script id="cathians-universal-popup-navigation-js">
+<script id="cathians-final-popup-navigation-system-js">
 (function(){
   'use strict';
 
-  const NAV_SELECTOR='.cg-shell';
+  const NAV='.cg-shell';
   const NAV_EXIT_MS=430;
-  let raf=0;
+  const REVEAL_MS=270;
+  let frame=0;
   let revealTimer=0;
   let restoreTimer=0;
-  let overlayOpen=false;
-  let lastRoots=[];
+  let popupIsOpen=false;
+  let stagedRoots=new Set();
 
-  /* Known popup roots in this app. Explicit roots prevent nested popup children
-     from being treated as separate overlays and avoids transform glitches. */
-  const ROOT_SELECTORS=[
+  /* Explicit app popups first. These are root elements only. */
+  const EXPLICIT_ROOTS=[
     '#leaderboardPanel',
     '#youtubeSourceModal',
     '#coinShopModal',
@@ -9416,100 +9321,124 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     '#manualFlashcardModal',
     '.v27-edit-overlay',
     '.v25-deck-viewer',
-    '.v25-deck-share-overlay',
-    '.cg-toast',
-    '.v27-save-toast'
+    '.v25-deck-share-overlay'
   ];
 
-  function isVisible(el){
-    if(!el || !(el instanceof Element)) return false;
+  function visible(el){
+    if(!(el instanceof Element)) return false;
     if(el.matches('.hidden,[hidden],[aria-hidden="true"]')) return false;
     const cs=getComputedStyle(el);
-    return cs.display!=='none' && cs.visibility!=='hidden' && Number(cs.opacity)>0;
+    if(cs.display==='none'||cs.visibility==='hidden'||Number(cs.opacity)<=0) return false;
+    const r=el.getBoundingClientRect();
+    return r.width>0 && r.height>0;
   }
 
-  function isPopupRoot(el){
-    if(!el || !(el instanceof Element) || el.matches(NAV_SELECTOR) || el.closest(NAV_SELECTOR)) return false;
-    if(!isVisible(el)) return false;
-    const cs=getComputedStyle(el);
-    return cs.position==='fixed' || cs.position==='absolute' || el.matches('[role="dialog"],[aria-modal="true"]');
+  function numericZ(el){
+    const z=getComputedStyle(el).zIndex;
+    if(z==='auto') return 0;
+    const n=Number(z);
+    return Number.isFinite(n)?n:0;
   }
 
-  function getRoots(){
+  function isExcluded(el){
+    return !el || el.matches(NAV) || !!el.closest(NAV) || el.matches('body,main,.page,.cg-main');
+  }
+
+  function addRoot(out,el){
+    if(!el || isExcluded(el) || !visible(el)) return;
+    if(!out.includes(el)) out.push(el);
+  }
+
+  function roots(){
     const out=[];
-    ROOT_SELECTORS.forEach(sel=>{
-      document.querySelectorAll(sel).forEach(el=>{
-        if(isPopupRoot(el) && !out.includes(el)) out.push(el);
-      });
+
+    EXPLICIT_ROOTS.forEach(sel=>{
+      document.querySelectorAll(sel).forEach(el=>addRoot(out,el));
     });
 
-    /* Catch future top-level dialogs without pulling in nested dialog content. */
-    document.querySelectorAll('[role="dialog"],[aria-modal="true"]').forEach(el=>{
-      if(!isPopupRoot(el)) return;
-      const ancestor=el.parentElement?.closest('[role="dialog"],[aria-modal="true"]');
-      if(!ancestor || !isVisible(ancestor)){
-        if(!out.includes(el)) out.push(el);
+    /* Catch notification/warning/custom overlays without catching normal UI.
+       High-z-index fixed/absolute elements are used as the generic signal. */
+    document.querySelectorAll('body *').forEach(el=>{
+      if(isExcluded(el)||!visible(el)) return;
+      const cs=getComputedStyle(el);
+      const isDialog=el.matches('[role="dialog"],[aria-modal="true"]');
+      const isHighLayer=(numericZ(el)>=10000 && (cs.position==='fixed'||cs.position==='absolute'));
+      if(!isDialog && !isHighLayer) return;
+
+      /* Ignore nested elements inside another popup root. */
+      let parent=el.parentElement;
+      while(parent && parent!==document.body){
+        if(out.includes(parent)) return;
+        parent=parent.parentElement;
       }
+      addRoot(out,el);
     });
+
     return out;
   }
 
-  function markRoots(roots){
-    lastRoots=roots.slice();
-    roots.forEach(el=>el.classList.add('cathians-overlay-root'));
+  function stage(list){
+    stagedRoots.forEach(el=>{
+      if(!list.includes(el)) el.classList.remove('cathians-popup-stage','cathians-popup-reveal');
+    });
+    stagedRoots=new Set(list);
+    list.forEach(el=>el.classList.add('cathians-popup-stage'));
   }
 
-  function revealRoots(){
-    getRoots().forEach(el=>{
-      el.classList.remove('cathians-overlay-reveal');
+  function reveal(list){
+    list.forEach(el=>{
+      if(!el.isConnected || !visible(el)) return;
+      el.classList.remove('cathians-popup-stage','cathians-popup-reveal');
       void el.offsetWidth;
-      el.classList.add('cathians-overlay-reveal');
-      window.setTimeout(()=>el.classList.remove('cathians-overlay-reveal'),280);
+      el.classList.add('cathians-popup-reveal');
+      window.setTimeout(()=>el.classList.remove('cathians-popup-reveal'),REVEAL_MS);
     });
   }
 
+  function schedule(){
+    if(frame) return;
+    frame=requestAnimationFrame(sync);
+  }
+
   function sync(){
-    raf=0;
-    const roots=getRoots();
-    const hasOpen=roots.length>0;
+    frame=0;
+    const list=roots();
+    const hasPopup=list.length>0;
 
-    if(hasOpen){
-      window.clearTimeout(restoreTimer);
-      if(!overlayOpen){
-        overlayOpen=true;
-        window.clearTimeout(revealTimer);
-        markRoots(roots);
-
-        /* Navigation starts leaving immediately. Roots are staged invisibly. */
-        document.body.classList.add('cathians-overlay-open','cathians-overlay-staging');
-
-        revealTimer=window.setTimeout(()=>{
-          if(!overlayOpen) return;
-          document.body.classList.remove('cathians-overlay-staging');
-          revealRoots();
+    if(hasPopup){
+      clearTimeout(restoreTimer);
+      if(!popupIsOpen){
+        popupIsOpen=true;
+        clearTimeout(revealTimer);
+        stage(list);
+        /* Navigation starts moving BEFORE the popup is allowed to appear. */
+        document.body.classList.add('cathians-popup-open');
+        revealTimer=setTimeout(()=>{
+          const latest=roots();
+          if(!popupIsOpen || !latest.length) return;
+          document.body.classList.remove('cathians-popup-open');
+          /* Re-add the nav class for the remainder of the popup? No: keeping it
+             removed would cause a visible flash when the popup is open. */
+          document.body.classList.add('cathians-popup-open');
+          reveal(latest);
         },NAV_EXIT_MS);
+      }else{
+        /* Keep the currently visible popup roots staged/revealed consistently. */
+        list.forEach(el=>el.classList.remove('cathians-popup-stage'));
       }
       return;
     }
 
-    if(overlayOpen){
-      overlayOpen=false;
-      window.clearTimeout(revealTimer);
-      document.body.classList.remove('cathians-overlay-staging');
-
-      restoreTimer=window.setTimeout(()=>{
-        if(!overlayOpen){
-          document.body.classList.remove('cathians-overlay-open');
-          lastRoots.forEach(el=>el.classList.remove('cathians-overlay-reveal','cathians-overlay-root'));
-          lastRoots=[];
-        }
-      },60);
+    if(popupIsOpen){
+      popupIsOpen=false;
+      clearTimeout(revealTimer);
+      stagedRoots.forEach(el=>el.classList.remove('cathians-popup-stage','cathians-popup-reveal'));
+      stagedRoots.clear();
+      /* Wait for the popup close to settle, then return the nav. */
+      restoreTimer=setTimeout(()=>{
+        if(!popupIsOpen) document.body.classList.remove('cathians-popup-open');
+      },70);
     }
-  }
-
-  function schedule(){
-    if(raf) return;
-    raf=requestAnimationFrame(sync);
   }
 
   if(document.readyState==='loading'){
@@ -9518,13 +9447,8 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     schedule();
   }
 
-  new MutationObserver(schedule).observe(document.body,{
-    subtree:true,
-    childList:true,
-    attributes:true,
-    attributeFilter:['class','style','hidden','aria-hidden']
-  });
-
+  const observer=new MutationObserver(schedule);
+  observer.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style','hidden','aria-hidden']});
   document.addEventListener('click',schedule,true);
   window.addEventListener('resize',schedule,{passive:true});
   window.addEventListener('load',schedule,{once:true});
@@ -9588,6 +9512,202 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
   },true);
 
   window.addEventListener('resize',sync,{passive:true});
+})();
+</script>
+
+
+<style id="cathians-final-navigation-stabilizer">
+/* FINAL NAVIGATION STABILIZER — one clean rule set for desktop + mobile */
+.cg-shell{
+  box-sizing:border-box!important;
+  transition:transform .42s cubic-bezier(.22,1,.36,1),opacity .30s ease,visibility .30s ease,box-shadow .30s ease!important;
+  will-change:transform,opacity,visibility;
+}
+.cg-nav{box-sizing:border-box!important}
+.cg-nav a{box-sizing:border-box!important;overflow:hidden!important}
+
+/* Desktop / PC: stable left sidebar with six destinations, including Add Reviewers. */
+@media (min-width:761px){
+  .page{
+    min-height:100dvh!important;
+  }
+  .cg-shell{
+    position:fixed!important;
+    left:0!important;
+    top:0!important;
+    bottom:0!important;
+    width:272px!important;
+    min-width:272px!important;
+    height:100dvh!important;
+    margin:0!important;
+    padding:24px 16px 18px!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    scrollbar-width:thin;
+    z-index:99000!important;
+  }
+  .cg-nav{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    gap:7px!important;
+    flex:0 0 auto!important;
+  }
+  .cg-nav a{
+    width:100%!important;
+    min-height:56px!important;
+    height:56px!important;
+    flex:0 0 56px!important;
+    padding:9px 12px!important;
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:12px!important;
+    border-radius:17px!important;
+    font-size:14px!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+    transform:none!important;
+  }
+  .cg-nav a .cg-icon-slot{
+    width:38px!important;
+    height:38px!important;
+    min-width:38px!important;
+    flex:0 0 38px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    border-radius:11px!important;
+    transform:none!important;
+  }
+  .cg-nav a .cg-icon-slot img{width:100%!important;height:100%!important;object-fit:contain!important;display:block!important}
+  .cg-nav a span:last-child{display:block!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  .cg-nav a[data-cg-view="add-reviewer"]{display:flex!important;margin-top:10px!important;background:#171c2d!important;color:#fff!important;border-color:#171c2d!important}
+  .cg-nav a[data-cg-view="add-reviewer"] .cg-icon-slot{background:rgba(255,255,255,.09)!important}
+  #cathiansMobileAddReviewer{display:none!important}
+}
+
+/* Mobile / phone: exactly five bottom-nav items. Add Reviewer stays as the floating bubble. */
+@media (max-width:760px){
+  html,body{overflow-x:hidden!important}
+  body{padding-bottom:calc(96px + var(--safe-bottom))!important}
+  .page{display:block!important;width:100%!important;min-height:100dvh!important;padding:0 12px calc(112px + var(--safe-bottom))!important}
+  .cg-main{width:100%!important;max-width:none!important;margin:0!important;padding:12px 0 28px!important}
+  .cg-shell{
+    position:fixed!important;
+    left:8px!important;
+    right:8px!important;
+    top:auto!important;
+    bottom:calc(8px + var(--safe-bottom))!important;
+    width:auto!important;
+    min-width:0!important;
+    height:70px!important;
+    min-height:70px!important;
+    padding:5px!important;
+    margin:0!important;
+    border-radius:22px!important;
+    background:rgba(255,255,255,.98)!important;
+    border:1px solid #dfe5ee!important;
+    box-shadow:0 16px 38px rgba(20,31,52,.16)!important;
+    backdrop-filter:blur(18px)!important;
+    -webkit-backdrop-filter:blur(18px)!important;
+    overflow:visible!important;
+    z-index:99000!important;
+  }
+  .cg-brand,.cg-decks,.cg-add,.cg-study{display:none!important}
+  .cg-nav{
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    width:100%!important;
+    height:100%!important;
+    gap:3px!important;
+    margin:0!important;
+    padding:0!important;
+    align-items:stretch!important;
+  }
+  .cg-nav a[data-cg-view="add-reviewer"]{display:none!important}
+  .cg-nav a:not([data-cg-view="add-reviewer"]){
+    width:100%!important;
+    min-width:0!important;
+    min-height:58px!important;
+    height:58px!important;
+    padding:5px 2px!important;
+    margin:0!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:3px!important;
+    border-radius:16px!important;
+    font-size:8px!important;
+    line-height:1.05!important;
+    text-align:center!important;
+    transform:none!important;
+    white-space:nowrap!important;
+  }
+  .cg-nav a:not([data-cg-view="add-reviewer"]) .cg-icon-slot{
+    width:28px!important;
+    height:27px!important;
+    min-width:28px!important;
+    flex:0 0 27px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    border-radius:9px!important;
+    background:transparent!important;
+    border:0!important;
+  }
+  .cg-nav a:not([data-cg-view="add-reviewer"]) .cg-icon-slot img{width:100%!important;height:100%!important;object-fit:contain!important;display:block!important}
+  .cg-nav a:not([data-cg-view="add-reviewer"]) span:last-child{display:block!important;max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+  .cg-nav a:not([data-cg-view="add-reviewer"]).active{background:#eef6ff!important;color:#176fff!important;box-shadow:inset 0 0 0 1px rgba(101,181,255,.18),0 6px 16px rgba(25,118,255,.08)!important}
+  #cathiansMobileAddReviewer{
+    display:flex!important;
+    position:fixed!important;
+    right:16px!important;
+    bottom:calc(92px + var(--safe-bottom))!important;
+    width:68px!important;
+    height:68px!important;
+    min-width:68px!important;
+    min-height:68px!important;
+    z-index:98999!important;
+    opacity:1;
+    visibility:visible;
+    transform:translate3d(0,0,0) scale(1);
+    transition:opacity .30s ease,transform .42s cubic-bezier(.22,1,.36,1),visibility .30s ease!important;
+  }
+  body.cathians-popup-open #cathiansMobileAddReviewer,
+  body.cathians-add-reviewer-open #cathiansMobileAddReviewer{
+    opacity:0!important;
+    visibility:hidden!important;
+    transform:translate3d(0,18px,0) scale(.88)!important;
+    pointer-events:none!important;
+  }
+  body.cathians-popup-open .cg-shell{transform:translate3d(0,calc(100% + 30px),0)!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+}
+
+/* Popup close should never leave the nav visually disabled. */
+body:not(.cathians-popup-open) .cg-shell{pointer-events:auto}
+@media(prefers-reduced-motion:reduce){.cg-shell,#cathiansMobileAddReviewer{transition:none!important;animation:none!important}}
+</style>
+<script id="cathians-final-navigation-stabilizer-js">
+(function(){
+  'use strict';
+  function normalizeNav(){
+    const nav=document.querySelector('.cg-nav');
+    if(!nav)return;
+    const links=[...nav.querySelectorAll('a[data-cg-view]')];
+    const mobile=window.innerWidth<=760;
+    links.forEach(a=>{
+      const isAdd=a.dataset.cgView==='add-reviewer';
+      a.hidden=mobile ? isAdd : false;
+      if(mobile && isAdd) a.setAttribute('aria-hidden','true');
+      else a.removeAttribute('aria-hidden');
+    });
+  }
+  function init(){normalizeNav();}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+  window.addEventListener('resize',normalizeNav,{passive:true});
 })();
 </script>
 
