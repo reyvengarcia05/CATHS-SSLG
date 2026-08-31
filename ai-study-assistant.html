@@ -9286,14 +9286,21 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
 
 
 
-<!-- Universal popup/navigation transition -->
+<!-- Universal popup/navigation transition — navigation first, popup second -->
 <style id="cathians-universal-popup-navigation">
-  /* Navigation hides whenever a real popup/overlay is active. */
+  /*
+     Opening order:
+       1) Navigation slides/fades away.
+       2) Popup is revealed only after the navigation transition finishes.
+     Closing order:
+       Popup disappears first, then navigation returns immediately with its own
+       smooth reverse animation.
+  */
   .cg-shell{
     transition:
-      transform .42s cubic-bezier(.22,1,.36,1),
-      opacity .30s ease,
-      visibility .30s ease,
+      transform .44s cubic-bezier(.22,1,.36,1),
+      opacity .34s ease,
+      visibility .34s ease,
       box-shadow .30s ease!important;
     will-change:transform,opacity,visibility;
   }
@@ -9303,6 +9310,40 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     opacity:0!important;
     visibility:hidden!important;
     pointer-events:none!important;
+  }
+
+  /* Hold the popup invisible while the navigation completes its exit. */
+  body.cathians-overlay-staging [role="dialog"],
+  body.cathians-overlay-staging [aria-modal="true"],
+  body.cathians-overlay-staging [id*="Modal"],
+  body.cathians-overlay-staging [id*="modal"],
+  body.cathians-overlay-staging [id*="Popup"],
+  body.cathians-overlay-staging [id*="popup"],
+  body.cathians-overlay-staging [id*="Popover"],
+  body.cathians-overlay-staging [id*="popover"],
+  body.cathians-overlay-staging [id*="Notification"],
+  body.cathians-overlay-staging [id*="notification"],
+  body.cathians-overlay-staging [class*="-modal"],
+  body.cathians-overlay-staging [class*="-popup"],
+  body.cathians-overlay-staging [class*="-popover"],
+  body.cathians-overlay-staging [class*="-notification"],
+  body.cathians-overlay-staging [class*="-confirm"],
+  body.cathians-overlay-staging [class*="-warning"],
+  body.cathians-overlay-staging [class*="-alert"],
+  body.cathians-overlay-staging .v27-save-toast,
+  body.cathians-overlay-staging .game-toast{
+    opacity:0!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+
+  /* Give the revealed overlay a fresh, subtle entrance after the nav is gone. */
+  .cathians-popup-reveal{
+    animation:cathiansUniversalPopupReveal .24s cubic-bezier(.16,1,.3,1) both!important;
+  }
+  @keyframes cathiansUniversalPopupReveal{
+    from{opacity:0;transform:translateY(8px) scale(.985)}
+    to{opacity:1;transform:translateY(0) scale(1)}
   }
 
   @media(max-width:760px){
@@ -9316,6 +9357,27 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
 
   @media(prefers-reduced-motion:reduce){
     .cg-shell{transition:none!important}
+    body.cathians-overlay-staging [role="dialog"],
+    body.cathians-overlay-staging [aria-modal="true"],
+    body.cathians-overlay-staging [id*="Modal"],
+    body.cathians-overlay-staging [id*="modal"],
+    body.cathians-overlay-staging [id*="Popup"],
+    body.cathians-overlay-staging [id*="popup"],
+    body.cathians-overlay-staging [id*="Popover"],
+    body.cathians-overlay-staging [id*="popover"],
+    body.cathians-overlay-staging [class*="-modal"],
+    body.cathians-overlay-staging [class*="-popup"],
+    body.cathians-overlay-staging [class*="-popover"],
+    body.cathians-overlay-staging [class*="-notification"],
+    body.cathians-overlay-staging [class*="-confirm"],
+    body.cathians-overlay-staging [class*="-warning"],
+    body.cathians-overlay-staging [class*="-alert"],
+    body.cathians-overlay-staging .v27-save-toast,
+    body.cathians-overlay-staging .game-toast{
+      opacity:0!important;
+      visibility:hidden!important;
+    }
+    .cathians-popup-reveal{animation:none!important}
   }
 </style>
 <script id="cathians-universal-popup-navigation-js">
@@ -9323,7 +9385,10 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
   'use strict';
 
   const NAV_SELECTOR='.cg-shell';
+  const NAV_EXIT_MS=440;
   let raf=0;
+  let revealTimer=0;
+  let overlayOpen=false;
 
   const popupSelector = [
     '[role="dialog"]',
@@ -9359,7 +9424,9 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     if(!el || !(el instanceof Element)) return false;
     if(el.matches('.hidden,[hidden],[aria-hidden="true"]')) return false;
     const cs=getComputedStyle(el);
-    if(cs.display==='none' || cs.visibility==='hidden' || Number(cs.opacity)===0) return false;
+    /* A staged popup is intentionally opacity/visibility-hidden by CSS.
+       Its .hidden/aria-hidden state is the real closed-state signal. */
+    if(cs.display==='none') return false;
     return true;
   }
 
@@ -9373,24 +9440,52 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     const z=parseInt(cs.zIndex,10);
     const highLayer=Number.isFinite(z) ? z>=100 : false;
 
-    /* Only treat floating UI as a popup. This prevents normal inline alerts/text
-       from hiding the navigation permanently. */
     if(position!=='fixed' && position!=='absolute') return false;
     if(!highLayer && !el.matches('[role="dialog"],[aria-modal="true"]')) return false;
     return true;
   }
 
-  function hasOpenOverlay(){
-    const candidates=document.querySelectorAll(popupSelector);
-    for(const el of candidates){
-      if(isOverlayLike(el)) return true;
-    }
-    return false;
+  function openOverlays(){
+    return [...document.querySelectorAll(popupSelector)].filter(isOverlayLike);
+  }
+
+  function revealOverlays(){
+    const overlays=openOverlays();
+    overlays.forEach(el=>{
+      el.classList.remove('cathians-popup-reveal');
+      void el.offsetWidth;
+      el.classList.add('cathians-popup-reveal');
+      window.setTimeout(()=>el.classList.remove('cathians-popup-reveal'),280);
+    });
   }
 
   function sync(){
     raf=0;
-    document.body.classList.toggle('cathians-overlay-open',hasOpenOverlay());
+    const overlays=openOverlays();
+    const hasOpen=overlays.length>0;
+
+    if(hasOpen && !overlayOpen){
+      overlayOpen=true;
+      window.clearTimeout(revealTimer);
+
+      /* Hide nav NOW. The popup stays invisible during this first phase. */
+      document.body.classList.add('cathians-overlay-open','cathians-overlay-staging');
+
+      /* Wait until the nav has fully slid/faded away, then reveal popup. */
+      revealTimer=window.setTimeout(()=>{
+        if(!overlayOpen)return;
+        document.body.classList.remove('cathians-overlay-staging');
+        revealOverlays();
+      },NAV_EXIT_MS);
+      return;
+    }
+
+    if(!hasOpen && overlayOpen){
+      overlayOpen=false;
+      window.clearTimeout(revealTimer);
+      document.body.classList.remove('cathians-overlay-staging','cathians-overlay-open');
+      return;
+    }
   }
 
   function schedule(){
@@ -9404,8 +9499,6 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     schedule();
   }
 
-  /* Covers popup creation, opening/closing via classes, inline styles,
-     aria-hidden changes, and dynamically-rendered notification panels. */
   new MutationObserver(schedule).observe(document.body,{
     subtree:true,
     childList:true,
@@ -9416,11 +9509,8 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
   document.addEventListener('click',schedule,true);
   window.addEventListener('resize',schedule,{passive:true});
   window.addEventListener('load',schedule,{once:true});
-
-  /* Small fallback for popups opened by third-party/delayed code without a DOM mutation. */
   window.setInterval(schedule,700);
 })();
 </script>
-
 </body>
 </html>
