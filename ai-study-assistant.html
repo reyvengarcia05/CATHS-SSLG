@@ -2807,6 +2807,356 @@ body{min-height:100dvh;overflow-x:hidden}
 }
 </style>
 
+
+<style id="cathians-blue-theme-v2">
+/* =========================================================
+   CATHIANS — BLUE / GLASS PREMIUM THEME
+   Keeps individual deck colors while changing the overall
+   white interface into an eye-catching blue environment.
+   ========================================================= */
+
+:root{
+  --blue-main:#1976ff;
+  --blue-bright:#4da3ff;
+  --blue-cyan:#7fd4ff;
+  --blue-deep:#071b46;
+  --blue-ink:#10294b;
+  --blue-muted:#617b9b;
+  --blue-border:rgba(105,179,255,.28);
+}
+
+/* Overall background */
+html,body{
+  background:
+    radial-gradient(950px 620px at 8% 4%,rgba(58,151,255,.27),transparent 60%),
+    radial-gradient(850px 620px at 92% 12%,rgba(25,118,255,.23),transparent 60%),
+    radial-gradient(760px 620px at 48% 100%,rgba(53,141,255,.18),transparent 65%),
+    linear-gradient(140deg,#eaf5ff 0%,#d9ecff 38%,#edf7ff 72%,#d7eaff 100%) !important;
+  color:var(--blue-ink)!important;
+}
+
+/* Subtle moving background light */
+body::before{
+  content:"";
+  position:fixed;
+  width:520px;height:520px;
+  left:-170px;top:-190px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(65,158,255,.18),transparent 68%);
+  filter:blur(2px);
+  pointer-events:none;
+  z-index:-1;
+  animation:blueThemeFloat 9s ease-in-out infinite;
+}
+body::after{
+  content:"";
+  position:fixed;
+  width:460px;height:460px;
+  right:-180px;bottom:-170px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(51,132,255,.14),transparent 68%);
+  pointer-events:none;
+  z-index:-1;
+  animation:blueThemeFloat 11s ease-in-out infinite reverse;
+}
+@keyframes blueThemeFloat{
+  0%,100%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(18px,10px,0) scale(1.05)}
+}
+
+/* Main area */
+.cg-main{
+  position:relative;
+  isolation:isolate;
+}
+.cg-main::after{
+  content:"";
+  position:absolute;
+  inset:20px 4% auto auto;
+  width:360px;height:360px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(53,151,255,.11),transparent 70%);
+  pointer-events:none;
+  z-index:-1;
+}
+
+/* Sidebar */
+.cg-shell{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.88),rgba(233,246,255,.92)) !important;
+  border-right:1px solid rgba(111,185,255,.25)!important;
+  box-shadow:12px 0 40px rgba(24,102,194,.11)!important;
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+
+.cg-brand-mark{
+  background:linear-gradient(145deg,#eef8ff,#dcedff)!important;
+  border-color:#c6e3ff!important;
+  box-shadow:0 9px 24px rgba(31,120,220,.09)!important;
+}
+
+.cg-nav a{
+  color:#52718f!important;
+  border:1px solid transparent!important;
+}
+.cg-nav a:hover{
+  color:#166ff0!important;
+  background:rgba(80,164,255,.10)!important;
+  border-color:rgba(86,165,255,.14)!important;
+}
+.cg-nav a.active{
+  color:#fff!important;
+  background:linear-gradient(135deg,#176fff,#4ca7ff)!important;
+  border-color:transparent!important;
+  box-shadow:0 13px 28px rgba(25,118,255,.24)!important;
+}
+
+/* Top controls */
+.cg-pill,.cg-circle,.cg-profile-mini{
+  background:rgba(255,255,255,.78)!important;
+  border-color:#cde5ff!important;
+  box-shadow:0 9px 22px rgba(27,107,199,.08)!important;
+}
+
+/* Home title */
+.cg-home-title{
+  color:#0e2c55!important;
+  text-shadow:0 4px 16px rgba(25,118,255,.08);
+}
+.cg-home-title::after{
+  content:"";
+  display:block;
+  width:64px;height:5px;
+  margin-top:11px;
+  border-radius:999px;
+  background:linear-gradient(90deg,#1976ff,#73c7ff);
+  box-shadow:0 4px 14px rgba(25,118,255,.22);
+}
+
+/* Hero */
+.cg-study-hero{
+  background:
+    radial-gradient(circle at 13% 28%,rgba(91,178,255,.17),transparent 26%),
+    radial-gradient(circle at 92% 18%,rgba(25,118,255,.16),transparent 27%),
+    linear-gradient(135deg,rgba(255,255,255,.91),rgba(227,242,255,.86))!important;
+  border:1px solid rgba(100,182,255,.30)!important;
+  box-shadow:
+    0 24px 62px rgba(22,99,190,.12),
+    inset 0 1px 0 rgba(255,255,255,.95)!important;
+  border-radius:30px!important;
+  overflow:hidden;
+}
+
+.cg-study-hero::before{
+  content:"";
+  position:absolute;
+  width:260px;height:260px;
+  right:-130px;top:-145px;
+  border-radius:50%;
+  border:1px solid rgba(79,165,255,.18);
+  box-shadow:
+    0 0 0 20px rgba(79,165,255,.035),
+    0 0 0 42px rgba(79,165,255,.02);
+  pointer-events:none;
+}
+
+.cg-hero-copy h2{
+  color:#0d2c55!important;
+  text-shadow:0 6px 20px rgba(21,101,192,.07);
+}
+.cg-hero-copy h2 span{
+  display:block;
+  color:#1976ff!important;
+}
+.cg-hero-copy p{
+  color:#66819f!important;
+}
+
+/* Panda / image area stays clean */
+.cg-mascot,.cg-png-slot,.floating-cat-container{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+
+/* Study input */
+.cg-study-box{
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.96),rgba(235,247,255,.94))!important;
+  border:1px solid rgba(108,185,255,.30)!important;
+  box-shadow:
+    0 17px 40px rgba(28,111,201,.09),
+    inset 0 1px 0 rgba(255,255,255,.95)!important;
+}
+.cg-study-box:focus-within{
+  border-color:#73baff!important;
+  box-shadow:
+    0 20px 44px rgba(25,118,255,.13),
+    0 0 0 4px rgba(25,118,255,.07),
+    inset 0 1px 0 rgba(255,255,255,.96)!important;
+}
+.cg-study-input{
+  color:#18385e!important;
+}
+.cg-study-input::placeholder{
+  color:#849db8!important;
+}
+.cg-plus{
+  color:#1976ff!important;
+  background:#e6f4ff!important;
+  border-color:#c6e5ff!important;
+}
+
+/* Source buttons */
+.cg-source{
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.94),rgba(232,245,255,.91))!important;
+  color:#456782!important;
+  border:1px solid rgba(111,185,255,.25)!important;
+  box-shadow:0 10px 24px rgba(29,110,199,.065)!important;
+}
+.cg-source:hover{
+  color:#126eea!important;
+  border-color:#86c5ff!important;
+  box-shadow:0 15px 31px rgba(25,118,255,.12)!important;
+}
+.cg-source-icon-slot{
+  color:#1976ff!important;
+}
+
+/* Generic cards/views */
+.cg-view-card,.progress-card,.xp-card,
+.cg-game-card{
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.94),rgba(230,244,255,.91))!important;
+  border-color:rgba(105,180,255,.24)!important;
+  box-shadow:0 12px 30px rgba(28,110,200,.075)!important;
+}
+.cg-view-card:hover,.progress-card:hover,.cg-game-card:hover{
+  border-color:rgba(75,158,255,.48)!important;
+  box-shadow:0 18px 38px rgba(25,118,255,.12)!important;
+}
+
+/* Buttons */
+.cg-primary-btn,
+.generate,
+.leaderboard-btn,
+.cg-game-action,
+.cg-deck-open{
+  background:linear-gradient(135deg,#176fff,#4ca7ff)!important;
+  color:#fff!important;
+  border-color:transparent!important;
+  box-shadow:0 13px 28px rgba(25,118,255,.20)!important;
+}
+.cg-primary-btn:hover,
+.generate:hover,
+.leaderboard-btn:hover,
+.cg-game-action:hover,
+.cg-deck-open:hover{
+  filter:brightness(1.06);
+  transform:translateY(-2px);
+}
+
+/* Forms */
+input,textarea,select{
+  background:rgba(249,253,255,.95)!important;
+  color:#19395e!important;
+  border-color:#c9e2fa!important;
+}
+input:focus,textarea:focus,select:focus{
+  border-color:#70b8ff!important;
+  box-shadow:0 0 0 4px rgba(25,118,255,.065)!important;
+}
+
+/* Modals */
+.study-library-panel,
+.game-modal,
+.manual-flashcard-modal{
+  background:rgba(5,40,90,.30)!important;
+}
+.study-library-card,
+.game-modal-card,
+.manual-flashcard-card{
+  background:
+    radial-gradient(circle at 50% 0%,rgba(79,163,255,.15),transparent 34%),
+    linear-gradient(145deg,#f8fcff,#e8f5ff)!important;
+  border-color:#acd8ff!important;
+  box-shadow:
+    0 32px 96px rgba(14,77,147,.20),
+    inset 0 1px 0 rgba(255,255,255,.96)!important;
+  color:#18385e!important;
+}
+
+/* Warning remains usable on home */
+.cg-ai-working-banner{
+  background:linear-gradient(135deg,#edf8ff,#e1f2ff)!important;
+  border-color:#b8ddff!important;
+  color:#23577f!important;
+}
+.cg-ai-working-banner small{
+  color:#6c8ba8!important;
+}
+.cg-ai-working-dot{
+  background:#2b8dff!important;
+  box-shadow:0 0 0 5px rgba(43,141,255,.12),0 0 18px rgba(43,141,255,.25)!important;
+}
+
+/* =========================================================
+   DECKS — preserve unique accent colors, but blend them
+   into the blue/glass environment.
+   ========================================================= */
+.cg-decks-all.v25-compact-grid{
+  position:relative;
+}
+.cg-deck-card.v25-compact-card{
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb,var(--deck-accent,#6c63ff) 13%,rgba(255,255,255,.98)),
+      rgba(244,250,255,.96) 62%)!important;
+  border:1px solid color-mix(in srgb,var(--deck-accent,#6c63ff) 25%,#cfe6fb)!important;
+  box-shadow:
+    0 12px 28px color-mix(in srgb,var(--deck-accent,#6c63ff) 9%,rgba(32,105,180,.08)),
+    inset 0 1px 0 rgba(255,255,255,.96)!important;
+}
+.cg-deck-card.v25-compact-card .v25-deck-color{
+  background:
+    linear-gradient(135deg,
+      var(--deck-accent,#6c63ff),
+      color-mix(in srgb,var(--deck-accent,#6c63ff) 65%,#fff))!important;
+  box-shadow:
+    0 8px 22px color-mix(in srgb,var(--deck-accent,#6c63ff) 20%,transparent);
+}
+.cg-deck-card.v25-compact-card:hover{
+  border-color:var(--deck-accent,#6c63ff)!important;
+  box-shadow:
+    0 19px 40px color-mix(in srgb,var(--deck-accent,#6c63ff) 17%,rgba(25,118,255,.08)),
+    inset 0 1px 0 rgba(255,255,255,.96)!important;
+  transform:translateY(-5px)!important;
+}
+
+/* Deck text */
+.cg-deck-card.v25-compact-card h3{
+  color:#172e4d!important;
+}
+.cg-deck-card.v25-compact-card .v25-deck-count{
+  color:var(--deck-accent,#6c63ff)!important;
+}
+
+/* Mobile refinement */
+@media(max-width:760px){
+  .cg-study-hero{
+    border-radius:24px!important;
+  }
+  .cg-source{
+    box-shadow:0 8px 18px rgba(29,110,199,.055)!important;
+  }
+  .cg-deck-card.v25-compact-card:hover{
+    transform:translateY(-2px)!important;
+  }
+}
+</style>
+
 </head>
 <body>
 <main class="page">
