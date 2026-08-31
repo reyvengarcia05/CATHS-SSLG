@@ -3209,6 +3209,127 @@ input:focus,textarea:focus,select:focus{
 }
 </style>
 
+
+<style id="cathians-all-fire-icons-v2">
+/* ===== Use fire.png for ALL remaining streak/fire icon slots ===== */
+
+/* The small Veteran/progress icon shown at the top of Progress */
+.progress-avatar-slot{
+  background:linear-gradient(145deg,#eef8ff,#e5f3ff)!important;
+  border:1px solid rgba(108,185,255,.26)!important;
+  overflow:hidden!important;
+  display:grid!important;
+  place-items:center!important;
+}
+.progress-avatar-slot::after{
+  content:""!important;
+  position:absolute!important;
+  inset:8px!important;
+  width:auto!important;
+  height:auto!important;
+  border:0!important;
+  border-radius:0!important;
+  background:url("fire.png") center/contain no-repeat!important;
+  transform:none!important;
+  filter:drop-shadow(0 5px 8px rgba(245,96,24,.20))!important;
+  animation:firePngFloat 1.9s ease-in-out infinite!important;
+}
+
+/* The tiny fire shown beside a streak/day value */
+.lb-fire-mini{
+  width:20px!important;
+  height:20px!important;
+  display:inline-block!important;
+  vertical-align:-6px!important;
+  margin-left:4px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:url("fire.png") center/contain no-repeat!important;
+  transform:none!important;
+  filter:drop-shadow(0 3px 6px rgba(245,96,24,.20))!important;
+  animation:firePngMini 1.05s ease-in-out infinite alternate!important;
+}
+
+/* Reward fire icon */
+.reward-fire{
+  position:relative!important;
+  color:transparent!important;
+  background:#edf7ff!important;
+  border-color:rgba(104,181,255,.24)!important;
+}
+.reward-fire::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  transform:none!important;
+  border:0!important;
+  border-radius:0!important;
+  background:url("fire.png") center/contain no-repeat!important;
+  filter:drop-shadow(0 2px 5px rgba(245,96,24,.18))!important;
+  animation:firePngMini 1.05s ease-in-out infinite alternate!important;
+}
+
+/* Main streak-center fire */
+.streak-flame{
+  width:86px!important;
+  height:86px!important;
+  border-radius:0!important;
+  background:url("fire.png") center/contain no-repeat!important;
+  position:relative!important;
+  transform:none!important;
+  box-shadow:none!important;
+  filter:drop-shadow(0 8px 14px rgba(245,96,24,.20))!important;
+  animation:firePngFloat 2.2s ease-in-out infinite!important;
+}
+.streak-flame::after{
+  content:none!important;
+}
+
+/* Leaderboard streak header fire */
+.lb-fire-orb{
+  width:58px!important;
+  height:58px!important;
+  flex:0 0 58px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.lb-fire-orb::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  transform:none!important;
+  border:0!important;
+  border-radius:0!important;
+  background:url("fire.png") center/contain no-repeat!important;
+  filter:drop-shadow(0 6px 11px rgba(245,96,24,.20))!important;
+  animation:firePngFloat 2.2s ease-in-out infinite!important;
+}
+.lb-fire-orb::after{
+  content:none!important;
+}
+
+@keyframes firePngFloat{
+  0%,100%{transform:translateY(0) scale(1);opacity:.97}
+  50%{transform:translateY(-4px) scale(1.035);opacity:1}
+}
+@keyframes firePngMini{
+  from{transform:translateY(1px) scale(.96);opacity:.86}
+  to{transform:translateY(-2px) scale(1.05);opacity:1}
+}
+
+@media(max-width:760px){
+  .lb-fire-orb{width:50px!important;height:50px!important;flex-basis:50px!important}
+  .streak-flame{width:70px!important;height:70px!important}
+  .lb-fire-mini{width:18px!important;height:18px!important;vertical-align:-5px!important}
+}
+</style>
+
 </head>
 <body>
 <main class="page">
