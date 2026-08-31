@@ -3157,6 +3157,58 @@ input:focus,textarea:focus,select:focus{
 }
 </style>
 
+
+<style id="fire-image-streak-icons">
+/* Replace the progress streak center flame with repository asset fire.png */
+.streak-flame{
+  width:86px!important;
+  height:86px!important;
+  border-radius:0!important;
+  background:url("fire.png") center/contain no-repeat!important;
+  position:relative!important;
+  transform:none!important;
+  box-shadow:none!important;
+  filter:drop-shadow(0 8px 14px rgba(245,96,24,.20))!important;
+  animation:streakFireImageFloat 2.2s ease-in-out infinite!important;
+}
+.streak-flame::after{
+  content:none!important;
+}
+@keyframes streakFireImageFloat{
+  0%,100%{transform:translateY(0) scale(1);opacity:.97}
+  50%{transform:translateY(-4px) scale(1.035);opacity:1}
+}
+
+/* Also make the small fire reward use the same asset while keeping the "3" text readable. */
+.reward-fire{
+  position:relative!important;
+  color:transparent!important;
+  background:#edf7ff!important;
+  border:1px solid rgba(255,126,48,.20)!important;
+}
+.reward-fire::before{
+  content:""!important;
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  width:18px!important;
+  height:18px!important;
+  transform:translate(-50%,-50%)!important;
+  background:url("fire.png") center/contain no-repeat!important;
+  filter:drop-shadow(0 2px 4px rgba(245,96,24,.18))!important;
+}
+@media(max-width:760px){
+  .streak-flame{
+    width:70px!important;
+    height:70px!important;
+  }
+  .reward-fire::before{
+    width:16px!important;
+    height:16px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 <main class="page">
