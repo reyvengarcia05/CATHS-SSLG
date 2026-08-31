@@ -9861,5 +9861,54 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
   }
 </style>
 
+
+<!-- Final mobile navigation: 5th item is Game Reviewers -->
+<style id="cathians-final-mobile-game-reviewers-nav">
+@media(max-width:760px){
+  /* Remove Add Reviewer from the mobile bottom navigation. */
+  .cg-nav a[data-cg-view="add-reviewer"]{
+    display:none!important;
+  }
+
+  /* Game Reviewers becomes the 5th and final visible item. */
+  .cg-nav{
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  }
+  .cg-nav a[data-cg-view="game-reviewers"]{
+    display:flex!important;
+  }
+  .cg-nav a[data-cg-view="game-reviewers"] .cg-icon-slot{
+    background:transparent!important;
+  }
+  .cg-nav a[data-cg-view="game-reviewers"] .cg-icon-slot img{
+    content:url("2.png")!important;
+    width:100%!important;
+    height:100%!important;
+    object-fit:contain!important;
+    display:block!important;
+  }
+}
+</style>
+<script id="cathians-final-mobile-game-reviewers-nav-js">
+(function(){
+  'use strict';
+  function syncMobileGameReviewer(){
+    const game=document.querySelector('.cg-nav a[data-cg-view="game-reviewers"] .cg-icon-slot img');
+    if(game){
+      game.src='2.png';
+      game.alt='';
+      game.loading='eager';
+      game.decoding='async';
+      game.style.objectFit='contain';
+    }
+  }
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',syncMobileGameReviewer,{once:true});
+  }else{
+    syncMobileGameReviewer();
+  }
+  window.addEventListener('load',syncMobileGameReviewer,{once:true});
+})();
+</script>
 </body>
 </html>
