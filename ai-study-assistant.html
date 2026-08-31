@@ -4382,6 +4382,447 @@ input:focus,textarea:focus,select:focus{
 })();
 </script>
 
+
+<style id="cathians-decks-clean-edge-delete">
+/* =========================================================
+   MY DECKS — clean edges + integrated top-right delete
+   ========================================================= */
+
+#cgDecksAll .cg-deck-card{
+  position:relative!important;
+  overflow:hidden!important;
+  border:1px solid rgba(141,194,242,.18)!important;
+  border-radius:24px!important;
+  padding:0!important;
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(in srgb,var(--deck-accent,#4a90e2) 7%,#ffffff),
+      #ffffff 72%
+    )!important;
+  box-shadow:
+    0 10px 28px rgba(27,101,176,.07),
+    inset 0 1px 0 rgba(255,255,255,.96)!important;
+}
+
+#cgDecksAll .cg-deck-card::before{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;
+  top:0!important;
+  bottom:0!important;
+  width:4px!important;
+  background:linear-gradient(
+    180deg,
+    var(--deck-accent,#4a90e2),
+    color-mix(in srgb,var(--deck-accent,#4a90e2) 55%,#ffffff)
+  )!important;
+  opacity:.95!important;
+}
+
+#cgDecksAll .cg-deck-card .v25-deck-color{
+  position:absolute!important;
+  left:0!important;
+  right:0!important;
+  top:0!important;
+  height:62px!important;
+  border-radius:23px 23px 0 0!important;
+  background:
+    linear-gradient(
+      120deg,
+      color-mix(in srgb,var(--deck-accent,#4a90e2) 19%,#ffffff),
+      color-mix(in srgb,var(--deck-accent,#4a90e2) 7%,#ffffff)
+    )!important;
+  opacity:1!important;
+  pointer-events:none!important;
+}
+
+#cgDecksAll .cg-deck-card .v25-deck-body{
+  position:relative!important;
+  z-index:2!important;
+  padding:78px 17px 16px!important;
+}
+
+#cgDecksAll .cg-deck-card .v25-deck-body h3{
+  margin:0!important;
+  padding-right:0!important;
+  font-size:15px!important;
+  line-height:1.28!important;
+  color:#173456!important;
+}
+
+#cgDecksAll .cg-deck-card .v25-deck-meta{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  margin-top:10px!important;
+}
+
+#cgDecksAll .cg-deck-card .v25-deck-count{
+  font-weight:900!important;
+  color:var(--deck-accent,#1976ff)!important;
+}
+
+#cgDecksAll .cg-deck-card .v25-deck-open-hint{
+  color:#7892ac!important;
+  font-weight:800!important;
+}
+
+#cgDecksAll .cg-deck-card .v27-card-actions{
+  display:flex!important;
+  gap:7px!important;
+  margin-top:14px!important;
+}
+
+#cgDecksAll .cg-deck-card .v27-card-actions button{
+  min-height:36px!important;
+  border-radius:11px!important;
+  border:1px solid #d9eafb!important;
+  background:rgba(246,251,255,.94)!important;
+  color:#486985!important;
+  font:800 8px/1 system-ui,sans-serif!important;
+  cursor:pointer!important;
+}
+
+#cgDecksAll .cg-deck-card:hover{
+  transform:translateY(-4px)!important;
+  border-color:color-mix(in srgb,var(--deck-accent,#4a90e2) 34%,#dcecf9)!important;
+  box-shadow:
+    0 18px 40px color-mix(in srgb,var(--deck-accent,#4a90e2) 12%,rgba(25,118,255,.05)),
+    inset 0 1px 0 rgba(255,255,255,.96)!important;
+}
+
+/* The delete button is IN the card's upper-right area. */
+#cgDecksAll .cathians-delete-visible-btn{
+  position:absolute!important;
+  top:14px!important;
+  right:14px!important;
+  z-index:20!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  height:30px!important;
+  min-width:58px!important;
+  padding:0 10px!important;
+  border:1px solid rgba(255,255,255,.72)!important;
+  border-radius:10px!important;
+  background:rgba(8,36,72,.70)!important;
+  color:#fff!important;
+  font:800 8px/1 Poppins,system-ui,sans-serif!important;
+  cursor:pointer!important;
+  box-shadow:0 6px 16px rgba(9,45,84,.16)!important;
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+  transition:
+    transform .2s cubic-bezier(.22,1,.36,1),
+    background .2s ease,
+    box-shadow .2s ease!important;
+}
+
+#cgDecksAll .cathians-delete-visible-btn:hover{
+  transform:translateY(-1px) scale(1.04)!important;
+  background:#d53249!important;
+  box-shadow:0 9px 21px rgba(188,37,61,.25)!important;
+}
+
+#cgDecksAll .cathians-delete-visible-btn:active{
+  transform:scale(.95)!important;
+}
+
+/* Smooth removal */
+#cgDecksAll .cg-deck-card.deck-delete-exit{
+  pointer-events:none!important;
+  animation:cathiansDeckCleanDelete .46s cubic-bezier(.22,1,.36,1) forwards!important;
+}
+
+@keyframes cathiansDeckCleanDelete{
+  0%{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    filter:blur(0);
+  }
+  45%{
+    opacity:.55;
+    transform:translateY(-5px) scale(.985);
+    filter:blur(.2px);
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-16px) scale(.94);
+    filter:blur(2px);
+  }
+}
+
+@media(max-width:760px){
+  #cgDecksAll .cg-deck-card{
+    border-radius:20px!important;
+  }
+  #cgDecksAll .cg-deck-card .v25-deck-color{
+    height:54px!important;
+    border-radius:19px 19px 0 0!important;
+  }
+  #cgDecksAll .cg-deck-card .v25-deck-body{
+    padding:68px 14px 14px!important;
+  }
+  #cgDecksAll .cathians-delete-visible-btn{
+    top:11px!important;
+    right:11px!important;
+    height:27px!important;
+    min-width:53px!important;
+    border-radius:9px!important;
+    font-size:7px!important;
+  }
+}
+</style>
+
+<script id="cathians-decks-clean-edge-delete-js">
+(function(){
+  'use strict';
+
+  function decorateDecks(){
+    const box=document.getElementById('cgDecksAll');
+    if(!box)return;
+
+    box.querySelectorAll('.cg-deck-card').forEach(card=>{
+      if(card.querySelector('.cathians-delete-visible-btn'))return;
+
+      const id=
+        card.dataset.v28DeckId ||
+        card.dataset.v27DeckId ||
+        card.dataset.v25DeckId ||
+        '';
+
+      if(!id)return;
+
+      const title=(card.querySelector('h3')?.textContent||'Untitled Study Material').trim();
+
+      const btn=document.createElement('button');
+      btn.type='button';
+      btn.className='cathians-delete-visible-btn';
+      btn.textContent='Delete';
+      btn.title='Delete deck';
+      btn.setAttribute('aria-label','Delete deck '+title);
+
+      btn.addEventListener('click',e=>{
+        e.preventDefault();
+        e.stopPropagation();
+
+        /* Pass an item with the real deck id and visible deck name.
+           The existing confirmation modal performs the actual delete. */
+        if(typeof window.openDeleteDeckModal==='function'){
+          window.openDeleteDeckModal({
+            id:String(id),
+            topic:title
+          });
+        }
+      });
+
+      card.appendChild(btn);
+    });
+  }
+
+  function init(){
+    decorateDecks();
+    setTimeout(decorateDecks,80);
+    setTimeout(decorateDecks,250);
+    setTimeout(decorateDecks,650);
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',init,{once:true});
+  }else{
+    init();
+  }
+
+  const observer=new MutationObserver(function(){
+    decorateDecks();
+  });
+  observer.observe(document.body,{childList:true,subtree:true});
+
+  window.addEventListener('load',decorateDecks,{once:true});
+})();
+</script>
+
+
+<style id="cathians-decks-delete-bottom-final">
+/* =========================================================
+   MY DECKS — per-card DELETE button at the bottom
+   ========================================================= */
+
+/* Remove the previous top-right delete button. */
+#cgDecksAll .cathians-delete-visible-btn,
+#cgDecksAll .cathians-top-deck-delete-btn{
+  display:none!important;
+}
+
+/* Make the card a clean vertical layout. */
+#cgDecksAll .cg-deck-card{
+  display:flex!important;
+  flex-direction:column!important;
+  position:relative!important;
+  overflow:hidden!important;
+}
+
+#cgDecksAll .cg-deck-card .v25-deck-body{
+  display:flex!important;
+  flex-direction:column!important;
+  flex:1 1 auto!important;
+}
+
+/* Actions stay at the very bottom of each deck. */
+#cgDecksAll .cg-deck-card .v27-card-actions{
+  display:flex!important;
+  align-items:stretch!important;
+  gap:7px!important;
+  margin-top:auto!important;
+  padding-top:14px!important;
+  width:100%!important;
+}
+
+/* Existing actions share the row. */
+#cgDecksAll .cg-deck-card .v27-card-actions button{
+  min-height:37px!important;
+  flex:1 1 0!important;
+  border-radius:11px!important;
+  font:800 8px/1 system-ui,sans-serif!important;
+}
+
+/* New bottom delete action. */
+#cgDecksAll .cg-deck-card .cathians-deck-delete-bottom{
+  flex:1 1 0!important;
+  min-height:37px!important;
+  padding:0 12px!important;
+  border:1px solid #f0c9d0!important;
+  border-radius:11px!important;
+  background:linear-gradient(145deg,#fff7f8,#fff)!important;
+  color:#cf3248!important;
+  font:800 8px/1 Poppins,system-ui,sans-serif!important;
+  cursor:pointer!important;
+  box-shadow:0 6px 14px rgba(190,45,67,.055)!important;
+  transition:
+    transform .2s ease,
+    background .2s ease,
+    box-shadow .2s ease,
+    border-color .2s ease!important;
+}
+
+#cgDecksAll .cg-deck-card .cathians-deck-delete-bottom:hover{
+  transform:translateY(-2px)!important;
+  background:linear-gradient(145deg,#fff0f2,#fff)!important;
+  border-color:#e78999!important;
+  box-shadow:0 9px 18px rgba(190,45,67,.12)!important;
+}
+
+#cgDecksAll .cg-deck-card .cathians-deck-delete-bottom:active{
+  transform:scale(.97)!important;
+}
+
+/* Smooth card deletion. */
+#cgDecksAll .cg-deck-card.deck-delete-exit{
+  pointer-events:none!important;
+  animation:cathiansDeckBottomDelete .46s cubic-bezier(.22,1,.36,1) forwards!important;
+}
+
+@keyframes cathiansDeckBottomDelete{
+  0%{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+  45%{
+    opacity:.55;
+    transform:translateY(-5px) scale(.985);
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-15px) scale(.94);
+    filter:blur(2px);
+  }
+}
+
+@media(max-width:760px){
+  #cgDecksAll .cg-deck-card .v27-card-actions{
+    flex-direction:column!important;
+    gap:7px!important;
+  }
+
+  #cgDecksAll .cg-deck-card .v27-card-actions button,
+  #cgDecksAll .cg-deck-card .cathians-deck-delete-bottom{
+    width:100%!important;
+    min-height:38px!important;
+    flex:none!important;
+  }
+}
+</style>
+
+<script id="cathians-decks-delete-bottom-js">
+(function(){
+  'use strict';
+
+  function addBottomDelete(){
+    const box=document.getElementById('cgDecksAll');
+    if(!box)return;
+
+    box.querySelectorAll('.cg-deck-card').forEach(card=>{
+      if(card.querySelector('.cathians-deck-delete-bottom'))return;
+
+      const id=
+        card.dataset.v28DeckId ||
+        card.dataset.v27DeckId ||
+        card.dataset.v25DeckId ||
+        '';
+
+      if(!id)return;
+
+      const actions=card.querySelector('.v27-card-actions');
+      if(!actions)return;
+
+      const title=(card.querySelector('h3')?.textContent||'Untitled Study Material').trim();
+
+      const btn=document.createElement('button');
+      btn.type='button';
+      btn.className='cathians-deck-delete-bottom';
+      btn.textContent='Delete';
+      btn.title='Delete deck';
+      btn.setAttribute('aria-label','Delete deck '+title);
+
+      btn.addEventListener('click',function(e){
+        e.preventDefault();
+        e.stopPropagation();
+
+        if(typeof window.openDeleteDeckModal==='function'){
+          window.openDeleteDeckModal({
+            id:String(id),
+            topic:title
+          });
+        }
+      });
+
+      actions.appendChild(btn);
+    });
+  }
+
+  function init(){
+    addBottomDelete();
+    setTimeout(addBottomDelete,80);
+    setTimeout(addBottomDelete,250);
+    setTimeout(addBottomDelete,700);
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',init,{once:true});
+  }else{
+    init();
+  }
+
+  const observer=new MutationObserver(addBottomDelete);
+  observer.observe(document.body,{childList:true,subtree:true});
+
+  window.addEventListener('load',addBottomDelete,{once:true});
+})();
+</script>
+
 </head>
 <body>
 <main class="page">
