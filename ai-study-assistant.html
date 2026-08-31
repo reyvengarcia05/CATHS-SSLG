@@ -3690,6 +3690,94 @@ input:focus,textarea:focus,select:focus{
 }
 </style>
 
+
+<style id="cathians-glowing-fire-only">
+/* Remove all ember particles */
+.cathians-fire-particles{
+  display:none!important;
+}
+
+/* Clean transparent fire containers */
+.streak-flame,
+.lb-fire-orb,
+.lb-fire-mini,
+.reward-fire,
+.progress-avatar-slot{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+
+/* Soft glowing fire.png */
+.streak-flame{
+  width:86px!important;
+  height:86px!important;
+  border-radius:0!important;
+  background:url("fire.png") center/contain no-repeat!important;
+  transform:none!important;
+  filter:
+    drop-shadow(0 0 5px rgba(255,158,65,.28))
+    drop-shadow(0 0 14px rgba(255,109,30,.18))!important;
+  animation:cathiansGlowFire 1.9s ease-in-out infinite!important;
+}
+
+.lb-fire-orb::before{
+  background:url("fire.png") center/contain no-repeat!important;
+  border:0!important;
+  filter:
+    drop-shadow(0 0 5px rgba(255,158,65,.28))
+    drop-shadow(0 0 13px rgba(255,109,30,.16))!important;
+  animation:cathiansGlowFire 1.9s ease-in-out infinite!important;
+}
+
+.lb-fire-mini{
+  background:url("fire.png") center/contain no-repeat!important;
+  filter:drop-shadow(0 0 7px rgba(255,122,39,.20))!important;
+  animation:cathiansGlowFireMini 1.5s ease-in-out infinite!important;
+}
+
+.reward-fire::before{
+  background:url("fire.png") center/contain no-repeat!important;
+  filter:drop-shadow(0 0 6px rgba(255,122,39,.18))!important;
+  animation:cathiansGlowFireMini 1.5s ease-in-out infinite!important;
+}
+
+.progress-avatar-slot::after{
+  background:url("fire.png") center/contain no-repeat!important;
+  border:0!important;
+  filter:drop-shadow(0 0 6px rgba(255,122,39,.20))!important;
+  animation:cathiansGlowFireMini 1.7s ease-in-out infinite!important;
+}
+
+@keyframes cathiansGlowFire{
+  0%,100%{
+    transform:scale(1);
+    filter:
+      drop-shadow(0 0 5px rgba(255,158,65,.25))
+      drop-shadow(0 0 12px rgba(255,109,30,.15));
+  }
+  50%{
+    transform:scale(1.035);
+    filter:
+      drop-shadow(0 0 7px rgba(255,172,77,.34))
+      drop-shadow(0 0 17px rgba(255,109,30,.21));
+  }
+}
+
+@keyframes cathiansGlowFireMini{
+  0%,100%{transform:scale(.98);opacity:.94}
+  50%{transform:scale(1.035);opacity:1}
+}
+
+@media(max-width:760px){
+  .streak-flame{
+    width:70px!important;
+    height:70px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 <main class="page">
