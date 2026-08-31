@@ -2732,6 +2732,81 @@ body{min-height:100dvh;overflow-x:hidden}
 }
 </style>
 
+
+<style id="cathians-decks-rainbow-enhancement">
+/* ===== Decks: every deck gets its own vivid color ===== */
+:root{
+  --deck-rainbow-1:#6C63FF;--deck-rainbow-2:#FF5C8A;--deck-rainbow-3:#10B981;
+  --deck-rainbow-4:#F59E0B;--deck-rainbow-5:#3B82F6;--deck-rainbow-6:#A855F7;
+  --deck-rainbow-7:#14B8A6;--deck-rainbow-8:#F97316;--deck-rainbow-9:#EC4899;
+  --deck-rainbow-10:#22C55E;--deck-rainbow-11:#8B5CF6;--deck-rainbow-12:#06B6D4;
+  --deck-rainbow-13:#EF4444;--deck-rainbow-14:#84CC16;--deck-rainbow-15:#E11D48;
+  --deck-rainbow-16:#0EA5E9;--deck-rainbow-17:#D946EF;--deck-rainbow-18:#FB923C;
+  --deck-rainbow-19:#2563EB;--deck-rainbow-20:#7C3AED;
+}
+.cg-deck-card.v25-compact-card,
+.cg-game-card{
+  position:relative!important;
+  border:1px solid color-mix(in srgb,var(--deck-accent,#6c63ff) 24%,#dfe9f5)!important;
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb,var(--deck-accent,#6c63ff) 11%,#ffffff),
+      #ffffff 58%)!important;
+  box-shadow:
+    0 10px 24px color-mix(in srgb,var(--deck-accent,#6c63ff) 9%,transparent),
+    inset 0 1px 0 rgba(255,255,255,.95)!important;
+}
+.cg-deck-card.v25-compact-card .v25-deck-color{
+  position:relative;
+  height:64px!important;
+  flex-basis:64px!important;
+  background:
+    linear-gradient(135deg,
+      var(--deck-accent,#6c63ff),
+      color-mix(in srgb,var(--deck-accent,#6c63ff) 68%,#ffffff))!important;
+  box-shadow:0 8px 20px color-mix(in srgb,var(--deck-accent,#6c63ff) 18%,transparent);
+}
+.cg-deck-card.v25-compact-card .v25-deck-color::after{
+  content:"";
+  position:absolute;
+  width:130px;height:130px;
+  right:-40px;top:-83px;
+  border-radius:50%;
+  background:rgba(255,255,255,.15);
+}
+.cg-deck-card.v25-compact-card h3{
+  color:#17283f!important;
+}
+.cg-deck-card.v25-compact-card .v25-deck-count{
+  color:var(--deck-accent,#6c63ff)!important;
+}
+.cg-deck-card.v25-compact-card .v25-deck-open-hint{
+  color:var(--deck-accent,#6c63ff)!important;
+}
+.cg-deck-card.v25-compact-card:hover{
+  border-color:var(--deck-accent,#6c63ff)!important;
+  box-shadow:
+    0 18px 38px color-mix(in srgb,var(--deck-accent,#6c63ff) 18%,transparent),
+    inset 0 1px 0 rgba(255,255,255,.95)!important;
+}
+.cg-game-card::before{
+  background:var(--deck-accent,#6c63ff)!important;
+  width:5px!important;
+  box-shadow:0 0 18px color-mix(in srgb,var(--deck-accent,#6c63ff) 35%,transparent);
+}
+.cg-deck-color-dot,
+.cg-game-card .cg-deck-color-dot{
+  background:var(--deck-accent,#6c63ff)!important;
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--deck-accent,#6c63ff) 14%,transparent)!important;
+}
+@media(max-width:760px){
+  .cg-deck-card.v25-compact-card .v25-deck-color{
+    height:46px!important;
+    flex-basis:46px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 <main class="page">
@@ -4454,7 +4529,7 @@ async function fetchSavedMaterials(){
   }catch{return localDocs;}
 }
 
-const DECK_COLOR_PALETTE=['#6c63ff','#ee6a8a','#3fb8a6','#f0b938','#66a6e8','#a96ad8','#5bbf73','#e77d4f'];
+const DECK_COLOR_PALETTE=["#6C63FF", "#FF5C8A", "#10B981", "#F59E0B", "#3B82F6", "#A855F7", "#14B8A6", "#F97316", "#EC4899", "#22C55E", "#8B5CF6", "#06B6D4", "#EF4444", "#84CC16", "#E11D48", "#0EA5E9", "#D946EF", "#F97316", "#2563EB", "#7C3AED"];
 function deckColorKey(id){return 'cathsDeckColor:'+String(id||'unknown')}
 function getDeckColor(item,index=0){
   const id=String(item?.id||item?.topic||('deck-'+index));
@@ -7084,7 +7159,7 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     const count=item=>{try{return typeof cardCount==='function'?cardCount(item):(item?.content?.cards?.length||0)}catch(_){return 0}};
     box.classList.add('v25-compact-grid');
     box.innerHTML=docs.map((item,index)=>{
-      const color=colorAt(index);
+      const color=typeof getDeckColor==='function'?getDeckColor(item,index):DECK_COLOR_PALETTE[index%DECK_COLOR_PALETTE.length];
       return `<article class="cg-deck-card v25-compact-card" tabindex="0" style="--deck-accent:${color}" data-v28-deck-id="${esc(item.id)}"><div class="v25-deck-color"></div><div class="v25-deck-body"><h3>${esc(item.topic||'Untitled Study Material')}</h3><div class="v25-deck-meta"><span class="v25-deck-count">${count(item)} cards</span><span class="v25-deck-open-hint">Open deck</span></div><div class="v27-card-actions"><button type="button" class="v27-card-copy" data-v28-copy="${esc(item.id)}">Copy</button><button type="button" class="v27-card-edit" data-v28-edit="${esc(item.id)}">Edit Decks</button><button type="button" class="v27-card-play" data-v28-play="${esc(item.id)}">Play</button></div></div></article>`;
     }).join('');
 
