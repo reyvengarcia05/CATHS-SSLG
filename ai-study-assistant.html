@@ -4245,6 +4245,10 @@ input:focus,textarea:focus,select:focus{
 </script>
 
 
+<script>
+// Secure AI backend endpoint. Keep the OpenAI API key inside Cloudflare Worker Secrets (never in this HTML).
+window.CATHS_AI_API_URL = "https://caths-ai.reyvengarcia05.workers.dev";
+</script>
 </head>
 <body>
 <main class="page">
@@ -5447,7 +5451,7 @@ async function saveGeneratedStudyMaterial(payload){
 }
 
 async function callCathsAI(prompt){
-  const API_URL="https://caths-ai.reyvengarcia05.workers.dev";
+  const API_URL=window.CATHS_AI_API_URL;
 
   let user=currentUser;
   if(!user && window.studyAuthStateReady){
@@ -8183,7 +8187,7 @@ if(homeBox && studyBox){
       }
 
       const token=await user.getIdToken();
-      const response=await fetch("https://caths-ai.reyvengarcia05.workers.dev",{
+      const response=await fetch(window.CATHS_AI_API_URL,{
         method:"POST",
         headers:{
           "Content-Type":"application/json",
