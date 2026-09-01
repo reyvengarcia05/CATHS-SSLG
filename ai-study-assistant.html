@@ -4808,6 +4808,8 @@ input:focus,textarea:focus,select:focus{
       <div class="flow-grid" id="addReviewerFormatStep">
         <button class="flow-choice" type="button" data-add-format="cards"><strong>Cards</strong><small>Create your own flashcards.</small></button>
         <button class="flow-choice" type="button" data-add-format="notes"><strong>Notes</strong><small>Build a reviewer from written notes.</small></button>
+        <button class="flow-choice cathians-new-material-choice" type="button" data-add-format="new-flashcards"><strong>Add new Flashcards</strong><small>Start a fresh flashcard set.</small></button>
+        <button class="flow-choice cathians-new-material-choice" type="button" data-add-format="new-decks"><strong>Add new Decks</strong><small>Start a fresh deck reviewer.</small></button>
       </div>
       <div class="flow-grid hidden" id="addReviewerMethodStep">
         <button class="flow-choice" type="button" data-add-method="magic"><strong>Magic Import</strong><small>Bring in material from a file, link, or recording.</small></button>
@@ -9986,7 +9988,7 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
   function resetChoice(){
     chosenMode='';
     choice.style.display='flex';
-    box.hidden=false;
+    box.hidden=true;
     box.innerHTML='<div class="cg-view-empty">Please choose what you want to see</div>';
     decksBtn.classList.remove('is-active');
     flashBtn.classList.remove('is-active');
@@ -10038,6 +10040,264 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
   }
 
   resetChoice();
+})();
+</script>
+<script id="cathians-library-initial-hidden-v5">
+(function(){
+  const choice=document.getElementById('cgLibraryChoice');
+  const box=document.getElementById('cgDecksAll');
+  const decksBtn=document.getElementById('cgOpenDecksChoice');
+  const flashBtn=document.getElementById('cgOpenFlashcardsChoice');
+  const actions=document.getElementById('cgLibraryActions');
+  if(!choice||!box||!decksBtn||!flashBtn)return;
+
+  function hideLibraryItems(){
+    box.hidden=true;
+    box.innerHTML='<div class="cg-view-empty">Please choose what you want to see</div>';
+    choice.style.display='flex';
+    decksBtn.classList.remove('is-active');
+    flashBtn.classList.remove('is-active');
+    if(actions){actions.hidden=true;actions.style.display='none';}
+  }
+
+  // Opening My Decks always starts from the chooser. Nothing is rendered yet.
+  const nav=document.querySelector('[data-cg-view="library"]');
+  nav?.addEventListener('click',()=>setTimeout(hideLibraryItems,0),true);
+  document.addEventListener('click',e=>{
+    if(e.target?.closest?.('[data-cg-view="library"]'))setTimeout(hideLibraryItems,0);
+  },true);
+
+  // Guard every normal library refresh too, unless one of the two chooser buttons is active.
+  const original=window.loadCgDecksView;
+  let selected=false;
+  decksBtn.addEventListener('click',()=>selected=true);
+  flashBtn.addEventListener('click',()=>selected=true);
+
+  window.loadCgDecksView=function(){
+    if(!selected){hideLibraryItems();return;}
+    return typeof original==='function'?original.apply(this,arguments):undefined;
+  };
+
+  hideLibraryItems();
+})();
+</script>
+
+<style id="cathians-my-decks-v6-fixes">
+  /* My Decks: keep the initial library completely empty until a choice is made. */
+  #cgLibraryView .cg-decks-all[hidden]{display:none!important}
+  #cgLibraryView .cg-decks-all.cathians-library-results{
+    display:grid!important;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:16px;
+    margin-top:18px;
+  }
+  #cgLibraryView .cg-decks-all.cathians-library-results .cg-view-empty{
+    grid-column:1/-1;
+  }
+  #cgLibraryView .cathians-library-item-in{
+    animation:cathiansLibraryCardIn .46s cubic-bezier(.22,1,.36,1) both;
+    animation-delay:var(--cathians-delay,0ms);
+  }
+  #cgLibraryView .cg-library-actions{
+    width:100%;
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+    margin-top:14px;
+  }
+  #cgLibraryView .cg-library-actions .cg-recycle-btn,
+  #cgLibraryView .cg-library-actions .cg-add-library-btn{
+    width:100%;
+    min-width:0;
+    min-height:42px;
+    justify-content:center;
+  }
+  #cgLibraryView .cg-deck-card{cursor:pointer}
+  #cgLibraryView .cg-deck-card:focus-visible{outline:2px solid rgba(79,98,255,.45);outline-offset:3px}
+  #cgLibraryView .cg-library-choice{margin-bottom:4px}
+  #addReviewerFormatStep .cathians-new-material-choice{
+    border-color:#cfd6ff;
+    background:linear-gradient(180deg,#fff,#f8f8ff);
+  }
+  #addReviewerFormatStep .cathians-new-material-choice:hover{
+    border-color:#aeb8ff;
+    box-shadow:0 12px 24px rgba(99,102,241,.10);
+  }
+  @keyframes cathiansLibraryCardIn{
+    from{opacity:0;transform:translateY(16px) scale(.985)}
+    to{opacity:1;transform:translateY(0) scale(1)}
+  }
+  @media(max-width:760px){
+    #cgLibraryView .cg-library-actions{grid-template-columns:1fr 1fr!important}
+    #cgLibraryView .cg-decks-all.cathians-library-results{grid-template-columns:1fr;gap:12px}
+  }
+</style>
+<script id="cathians-my-decks-v6-js">
+(function(){
+  'use strict';
+  const view=document.getElementById('cgLibraryView');
+  const choice=document.getElementById('cgLibraryChoice');
+  const box=document.getElementById('cgDecksAll');
+  const decksBtn=document.getElementById('cgOpenDecksChoice');
+  const flashBtn=document.getElementById('cgOpenFlashcardsChoice');
+  const actions=document.getElementById('cgLibraryActions');
+  const addLibraryBtn=document.getElementById('cgAddDeckFlashcard');
+  if(!view||!choice||!box||!decksBtn||!flashBtn)return;
+
+  let selectedMode='';
+
+  function emptyMessage(){
+    const el=document.createElement('div');
+    el.className='cg-view-empty';
+    el.textContent='Please add reviewer first';
+    return el;
+  }
+
+  function resetLibrary(){
+    selectedMode='';
+    box.hidden=true;
+    box.classList.remove('cathians-library-results');
+    box.innerHTML='';
+    choice.style.display='flex';
+    decksBtn.classList.remove('is-active');
+    flashBtn.classList.remove('is-active');
+    if(actions){actions.hidden=true;actions.style.display='none'}
+  }
+
+  function isFlashcard(item){return String(item?.type||'').toLowerCase()==='flashcards'}
+
+  async function openSelectedMode(mode){
+    selectedMode=mode;
+    decksBtn.classList.toggle('is-active',mode==='decks');
+    flashBtn.classList.toggle('is-active',mode==='flashcards');
+    choice.style.display='flex';
+    if(actions){actions.hidden=false;actions.style.display='grid'}
+    box.hidden=false;
+    box.classList.add('cathians-library-results');
+    box.innerHTML='<div class="cg-view-empty">Loading…</div>';
+
+    let docs=[];
+    try{docs=await fetchSavedMaterials();}catch(_){docs=[]}
+    const filtered=docs.filter(item=>mode==='flashcards'?isFlashcard(item):!isFlashcard(item));
+
+    if(!filtered.length){
+      box.innerHTML='';
+      box.appendChild(emptyMessage());
+      box.scrollIntoView({behavior:'smooth',block:'nearest'});
+      return;
+    }
+
+    box.innerHTML=filtered.map((item,index)=>{
+      const color=deckColorStyle(item,index);
+      const typeLabel=materialDisplayLabel(item);
+      return `<article class="cg-deck-card color-tint cathians-library-item-in" tabindex="0" role="button" data-v6-open-id="${esc(item.id)}" style="${color}--cathians-delay:${Math.min(index,8)*45}ms">
+        <div class="cg-deck-card-top"><div style="display:flex;align-items:center;gap:8px"><span class="cg-deck-color-dot" aria-hidden="true"></span><span class="cg-deck-type">${esc(typeLabel)}</span></div><span class="cg-deck-type">${esc(materialSavedDate(item))}</span></div>
+        <h3>${esc(item.topic||'Untitled Study Material')}</h3>
+        <p>${esc(item.notes||'Saved study material')}</p>
+        <div class="cg-deck-actions">
+          <button class="cg-deck-open" type="button" data-v6-open-button="${esc(item.id)}">Open</button>
+          <button class="cg-deck-ai" type="button" data-v6-ai-id="${esc(item.id)}">Add to AI conversation</button>
+        </div>
+      </article>`;
+    }).join('');
+
+    box.querySelectorAll('[data-v6-open-button]').forEach(btn=>btn.addEventListener('click',e=>{
+      e.preventDefault();e.stopPropagation();
+      const item=filtered.find(x=>String(x.id)===String(btn.dataset.v6OpenButton));
+      openSavedStudyMaterial(item);
+    }));
+    box.querySelectorAll('[data-v6-open-id]').forEach(card=>card.addEventListener('keydown',e=>{
+      if((e.key==='Enter'||e.key===' ') && !e.target.closest('button')){e.preventDefault();openSavedStudyMaterial(filtered.find(x=>String(x.id)===String(card.dataset.v6OpenId)));}
+    }));
+    box.querySelectorAll('[data-v6-ai-id]').forEach(btn=>btn.addEventListener('click',e=>{
+      e.preventDefault();e.stopPropagation();
+      const item=filtered.find(x=>String(x.id)===String(btn.dataset.v6AiId));
+      if(!item)return;
+      const input=document.getElementById('cgStudyInput');
+      if(input){input.value=(item.topic?`Study this deck: ${item.topic}`:'Study this deck')+(item.notes?`\n\n${item.notes}`:'');input.dispatchEvent(new Event('input',{bubbles:true}));}
+      window.cgSetView?.('home');
+      window.showGameToast?.('Deck added to the AI conversation.');
+    }));
+
+    box.querySelectorAll('[data-v6-open-id]').forEach(card=>card.addEventListener('click',e=>{
+      if(e.target.closest('button'))return;
+      const item=filtered.find(x=>String(x.id)===String(card.dataset.v6OpenId));
+      openSavedStudyMaterial(item);
+    }));
+    box.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  // Catch chooser clicks before the older chooser handlers so there is one reliable path.
+  document.addEventListener('click',e=>{
+    const b=e.target?.closest?.('#cgOpenDecksChoice,#cgOpenFlashcardsChoice');
+    if(!b)return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    openSelectedMode(b===decksBtn?'decks':'flashcards');
+  },true);
+
+  // Starting My Decks always resets to the chooser.
+  document.addEventListener('click',e=>{
+    if(e.target?.closest?.('[data-cg-view="library"]')){
+      setTimeout(resetLibrary,0);
+    }
+  },true);
+
+  // Keep the chooser state reset when the app navigates into the library by script.
+  const originalSet=window.cgSetView;
+  if(typeof originalSet==='function' && !window.__cathiansV6SetViewWrapped){
+    window.__cathiansV6SetViewWrapped=true;
+    window.cgSetView=function(v){
+      const result=originalSet.apply(this,arguments);
+      if(v==='library')setTimeout(resetLibrary,0);
+      return result;
+    };
+  }
+
+  if(addLibraryBtn){
+    addLibraryBtn.addEventListener('click',e=>{
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      const navAdd=document.querySelector('[data-cg-view="add-reviewer"]');
+      if(navAdd)navAdd.click();
+      else document.getElementById('cgOpenReviewerBuilder')?.click();
+    },true);
+  }
+
+  resetLibrary();
+
+  // New Add Reviewer choices: direct creators with the correct saved destination.
+  document.addEventListener('click',e=>{
+    const btn=e.target?.closest?.('[data-add-format="new-flashcards"],[data-add-format="new-decks"]');
+    if(!btn)return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    const isFlash=btn.dataset.addFormat==='new-flashcards';
+    window.__cathiansAddFormat=isFlash?'cards':'notes';
+    if(isFlash){
+      document.getElementById('addReviewerFlowModal')?.classList.add('hidden');
+      document.getElementById('addReviewerFlowModal')?.setAttribute('aria-hidden','true');
+      document.body.classList.remove('modal-open');
+      window.openManualFlashcardCreator?.();
+      return;
+    }
+    document.getElementById('addReviewerFlowModal')?.classList.add('hidden');
+    document.getElementById('addReviewerFlowModal')?.setAttribute('aria-hidden','true');
+    document.body.classList.remove('modal-open');
+    document.getElementById('cgOpenReviewerBuilder')?.click();
+    setTimeout(()=>{
+      if(typeof window.showStudyWorkspace==='function')window.showStudyWorkspace();
+      const typeBtn=document.querySelector('.tool-card[data-type="reviewer"]');
+      typeBtn?.click();
+      const topic=document.getElementById('topic');
+      if(topic && !topic.value.trim())topic.value='New Deck';
+    },80);
+  },true);
+
+  // After creating a new flashcard set, refresh the saved list when the user next opens My Decks.
+  document.getElementById('manualSaveFlashcardsBtn')?.addEventListener('click',()=>{
+    setTimeout(()=>{ if(selectedMode==='flashcards')openSelectedMode('flashcards'); },900);
+  },false);
 })();
 </script>
 </body>
