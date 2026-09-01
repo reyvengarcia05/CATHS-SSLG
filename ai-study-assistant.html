@@ -5474,10 +5474,18 @@ async function callCathsAI(prompt){
     body:JSON.stringify({message:prompt})
   });
 
-  const data=await response.json().catch(()=>({}));
+  const rawText=await response.text();
+  let data={};
+  try{ data=rawText?JSON.parse(rawText):{}; }catch(_){ data={raw:rawText}; }
 
   if(!response.ok){
-    throw new Error(data?.error||"The AI service could not process the request.");
+    const detail = data?.error || data?.message || data?.raw || response.statusText || "Unknown server error.";
+    const err=new Error(String(detail));
+    err.status=response.status;
+    err.statusText=response.statusText;
+    err.endpoint=API_URL;
+    err.raw=rawText;
+    throw err;
   }
 
   const output=String(data?.output||"").trim();
@@ -8156,7 +8164,7 @@ if(homeBox && studyBox){
     thread=document.createElement('section');
     thread.id='cgAiThread';
     thread.className='cg-ai-thread';
-    thread.innerHTML='<div class="cg-ai-thread-head"><strong>CATHIANS AI Assistant</strong><span>AI Connected</span></div><div class="cg-ai-message"><strong>Ask me anything about your study topic.</strong><br>I can explain concepts, help you review, and answer questions from your request.</div><div class="cg-ai-note">AI responses are generated through the secure CATHS-MAIN AI backend.</div>';
+    thread.innerHTML='<div class="cg-ai-thread-head"><strong>CATHIANS AI Assistant</strong><span>AI Connected</span></div><div class="cg-ai-message"><strong>Ask me anything about your study topic.</strong><br>I can explain concepts, help you review, and answer questions from your request.</div><div class="cg-ai-note">AI responses are generated through the secure CATHS-MAIN AI backend. If an error occurs, the exact Worker/OpenAI error will be shown here.</div>';
     studyBox.parentElement.insertBefore(thread, studyBox.nextElementSibling);
   }
   const syncEnter=()=>{
@@ -8198,13 +8206,31 @@ if(homeBox && studyBox){
         })
       });
 
-      const data=await response.json().catch(()=>({}));
-      if(!response.ok)throw new Error(data?.error||"The AI service could not process the request.");
+      const rawText=await response.text();
+      let data={};
+      try{ data=rawText?JSON.parse(rawText):{}; }catch(_){ data={raw:rawText}; }
+      if(!response.ok){
+        const detail=data?.error||data?.message||data?.raw||response.statusText||"Unknown server error.";
+        const err=new Error(String(detail));
+        err.status=response.status;
+        err.statusText=response.statusText;
+        err.endpoint=window.CATHS_AI_API_URL;
+        err.raw=rawText;
+        throw err;
+      }
 
       messageBox.innerHTML='<strong>CATHIANS AI Assistant</strong><br>'+escHtml(data?.output||"I could not generate an answer right now.");
     }catch(error){
       console.error("CATHS home AI error:",error);
-      messageBox.innerHTML='<strong>CATHIANS AI Assistant</strong><br>Sorry, I could not reach the AI right now. Please try again.';
+      const status=error?.status?`HTTP ${error.status}${error.statusText?' '+error.statusText:''}`:'NETWORK / BROWSER ERROR';
+      const detail=String(error?.message||error||'Unknown error');
+      const endpoint=String(error?.endpoint||window.CATHS_AI_API_URL||'Unknown endpoint');
+      messageBox.innerHTML=
+        '<strong>CATHIANS AI Assistant</strong><br>'+
+        '<span style="display:block;margin-top:8px;font-weight:800;color:#b42318">AI connection error</span>'+
+        '<span style="display:block;margin-top:4px;color:#344054"><b>Status:</b> '+escHtml(status)+'</span>'+
+        '<span style="display:block;margin-top:4px;color:#344054;word-break:break-word"><b>Reason:</b> '+escHtml(detail)+'</span>'+
+        '<span style="display:block;margin-top:4px;color:#667085;font-size:.9em;word-break:break-all"><b>Worker:</b> '+escHtml(endpoint)+'</span>';
     }
 
     thread.scrollIntoView({behavior:'smooth',block:'nearest'});
