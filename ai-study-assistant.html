@@ -4823,25 +4823,83 @@ input:focus,textarea:focus,select:focus{
       <div class="flow-footer"><button class="flow-back-btn hidden" id="addReviewerFlowBack" type="button">Back</button><button class="flow-cancel-btn" id="addReviewerFlowCancel" type="button">Cancel</button></div>
     </div>
   </section>
-<section class="manual-flashcard-modal hidden" id="manualFlashcardModal" aria-label="Make your own flashcard">
-    <div class="manual-flashcard-backdrop" id="manualFlashcardBackdrop"></div>
+<section class="manual-flashcard-modal hidden" id="manualFlashcardModal" aria-label="Make your own flashcard" aria-hidden="true">
     <div class="manual-flashcard-card">
-      <div class="manual-flashcard-head">
-        <div class="manual-locked-copy"><h4>Make Your Own Flashcard</h4><p>Write the term and definition yourself. No AI is used here. You can create up to 50 cards.</p></div>
-        <button class="manual-close" id="manualFlashcardClose" type="button" aria-label="Close">×</button>
-      </div>
-      <input class="manual-input manual-title-input" id="manualFlashcardTitle" type="text" maxlength="120" placeholder="Title of flashcard">
-      <div class="manual-cards-list" id="manualCardsList"></div>
-      <div class="manual-actions">
-        <button class="manual-add-btn" id="manualAddCardBtn" type="button">＋ Add Flashcard</button>
-        <span class="manual-count" id="manualCardCount">1 / 50 cards</span>
-        <button class="manual-save-btn" id="manualSaveFlashcardsBtn" type="button">Save Flashcards</button>
-      </div>
-      <div class="manual-status" id="manualFlashcardStatus"></div>
-    </div>
-  </section>
+      <header class="manual-fullscreen-head">
+        <div class="manual-head-left">
+          <button class="manual-close" id="manualFlashcardClose" type="button" aria-label="Close">×</button>
+        </div>
+        <div class="manual-head-center">
+          <h4>Make Your Own Flashcard</h4>
+          <p class="manual-locked-note">LOCKED TOP HEADER • Maximum 80 cards</p>
+        </div>
+        <div class="manual-head-right">
+          <button class="manual-save-btn manual-save-top" id="manualSaveFlashcardsBtn" type="button">Save</button>
+        </div>
+      </header>
 
-  <section class="workspace">
+      <div class="manual-saving-overlay hidden" id="manualSavingOverlay" aria-hidden="true">
+        <div class="manual-saving-card" role="status" aria-live="polite">
+          <span class="manual-saving-spinner" aria-hidden="true"></span>
+          <strong>Saving</strong>
+        </div>
+      </div>
+      <div class="manual-leave-overlay hidden" id="manualLeaveOverlay" aria-hidden="true">
+        <div class="manual-leave-card" role="dialog" aria-modal="true" aria-labelledby="manualLeaveTitle">
+          <h4 id="manualLeaveTitle">Save before leaving?</h4>
+          <p>You have unsaved changes in this flashcard.</p>
+          <div class="manual-leave-actions">
+            <button type="button" class="manual-leave-save" id="manualLeaveSaveBtn">Save</button>
+            <button type="button" class="manual-leave-discard" id="manualLeaveDiscardBtn">Don't save</button>
+          </div>
+        </div>
+      </div>
+
+      <main class="manual-editor-main">
+        <div class="manual-title-row">
+          <div class="manual-title-wrap">
+            <label class="manual-field-label" for="manualFlashcardTitle">Title of the flashcard</label>
+            <input class="manual-input manual-title-input" id="manualFlashcardTitle" type="text" maxlength="120" placeholder="Title of flashcard">
+          </div>
+          <div class="manual-card-tools">
+            <div class="manual-popover-wrap">
+              <button class="manual-tool-btn" id="manualChooseColorBtn" type="button" aria-expanded="false">
+                <span class="manual-color-dot" id="manualColorDot"></span>
+                <span>Choose Color</span>
+              </button>
+              <div class="manual-color-popover hidden" id="manualColorPopover" role="dialog" aria-label="Choose flashcard color">
+                <div class="manual-popover-title">Choose color</div>
+                <div class="manual-color-grid" id="manualColorGrid"></div>
+                <label class="manual-color-wheel">
+                  <span>Color wheel</span>
+                  <input id="manualColorWheel" type="color" value="#6C63FF" aria-label="Custom flashcard color">
+                </label>
+              </div>
+            </div>
+            <div class="manual-popover-wrap">
+              <button class="manual-tool-btn" id="manualAddCardsBtn" type="button" aria-expanded="false">＋ Add Cards</button>
+              <div class="manual-add-popover hidden" id="manualAddCardsPopover" role="dialog" aria-label="Add cards">
+                <div class="manual-popover-title">How many cards?</div>
+                <div class="manual-count-picker">
+                  <button type="button" id="manualCountMinus" aria-label="Decrease card count">−</button>
+                  <input id="manualAddCount" type="number" min="1" max="10" value="1" inputmode="numeric" aria-label="Cards to add">
+                  <button type="button" id="manualCountPlus" aria-label="Increase card count">＋</button>
+                </div>
+                <button class="manual-confirm-add-btn" id="manualConfirmAddBtn" type="button">Add Cards</button>
+                <small>Minimum 1 • Maximum 10 per add</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="manual-cards-list" id="manualCardsList"></div>
+        <div class="manual-bottom-bar">
+          <span class="manual-count" id="manualCardCount">5 / 80 cards</span>
+          <span class="manual-status" id="manualFlashcardStatus" aria-live="polite"></span>
+        </div>
+      </main>
+    </section>
+<section class="workspace">
     <div class="panel">
       <div class="panel-title">
         <h4>Build your study material</h4>
@@ -5646,57 +5704,342 @@ async function signIn(){
 signinBtn.addEventListener('click',signIn);
 const ownFlashcardTool=document.getElementById('ownFlashcardTool');
 const manualFlashcardModal=document.getElementById('manualFlashcardModal');
-const manualFlashcardBackdrop=document.getElementById('manualFlashcardBackdrop');
 const manualFlashcardClose=document.getElementById('manualFlashcardClose');
 const manualFlashcardTitle=document.getElementById('manualFlashcardTitle');
 const manualCardsList=document.getElementById('manualCardsList');
-const manualAddCardBtn=document.getElementById('manualAddCardBtn');
 const manualCardCount=document.getElementById('manualCardCount');
 const manualSaveFlashcardsBtn=document.getElementById('manualSaveFlashcardsBtn');
 const manualFlashcardStatus=document.getElementById('manualFlashcardStatus');
+const manualSavingOverlay=document.getElementById('manualSavingOverlay');
+const manualLeaveOverlay=document.getElementById('manualLeaveOverlay');
+const manualLeaveSaveBtn=document.getElementById('manualLeaveSaveBtn');
+const manualLeaveDiscardBtn=document.getElementById('manualLeaveDiscardBtn');
+let manualDirty=false;
+let manualOriginalSnapshot='';
+let manualClosingConfirmed=false;
+const manualChooseColorBtn=document.getElementById('manualChooseColorBtn');
+const manualColorPopover=document.getElementById('manualColorPopover');
+const manualColorGrid=document.getElementById('manualColorGrid');
+const manualColorWheel=document.getElementById('manualColorWheel');
+const manualColorDot=document.getElementById('manualColorDot');
+const manualAddCardsBtn=document.getElementById('manualAddCardsBtn');
+const manualAddCardsPopover=document.getElementById('manualAddCardsPopover');
+const manualAddCount=document.getElementById('manualAddCount');
+const manualCountMinus=document.getElementById('manualCountMinus');
+const manualCountPlus=document.getElementById('manualCountPlus');
+const manualConfirmAddBtn=document.getElementById('manualConfirmAddBtn');
+
 let manualCards=[];
-function updateManualCardControls(){const n=manualCards.length;manualCardCount.textContent=`${n} / 50 cards`;manualAddCardBtn.disabled=n>=50;}
+let manualEditingId=null;
+let manualFlashcardColor='#6C63FF';
+const MANUAL_MAX_CARDS=80;
+const MANUAL_ADD_MAX=10;
+const MANUAL_COLOR_CHOICES=['#6C63FF','#4F46E5','#2563EB','#0EA5E9','#06B6D4','#10B981','#22C55E','#84CC16','#F59E0B','#F97316','#EF4444','#EC4899','#D946EF','#A855F7','#7C3AED','#111827'];
+
+function normalizeManualColor(value){
+  return /^#[0-9a-f]{6}$/i.test(String(value||'')) ? String(value).toUpperCase() : '#6C63FF';
+}
+function updateManualCardControls(){
+  const n=manualCards.length;
+  if(manualCardCount)manualCardCount.textContent=`${n} / ${MANUAL_MAX_CARDS} cards`;
+  if(manualAddCardsBtn)manualAddCardsBtn.disabled=n>=MANUAL_MAX_CARDS;
+  if(manualColorDot)manualColorDot.style.background=manualFlashcardColor;
+}
+function renderManualColorGrid(){
+  if(!manualColorGrid)return;
+  manualColorGrid.innerHTML=MANUAL_COLOR_CHOICES.map(c=>`<button type="button" class="manual-color-swatch ${c===manualFlashcardColor?'active':''}" data-manual-color="${c}" style="--swatch:${c}" aria-label="Use ${c}"></button>`).join('');
+  manualColorGrid.querySelectorAll('[data-manual-color]').forEach(btn=>btn.addEventListener('click',()=>{
+    manualFlashcardColor=normalizeManualColor(btn.dataset.manualColor);
+    if(manualColorWheel)manualColorWheel.value=manualFlashcardColor;
+    renderManualColorGrid();updateManualCardControls();
+    markManualDirty();
+  }));
+}
+function setManualPopover(which,open){
+  const colorOpen=which==='color'?open:false;
+  const addOpen=which==='add'?open:false;
+  if(manualColorPopover)manualColorPopover.classList.toggle('hidden',!colorOpen);
+  if(manualAddCardsPopover)manualAddCardsPopover.classList.toggle('hidden',!addOpen);
+  if(manualChooseColorBtn)manualChooseColorBtn.setAttribute('aria-expanded',String(colorOpen));
+  if(manualAddCardsBtn)manualAddCardsBtn.setAttribute('aria-expanded',String(addOpen));
+}
 function renderManualCards(){
-  manualCardsList.innerHTML=manualCards.map((c,i)=>`<div class="manual-card-row" data-manual-index="${i}">
-    <div class="manual-card-row-head"><strong>Card ${i+1} - Term</strong>${manualCards.length>1?`<button class="manual-remove-card" type="button" data-remove-manual="${i}">Remove</button>`:''}</div>
-    <label class="manual-field-label">Term</label>
-    <input class="manual-input" data-manual-field="front" data-manual-index="${i}" type="text" maxlength="300" placeholder="Enter the term" value="${esc(c.front||'')}">
-    <label class="manual-field-label">Definition</label>
-    <textarea class="manual-textarea" data-manual-field="back" data-manual-index="${i}" maxlength="1500" placeholder="Write the definition">${esc(c.back||'')}</textarea>
-  </div>`).join('');
-  manualCardsList.querySelectorAll('[data-manual-field]').forEach(el=>el.addEventListener('input',()=>{const i=Number(el.dataset.manualIndex);manualCards[i][el.dataset.manualField]=el.value;}));
-  manualCardsList.querySelectorAll('[data-remove-manual]').forEach(btn=>btn.addEventListener('click',()=>{manualCards.splice(Number(btn.dataset.removeManual),1);renderManualCards();}));
+  manualCardsList.innerHTML=manualCards.map((c,i)=>`<article class="manual-card-row" data-manual-index="${i}" style="--manual-card-accent:${manualFlashcardColor}">
+    <div class="manual-card-row-head">
+      <strong>Card ${i+1}</strong>
+      <button class="manual-remove-card" type="button" data-remove-manual="${i}" aria-label="Remove Card ${i+1}">Remove</button>
+    </div>
+    <label class="manual-field-label" for="manual-front-${i}">Term</label>
+    <input id="manual-front-${i}" class="manual-input manual-term-input" data-manual-field="front" data-manual-index="${i}" type="text" maxlength="300" placeholder="Term" value="${esc(c.front||'')}">
+    <label class="manual-field-label" for="manual-back-${i}">Definition</label>
+    <textarea id="manual-back-${i}" class="manual-textarea" data-manual-field="back" data-manual-index="${i}" maxlength="1500" placeholder="Definition">${esc(c.back||'')}</textarea>
+  </article>`).join('');
+
+  manualCardsList.querySelectorAll('[data-manual-field]').forEach(el=>el.addEventListener('input',()=>{
+    const i=Number(el.dataset.manualIndex);
+    if(!manualCards[i])manualCards[i]={front:'',back:''};
+    manualCards[i][el.dataset.manualField]=el.value;
+    markManualDirty();
+  }));
+  manualCardsList.querySelectorAll('[data-remove-manual]').forEach(btn=>btn.addEventListener('click',()=>{
+    const index=Number(btn.dataset.removeManual);
+    if(manualCards.length<=1)return;
+    manualCards.splice(index,1);
+    renderManualCards();
+    markManualDirty();
+  }));
   updateManualCardControls();
 }
-function openManualFlashcardCreator(initial){
-  manualFlashcardModal.classList.remove('hidden');document.body.classList.add('modal-open');manualFlashcardStatus.textContent='';
-  if(initial&&initial.cards){manualFlashcardTitle.value=initial.title||'';manualCards=(initial.cards||[]).slice(0,50).map(c=>({front:c.front||'',back:c.back||''}));}
-  else {manualFlashcardTitle.value='';manualCards=[{front:'',back:''}];}
-  renderManualCards();
-  setTimeout(()=>manualFlashcardTitle.focus(),50);
+function getManualSnapshot(){
+  return JSON.stringify({
+    title:String(manualFlashcardTitle?.value||''),
+    color:normalizeManualColor(manualFlashcardColor),
+    cards:(manualCards||[]).map(c=>({front:String(c?.front||''),back:String(c?.back||'')}))
+  });
 }
-function closeManualFlashcardCreator(){manualFlashcardModal.classList.add('hidden');document.body.classList.remove('modal-open');}
-manualAddCardBtn?.addEventListener('click',()=>{if(manualCards.length>=50)return;manualCards.push({front:'',back:''});renderManualCards();setTimeout(()=>manualCardsList.lastElementChild?.scrollIntoView({behavior:'smooth',block:'center'}),30);});
-async function saveOwnFlashcards(){
+function markManualDirty(){
+  manualDirty=getManualSnapshot()!==manualOriginalSnapshot;
+}
+function setManualSavingOverlay(show){
+  if(!manualSavingOverlay)return;
+  manualSavingOverlay.classList.toggle('hidden',!show);
+  manualSavingOverlay.setAttribute('aria-hidden',String(!show));
+}
+function hideManualLeavePrompt(){
+  if(!manualLeaveOverlay)return;
+  manualLeaveOverlay.classList.add('hidden');
+  manualLeaveOverlay.setAttribute('aria-hidden','true');
+}
+function showManualLeavePrompt(){
+  if(!manualLeaveOverlay)return;
+  manualLeaveOverlay.classList.remove('hidden');
+  manualLeaveOverlay.setAttribute('aria-hidden','false');
+  setTimeout(()=>manualLeaveSaveBtn?.focus(),30);
+}
+async function requestCloseManualFlashcardCreator(){
+  if(manualClosingConfirmed || !manualDirty){
+    closeManualFlashcardCreator();
+    return;
+  }
+  showManualLeavePrompt();
+}
+function discardManualFlashcardChanges(){
+  hideManualLeavePrompt();
+  manualClosingConfirmed=true;
+  manualDirty=false;
+  closeManualFlashcardCreator();
+  manualClosingConfirmed=false;
+}
+
+function openManualFlashcardCreator(initial){
+  manualFlashcardModal?.classList.remove('hidden');
+  manualFlashcardModal?.setAttribute('aria-hidden','false');
+  document.body.classList.add('manual-editor-open');
+  setManualPopover(null,false);
+
+  manualEditingId=initial?.id||null;
+  manualFlashcardTitle.value=initial?.title||'';
+  manualFlashcardColor=normalizeManualColor(initial?.color||initial?.content?.color||'#6C63FF');
+
+  const supplied=Array.isArray(initial?.cards)?initial.cards:[];
+  manualCards=supplied.length
+    ? supplied.slice(0,MANUAL_MAX_CARDS).map(c=>({front:c?.front||'',back:c?.back||''}))
+    : Array.from({length:5},()=>({front:'',back:''}));
+
+  if(manualCards.length<5 && !manualEditingId){
+    while(manualCards.length<5)manualCards.push({front:'',back:''});
+  }
+
+  if(manualColorWheel)manualColorWheel.value=manualFlashcardColor;
+  renderManualColorGrid();
+  renderManualCards();
+  manualOriginalSnapshot=getManualSnapshot();
+  manualDirty=false;
+  hideManualLeavePrompt();
+  setTimeout(()=>manualFlashcardTitle?.focus(),80);
+}
+function closeManualFlashcardCreator(){
+  manualFlashcardModal?.classList.add('hidden');
+  manualFlashcardModal?.setAttribute('aria-hidden','true');
+  document.body.classList.remove('manual-editor-open');
+  setManualPopover(null,false);
+}
+
+function getManualStorageKey(){
+  return currentUser?('cathsStudyMaterials:'+currentUser.uid):'cathsStudyMaterials:guest';
+}
+function getManualNow(){
+  return new Date().toISOString();
+}
+async function saveManualFlashcardSet(){
   manualCards=manualCards.map(c=>({front:String(c.front||'').trim(),back:String(c.back||'').trim()}));
   const title=manualFlashcardTitle.value.trim()||'My Flashcards';
-  if(manualCards.length<1){manualFlashcardStatus.textContent='Add at least one card.';return;}
-  const incomplete=manualCards.findIndex(c=>!c.front||!c.back);
-  if(incomplete>=0){manualFlashcardStatus.textContent=`Please complete Card ${incomplete+1}: both Term and Definition are required.`;renderManualCards();return;}
-  const content={mode:'manual',source:'user',title,cards:manualCards.slice(0,50)};
-  manualSaveFlashcardsBtn.disabled=true;manualSaveFlashcardsBtn.textContent='Saving…';
-  try{
-    await saveGeneratedStudyMaterial({type:'flashcards',topic:title,notes:'User-created flashcards',content});
-    manualFlashcardStatus.textContent=currentUser?'Saved to your study library and this device.':'Saved on this device. Sign in to sync it across devices.';
-    showGameToast?.('Your own flashcard set was saved.');
-  }catch(e){console.error(e);manualFlashcardStatus.textContent='Saved locally. Cloud save could not be completed.';}
-  finally{manualSaveFlashcardsBtn.disabled=false;manualSaveFlashcardsBtn.textContent='Save Flashcards';}
-}
-manualSaveFlashcardsBtn?.addEventListener('click',saveOwnFlashcards);
-ownFlashcardTool?.addEventListener('click',()=>openManualFlashcardCreator());
-manualFlashcardClose?.addEventListener('click',closeManualFlashcardCreator);
-manualFlashcardBackdrop?.addEventListener('click',closeManualFlashcardCreator);
 
+  if(manualCards.length<1){
+    manualFlashcardStatus.textContent='Please add at least one card.';
+    return;
+  }
+  if(manualCards.length>MANUAL_MAX_CARDS){
+    manualFlashcardStatus.textContent=`You can create up to ${MANUAL_MAX_CARDS} cards.`;
+    return;
+  }
+  const incomplete=manualCards.findIndex(c=>!c.front||!c.back);
+  if(incomplete>=0){
+    manualFlashcardStatus.textContent=`Please complete Card ${incomplete+1}: both Term and Definition are required.`;
+    const input=manualCardsList.querySelector(`[data-manual-index="${incomplete}"] [data-manual-field="front"]`);
+    input?.focus();
+    return;
+  }
+
+  const content={
+    mode:'manual',
+    source:'user',
+    title,
+    color:manualFlashcardColor,
+    cards:manualCards.slice(0,MANUAL_MAX_CARDS)
+  };
+
+  manualSaveFlashcardsBtn.disabled=true;
+  manualSaveFlashcardsBtn.textContent='Saving…';
+  manualFlashcardStatus.textContent='Saving your flashcard…';
+  setManualSavingOverlay(true);
+
+  try{
+    const savedAt=getManualNow();
+    const key=getManualStorageKey();
+    let existing=[];
+    try{existing=JSON.parse(localStorage.getItem(key)||'[]');}catch{existing=[]}
+
+    let targetId=manualEditingId;
+    if(targetId){
+      const idx=existing.findIndex(x=>String(x.id)===String(targetId));
+      if(idx>=0){
+        const updated={...existing[idx],id:targetId,type:'flashcards',topic:title,notes:'User-created flashcards',content,savedAt};
+        existing[idx]=updated;
+        localStorage.setItem(key,JSON.stringify(existing.slice(0,100)));
+      }else{
+        existing.unshift({id:targetId,type:'flashcards',topic:title,notes:'User-created flashcards',content,savedAt});
+        localStorage.setItem(key,JSON.stringify(existing.slice(0,100)));
+      }
+    }else{
+      targetId='local-'+Date.now()+'-'+Math.random().toString(36).slice(2,7);
+      existing.unshift({id:targetId,type:'flashcards',topic:title,notes:'User-created flashcards',content,savedAt});
+      localStorage.setItem(key,JSON.stringify(existing.slice(0,100)));
+      manualEditingId=targetId;
+    }
+
+    if(currentUser&&window.studyFirebase){
+      const {db,doc,setDoc,addDoc,serverTimestamp,collection}=window.studyFirebase;
+      if(targetId && !String(targetId).startsWith('local-')){
+        await setDoc(doc(db,'studyMaterials',String(targetId)),{
+          ownerUid:currentUser.uid,type:'flashcards',topic:title,notes:'User-created flashcards',content,
+          editedAt:serverTimestamp()
+        },{merge:true});
+      }else{
+        const ref=await addDoc(collection(db,'studyMaterials'),{
+          ownerUid:currentUser.uid,type:'flashcards',topic:title,notes:'User-created flashcards',content,
+          createdAt:serverTimestamp()
+        });
+        const cloudId=ref?.id;
+        if(cloudId){
+          const arr=JSON.parse(localStorage.getItem(key)||'[]');
+          const i=arr.findIndex(x=>String(x.id)===String(targetId));
+          if(i>=0){arr[i].id=cloudId;localStorage.setItem(key,JSON.stringify(arr));}
+          manualEditingId=cloudId;
+        }
+      }
+      try{
+        await addDoc(collection(db,'studyActivity'),{ownerUid:currentUser.uid,type:'flashcards',topic:title,createdAt:serverTimestamp(),action:manualEditingId&&String(manualEditingId)!==String(targetId)?'edited':'saved'});
+      }catch{}
+    }
+
+    manualFlashcardStatus.textContent='Saved successfully.';
+    manualOriginalSnapshot=getManualSnapshot();
+    manualDirty=false;
+    setTimeout(()=>{
+      setManualSavingOverlay(false);
+      closeManualFlashcardCreator();
+      if(typeof window.cgSetView==='function'){
+        window.cgSetView('library');
+      }else{
+        document.querySelector('[data-cg-view="library"]')?.click();
+      }
+      // On return to My Decks, the chooser is shown again exactly as requested.
+      setTimeout(()=>{
+        const chooser=document.getElementById('cgLibraryChoice');
+        const list=document.getElementById('cgDecksAll');
+        const actions=document.getElementById('cgLibraryActions');
+        if(chooser)chooser.style.display='flex';
+        if(list){list.hidden=true;list.innerHTML='';}
+        if(actions){actions.hidden=true;actions.style.display='none';}
+      },60);
+    },520);
+  }catch(e){
+    console.error('Flashcard save failed:',e);
+    manualFlashcardStatus.textContent=currentUser?'Cloud save failed. Your local copy is kept.':'Saved on this device.';
+    setManualSavingOverlay(false);
+  }finally{
+    manualSaveFlashcardsBtn.disabled=false;
+    manualSaveFlashcardsBtn.textContent='Save';
+  }
+}
+manualSaveFlashcardsBtn?.addEventListener('click',saveManualFlashcardSet);
+ownFlashcardTool?.addEventListener('click',()=>openManualFlashcardCreator());
+manualFlashcardTitle?.addEventListener('input',markManualDirty);
+
+manualFlashcardClose?.addEventListener('click',requestCloseManualFlashcardCreator);
+manualLeaveSaveBtn?.addEventListener('click',async()=>{
+  hideManualLeavePrompt();
+  await saveManualFlashcardSet();
+});
+manualLeaveDiscardBtn?.addEventListener('click',discardManualFlashcardChanges);
+
+manualChooseColorBtn?.addEventListener('click',e=>{
+  e.preventDefault();
+  const open=manualColorPopover?.classList.contains('hidden');
+  setManualPopover('color',open);
+});
+manualAddCardsBtn?.addEventListener('click',e=>{
+  e.preventDefault();
+  const open=manualAddCardsPopover?.classList.contains('hidden');
+  setManualPopover('add',open);
+});
+manualColorWheel?.addEventListener('input',()=>{
+  manualFlashcardColor=normalizeManualColor(manualColorWheel.value);
+  renderManualColorGrid();updateManualCardControls();
+  markManualDirty();
+});
+function clampManualAddCount(){
+  let n=Math.round(Number(manualAddCount?.value)||1);
+  n=Math.max(1,Math.min(MANUAL_ADD_MAX,n));
+  if(manualAddCount)manualAddCount.value=n;
+  return n;
+}
+manualCountMinus?.addEventListener('click',()=>{if(manualAddCount)manualAddCount.value=Math.max(1,(Number(manualAddCount.value)||1)-1);});
+manualCountPlus?.addEventListener('click',()=>{if(manualAddCount)manualAddCount.value=Math.min(MANUAL_ADD_MAX,(Number(manualAddCount.value)||1)+1);});
+manualAddCount?.addEventListener('change',clampManualAddCount);
+manualConfirmAddBtn?.addEventListener('click',()=>{
+  const add=clampManualAddCount();
+  const can=Math.min(add,MANUAL_MAX_CARDS-manualCards.length);
+  if(can<=0){
+    manualFlashcardStatus.textContent=`You reached the ${MANUAL_MAX_CARDS}-card limit.`;
+    return;
+  }
+  for(let i=0;i<can;i++)manualCards.push({front:'',back:''});
+  renderManualCards();
+  markManualDirty();
+  setManualPopover(null,false);
+  manualFlashcardStatus.textContent=can<add?`Added ${can} card${can===1?'':'s'} — 80-card limit reached.`:`Added ${can} card${can===1?'':'s'}.`;
+  setTimeout(()=>manualCardsList.lastElementChild?.scrollIntoView({behavior:'smooth',block:'center'}),30);
+});
+document.addEventListener('click',e=>{
+  if(!e.target.closest?.('.manual-popover-wrap')){
+    if(!manualFlashcardModal?.classList.contains('hidden'))setManualPopover(null,false);
+  }
+},true);
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&!manualFlashcardModal?.classList.contains('hidden'))requestCloseManualFlashcardCreator();
+});
 const playGameTool=document.getElementById('playGameTool');
 function openPlayGameMenu(e){
   try{
@@ -6024,6 +6367,8 @@ async function fetchSavedMaterials(){
 const DECK_COLOR_PALETTE=["#6C63FF", "#FF5C8A", "#10B981", "#F59E0B", "#3B82F6", "#A855F7", "#14B8A6", "#F97316", "#EC4899", "#22C55E", "#8B5CF6", "#06B6D4", "#EF4444", "#84CC16", "#E11D48", "#0EA5E9", "#D946EF", "#F97316", "#2563EB", "#7C3AED"];
 function deckColorKey(id){return 'cathsDeckColor:'+String(id||'unknown')}
 function getDeckColor(item,index=0){
+  const contentColor=String(item?.content?.color||'').trim();
+  if(/^#[0-9a-f]{6}$/i.test(contentColor)) return contentColor;
   const id=String(item?.id||item?.topic||('deck-'+index));
   const key=deckColorKey(id);
   try{const saved=localStorage.getItem(key);if(saved&&/^#[0-9a-f]{6}$/i.test(saved))return saved;}catch{}
@@ -6116,7 +6461,7 @@ function openSavedStudyMaterial(item){
   const data=item.content||{}; const topic=item.topic||'Your Topic';
   if(currentType==='reviewer'){outputBox.innerHTML=`<div class="result"><h5>${esc(topic)} — Reviewer</h5><h6>Key Points</h6><ul>${(data.points||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul><h6>Review Questions</h6><ul>${(data.questions||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;}
   else if(currentType==='flashcards'){
-    if(data.mode==='manual'){openManualFlashcardCreator({title:data.title||topic,cards:data.cards||[]});closeStudyLibrary();return;}
+    if(data.mode==='manual'){openManualFlashcardCreator({id:item.id,title:data.title||topic,cards:data.cards||[],color:data.color||'#6C63FF',content:data});closeStudyLibrary();return;}
     flashCardsData=(data.cards||[]).map((c,i)=>({front:c.front||'',back:c.back||'',sourceIndex:i}));currentFlashIndex=0;flashSessionCorrect=new Set();outputBox.innerHTML=`<div class="result"><h5>${esc(topic)} — Flashcards</h5><div id="flashcardArea"></div></div>`;renderCurrentFlashcard();
   }
   else if(currentType==='quiz'){const questions=data.questions||[];outputBox.innerHTML=`<div class="result"><h5>${esc(topic)} — Practice Quiz</h5>${questions.map((q,i)=>`<div class="quiz-q"><strong>${esc(q.question||`Question ${i+1}`)}</strong><div class="quiz-score">Saved correct answer: <b>${esc(q.correct||'')}</b></div></div>`).join('')}<div class="quiz-score">This is your saved quiz record. Generate the topic again to take a fresh attempt.</div></div>`;}
@@ -6168,7 +6513,7 @@ async function startSoloGameFromMaterial(item){
 function gameDisplayName(gameId){return gameId==='quiz-battle'?'Quiz Shooting':gameId==='flashcard-race'?'Flashcard Race':gameId==='serve-knowledge'?'Serve a Knowledge':gameId==='matching-game'?'Matching Game':'Study Game';}
 function chooseGame(gameId){selectedGame=gameId;if(selectedFriend){sendGameInvite(selectedFriend.uid,gameDisplayName(gameId));}else{openReviewerSelection(gameId);}}
 async function sendGameInvite(friendUid,gameName){if(!currentUser||!window.studyFirebase)return;try{const {db,addDoc,collection,serverTimestamp}=window.studyFirebase;await addDoc(collection(db,'notifications'),{recipientUid:friendUid,actorUid:currentUser.uid,actorName:currentUser.displayName||'A CATHS student',actorPhotoURL:currentUser.photoURL||'',type:'game_invite',title:(currentUser.displayName||'A friend')+' invited you to play',text:`You were invited to play ${gameName} in CATHS AI Study Assistant.`,read:false,gameId:selectedGame||'study-game',gameName,createdAt:serverTimestamp()});gameSelectGrid.classList.add('hidden');showGameToast(`Game invite sent to ${selectedFriend?.displayName||'your friend'}! ${gameName} selected.`);}catch(e){console.error('Game invite failed:',e);showGameToast('Could not send the invite. Your Firestore notifications permission may need to allow this write.');}}
-document.getElementById('playGameBtn')?.addEventListener('click',openGameModal);gameModalClose?.addEventListener('click',closeGameModal);gameModalBackdrop?.addEventListener('click',closeGameModal);document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!gameModal.classList.contains('hidden'))closeGameModal();if(e.key==='Escape'&&!manualFlashcardModal?.classList.contains('hidden'))closeManualFlashcardCreator();});inviteFriendBtn?.addEventListener('click',openFriendInvites);playSoloBtn?.addEventListener('click',openSoloGameSelection);gameSelectGrid?.querySelectorAll('[data-real-game]').forEach(btn=>btn.addEventListener('click',()=>chooseGame(btn.dataset.realGame)));
+document.getElementById('playGameBtn')?.addEventListener('click',openGameModal);gameModalClose?.addEventListener('click',closeGameModal);gameModalBackdrop?.addEventListener('click',closeGameModal);document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!gameModal.classList.contains('hidden'))closeGameModal();if(e.key==='Escape'&&!manualFlashcardModal?.classList.contains('hidden'))requestCloseManualFlashcardCreator();});inviteFriendBtn?.addEventListener('click',openFriendInvites);playSoloBtn?.addEventListener('click',openSoloGameSelection);gameSelectGrid?.querySelectorAll('[data-real-game]').forEach(btn=>btn.addEventListener('click',()=>chooseGame(btn.dataset.realGame)));
 
 /* =========================================================
    QUIZ SHOOTING — SOLO GAME
@@ -7517,8 +7862,12 @@ html.cathians-dark-unlocked .cg-pill,html.cathians-dark-unlocked .cg-source span
   const card=document.querySelector('.manual-flashcard-card');
   const close=document.getElementById('manualFlashcardClose');
   if(!modal||!card)return;
-  close?.addEventListener('click',()=>{modal.classList.add('hidden');document.body.classList.remove('modal-open');},{capture:true});
-  modal.addEventListener('click',e=>{if(e.target===modal||e.target.id==='manualFlashcardBackdrop'){modal.classList.add('hidden');document.body.classList.remove('modal-open');}},{capture:true});
+  // Always route the X through the unsaved-change guard.
+  close?.addEventListener('click',e=>{
+    e.preventDefault();
+    e.stopPropagation();
+    requestCloseManualFlashcardCreator();
+  },{capture:true});
 })();
 
 // Remove stale blue inline styling from dynamic result cards and keep generated content readable.
@@ -10300,5 +10649,370 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
   },false);
 })();
 </script>
+<style id="cathians-final-flashcards-and-library">
+/* ===== FINAL FLASHCARD EDITOR: true fullscreen, locked header ===== */
+body.manual-editor-open{overflow:hidden!important}
+body.manual-editor-open .cg-shell{
+  opacity:0!important;
+  pointer-events:none!important;
+  transform:translateY(-12px)!important;
+  transition:opacity .28s ease,transform .28s ease!important;
+}
+.manual-flashcard-modal{
+  position:fixed!important;inset:0!important;z-index:2147483000!important;
+  display:flex!important;flex-direction:column!important;
+  padding:0!important;margin:0!important;
+  background:#f7f8fb!important;
+  color:#182033!important;
+  opacity:1!important;
+}
+.manual-flashcard-modal.hidden{display:none!important}
+.manual-flashcard-card{
+  position:relative!important;inset:auto!important;z-index:1!important;
+  width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;
+  padding:0!important;margin:0!important;overflow:hidden!important;
+  border:0!important;border-radius:0!important;
+  background:#f7f8fb!important;color:#182033!important;box-shadow:none!important;
+}
+.manual-fullscreen-head{
+  position:sticky;top:0;z-index:20;
+  min-height:76px;height:76px;padding:14px 22px;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;
+  background:rgba(247,248,251,.94);
+  border-bottom:1px solid #e1e5ec;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+}
+.manual-head-left{display:flex;align-items:center;gap:8px;justify-content:flex-start;min-width:0}
+.manual-head-center{text-align:center;min-width:0}
+.manual-head-right{display:flex;align-items:center;gap:8px;justify-content:flex-end;min-width:0}
+.manual-head-center h4{font-size:15px;font-weight:900;letter-spacing:-.2px;color:#182033}
+.manual-locked-note{margin-top:3px;font-size:7.5px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;color:#8993a5}
+.manual-flashcard-modal .manual-close{
+  width:42px!important;height:42px!important;flex:0 0 42px!important;
+  border:1px solid #dde3eb!important;border-radius:12px!important;
+  background:#fff!important;color:#1b2434!important;
+  font-size:23px!important;font-weight:500!important;
+  box-shadow:0 4px 12px rgba(30,43,69,.05)!important;
+}
+.manual-flashcard-modal .manual-save-top{
+  width:82px!important;height:42px!important;min-height:42px!important;
+  padding:0!important;border-radius:12px!important;
+  background:#171c2d!important;color:#fff!important;border:1px solid #171c2d!important;
+  box-shadow:0 6px 18px rgba(23,28,45,.12)!important;
+  font-size:10px!important;font-weight:900!important;
+}
+.manual-save-top:disabled{opacity:.65;cursor:wait}
+.manual-editor-main{
+  height:calc(100% - 76px);overflow:auto;
+  padding:26px min(5vw,62px) 46px;
+}
+.manual-title-row{
+  width:min(1080px,100%);margin:0 auto 18px;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:14px;
+}
+.manual-title-wrap{flex:1;min-width:0}
+.manual-flashcard-modal .manual-field-label{color:#647086;font-size:8px;margin:0 0 6px;letter-spacing:.7px}
+.manual-flashcard-modal .manual-title-input{
+  margin:0!important;width:100%!important;
+  min-height:48px!important;padding:12px 14px!important;
+  border:1px solid #dde3eb!important;border-radius:14px!important;
+  background:#fff!important;color:#182033!important;
+  box-shadow:0 6px 18px rgba(30,43,69,.04)!important;
+  font-size:12px!important;
+}
+.manual-flashcard-modal .manual-title-input::placeholder{color:#a0a9b8}
+.manual-card-tools{display:flex;gap:8px;align-items:center;flex:0 0 auto}
+.manual-popover-wrap{position:relative}
+.manual-tool-btn{
+  min-height:42px;padding:0 13px;border:1px solid #dde3eb;border-radius:12px;
+  background:#fff;color:#273249;display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  font:800 9px/1 Poppins,sans-serif;cursor:pointer;box-shadow:0 5px 16px rgba(30,43,69,.05);
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+}
+.manual-tool-btn:hover{transform:translateY(-1px);border-color:#cbd3df;box-shadow:0 9px 22px rgba(30,43,69,.08)}
+.manual-tool-btn:active{transform:scale(.98)}
+.manual-color-dot{width:12px;height:12px;border-radius:50%;border:2px solid rgba(0,0,0,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22)}
+.manual-color-popover,.manual-add-popover{
+  position:absolute;right:0;top:calc(100% + 8px);z-index:50;
+  width:230px;padding:13px;border:1px solid #dce2ea;border-radius:16px;
+  background:#fff;box-shadow:0 20px 48px rgba(30,43,69,.14);
+}
+.manual-add-popover{width:218px}
+.manual-popover-title{font-size:9px;font-weight:900;color:#243047;margin-bottom:10px}
+.manual-color-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:7px}
+.manual-color-swatch{width:20px;height:20px;border-radius:7px;border:2px solid rgba(24,32,51,.08);background:var(--swatch);cursor:pointer;transition:transform .15s ease,box-shadow .15s ease}
+.manual-color-swatch:hover{transform:scale(1.12)}
+.manual-color-swatch.active{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--swatch)}
+.manual-color-wheel{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;font-size:8px;font-weight:800;color:#667286}
+.manual-color-wheel input{width:34px;height:28px;padding:0;border:0;background:transparent;cursor:pointer}
+.manual-count-picker{display:grid;grid-template-columns:34px 1fr 34px;gap:6px;align-items:center}
+.manual-count-picker button{height:34px;border:1px solid #dfe4eb;border-radius:9px;background:#f7f8fb;color:#1c273c;font-size:16px;font-weight:800;cursor:pointer}
+.manual-count-picker input{height:34px;border:1px solid #dfe4eb;border-radius:9px;background:#fff;color:#182033;text-align:center;font-size:10px;padding:6px}
+.manual-confirm-add-btn{
+  width:100%;height:34px;margin-top:9px;border:0;border-radius:9px;
+  background:#171c2d;color:#fff;font-size:8.5px;font-weight:900;cursor:pointer;
+}
+.manual-add-popover small{display:block;margin-top:7px;text-align:center;color:#8b95a6;font-size:7px}
+.manual-flashcard-modal .manual-cards-list{
+  width:min(1080px,100%);margin:0 auto;
+  display:grid;gap:13px;
+}
+.manual-card-row{
+  position:relative!important;padding:17px 18px 18px!important;border:1px solid #dde3eb!important;
+  border-left:4px solid var(--manual-card-accent,#6C63FF)!important;
+  border-radius:18px!important;background:#fff!important;
+  box-shadow:0 7px 20px rgba(30,43,69,.045)!important;
+}
+.manual-card-row-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.manual-card-row-head strong{font-size:11px;color:#1b2434}
+.manual-remove-card{
+  border:1px solid #ead7db!important;background:#fff6f7!important;color:#ad4655!important;
+  border-radius:9px!important;padding:6px 9px!important;font-size:7.5px!important;font-weight:900!important;cursor:pointer;
+}
+.manual-remove-card:hover{background:#fff0f2!important}
+.manual-flashcard-modal .manual-input,
+.manual-flashcard-modal .manual-textarea{
+  width:100%!important;border:1px solid #dfe4eb!important;border-radius:11px!important;
+  background:#fbfcfe!important;color:#182033!important;outline:0!important;
+  padding:11px 12px!important;font-size:10px!important;
+}
+.manual-flashcard-modal .manual-input{min-height:40px}
+.manual-flashcard-modal .manual-textarea{min-height:84px;resize:vertical;line-height:1.5}
+.manual-flashcard-modal .manual-input:focus,
+.manual-flashcard-modal .manual-textarea:focus{border-color:#9fa9ff!important;box-shadow:0 0 0 3px rgba(99,102,241,.10)!important;background:#fff!important}
+.manual-bottom-bar{
+  width:min(1080px,100%);margin:14px auto 0;
+  min-height:40px;display:flex;align-items:center;justify-content:space-between;gap:10px;
+}
+.manual-flashcard-modal .manual-count{font-size:8.5px;font-weight:900;color:#667286}
+.manual-flashcard-modal .manual-status{margin:0!important;font-size:8.5px;color:#667286;text-align:right}
+.manual-flashcard-modal .hidden{display:none!important}
+@media(max-width:760px){
+  .manual-fullscreen-head{min-height:68px;height:68px;padding:10px 12px;grid-template-columns:auto minmax(0,1fr) auto}
+  .manual-head-center h4{font-size:11px}
+  .manual-locked-note{font-size:6px}
+  .manual-flashcard-modal .manual-close{width:38px!important;height:38px!important;flex-basis:38px!important}
+  .manual-flashcard-modal .manual-save-top{width:70px!important;height:38px!important;min-height:38px!important}
+  .manual-editor-main{height:calc(100% - 68px);padding:16px 11px 32px}
+  .manual-title-row{display:grid;grid-template-columns:1fr;gap:9px;margin-bottom:14px}
+  .manual-card-tools{display:grid;grid-template-columns:1fr 1fr}
+  .manual-tool-btn{width:100%}
+  .manual-color-popover,.manual-add-popover{left:0;right:auto;width:min(230px,calc(100vw - 22px))}
+  .manual-flashcard-modal .manual-title-input{min-height:44px!important}
+  .manual-card-row{padding:14px 13px 15px!important}
+  .manual-bottom-bar{align-items:flex-start;flex-direction:column}
+  .manual-flashcard-modal .manual-status{text-align:left}
+}
+@media(max-width:390px){
+  .manual-fullscreen-head{padding-left:8px;padding-right:8px}
+  .manual-head-center h4{font-size:10px}
+  .manual-flashcard-modal .manual-save-top{width:64px!important}
+  .manual-editor-main{padding-left:8px;padding-right:8px}
+}
+
+/* ===== Flashcard save / leave confirmation prompts ===== */
+.manual-saving-overlay,.manual-leave-overlay{
+  position:absolute!important;inset:0!important;z-index:100!important;display:grid!important;place-items:center!important;
+  background:rgba(247,248,251,.62)!important;backdrop-filter:blur(7px)!important;-webkit-backdrop-filter:blur(7px)!important;
+}
+.manual-saving-overlay.hidden,.manual-leave-overlay.hidden{display:none!important}
+.manual-saving-card{
+  min-width:150px;padding:18px 22px;border:1px solid #dde3eb;border-radius:18px;background:#fff;
+  box-shadow:0 22px 60px rgba(30,43,69,.14);display:flex;align-items:center;justify-content:center;gap:10px;
+  color:#182033;animation:manualPromptIn .22s ease both;
+}
+.manual-saving-card strong{font-size:13px;font-weight:900}
+.manual-saving-spinner{width:17px;height:17px;border:2px solid #dfe4eb;border-top-color:#171c2d;border-radius:50%;animation:manualSpin .75s linear infinite}
+.manual-leave-card{
+  width:min(90vw,390px);padding:24px;border:1px solid #dde3eb;border-radius:22px;background:#fff;
+  box-shadow:0 25px 70px rgba(30,43,69,.17);text-align:center;animation:manualPromptIn .22s ease both;
+}
+.manual-leave-card h4{font-size:17px;font-weight:900;color:#182033}
+.manual-leave-card p{margin-top:7px;font-size:9px;line-height:1.55;color:#727d8e}
+.manual-leave-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.manual-leave-actions button{height:42px;border-radius:11px;font-size:9px;font-weight:900;cursor:pointer}
+.manual-leave-save{border:0;background:#171c2d;color:#fff}
+.manual-leave-discard{border:1px solid #dfe4eb;background:#fff;color:#1b2434}
+.manual-leave-actions button:hover{transform:translateY(-1px)}
+@keyframes manualPromptIn{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes manualSpin{to{transform:rotate(360deg)}}
+@media(max-width:500px){
+  .manual-leave-card{width:calc(100vw - 28px);padding:20px}
+  .manual-leave-actions{grid-template-columns:1fr;gap:8px}
+}
+
+/* ===== Final My Decks chooser/results ===== */
+#cgLibraryView .cg-library-choice{
+  animation:libraryChoiceIn .32s ease both;
+}
+#cgLibraryView .cg-library-choice-btn{
+  min-height:78px;
+}
+#cgLibraryView .cg-decks-all.cathians-library-results{
+  display:grid!important;
+  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+  gap:14px;
+  margin-top:18px;
+}
+#cgLibraryView .cg-decks-all.cathians-library-results .cg-view-empty{
+  grid-column:1/-1;
+  min-height:100px;
+  display:grid;place-items:center;
+  color:#737e90;font-size:11px;font-weight:800;
+  text-align:center;
+  background:#fff;border:1px dashed #dfe4eb;border-radius:18px;
+  padding:28px;
+}
+#cgLibraryView .cg-deck-card.cathians-library-item-in{
+  border:1px solid #e0e5ed!important;
+  border-radius:20px!important;
+  background:#fff!important;
+  box-shadow:0 7px 22px rgba(30,43,69,.05)!important;
+}
+#cgLibraryView .cg-library-actions{
+  width:100%!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:12px!important;
+  align-items:stretch!important;
+}
+#cgLibraryView .cg-library-actions .cg-recycle-btn,
+#cgLibraryView .cg-library-actions .cg-add-library-btn{
+  min-height:42px!important;
+  width:100%!important;
+}
+@keyframes libraryChoiceIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(max-width:760px){
+  #cgLibraryView .cg-decks-all.cathians-library-results{grid-template-columns:1fr 1fr!important;gap:10px}
+  #cgLibraryView .cg-library-actions{grid-template-columns:1fr 1fr!important}
+}
+@media(max-width:500px){
+  #cgLibraryView .cg-decks-all.cathians-library-results{grid-template-columns:1fr!important}
+}
+
+/* Home navigation icon: guaranteed 4.png only on the Home nav item. */
+.cg-nav a[data-cg-view="home"] .cg-icon-slot{background:transparent!important;border-color:transparent!important}
+.cg-nav a[data-cg-view="home"] .cg-icon-slot img{
+  content:url("4.png")!important;width:100%!important;height:100%!important;object-fit:contain!important;display:block!important;
+}
+</style>
+
+<script id="cathians-final-behavior-v7">
+(function(){
+  'use strict';
+
+  // Keep the Home navigation artwork exactly on 4.png.
+  function syncHomeNavIcon(){
+    const img=document.querySelector('.cg-nav a[data-cg-view="home"] .cg-icon-slot img');
+    if(img){
+      img.src='4.png';img.removeAttribute('srcset');img.alt='';
+      img.style.objectFit='contain';img.style.display='block';
+    }
+  }
+
+  // My Decks chooser state: always show the chooser first; never render materials early.
+  const view=document.getElementById('cgLibraryView');
+  const choice=document.getElementById('cgLibraryChoice');
+  const box=document.getElementById('cgDecksAll');
+  const decksBtn=document.getElementById('cgOpenDecksChoice');
+  const flashBtn=document.getElementById('cgOpenFlashcardsChoice');
+  const actions=document.getElementById('cgLibraryActions');
+
+  function hardResetLibrary(){
+    if(!view||!choice||!box)return;
+    choice.style.display='flex';
+    box.hidden=true;
+    box.classList.remove('cathians-library-results');
+    box.innerHTML='';
+    decksBtn?.classList.remove('is-active');
+    flashBtn?.classList.remove('is-active');
+    if(actions){actions.hidden=true;actions.style.display='none'}
+  }
+
+  function cardTypeIsFlash(item){
+    return String(item?.type||'').toLowerCase()==='flashcards';
+  }
+
+  async function renderChosen(mode){
+    if(!box)return;
+    box.hidden=false;
+    box.classList.add('cathians-library-results');
+    box.innerHTML='<div class="cg-view-empty">Loading…</div>';
+    if(actions){actions.hidden=false;actions.style.display='grid'}
+
+    let docs=[];
+    try{docs=await fetchSavedMaterials();}catch(e){docs=[]}
+    const filtered=docs.filter(item=>mode==='flashcards'?cardTypeIsFlash(item):!cardTypeIsFlash(item));
+
+    if(!filtered.length){
+      box.innerHTML='';
+      const empty=document.createElement('div');
+      empty.className='cg-view-empty';
+      empty.textContent='Please add reviewer first';
+      box.appendChild(empty);
+      return;
+    }
+
+    box.innerHTML=filtered.map((item,index)=>{
+      const color=getDeckColor(item,index);
+      const cards=Array.isArray(item?.content?.cards)?item.content.cards:[];
+      const count=cards.length||0;
+      const typeLabel=cardTypeIsFlash(item)?'Flashcard':'Deck';
+      return `<article class="cg-deck-card cathians-library-item-in color-tint" tabindex="0" role="button"
+        data-final-open-id="${esc(item.id)}" style="--deck-accent:${esc(color)}">
+        <div class="v25-deck-color" style="background:${esc(color)}"></div>
+        <div class="v25-deck-body">
+          <h3>${esc(item.topic||'Untitled Study Material')}</h3>
+          <div class="v25-deck-meta"><span class="v25-deck-count">${count} cards</span><span class="v25-deck-open-hint">Open</span></div>
+        </div>
+      </article>`;
+    }).join('');
+
+    box.querySelectorAll('[data-final-open-id]').forEach(card=>{
+      const open=()=>{
+        const item=filtered.find(x=>String(x.id)===String(card.dataset.finalOpenId));
+        if(!item)return;
+        try{window.__v27ActiveDeck=item;}catch{}
+        openSavedStudyMaterial(item);
+      };
+      card.addEventListener('click',open);
+      card.addEventListener('keydown',e=>{
+        if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}
+      });
+    });
+  }
+
+  // Chooser buttons: render only the selected category.
+  decksBtn?.addEventListener('click',e=>{
+    e.preventDefault();e.stopPropagation();
+    decksBtn.classList.add('is-active');flashBtn?.classList.remove('is-active');
+    renderChosen('decks');
+  },false);
+  flashBtn?.addEventListener('click',e=>{
+    e.preventDefault();e.stopPropagation();
+    flashBtn.classList.add('is-active');decksBtn?.classList.remove('is-active');
+    renderChosen('flashcards');
+  },false);
+
+  // Start My Decks from scratch every time it is navigated to.
+  const libraryNav=document.querySelector('[data-cg-view="library"]');
+  libraryNav?.addEventListener('click',()=>setTimeout(hardResetLibrary,0),false);
+  document.addEventListener('click',e=>{
+    if(e.target?.closest?.('[data-cg-view="library"]'))setTimeout(hardResetLibrary,0);
+  },false);
+
+  // Add Decks/Flashcard sends the user to Add Reviewer.
+  document.getElementById('cgAddDeckFlashcard')?.addEventListener('click',e=>{
+    e.preventDefault();e.stopPropagation();
+    document.querySelector('[data-cg-view="add-reviewer"]')?.click();
+  },false);
+
+  syncHomeNavIcon();
+  hardResetLibrary();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',syncHomeNavIcon,{once:true});
+  window.addEventListener('load',syncHomeNavIcon,{once:true});
+})();
+</script>
+
 </body>
 </html>
