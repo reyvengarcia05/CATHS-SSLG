@@ -4405,6 +4405,75 @@ html.cathians-native-ad-ready .cathians-bottom-ad-dock .ad-inner{
   border:0!important;
 }
 </style>
+
+<style id="caths-ai-true-header-center-fix">
+/* TRUE HEADER CENTER: all three zones share the exact same vertical center line. */
+#cathsAiFullscreen .caths-ai-header{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)!important;
+  align-items:center!important;
+  justify-items:stretch!important;
+  position:relative!important;
+  box-sizing:border-box!important;
+}
+
+#cathsAiFullscreen .caths-ai-back-under-header,
+#cathsAiFullscreen .caths-ai-cost-pill{
+  position:relative!important;
+  top:auto!important;
+  bottom:auto!important;
+  transform:none!important;
+  align-self:center!important;
+  margin:0!important;
+}
+
+#cathsAiFullscreen .caths-ai-header-copy{
+  grid-column:2!important;
+  align-self:stretch!important;
+  justify-self:stretch!important;
+  position:relative!important;
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:0!important;
+  transform:none!important;
+  margin:0!important;
+}
+
+/* Put CATHS-AI itself exactly on the same horizontal center line as
+   the Back button and Free Questions pill. */
+#cathsAiFullscreen .caths-ai-header-copy h1{
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  transform:translate(-50%,-50%)!important;
+  margin:0!important;
+  white-space:nowrap!important;
+  line-height:1!important;
+}
+
+/* Keep Mr. Panda neatly below the centered title without moving the title line. */
+#cathsAiFullscreen .caths-ai-header-copy p{
+  position:absolute!important;
+  left:50%!important;
+  top:calc(50% + 15px)!important;
+  transform:translateX(-50%)!important;
+  margin:0!important;
+  white-space:nowrap!important;
+  line-height:1!important;
+}
+
+#cathsAiFullscreen .caths-ai-back-under-header{grid-column:1!important;justify-self:start!important}
+#cathsAiFullscreen .caths-ai-cost-pill{grid-column:3!important;justify-self:end!important}
+
+@media(max-width:760px){
+  #cathsAiFullscreen .caths-ai-header-copy p{top:calc(50% + 13px)!important}
+}
+
+@media(max-width:430px){
+  #cathsAiFullscreen .caths-ai-header-copy p{top:calc(50% + 12px)!important}
+}
+</style>
 </head>
 <body>
 <main class="page">
@@ -12400,6 +12469,20 @@ body.manual-editor-open .cg-shell{
 
   enterBtn.addEventListener('click',()=>sendMessage(replyBox.value));
   replyBox.addEventListener('keydown',e=>{
+    /* Enter sends. Alt+Enter inserts a real new paragraph. Shift+Enter
+       remains a normal newline as well. */
+    if(e.key==='Enter' && e.altKey){
+      e.preventDefault();
+      const start=replyBox.selectionStart ?? replyBox.value.length;
+      const end=replyBox.selectionEnd ?? start;
+      const value=replyBox.value;
+      replyBox.value=value.slice(0,start)+'\n'+value.slice(end);
+      const caret=start+1;
+      replyBox.selectionStart=caret;
+      replyBox.selectionEnd=caret;
+      replyBox.dispatchEvent(new Event('input',{bubbles:true}));
+      return;
+    }
     if(e.key==='Enter'&&!e.shiftKey){
       e.preventDefault();
       sendMessage(replyBox.value);
