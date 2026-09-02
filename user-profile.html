@@ -7,583 +7,82 @@
 <link rel="icon" type="image/png" href="sslg-logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--blue:#003DA5;--dark:#00296B;--yellow:#FFD93D;--white:#fff}
+:root{color-scheme:dark;--blue:#3c9aff;--blue-bright:#77c4ff;--dark:#03152f;--glass:rgba(255,255,255,.10);--line:rgba(255,255,255,.12)}
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
-body{min-height:100vh;color:#fff;background:linear-gradient(135deg,#00296B,#003DA5,#FFD700);padding-bottom:145px}
-.header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:rgba(0,0,0,.15);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
-.logo-group{display:flex;gap:7px;align-items:center}.logo,.caths-logo{width:48px;height:48px;object-fit:contain}.header-center{flex:1;text-align:center;padding:0 10px}.header-center h1{font-size:19px;font-weight:800}.header-center p{font-size:10px;opacity:.85}
-.container{max-width:920px;margin:auto;padding:24px 16px 145px}.profile-card{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:28px;overflow:hidden;box-shadow:0 18px 45px rgba(0,0,0,.2)}
-.cover{height:190px;background:linear-gradient(135deg,rgba(0,41,107,.95),rgba(0,61,165,.75),rgba(255,215,0,.55));position:relative}.cover::after{content:'PUBLIC PROFILE';position:absolute;right:20px;bottom:18px;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);font-size:10px;letter-spacing:.5px;font-weight:700}
-.profile-main{padding:0 30px 30px;position:relative;z-index:2}.avatar-wrap{position:relative;z-index:3;margin-top:-62px;width:132px;height:132px;border-radius:50%;border:6px solid rgba(255,255,255,.95);background:#dfe7f5;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.25)}.avatar-wrap img{width:100%;height:100%;object-fit:cover;filter:none!important;-webkit-filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;opacity:1!important;transform:none!important}.fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:60px;color:#183c8c}
-.verified-badge{display:inline-flex;align-items:center;justify-content:center;width:21px;height:21px;margin-left:7px;border-radius:50%;background:#1DA1F2;color:#fff;font-size:13px;font-weight:900;vertical-align:3px;box-shadow:0 2px 7px rgba(29,161,242,.28)}
-.name{font-size:30px;font-weight:800;margin-top:18px;position:relative;z-index:3}.username{font-size:13px;opacity:.8;margin-top:2px}.bio{margin-top:15px;line-height:1.7;font-size:14px;max-width:720px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.chip{padding:7px 11px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.12);font-size:11px}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}.back-btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:#FFD93D;color:#0d2c7a;padding:11px 18px;border-radius:13px;font-weight:800;font-size:13px}.status{margin-top:18px;padding:12px;border-radius:14px;background:rgba(255,255,255,.08);font-size:12px;text-align:center}
-/* PROFILE FRIENDS */
-.friends-section{
-  margin-top:24px;
-  margin-bottom:24px;
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:24px;
-  padding:18px;
-}
-.friends-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  margin-bottom:14px;
-}
-.friends-head h3{font-size:18px}
-.friends-count{
-  min-width:34px;
-  text-align:center;
-  padding:5px 10px;
-  border-radius:999px;
-  background:#FFD93D;
-  color:#0d2c7a;
-  font-size:11px;
-  font-weight:800;
-}
-.friends-list{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:10px;
-}
-.profile-friend-card{
-  background:#fff;
-  color:#0f172a;
-  border-radius:16px;
-  padding:11px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  min-width:0;
-  box-shadow:0 8px 20px rgba(0,0,0,.08);
-}
-.profile-friend-link{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  min-width:0;
-  flex:1;
-  text-decoration:none;
-  color:inherit;
-  border-radius:12px;
-  padding:3px;
-}
-.profile-friend-link:hover{background:#eef4ff}
-.profile-friend-avatar{
-  width:44px;height:44px;border-radius:50%;
-  object-fit:cover;flex:0 0 44px;background:#e2e8f0;
-  display:flex;align-items:center;justify-content:center;
-  color:#183c8c;font-size:18px;font-weight:700;overflow:hidden;
-}
-.profile-friend-avatar img{width:100%;height:100%;object-fit:cover;filter:none!important;-webkit-filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;opacity:1!important;transform:none!important}
-.profile-friend-info{min-width:0}
-.profile-friend-info strong{
-  display:block;font-size:12px;white-space:nowrap;
-  overflow:hidden;text-overflow:ellipsis;
-}
-.profile-friend-info small{
-  display:block;font-size:10px;color:#64748b;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;
-}
-.profile-friend-action{
-  flex:0 0 auto;
-  border:none;border-radius:10px;
-  padding:8px 10px;font-size:10px;font-weight:800;
-  cursor:pointer;background:#1e3a8a;color:#fff;
-}
-.profile-friend-action:hover{filter:brightness(1.08)}
-.profile-friend-action:disabled{opacity:.65;cursor:not-allowed}
-.profile-friend-action.friends{background:#dcfce7;color:#166534}
-.profile-friend-action.pending{background:#eef2ff;color:#334155}
-.friends-empty{
-  padding:24px 12px;text-align:center;
-  background:rgba(255,255,255,.08);
-  border-radius:16px;font-size:12px;opacity:.82;
-}
-.friends-loading{
-  min-height:120px;
-  padding:24px 12px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  text-align:center;
-  font-size:12px;
-  opacity:.9;
-}
-.friends-spinner{
-  width:34px;
-  height:34px;
-  border:3px solid rgba(255,255,255,.28);
-  border-top-color:#FFD93D;
-  border-radius:50%;
-  animation:friendsSpin .8s linear infinite;
-}
-.friends-loading-text{font-size:12px;opacity:.78}
-.friends-error{
-  padding:22px 14px;
-  text-align:center;
-  background:rgba(255,255,255,.08);
-  border-radius:16px;
-  font-size:12px;
-  line-height:1.6;
-  opacity:.9;
-}
-@keyframes friendsSpin{to{transform:rotate(360deg)}}
-@media(max-width:768px){
-  .friends-section{padding:14px}
-  .friends-list{grid-template-columns:1fr}
-  .profile-friend-card{padding:10px}
-}
-
-.posts-section{margin-top:24px;margin-bottom:32px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:18px}.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.section-head h3{font-size:18px}.section-head span{font-size:11px;opacity:.75}.posts-list{display:flex;flex-direction:column;gap:14px}.post-card{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.11);border-radius:20px;padding:18px;text-align:left}.post-head{display:flex;align-items:center;gap:10px}.post-avatar{width:42px;height:42px;border-radius:50%;background:#e9eef7;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#183c8c;font-size:20px;flex:0 0 42px}.post-avatar img{width:100%;height:100%;object-fit:cover;filter:none!important;-webkit-filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;opacity:1!important;transform:none!important}.post-author{min-width:0;flex:1}.post-author strong{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.post-meta{font-size:10px;opacity:.68;margin-top:2px}.post-visibility{font-size:10px;background:rgba(255,255,255,.12);padding:5px 8px;border-radius:999px;white-space:nowrap}.post-text{margin:14px 0;font-size:14px;line-height:1.65;white-space:pre-wrap;word-break:break-word}.post-counts{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:11px;opacity:.78;margin:8px 0 0}.reaction-summary{border:none;background:transparent;color:inherit;font:inherit;cursor:pointer;padding:0;display:inline-flex;align-items:center;gap:3px}.reaction-summary:hover{text-decoration:underline}.share-context{margin-top:14px;background:rgba(255,255,255,.97);color:#24458e;border:1px solid rgba(255,255,255,.55);border-radius:20px;padding:18px 18px 20px;box-shadow:0 10px 28px rgba(0,0,0,.10)}.share-context-label{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:800;color:#6f84b8;margin-bottom:11px}.share-context-author{font-size:17px;line-height:1.3;font-weight:800;color:#24458e}.share-context-text{font-size:14px;color:#334c7f;line-height:1.65;margin-top:10px;white-space:pre-wrap;word-break:break-word}.share-context.deleted{background:#f8fafc;color:#64748b;border-color:#e2e8f0}.share-context.deleted .share-context-label,.share-context.deleted .share-context-author,.share-context.deleted .share-context-text{color:#64748b}.post-actions{display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.10);padding-top:12px}.post-action{border:none;background:rgba(255,255,255,.09);color:#fff;border-radius:11px;padding:8px 11px;font-size:12px;cursor:pointer;transition:.2s}.post-action:hover{background:rgba(255,255,255,.16);transform:translateY(-1px)}.reaction-wrap{position:relative}.reaction-picker{display:none;position:absolute;bottom:calc(100% + 8px);left:0;background:#fff;border-radius:14px;padding:7px;box-shadow:0 12px 30px rgba(0,0,0,.22);gap:4px;z-index:10}.reaction-picker.open{display:flex}.reaction-emoji{border:none;background:transparent;font-size:20px;padding:6px;cursor:pointer;border-radius:9px}.reaction-emoji:hover{background:#eef4ff}.empty-posts{padding:28px 12px;text-align:center;opacity:.82}.empty-posts .icon{font-size:44px;margin-bottom:8px}.privacy-note{font-size:11px;opacity:.72;line-height:1.5;margin-top:8px}
-.bottom-nav{position:fixed;left:0;right:0;bottom:0;height:78px;background:linear-gradient(90deg,#1e3a8a,#b59f1a);display:flex;justify-content:space-around;align-items:center;z-index:50;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}.nav-item{display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;color:#fff;font-size:9px;min-width:60px;transition:.22s}.nav-item div{font-size:22px;height:26px;display:flex;align-items:center;justify-content:center;margin-bottom:3px}.nav-item:hover{transform:translateY(-2px)}.nav-item.active{color:#FFD700;transform:translateY(-6px) scale(1.07);font-weight:700}.nav-item.active div{font-size:25px}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:18px;z-index:99999}.modal.open{display:flex}.modal-box{width:100%;max-width:560px;background:#fff;color:#183c8c;border-radius:24px;padding:22px;box-shadow:0 24px 70px rgba(0,0,0,.35);animation:pop .22s ease}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.modal-head h3{font-size:20px}.modal-x{border:none;background:#eef4ff;color:#183c8c;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:18px}.comments-list,.reactions-list{max-height:48vh;overflow:auto;display:flex;flex-direction:column;gap:10px}.comment-item,.reaction-item{background:#f6f8fc;border-radius:14px;padding:11px 12px}.comment-item strong,.reaction-item strong{display:block;color:#183c8c;font-size:12px}.comment-item p{font-size:12px;color:#333;margin-top:4px;white-space:pre-wrap;word-break:break-word}.comment-form{display:flex;gap:8px;margin-top:14px}.comment-input{flex:1;border:1px solid #dbe3f1;border-radius:12px;padding:11px;outline:none}.comment-send{border:none;border-radius:12px;padding:0 16px;background:#1e3a8a;color:#fff;font-weight:700;cursor:pointer}.reaction-item{display:flex;align-items:center;gap:10px}.reaction-avatar{width:40px;height:40px;border-radius:50%;overflow:hidden;background:#dfe7f5;display:flex;align-items:center;justify-content:center;color:#183c8c;flex:0 0 40px}.reaction-avatar img{width:100%;height:100%;object-fit:cover;filter:none!important;-webkit-filter:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;opacity:1!important;transform:none!important}.reaction-info{flex:1;min-width:0}.reaction-info small{display:block;color:#75829a;font-size:10px;margin-top:2px}.reaction-emoji{font-size:24px}.add-friend-mini{border:none;border-radius:10px;background:#1e3a8a;color:#fff;padding:8px 10px;font-size:10px;font-weight:700;cursor:pointer}.add-friend-mini:disabled{opacity:.65;cursor:not-allowed}.success-pop{max-width:380px;text-align:center}.success-icon{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#20c997,#2fbf71);display:flex;align-items:center;justify-content:center;color:#fff;font-size:36px;margin:0 auto 14px;box-shadow:0 12px 24px rgba(32,201,151,.25)}.success-pop h3{font-size:22px;margin-bottom:7px}.success-pop p{font-size:13px;color:#6b7891;line-height:1.5;margin-bottom:18px}.success-ok{width:100%;height:46px;border:none;border-radius:12px;background:#1e3a8a;color:#fff;font-weight:700;cursor:pointer}@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-@media(max-width:768px){.header{padding:9px 10px}.logo,.caths-logo{width:39px;height:39px}.header-center h1{font-size:13px}.header-center p{font-size:7px}.container{padding:14px 12px 125px}.cover{height:135px}.profile-main{padding:0 18px 22px}.avatar-wrap{width:104px;height:104px;margin-top:-52px}.name{font-size:23px}.bio{font-size:12px}.posts-section{padding:14px;margin-bottom:30px}.post-card{padding:15px}.post-text{font-size:13px}.bottom-nav{height:70px}.nav-item{font-size:8px;min-width:52px}.nav-item div{font-size:20px}.nav-item.active{transform:translateY(-5px) scale(1.05)}.nav-item.active div{font-size:23px}.post-visibility{display:none}.comment-form{flex-direction:column}.comment-send{height:42px}.reaction-item{flex-wrap:wrap}.actions>*{flex:1 1 180px;min-width:0}}
+html,body{min-height:100%;background:#03152f}
+body{min-height:100vh;color:#fff;background:radial-gradient(900px 600px at 8% 8%,rgba(0,120,255,.28),transparent 60%),radial-gradient(800px 560px at 92% 14%,rgba(60,154,255,.14),transparent 58%),radial-gradient(700px 500px at 78% 92%,rgba(0,77,190,.24),transparent 62%),linear-gradient(135deg,#03152f 0%,#062b68 34%,#0a4ca2 66%,#173b78 100%);background-attachment:fixed;padding-bottom:95px}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(circle at 20% 25%,rgba(100,180,255,.10) 0 1px,transparent 1.5px),radial-gradient(circle at 78% 72%,rgba(119,196,255,.08) 0 1px,transparent 1.5px);background-size:180px 180px,240px 240px;opacity:.5}
+body::after{content:"";position:fixed;inset:-15%;pointer-events:none;z-index:-1;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.035) 48%,transparent 60%);transform:rotate(-4deg);opacity:.7}
+.header{position:sticky;top:0;z-index:20;padding:12px 20px;display:grid;grid-template-columns:220px 1fr 220px;align-items:center;gap:15px;background:rgba(3,21,47,.42);border-bottom:1px solid rgba(119,196,255,.12);backdrop-filter:blur(20px) saturate(135%);-webkit-backdrop-filter:blur(20px) saturate(135%);box-shadow:0 8px 28px rgba(0,0,0,.10)}
+.logo-group{display:flex;align-items:center;gap:8px}.logo,.caths-logo{width:54px;height:54px;object-fit:contain;display:block}.header-center{text-align:center;padding:0 10px}.header-center h1{font-size:18px;font-weight:700}.header-center p{font-size:11px;opacity:.82;margin-top:2px}.header-spacer{width:100%}
+.container{max-width:980px;margin:0 auto;padding:26px 18px}
+.profile-card{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(18px) saturate(125%);-webkit-backdrop-filter:blur(18px) saturate(125%);border-radius:28px;overflow:hidden;box-shadow:0 18px 55px rgba(0,0,0,.25)}
+.cover{height:205px;background:linear-gradient(135deg,#031d45 0%,#064c9e 52%,#187bd2 100%);position:relative;overflow:hidden}.cover::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 30%,rgba(119,196,255,.28),transparent 38%),linear-gradient(120deg,transparent 25%,rgba(255,255,255,.07) 50%,transparent 72%)}
+.profile-main{padding:0 32px 32px}.avatar-wrap{position:relative;margin-top:-68px;width:136px;height:136px;border-radius:50%;border:6px solid rgba(255,255,255,.95);background:#dfe7f5;overflow:hidden;box-shadow:0 12px 34px rgba(0,0,0,.30),0 0 0 1px rgba(119,196,255,.20)}.avatar-wrap img{width:100%;height:100%;object-fit:cover}.fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:60px;color:#285b9f}
+.name{font-size:30px;font-weight:800;margin-top:16px;letter-spacing:-.3px}.username{font-size:13px;color:rgba(255,255,255,.72);margin-top:2px}.email{font-size:12px;color:rgba(255,255,255,.60);margin-top:5px}.bio{margin-top:15px;line-height:1.75;font-size:14px;max-width:720px;color:rgba(255,255,255,.90)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.chip{padding:7px 11px;border-radius:999px;background:rgba(60,154,255,.13);border:1px solid rgba(119,196,255,.18);font-size:11px;color:#eaf6ff}
+.actions{display:flex;gap:10px;margin-top:22px}.back-btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:linear-gradient(135deg,#1678d4,#3c9aff);color:#fff;padding:11px 18px;border:1px solid rgba(255,255,255,.14);border-radius:13px;font-weight:800;font-size:13px;box-shadow:0 8px 22px rgba(20,120,255,.20);transition:transform .25s ease,box-shadow .25s ease,filter .25s ease}.back-btn:hover{transform:translateY(-2px);filter:brightness(1.06);box-shadow:0 12px 28px rgba(20,120,255,.28)}
+.status{margin-top:18px;padding:12px;border-radius:14px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08);font-size:12px;text-align:center;color:rgba(255,255,255,.76)}
+.bottom-nav{position:fixed!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;height:75px!important;min-height:75px!important;margin:0!important;padding:4px 10px calc(4px + env(safe-area-inset-bottom))!important;display:flex!important;align-items:center!important;justify-content:space-around!important;gap:0!important;border-top:1px solid rgba(255,255,255,.12)!important;border-radius:0!important;background:rgba(0,0,0,.28)!important;-webkit-backdrop-filter:blur(20px) saturate(135%)!important;backdrop-filter:blur(20px) saturate(135%)!important;box-shadow:0 -10px 28px rgba(0,0,0,.14)!important;z-index:2147483000!important;overflow:visible!important}
+.bottom-nav::before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;pointer-events:none;background:linear-gradient(90deg,transparent 2%,rgba(119,196,255,.10) 18%,rgba(119,196,255,.36) 50%,rgba(119,196,255,.10) 82%,transparent 98%)}
+.nav-item{position:relative;flex:1 1 0;max-width:190px;height:61px;margin:0;padding:5px 8px;border-radius:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center;white-space:nowrap;color:rgba(255,255,255,.78);font:600 11px/1.1 Poppins,Arial,sans-serif;text-decoration:none;transition:color .25s ease,transform .28s cubic-bezier(.22,1,.36,1),background .25s ease,text-shadow .25s ease}.nav-item div{width:30px;height:28px;display:flex;align-items:center;justify-content:center;font-size:23px;line-height:1;color:currentColor;margin:0}.nav-item:hover{color:#fff;transform:translateY(-2px);background:rgba(255,255,255,.035)}.nav-item:active{transform:translateY(-1px) scale(.97)}.nav-item.active{color:#fff;transform:translateY(-4px) scale(1.035);text-shadow:0 0 12px rgba(119,196,255,.16)}.nav-item.active div{font-size:26px;transform:translateY(-1px)}.nav-item.active::after{content:"";position:absolute;left:50%;bottom:3px;width:24px;height:3px;transform:translateX(-50%);border-radius:999px;background:#77c4ff;box-shadow:0 0 13px rgba(119,196,255,.72)}
+@media(max-width:768px){.header{padding:9px 10px;grid-template-columns:105px 1fr 105px}.logo,.caths-logo{width:42px;height:42px}.header-center h1{font-size:13px}.header-center p{font-size:8px}.container{padding:15px 12px}.cover{height:145px}.profile-main{padding:0 19px 23px}.avatar-wrap{width:108px;height:108px;margin-top:-54px}.name{font-size:23px}.bio{font-size:12px}.bottom-nav{height:75px;min-height:75px;padding:4px 4px calc(4px + env(safe-area-inset-bottom))!important}.nav-item{height:61px;padding:5px 3px;border-radius:13px;font-size:10px}.nav-item div{width:27px;height:26px;font-size:21px}.nav-item.active div{font-size:24px}}
+@media(max-width:420px){.bottom-nav{height:70px;min-height:70px}.nav-item{height:55px;font-size:9.5px}.nav-item div{font-size:19px}.nav-item.active div{font-size:22px}}
+@media(prefers-reduced-motion:reduce){.back-btn,.nav-item{transition:none}}
 </style>
 </head>
 <body>
 <header class="header">
   <div class="logo-group"><img src="sslg-logo.png" class="logo" alt="SSLG"><img src="caths-logo.png" class="caths-logo" alt="CATHS"></div>
   <div class="header-center"><h1>CATHS-MAIN Student Profile</h1><p>School Community Profile</p></div>
-  <div style="width:82px"></div>
+  <div class="header-spacer"></div>
 </header>
-
 <main class="container">
   <div class="profile-card">
     <div class="cover"></div>
     <section class="profile-main">
       <div class="avatar-wrap"><img id="avatar" style="display:none" alt="Profile photo"><div id="fallback" class="fallback">👤</div></div>
-      <h2 id="name" class="name"><span id="nameText">Loading...</span><span id="verifiedBadge" class="verified-badge" title="Verified Admin" aria-label="Verified Admin" style="display:none">✓</span></h2>
+      <h2 id="name" class="name">Loading...</h2>
       <div id="username" class="username"></div>
+      <div id="email" class="email"></div>
       <div id="bio" class="bio">Loading profile...</div>
       <div class="chips"><span id="sectionChip" class="chip" style="display:none"></span><span class="chip">🎓 CATHS-MAIN Student</span></div>
-      <div class="actions"><a class="back-btn" href="friends.html">← Back to Friends</a><button id="mainFriendAction" class="profile-friend-action" type="button" style="display:none">Add Friend</button></div>
+      <div class="actions"><a class="back-btn" href="friends.html">← Back to Friends</a></div>
       <div id="status" class="status">Loading profile...</div>
     </section>
   </div>
-
-  <section class="friends-section">
-    <div class="friends-head">
-      <h3>👥 Friends</h3>
-      <span id="profileFriendsCount" class="friends-count">0</span>
-    </div>
-    <div id="profileFriendsList" class="friends-list">
-      <div class="friends-loading"><div class="friends-spinner"></div><div class="friends-loading-text">Loading friends...</div></div>
-    </div>
-  </section>
-
-  <section class="posts-section">
-    <div class="section-head"><h3>📝 Posts</h3><span id="postVisibilityHint">Public posts from this student</span></div>
-    <div id="postsList" class="posts-list"><div class="empty-posts">Loading posts...</div></div>
-  </section>
 </main>
-
 <nav class="bottom-nav">
   <a href="index.html" class="nav-item"><div>🏠</div><span>Home</span></a>
-  <a href="news-feed.html" class="nav-item"><div>📰</div><span>News Feed</span></a>
+  <a href="news.html" class="nav-item"><div>📢</div><span>News</span></a>
   <a href="voice.html" class="nav-item"><div>🗣️</div><span>Student Voice</span></a>
   <a href="friends.html" class="nav-item active"><div>👥</div><span>Friends</span></a>
   <a href="profile.html" class="nav-item"><div>👤</div><span>Profile</span></a>
 </nav>
-
-<div id="commentsModal" class="modal">
-  <div class="modal-box">
-    <div class="modal-head"><h3>💬 Comments</h3><button class="modal-x" type="button" onclick="closeComments()">✕</button></div>
-    <div id="commentsList" class="comments-list"></div>
-    <div class="comment-form"><input id="commentInput" class="comment-input" maxlength="300" placeholder="Write a comment..."><button id="commentSendBtn" class="comment-send" type="button" onclick="submitComment()">Send</button></div>
-  </div>
-</div>
-
-<div id="reactionsModal" class="modal">
-  <div class="modal-box">
-    <div class="modal-head"><h3>✨ People who reacted</h3><button class="modal-x" type="button" onclick="closeReactions()">✕</button></div>
-    <div id="reactionsList" class="reactions-list"></div>
-  </div>
-</div>
-
-<div id="commentSuccess" class="modal">
-  <div class="modal-box success-pop">
-    <div class="success-icon">✓</div><h3>Comment Successfully Added!</h3><p>Your comment has been posted successfully.</p><button class="success-ok" onclick="closeCommentSuccess()">Okay</button>
-  </div>
-</div>
-
-<div id="shareSuccess" class="modal">
-  <div class="modal-box success-pop">
-    <div class="success-icon">↗</div><h3>Post Shared Successfully!</h3><p>The post has been shared to your profile.</p><button class="success-ok" onclick="closeShareSuccess()">Okay</button>
-  </div>
-</div>
-
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-import {getFirestore,doc,getDoc,collection,getDocs,query,where,limit,addDoc,setDoc,deleteDoc,serverTimestamp,updateDoc} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
+import {getFirestore,doc,getDoc} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",authDomain:"caths-page.firebaseapp.com",projectId:"caths-page",storageBucket:"caths-page.firebasestorage.app",messagingSenderId:"945498022620",appId:"1:945498022620:web:71aeb4cd2472e061aeca19",measurementId:"G-CBG1YSK13G"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
-const $=id=>document.getElementById(id);
-const params=new URLSearchParams(location.search); const uid=params.get('uid');
-const ADMIN_EMAILS = new Set(['reyvengarcia15@gmail.com', 'reyvenbermudo091@gmail.com', 'reyvengarcia05@gmail.com', 'chezcadc14@gmail.com', 'nathanielgarc679@gmail.com', 'marteena.133@gmail.com', 'Gabbicastillo0126@gmail.com', 'leddadanielle91@gmail.com', 'jennapastor062@gmail.com', 'dhenmark1313@gmail.com', 'christianangelointes0@gmail.com', 'alexaislacruz@gmail.com', 'galangjullianne016@gmail.com', 'vanessajotic2403@gmail.com', 'aquinobernardjr0@gmail.com', 'angellyar0909@gmail.com', 'vhergelnarciso@gmail.com', 'sicatmadisson487@gmail.com', 'chezcadc14@gmail.com'].map(e => e.toLowerCase()));
-function isVerifiedAdminEmail(email){return !!email && ADMIN_EMAILS.has(String(email).trim().toLowerCase());}
-function setProfileVerification(email){const b=$('verifiedBadge'); if(b) b.style.display=isVerifiedAdminEmail(email)?'inline-flex':'none';}
-
-let activeCommentPostId=null;
-let currentTarget=null;
-function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
-function postTimeLabel(ts){try{const d=ts?.toDate?ts.toDate():new Date(ts);return Number.isNaN(d.getTime())?'Just now':d.toLocaleString([],{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'});}catch{return 'Just now';}}
-function avatar(url){return url?`<div class="post-avatar"><img src="${esc(url)}" alt=""></div>`:`<div class="post-avatar">👤</div>`;}
-function visibilityLabel(v){return v==='friends'?'👥 Friends Only':v==='onlyMe'?'🔒 Only Me':'🌍 Public';}
-
-async function isFriend(otherUid){
-  if(!auth.currentUser || !otherUid) return false;
-  const snap=await getDoc(doc(db,'friends',auth.currentUser.uid,'list',otherUid));
-  return snap.exists();
-}
-
-
-async function getPendingFriendRequest(otherUid){
-  const me=auth.currentUser;
-  if(!me || !otherUid || me.uid===otherUid) return null;
-
-  try{
-    const sent=await getDocs(query(
-      collection(db,'friendRequests'),
-      where('from','==',me.uid),
-      where('to','==',otherUid),
-      where('status','==','pending'),
-      limit(1)
-    ));
-    if(!sent.empty) return {direction:'sent',id:sent.docs[0].id,...sent.docs[0].data()};
-
-    const incoming=await getDocs(query(
-      collection(db,'friendRequests'),
-      where('from','==',otherUid),
-      where('to','==',me.uid),
-      where('status','==','pending'),
-      limit(1)
-    ));
-    if(!incoming.empty) return {direction:'incoming',id:incoming.docs[0].id,...incoming.docs[0].data()};
-  }catch(e){
-    console.error('friend request lookup',e);
-  }
-  return null;
-}
-
-function profileFriendAvatar(friend){
-  if(friend.photoURL){
-    return `<div class="profile-friend-avatar"><img src="${esc(friend.photoURL)}" alt=""></div>`;
-  }
-  const letter=esc((friend.nickname||friend.username||'U').charAt(0).toUpperCase());
-  return `<div class="profile-friend-avatar">${letter}</div>`;
-}
-
-async function sendFriendRequestFromProfile(otherUid,button){
-  const me=auth.currentUser;
-  if(!me || !otherUid || me.uid===otherUid) return;
-
-  button.disabled=true;
-  button.textContent='Checking...';
-
-  try{
-    if(await isFriend(otherUid)){
-      button.textContent='✓ Friends';
-      button.className='profile-friend-action friends';
-      return;
-    }
-
-    const existing=await getPendingFriendRequest(otherUid);
-    if(existing){
-      if(existing.direction==='sent'){
-        button.textContent='Request Sent';
-        button.className='profile-friend-action pending';
-      }else{
-        button.textContent='Respond';
-        button.className='profile-friend-action pending';
-        button.disabled=false;
-        button.onclick=()=>location.href='friends.html';
-      }
-      return;
-    }
-
-    const [meSnap,targetSnap]=await Promise.all([
-      getDoc(doc(db,'users',me.uid)),
-      getDoc(doc(db,'users',otherUid))
-    ]);
-    const meData=meSnap.exists()?meSnap.data()||{}:{};
-    const targetData=targetSnap.exists()?targetSnap.data()||{}:{};
-
-    await addDoc(collection(db,'friendRequests'),{
-      from:me.uid,
-      fromUsername:meData.username||'',
-      fromNickname:meData.nickname||meData.name||meData.displayName||me.displayName||'User',
-      fromPhotoURL:meData.photoURL||me.photoURL||'',
-      to:otherUid,
-      toUsername:targetData.username||'',
-      toNickname:targetData.nickname||targetData.name||targetData.displayName||'Student',
-      toPhotoURL:targetData.photoURL||'',
-      status:'pending',
-      createdAt:serverTimestamp()
-    });
-
-    button.textContent='Request Sent';
-    button.className='profile-friend-action pending';
-  }catch(e){
-    console.error('profile friend request',e);
-    button.disabled=false;
-    button.textContent='Add Friend';
-    button.className='profile-friend-action';
-    alert('Could not send friend request.');
-  }
-}
-
-async function updateMainFriendAction(targetUid){
-  const btn=$('mainFriendAction');
-  const me=auth.currentUser;
-  if(!btn) return;
-
-  if(!me || !targetUid || me.uid===targetUid){
-    btn.style.display='none';
-    return;
-  }
-
-  btn.style.display='inline-flex';
-  btn.disabled=true;
-  btn.textContent='Checking...';
-  btn.className='profile-friend-action';
-
-  try{
-    if(await isFriend(targetUid)){
-      btn.textContent='✓ Friends';
-      btn.className='profile-friend-action friends';
-      return;
-    }
-
-    const req=await getPendingFriendRequest(targetUid);
-    if(req?.direction==='sent'){
-      btn.textContent='Request Sent';
-      btn.className='profile-friend-action pending';
-      return;
-    }
-
-    if(req?.direction==='incoming'){
-      btn.textContent='Respond';
-      btn.className='profile-friend-action pending';
-      btn.disabled=false;
-      btn.onclick=()=>{ location.href='friends.html'; };
-      return;
-    }
-
-    btn.textContent='Add Friend';
-    btn.className='profile-friend-action';
-    btn.disabled=false;
-    btn.onclick=()=>sendFriendRequestFromProfile(targetUid,btn);
-  }catch(e){
-    console.error('main profile relationship',e);
-    btn.textContent='Add Friend';
-    btn.className='profile-friend-action';
-    btn.disabled=false;
-    btn.onclick=()=>sendFriendRequestFromProfile(targetUid,btn);
-  }
-}
-
-window.sendFriendRequestFromProfile=sendFriendRequestFromProfile;
-
-async function loadProfileFriends(){
-  const list=$('profileFriendsList');
-  const count=$('profileFriendsCount');
-  if(!uid){
-    count.textContent='0';
-    list.innerHTML='<div class="friends-empty">No profile selected.</div>';
-    return;
-  }
-
-  list.innerHTML='<div class="friends-loading"><div class="friends-spinner"></div><div class="friends-loading-text">Loading friends...</div></div>';
-
-  try{
-    const snap=await getDocs(query(
-      collection(db,'friends',uid,'list'),
-      limit(100)
-    ));
-
-    const friends=snap.docs.map(d=>({id:d.id,...d.data(),uid:d.data()?.uid||d.id}));
-    friends.sort((a,b)=>String(a.nickname||a.username||'').localeCompare(String(b.nickname||b.username||'')));
-    count.textContent=String(friends.length);
-
-    if(!friends.length){
-      list.innerHTML='<div class="friends-empty">This student has no friends yet.</div>';
-      return;
-    }
-
-    const me=auth.currentUser;
-
-    const rows=await Promise.all(friends.map(async friend=>{
-      let relationship='add';
-
-      if(me?.uid===friend.uid){
-        relationship='self';
-      }else if(me){
-        try{
-          if(await isFriend(friend.uid)){
-            relationship='friends';
-          }else{
-            const req=await getPendingFriendRequest(friend.uid);
-            relationship=req?.direction==='sent'?'sent':req?.direction==='incoming'?'incoming':'add';
-          }
-        }catch(e){
-          console.error('friend relationship',e);
-        }
-      }else{
-        relationship='login';
-      }
-
-      return {friend,relationship};
-    }));
-
-    list.innerHTML=rows.map(({friend,relationship})=>{
-      let action='';
-
-      if(relationship==='friends'){
-        action=`<button class="profile-friend-action friends" type="button" disabled>✓ Friends</button>`;
-      }else if(relationship==='sent'){
-        action=`<button class="profile-friend-action pending" type="button" disabled>Request Sent</button>`;
-      }else if(relationship==='incoming'){
-        action=`<button class="profile-friend-action pending" type="button" onclick="location.href='friends.html'">Respond</button>`;
-      }else if(relationship==='login'){
-        action=`<button class="profile-friend-action" type="button" onclick="location.href='profile.html'">Add Friend</button>`;
-      }else if(relationship==='self'){
-        action=`<button class="profile-friend-action pending" type="button" disabled>You</button>`;
-      }else{
-        action=`<button class="profile-friend-action" type="button" onclick="sendFriendRequestFromProfile('${esc(friend.uid)}',this)">Add Friend</button>`;
-      }
-
-      return `<div class="profile-friend-card">
-        <a class="profile-friend-link" href="user-profile.html?uid=${encodeURIComponent(friend.uid)}">
-          ${profileFriendAvatar(friend)}
-          <div class="profile-friend-info">
-            <strong>${esc(friend.nickname||friend.name||friend.displayName||'Student')}</strong>
-            <small>@${esc(friend.username||'')}</small>
-          </div>
-        </a>
-        ${action}
-      </div>`;
-    }).join('');
-  }catch(e){
-    console.error('loadProfileFriends',e);
-    count.textContent='0';
-    list.innerHTML='<div class="friends-error">👥 Friends are temporarily unavailable right now.<br><span style="opacity:.72">The profile is fine, but access to this friend list is restricted by Firestore.</span></div>';
-  }
-}
-
-async function loadProfile(){
+const $=id=>document.getElementById(id); const params=new URLSearchParams(location.search); const uid=params.get('uid');
+function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[c]));}
+async function load(){
   if(!uid){$('status').textContent='No profile was selected.';return;}
-  currentTarget=uid;
   try{
     const snap=await getDoc(doc(db,'users',uid));
-    if(!snap.exists()){ $('nameText').textContent='Profile not found'; $('bio').textContent='This student profile is no longer available.'; $('status').textContent='Profile unavailable.'; return; }
+    if(!snap.exists()){ $('name').textContent='Profile not found'; $('bio').textContent='This student profile is no longer available.'; $('status').textContent='Profile unavailable.'; return; }
     const d=snap.data()||{};
-    $('nameText').textContent=d.name||d.nickname||d.displayName||'Student';
-    setProfileVerification(d.email||'');
+    $('name').textContent=d.name||d.nickname||d.displayName||'Student';
     $('username').textContent=d.username?`@${d.username}`:'';
+    $('email').textContent='';
     $('bio').textContent=d.bio||'No bio yet.';
     if(d.section){$('sectionChip').style.display='inline-flex';$('sectionChip').textContent=`📚 ${d.section}`;}
-    const me=auth.currentUser;
-    const photoUrl=d.photoURL || (me?.uid===uid ? me.photoURL : '');
-    if(photoUrl){$('avatar').src=photoUrl;$('avatar').style.display='block';$('fallback').style.display='none';}
-    else{$('avatar').removeAttribute('src');$('avatar').style.display='none';$('fallback').style.display='flex';}
-    const friend=me && me.uid!==uid ? await isFriend(uid) : false;
-    $('status').textContent=me?.uid===uid ? 'This is your profile.' : friend ? 'You are friends with this student.' : 'Viewing public posts.';
-    $('postVisibilityHint').textContent=me?.uid===uid?'Your posts':friend?'Public and friends-only posts':'Public posts from this student';
-    await updateMainFriendAction(uid);
-    await loadProfileFriends();
-    await loadPosts(friend, me?.uid===uid);
-  }catch(e){console.error(e);$('nameText').textContent='Unable to load profile';$('bio').textContent='Please check your Firebase Firestore rules.';$('status').textContent='Could not load this profile.';}
+    if(d.photoURL){$('avatar').src=d.photoURL;$('avatar').style.display='block';$('fallback').style.display='none';}
+    $('status').textContent='Profile loaded successfully.';
+  }catch(e){console.error(e);$('name').textContent='Unable to load profile';$('bio').textContent='Please check your Firebase Firestore rules.';$('status').textContent='Could not load this profile.';}
 }
-
-async function getPostsForVisibility(visibility){
-  try{
-    const snap=await getDocs(query(collection(db,'posts'),where('authorUid','==',uid),where('visibility','==',visibility),limit(50)));
-    return snap.docs.map(d=>({id:d.id,...d.data()}));
-  }catch(error){
-    console.error(`Could not load ${visibility} posts`,error);
-    return [];
-  }
-}
-
-async function loadPosts(friend,ownProfile){
-  const list=$('postsList'); list.innerHTML='<div class="empty-posts">Loading posts...</div>';
-  try{
-    const publicPosts=await getPostsForVisibility('public');
-    const friendPosts=(friend||ownProfile)?await getPostsForVisibility('friends'):[];
-    const onlyMe=(ownProfile)?await getPostsForVisibility('onlyMe'):[];
-    const map=new Map(); [...publicPosts,...friendPosts,...onlyMe].forEach(p=>map.set(p.id,p));
-    const posts=[...map.values()].sort((a,b)=>{if(Boolean(a.pinned)!==Boolean(b.pinned)) return a.pinned ? -1 : 1; return (b.createdAt?.toMillis?.()||0)-(a.createdAt?.toMillis?.()||0);});
-    if(!posts.length){list.innerHTML='<div class="empty-posts"><div class="icon">📝</div><h3>No Posts Yet</h3><p>This student has not shared any posts with you.</p><div class="privacy-note">Only posts allowed by the author\'s privacy setting are shown.</div></div>';return;}
-    list.innerHTML=posts.map(renderPost).join('');
-    for(const p of posts) await refreshCounts(p.id);
-  }catch(error){console.error(error);list.innerHTML='<div class="empty-posts">Could not load posts. Check Firestore rules or indexes.</div>';}
-}
-
-function renderPost(post){
-  const sharedContext=post.isShared&&post.originalAuthorName?`<div class="share-context"><div class="share-context-label">↗ Shared post</div><div class="share-context-author">Original post by ${esc(post.originalAuthorName||'User')}</div><div class="share-context-text">${esc(post.originalText||post.text||'')}</div></div>`:'';
-  return `<article class="post-card" data-post-id="${esc(post.id)}">
-    <div class="post-head">${avatar(post.photoURL)}<div class="post-author"><strong>${esc(post.authorName||'User')}</strong><div class="post-meta">${esc(postTimeLabel(post.createdAt))}</div></div><span class="post-visibility">${visibilityLabel(post.visibility)}</span>${post.pinned===true?`<span class="post-visibility">📌 Pinned</span`:""}</div>
-    ${post.isShared?'':`<div class="post-text">${esc(post.text||'')}</div>`}
-    ${sharedContext}
-    <div class="post-counts" id="counts-${esc(post.id)}">Loading reactions...</div>
-    <div class="post-actions">
-      <div class="reaction-wrap"><button class="post-action" id="react-btn-${esc(post.id)}" type="button" onclick="togglePicker('${esc(post.id)}',event)">React</button><div class="reaction-picker" id="picker-${esc(post.id)}">${['👍','❤️','😂','😮','😢'].map(e=>`<button class="reaction-emoji" type="button" onclick="reactToPost('${esc(post.id)}','${e}',event)">${e}</button>`).join('')}</div></div>
-      <button class="post-action" type="button" onclick="openComments('${esc(post.id)}')">💬 Comment</button>
-      <button class="post-action" type="button" onclick="sharePost('${esc(post.id)}')">↗ Share</button>
-    </div>
-  </article>`;
-}
-window.togglePicker=function(postId,event){event.stopPropagation();document.querySelectorAll('.reaction-picker.open').forEach(el=>el.classList.remove('open'));document.getElementById('picker-'+postId)?.classList.toggle('open');};
-document.addEventListener('click',e=>{if(!e.target.closest('.reaction-wrap'))document.querySelectorAll('.reaction-picker.open').forEach(el=>el.classList.remove('open'));});
-
-async function reactToPost(postId,emoji,event){
-  event.stopPropagation();const user=auth.currentUser;if(!user)return;
-  try{
-    const ref=doc(db,'posts',postId,'reactions',user.uid);const ex=await getDoc(ref);
-    if(ex.exists()&&ex.data()?.emoji===emoji){await deleteDoc(ref);}
-    else{
-      const s=await getDoc(doc(db,'users',user.uid));const p=s.exists()?s.data()||{}:{};
-      await setDoc(ref,{uid:user.uid,emoji,authorName:p.name||p.nickname||p.displayName||user.displayName||'User',username:p.username||'',photoURL:p.photoURL||user.photoURL||'',updatedAt:serverTimestamp()});
-      const ps=await getDoc(doc(db,'posts',postId));
-      if(ps.exists()){const pd=ps.data()||{};if(pd.authorUid&&pd.authorUid!==user.uid){await addDoc(collection(db,'notifications'),{recipientUid:pd.authorUid,actorUid:user.uid,actorName:p.nickname||p.name||p.displayName||user.displayName||'Student',type:'reaction',text:`reacted ${emoji} to your post.`,postId,read:false,createdAt:serverTimestamp()});}}
-    }
-    document.getElementById('picker-'+postId)?.classList.remove('open');await refreshCounts(postId);
-  }catch(e){console.error(e);alert('Could not update reaction.');}
-}
-window.reactToPost=reactToPost;
-async function refreshCounts(postId){
-  try{
-    const r=await getDocs(collection(db,'posts',postId,'reactions'));const c=await getDocs(collection(db,'posts',postId,'comments'));const p=await getDoc(doc(db,'posts',postId));
-    const tally={'👍':0,'❤️':0,'😂':0,'😮':0,'😢':0};r.docs.forEach(d=>{const e=d.data()?.emoji||'👍';tally[e]=(tally[e]||0)+1;});
-    const parts=Object.entries(tally).filter(([_,n])=>n>0).map(([e,n])=>`<button type="button" class="reaction-summary" onclick="openReactions('${esc(postId)}')">${e} ${n}</button>`);
-    const el=$('counts-'+postId);const summary=parts.length?parts.join(' · '):`<button type="button" class="reaction-summary" onclick="openReactions('${esc(postId)}')">No reactions yet</button>`;
-    if(el)el.innerHTML=`${summary} <span>· 💬 ${c.size}</span> <span>· ↗ ${Number(p.data()?.shareCount||0)}</span>`;
-    const btn=$('react-btn-'+postId);if(btn&&auth.currentUser){const my=r.docs.find(d=>d.id===auth.currentUser.uid)?.data()?.emoji;btn.textContent=my?`${my} Reacted`:'React';btn.classList.toggle('active',!!my);}
-  }catch(e){console.error(e);}
-}
-
-window.openReactions=async function(postId){$('reactionsModal').classList.add('open');$('reactionsList').innerHTML='<div style="padding:20px;text-align:center;color:#777">Loading reactions...</div>';try{const snap=await getDocs(collection(db,'posts',postId,'reactions'));if(snap.empty){$('reactionsList').innerHTML='<div style="padding:25px;text-align:center;color:#777">No reactions yet.</div>';return;}const me=auth.currentUser;const rows=await Promise.all(snap.docs.map(async d=>{const r=d.data()||{};let p={};try{const s=await getDoc(doc(db,'users',d.id));if(s.exists())p=s.data()||{};}catch{}return{uid:d.id,name:p.name||p.nickname||p.displayName||'Student',username:p.username||'',photo:p.photoURL||'',emoji:r.emoji||'👍'};}));$('reactionsList').innerHTML=rows.map(r=>`<div class="reaction-item"><div class="reaction-avatar">${r.photo?`<img src="${esc(r.photo)}" alt="">`:'👤'}</div><div class="reaction-info"><strong>${esc(r.name)}</strong><small>${r.username?'@'+esc(r.username):'Student'}</small></div><div class="reaction-emoji">${esc(r.emoji)}</div>${me&&me.uid!==r.uid?`<button class="add-friend-mini" onclick="addFriend('${esc(r.uid)}',this)">Add Friend</button>`:''}</div>`).join('');}catch(e){console.error(e);$('reactionsList').innerHTML='<div style="padding:20px;text-align:center;color:#777">Could not load reactions.</div>';}};
-window.closeReactions=()=> $('reactionsModal').classList.remove('open');
-window.addFriend=async function(targetUid,button){const user=auth.currentUser;if(!user||!targetUid)return;if(targetUid===user.uid)return;button.disabled=true;button.textContent='Checking...';try{if((await getDoc(doc(db,'friends',user.uid,'list',targetUid))).exists()){button.textContent='✓ Friends';return;}const q=await getDocs(query(collection(db,'friendRequests'),where('from','==',user.uid),where('to','==',targetUid),where('status','==','pending'),limit(1)));if(!q.empty){button.textContent='Request Sent';return;}const targetSnap=await getDoc(doc(db,'users',targetUid));const meSnap=await getDoc(doc(db,'users',user.uid));const target=targetSnap.exists()?targetSnap.data()||{}:{};const me=meSnap.exists()?meSnap.data()||{}:{};await addDoc(collection(db,'friendRequests'),{from:user.uid,fromUsername:me.username||'',fromNickname:me.nickname||me.name||user.displayName||'User',fromPhotoURL:me.photoURL||user.photoURL||'',to:targetUid,toUsername:target.username||'',toNickname:target.nickname||target.name||'Student',toPhotoURL:target.photoURL||'',status:'pending',createdAt:serverTimestamp()});button.textContent='Request Sent';}catch(e){console.error(e);button.disabled=false;button.textContent='Add Friend';alert('Could not send friend request.');}};
-
-window.openComments=async function(postId){activeCommentPostId=postId;$('commentsModal').classList.add('open');$('commentsList').innerHTML='<div style="padding:8px;color:#777">Loading comments...</div>';await loadComments(postId);};
-window.closeComments=()=>{activeCommentPostId=null;$('commentsModal').classList.remove('open');};
-async function loadComments(postId){try{const snap=await getDocs(query(collection(db,'posts',postId,'comments'),limit(100)));const cs=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.createdAt?.toMillis?.()||0)-(b.createdAt?.toMillis?.()||0));$('commentsList').innerHTML=cs.length?cs.map(c=>`<div class="comment-item"><strong>${esc(c.authorName||'User')}</strong><p>${esc(c.text||'')}</p></div>`).join(''):'<div style="padding:15px;text-align:center;color:#777">No comments yet.</div>';}catch(e){console.error(e);$('commentsList').innerHTML='<div style="padding:15px;color:#777">Could not load comments.</div>';}}
-window.submitComment=async function(){const user=auth.currentUser,input=$('commentInput'),text=input.value.trim();if(!user||!activeCommentPostId||!text)return;const btn=$('commentSendBtn');btn.disabled=true;btn.textContent='Sending...';try{const s=await getDoc(doc(db,'users',user.uid));const p=s.exists()?s.data()||{}:{};await addDoc(collection(db,'posts',activeCommentPostId,'comments'),{authorId:user.uid,uid:user.uid,authorName:p.name||p.nickname||p.displayName||user.displayName||'User',text,createdAt:serverTimestamp()});const ps=await getDoc(doc(db,'posts',activeCommentPostId));if(ps.exists()){const pd=ps.data()||{};if(pd.authorUid&&pd.authorUid!==user.uid){await addDoc(collection(db,'notifications'),{recipientUid:pd.authorUid,actorUid:user.uid,actorName:p.nickname||p.name||p.displayName||user.displayName||'Student',type:'comment',text:'commented on your post.',postId:activeCommentPostId,read:false,createdAt:serverTimestamp()});}}input.value='';await loadComments(activeCommentPostId);await refreshCounts(activeCommentPostId);$('commentSuccess').classList.add('open');}catch(e){console.error(e);alert(e?.code==='permission-denied'?'Firestore is blocking this comment. Please check your Rules.':'Could not add comment.');}finally{btn.disabled=false;btn.textContent='Send';}};
-window.closeCommentSuccess=()=> $('commentSuccess').classList.remove('open');
-window.closeShareSuccess=()=> $('shareSuccess').classList.remove('open');
-window.sharePost=async function(postId){const user=auth.currentUser;if(!user)return;try{const originalSnap=await getDoc(doc(db,'posts',postId));if(!originalSnap.exists()){alert('This post no longer exists.');return;}const original=originalSnap.data()||{};const s=await getDoc(doc(db,'users',user.uid));const p=s.exists()?s.data()||{}:{};await addDoc(collection(db,'posts'),{authorUid:user.uid,authorName:p.name||p.nickname||p.displayName||user.displayName||'User',username:p.username||'',photoURL:p.photoURL||user.photoURL||'',text:`↗ Shared post\n\nOriginal post by ${original.authorName||'Student'}:\n${original.text||''}`,visibility:'public',createdAt:serverTimestamp(),likeCount:0,commentCount:0,shareCount:0,sharedFrom:postId,sharedFromAuthorUid:original.authorUid||''});const current=Number(original.shareCount||0);await updateDoc(doc(db,'posts',postId),{shareCount:current+1});$('shareSuccess').classList.add('open');await refreshCounts(postId);}catch(e){console.error(e);alert(e?.code==='permission-denied'?'Firestore is blocking this share. Please check your Rules.':'Could not share this post.');}};
-
-document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}));
-onAuthStateChanged(auth,user=>{if(!user){location.href='profile.html';return;}loadProfile();});
+onAuthStateChanged(auth,user=>{ if(!user){ location.href='profile.html'; return; } load(); });
 </script>
 </body>
 </html>
