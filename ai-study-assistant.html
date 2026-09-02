@@ -4546,6 +4546,343 @@ html.cathians-native-ad-ready .cathians-bottom-ad-dock .ad-inner{
 }
 </style>
 
+<style id="caths-ai-title-only-final-adjust">
+/* Move ONLY the CATHS-AI title downward. Keep Mr.Panda exactly in place. */
+#cathsAiFullscreen .caths-ai-header-copy h1{top:31%!important;}
+@media(max-width:760px){
+  #cathsAiFullscreen .caths-ai-header-copy h1{top:31%!important;}
+}
+@media(max-width:430px){
+  #cathsAiFullscreen .caths-ai-header-copy h1{top:30%!important;}
+}
+</style>
+
+<style id="caths-ai-header-final-centered-polish">
+/* FINAL HEADER POLISH: keep both Mr. Panda texts together, perfectly centered and visually balanced. */
+#cathsAiFullscreen .caths-ai-header-copy{
+  grid-column:2!important;
+  justify-self:stretch!important;
+  align-self:stretch!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  transform:translateY(3px)!important;
+  position:relative!important;
+  z-index:3!important;
+  gap:5px!important;
+}
+
+#cathsAiFullscreen .caths-ai-header-copy h1{
+  position:static!important;
+  inset:auto!important;
+  margin:0!important;
+  padding:0!important;
+  transform:none!important;
+  width:auto!important;
+  max-width:100%!important;
+  white-space:nowrap!important;
+  text-align:center!important;
+  line-height:1!important;
+  font-size:clamp(16px,1.55vw,20px)!important;
+  font-weight:900!important;
+  letter-spacing:-.25px!important;
+  color:#fff!important;
+  text-shadow:0 2px 12px rgba(79,165,255,.18)!important;
+}
+
+#cathsAiFullscreen .caths-ai-header-copy p{
+  position:static!important;
+  inset:auto!important;
+  margin:0!important;
+  padding:0!important;
+  transform:none!important;
+  width:min(250px,88%)!important;
+  min-height:14px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:9px!important;
+  white-space:nowrap!important;
+  line-height:1!important;
+  font-size:clamp(8px,.78vw,10px)!important;
+  font-weight:800!important;
+  letter-spacing:.12px!important;
+  color:rgba(205,222,239,.82)!important;
+  text-align:center!important;
+}
+
+#cathsAiFullscreen .caths-ai-header-copy p::before,
+#cathsAiFullscreen .caths-ai-header-copy p::after{
+  content:""!important;
+  flex:1 1 auto!important;
+  min-width:24px!important;
+  height:1px!important;
+  background:linear-gradient(90deg,transparent,rgba(146,210,255,.82))!important;
+}
+
+#cathsAiFullscreen .caths-ai-header-copy p::after{
+  background:linear-gradient(90deg,rgba(146,210,255,.82),transparent)!important;
+}
+
+@media(max-width:760px){
+  #cathsAiFullscreen .caths-ai-header-copy{transform:translateY(2px)!important;gap:4px!important}
+  #cathsAiFullscreen .caths-ai-header-copy h1{font-size:14px!important}
+  #cathsAiFullscreen .caths-ai-header-copy p{width:min(230px,88%)!important;font-size:7px!important;gap:8px!important}
+}
+
+@media(max-width:430px){
+  #cathsAiFullscreen .caths-ai-header-copy{transform:translateY(2px)!important}
+  #cathsAiFullscreen .caths-ai-header-copy h1{font-size:14px!important}
+  #cathsAiFullscreen .caths-ai-header-copy p{width:min(215px,92%)!important;font-size:7px!important;gap:7px!important}
+  #cathsAiFullscreen .caths-ai-header-copy p::before,
+  #cathsAiFullscreen .caths-ai-header-copy p::after{min-width:18px!important}
+}
+</style>
+
+
+<style id="caths-ai-header-final-balanced">
+/* Final balanced header: equal side zones + perfectly centered two-line title. */
+#cathsAiFullscreen .caths-ai-header{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;
+  align-items:center!important;
+  justify-items:stretch!important;
+  gap:0!important;
+  min-height:78px!important;
+  height:78px!important;
+  padding:8px 14px!important;
+  box-sizing:border-box!important;
+}
+
+#cathsAiFullscreen .caths-ai-back-under-header{
+  grid-column:1!important;
+  justify-self:start!important;
+  align-self:center!important;
+  position:relative!important;
+  top:auto!important;
+  bottom:auto!important;
+  transform:none!important;
+  margin:0!important;
+  z-index:4!important;
+}
+
+#cathsAiFullscreen .caths-ai-header-copy{
+  grid-column:2!important;
+  grid-row:1!important;
+  justify-self:center!important;
+  align-self:stretch!important;
+  position:relative!important;
+  width:min(360px,42vw)!important;
+  height:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  transform:none!important;
+  z-index:3!important;
+}
+
+#cathsAiFullscreen .caths-ai-header-copy h1{
+  position:absolute!important;
+  left:50%!important;
+  top:22px!important;
+  transform:translate(-50%,-50%)!important;
+  margin:0!important;
+  white-space:nowrap!important;
+  line-height:1!important;
+  font-weight:850!important;
+  letter-spacing:.2px!important;
+  text-align:center!important;
+}
+
+#cathsAiFullscreen .caths-ai-header-copy p{
+  position:absolute!important;
+  left:50%!important;
+  top:54px!important;
+  transform:translate(-50%,-50%)!important;
+  width:min(360px,42vw)!important;
+  min-height:15px!important;
+  margin:0!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:9px!important;
+  white-space:nowrap!important;
+  line-height:1!important;
+  text-align:center!important;
+  box-sizing:border-box!important;
+}
+
+#cathsAiFullscreen .caths-ai-header-copy p::before,
+#cathsAiFullscreen .caths-ai-header-copy p::after{
+  content:""!important;
+  display:block!important;
+  flex:1 1 0!important;
+  min-width:28px!important;
+  max-width:90px!important;
+  height:1px!important;
+  background:rgba(223,229,236,.95)!important;
+}
+
+#cathsAiFullscreen .caths-ai-header-actions{
+  grid-column:3!important;
+  justify-self:end!important;
+  align-self:center!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:7px!important;
+  min-width:0!important;
+  margin:0!important;
+  position:relative!important;
+  z-index:4!important;
+}
+
+#cathsAiFullscreen .caths-ai-history-btn,
+#cathsAiFullscreen .caths-ai-cost-pill{
+  flex:0 0 auto!important;
+  align-self:center!important;
+}
+
+@media(max-width:760px){
+  #cathsAiFullscreen .caths-ai-header{
+    min-height:72px!important;
+    height:72px!important;
+    padding:7px 9px!important;
+  }
+  #cathsAiFullscreen .caths-ai-header-copy{
+    width:min(290px,44vw)!important;
+  }
+  #cathsAiFullscreen .caths-ai-header-copy h1{
+    top:20px!important;
+  }
+  #cathsAiFullscreen .caths-ai-header-copy p{
+    top:50px!important;
+    width:min(290px,44vw)!important;
+    gap:7px!important;
+  }
+  #cathsAiFullscreen .caths-ai-header-copy p::before,
+  #cathsAiFullscreen .caths-ai-header-copy p::after{
+    min-width:20px!important;
+  }
+}
+
+@media(max-width:500px){
+  #cathsAiFullscreen .caths-ai-header{
+    min-height:68px!important;
+    height:68px!important;
+    padding-inline:7px!important;
+  }
+  #cathsAiFullscreen .caths-ai-header-copy{
+    width:min(210px,40vw)!important;
+  }
+  #cathsAiFullscreen .caths-ai-header-copy h1{
+    top:19px!important;
+    font-size:14px!important;
+  }
+  #cathsAiFullscreen .caths-ai-header-copy p{
+    top:47px!important;
+    width:min(210px,40vw)!important;
+    font-size:7px!important;
+    gap:5px!important;
+  }
+  #cathsAiFullscreen .caths-ai-header-copy p::before,
+  #cathsAiFullscreen .caths-ai-header-copy p::after{
+    min-width:12px!important;
+  }
+  #cathsAiFullscreen .caths-ai-header-actions{
+    gap:4px!important;
+  }
+}
+</style>
+
+<style id="caths-ai-header-final-quiet-top">
+/* FINAL TARGETED HEADER FIX: only the two center texts are adjusted. */
+#cathsAiFullscreen .caths-ai-header-copy{
+  position:absolute!important;
+  left:50%!important;
+  top:7px!important;
+  transform:translateX(-50%)!important;
+  width:min(360px,42vw)!important;
+  height:auto!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  text-align:center!important;
+  gap:5px!important;
+  z-index:4!important;
+}
+#cathsAiFullscreen .caths-ai-header-copy h1,
+#cathsAiFullscreen .caths-ai-header-copy p{
+  position:static!important;
+  inset:auto!important;
+  left:auto!important;
+  top:auto!important;
+  transform:none!important;
+  filter:none!important;
+  text-shadow:none!important;
+}
+#cathsAiFullscreen .caths-ai-header-copy h1{
+  margin:0!important;
+  padding:0!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  text-align:center!important;
+}
+#cathsAiFullscreen .caths-ai-header-copy p{
+  margin:0!important;
+  padding:0!important;
+  width:min(360px,42vw)!important;
+  min-height:14px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:9px!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  text-align:center!important;
+}
+#cathsAiFullscreen .caths-ai-header-copy p::before,
+#cathsAiFullscreen .caths-ai-header-copy p::after{
+  filter:none!important;
+  box-shadow:none!important;
+}
+@media(max-width:760px){
+  #cathsAiFullscreen .caths-ai-header-copy{
+    top:6px!important;
+    width:min(290px,44vw)!important;
+    gap:4px!important;
+  }
+  #cathsAiFullscreen .caths-ai-header-copy p{
+    width:min(290px,88vw)!important;
+    gap:7px!important;
+  }
+}
+@media(max-width:430px){
+  #cathsAiFullscreen .caths-ai-header-copy{
+    top:5px!important;
+    width:min(215px,56vw)!important;
+    gap:4px!important;
+  }
+  #cathsAiFullscreen .caths-ai-header-copy h1{font-size:14px!important;}
+  #cathsAiFullscreen .caths-ai-header-copy p{
+    width:min(215px,92vw)!important;
+    gap:7px!important;
+    font-size:7px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 <main class="page">
@@ -11812,6 +12149,11 @@ body.manual-editor-open .cg-shell{
   margin:0!important;
 }
 
+/* Slightly lower the CATHS-AI / Mr.Panda header text */
+#cathsAiFullscreen .caths-ai-header-copy{
+  transform:translateY(10px)!important;
+}
+
 #cathsAiFullscreen .caths-ai-back-under-header{
   grid-column:1!important;
   justify-self:start!important;
@@ -12008,6 +12350,40 @@ body.manual-editor-open .cg-shell{
 }
 </style>
 
+<style id="caths-ai-history-ui">
+#cathsAiFullscreen .caths-ai-header-actions{grid-column:3!important;justify-self:end!important;display:flex!important;align-items:center!important;gap:7px!important;min-width:0!important}
+#cathsAiFullscreen .caths-ai-history-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:34px;padding:0 10px;border:1px solid rgba(30,100,210,.22);border-radius:11px;background:#fff;color:#1764c0;font:700 11px/1 Arial,sans-serif;cursor:pointer;box-shadow:0 4px 12px rgba(16,71,135,.08);white-space:nowrap;transition:.18s ease}
+#cathsAiFullscreen .caths-ai-history-btn:hover{transform:translateY(-1px);box-shadow:0 7px 16px rgba(16,71,135,.13)}
+#cathsAiFullscreen .caths-ai-history-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#cathsAiFullscreen .caths-ai-history-modal{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:18px;box-sizing:border-box}
+#cathsAiFullscreen .caths-ai-history-modal[hidden]{display:none!important}
+#cathsAiFullscreen .caths-ai-history-backdrop{position:absolute;inset:0;background:rgba(5,25,55,.42);backdrop-filter:blur(5px)}
+#cathsAiFullscreen .caths-ai-history-panel{position:relative;width:min(560px,100%);max-height:88vh;display:flex;flex-direction:column;background:#fff;border:1px solid rgba(28,96,180,.13);border-radius:22px;overflow:hidden;box-shadow:0 24px 70px rgba(4,34,78,.25);animation:cathsHistoryIn .2s ease-out}
+#cathsAiFullscreen .caths-ai-history-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:20px 20px 14px;border-bottom:1px solid #edf2f8}
+#cathsAiFullscreen .caths-ai-history-head h2{margin:0;color:#123f73;font:800 19px/1.2 Arial,sans-serif}
+#cathsAiFullscreen .caths-ai-history-head p{margin:5px 0 0;color:#718096;font:500 11px/1.4 Arial,sans-serif}
+#cathsAiFullscreen .caths-ai-history-close{width:34px;height:34px;border:0;border-radius:10px;background:#f1f5fa;color:#55708e;display:grid;place-items:center;cursor:pointer}
+#cathsAiFullscreen .caths-ai-history-close svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+#cathsAiFullscreen .caths-ai-history-search-wrap{margin:14px 16px 10px}
+#cathsAiFullscreen .caths-ai-history-search{height:42px;display:flex;align-items:center;gap:9px;padding:0 6px 0 12px;border:1px solid #dce6f2;border-radius:13px;background:#f8fbff;box-sizing:border-box}
+#cathsAiFullscreen .caths-ai-history-search:focus-within{border-color:#6aa7e9;box-shadow:0 0 0 3px rgba(63,137,222,.1);background:#fff}
+#cathsAiFullscreen .caths-ai-history-search svg{width:17px;height:17px;flex:0 0 17px;fill:none;stroke:#6a86a2;stroke-width:1.8;stroke-linecap:round}
+#cathsAiFullscreen .caths-ai-history-search input{width:100%;height:100%;min-width:0;border:0;outline:0;background:transparent;color:#1e3d5c;font:600 12px/1 Arial,sans-serif}
+#cathsAiFullscreen .caths-ai-history-search-btn{height:32px;padding:0 13px;border:0;border-radius:9px;background:linear-gradient(135deg,#2f80ff,#1764c0);color:#fff;font:800 10px/1 Arial,sans-serif;cursor:pointer;flex:0 0 auto;transition:.16s ease;box-shadow:0 4px 10px rgba(30,100,190,.16)}
+#cathsAiFullscreen .caths-ai-history-search-btn:hover{transform:translateY(-1px);filter:brightness(1.05)}
+#cathsAiFullscreen .caths-ai-history-search-btn:active{transform:scale(.97)}
+#cathsAiFullscreen .caths-ai-history-list{overflow:auto;padding:4px 12px 14px;min-height:80px}
+#cathsAiFullscreen .caths-ai-history-item{width:100%;display:flex;align-items:center;gap:10px;text-align:left;border:1px solid #e7eef6;background:#fff;border-radius:14px;padding:12px;margin:5px 0;box-sizing:border-box;cursor:pointer;transition:.16s ease}
+#cathsAiFullscreen .caths-ai-history-item:hover{background:#f7fbff;border-color:#bdd7f2;transform:translateY(-1px);box-shadow:0 5px 14px rgba(30,89,145,.08)}
+#cathsAiFullscreen .caths-ai-history-item-main{min-width:0;flex:1}.caths-ai-history-item-title{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#173f69;font:800 12px/1.35 Arial,sans-serif}.caths-ai-history-item-meta{display:block;margin-top:4px;color:#8192a4;font:500 9.5px/1.3 Arial,sans-serif}
+#cathsAiFullscreen .caths-ai-history-item-arrow,#cathsAiFullscreen .caths-ai-history-delete{width:27px;height:27px;display:grid;place-items:center;flex:0 0 27px;border:0;border-radius:9px;cursor:pointer}
+#cathsAiFullscreen .caths-ai-history-item-arrow{background:#edf6ff;color:#2b75bf}.caths-ai-history-item-arrow svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#cathsAiFullscreen .caths-ai-history-delete{background:#fff3f3;color:#c65a5a}.caths-ai-history-delete svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#cathsAiFullscreen .caths-ai-history-empty{padding:36px 18px;text-align:center;color:#7d8fa2;font:600 11px/1.5 Arial,sans-serif}
+@keyframes cathsHistoryIn{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+@media(max-width:430px){#cathsAiFullscreen .caths-ai-history-btn{width:34px;padding:0!important}.caths-ai-history-btn span{display:none!important}#cathsAiFullscreen .caths-ai-history-panel{border-radius:18px}#cathsAiFullscreen .caths-ai-history-head{padding:16px 15px 12px}#cathsAiFullscreen .caths-ai-history-search-wrap{margin:12px 12px 8px}#cathsAiFullscreen .caths-ai-history-search-btn{padding:0 10px;font-size:9px}}
+</style>
+
 <div id="cathsAiFullscreen" aria-hidden="true">
   <header class="caths-ai-header">
     <div class="caths-ai-header-copy">
@@ -12017,11 +12393,34 @@ body.manual-editor-open .cg-shell{
     <button type="button" id="cathsAiBack" class="caths-ai-back-under-header" aria-label="Back to Home" title="Back to Home">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path><path d="M9 12h10"></path></svg>
     </button>
-    <div class="caths-ai-cost-pill" title="10 free questions every 7 days, then 50 coins per request">
-      <img src="Ai-coins.png" alt="">
-      <span id="cathsAiUsagePillText">10 free questions</span>
+    <div class="caths-ai-header-actions">
+      <button type="button" id="cathsAiHistoryBtn" class="caths-ai-history-btn" aria-label="Conversation History" title="Past conversations with Mr. Panda">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path><path d="M12 7v5l3 2"></path></svg><span>History</span>
+      </button>
+      <div class="caths-ai-cost-pill" title="10 free questions every 7 days, then 50 coins per request">
+        <img src="Ai-coins.png" alt="">
+        <span id="cathsAiUsagePillText">10 free questions</span>
+      </div>
     </div>
   </header>
+
+  <div id="cathsAiHistoryModal" class="caths-ai-history-modal" hidden aria-hidden="true">
+    <div class="caths-ai-history-backdrop" data-history-close></div>
+    <section class="caths-ai-history-panel" role="dialog" aria-modal="true" aria-labelledby="cathsAiHistoryTitle">
+      <header class="caths-ai-history-head">
+        <div><h2 id="cathsAiHistoryTitle">Conversation History</h2><p>Choose a previous conversation with Mr. Panda</p></div>
+        <button type="button" class="caths-ai-history-close" id="cathsAiHistoryClose" aria-label="Close History"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+      </header>
+      <div class="caths-ai-history-search-wrap">
+        <div class="caths-ai-history-search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+          <input id="cathsAiHistorySearch" type="search" placeholder="Search conversations..." autocomplete="off" aria-label="Search conversation history">
+          <button type="button" id="cathsAiHistorySearchBtn" class="caths-ai-history-search-btn" aria-label="Search conversations" title="Search">Search</button>
+        </div>
+      </div>
+      <div class="caths-ai-history-list" id="cathsAiHistoryList"></div>
+    </section>
+  </div>
 
   <main class="caths-ai-chat-wrap" id="cathsAiChatWrap">
     <div class="caths-ai-chat-grid">
@@ -12114,7 +12513,8 @@ body.manual-editor-open .cg-shell{
     sending:false,
     pendingWatch:false,
     pendingAttachments:[],
-    usageUser:null
+    usageUser:null,
+    currentHistoryId:null
   };
 
   const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -12327,6 +12727,28 @@ body.manual-editor-open .cg-shell{
     return {row,bubble};
   }
 
+  const HISTORY_PREFIX='cathsAiConversationHistory:';
+  const HISTORY_LIMIT=40;
+  const historyModal=document.getElementById('cathsAiHistoryModal');
+  const historyBtn=document.getElementById('cathsAiHistoryBtn');
+  const historyClose=document.getElementById('cathsAiHistoryClose');
+  const historySearch=document.getElementById('cathsAiHistorySearch');
+  const historySearchBtn=document.getElementById('cathsAiHistorySearchBtn');
+  const historyList=document.getElementById('cathsAiHistoryList');
+  function historyStorageKey(user){return HISTORY_PREFIX+userScopeKey(user)}
+  function readHistory(user){try{const v=JSON.parse(localStorage.getItem(historyStorageKey(user))||'[]');return Array.isArray(v)?v:[]}catch(_){return []}}
+  function writeHistory(user,list){try{localStorage.setItem(historyStorageKey(user),JSON.stringify(list.slice(0,HISTORY_LIMIT)))}catch(_){}}
+  function makeHistoryTitle(text){const clean=String(text||'').replace(/\s+/g,' ').trim();return clean?clean.slice(0,72)+(clean.length>72?'…':''):'New conversation'}
+  function startHistorySession(user,question){const item={id:'chat_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),title:makeHistoryTitle(question),updatedAt:Date.now(),messages:[]};const list=readHistory(user);list.unshift(item);writeHistory(user,list);state.currentHistoryId=item.id}
+  function saveHistoryMessage(user,role,text){if(!user||!state.currentHistoryId)return;const list=readHistory(user),item=list.find(x=>x.id===state.currentHistoryId);if(!item)return;item.messages=Array.isArray(item.messages)?item.messages:[];item.messages.push({role,text:String(text||'')});item.updatedAt=Date.now();writeHistory(user,list)}
+  function closeHistoryModal(){if(historyModal){historyModal.hidden=true;historyModal.setAttribute('aria-hidden','true')}}
+  function formatHistoryDate(ts){try{return new Date(ts).toLocaleString([],{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'})}catch(_){return ''}}
+  function renderHistoryList(user,term=''){if(!historyList)return;const q=String(term||'').trim().toLowerCase();const items=readHistory(user).filter(x=>!q||String(x.title||'').toLowerCase().includes(q)||(x.messages||[]).some(m=>String(m.text||'').toLowerCase().includes(q)));if(!items.length){historyList.innerHTML='<div class="caths-ai-history-empty">'+(q?'No conversations match your search.':'No previous conversations yet.')+'</div>';return}historyList.innerHTML=items.map(item=>{const count=(item.messages||[]).filter(m=>m.role==='user').length;return '<div class="caths-ai-history-item" data-history-id="'+esc(item.id)+'"><div class="caths-ai-history-item-main"><span class="caths-ai-history-item-title">'+esc(item.title||'Conversation')+'</span><span class="caths-ai-history-item-meta">'+esc(formatHistoryDate(item.updatedAt))+' · '+count+' question'+(count===1?'':'s')+'</span></div><button type="button" class="caths-ai-history-delete" data-history-delete="'+esc(item.id)+'" aria-label="Delete conversation"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path></svg></button><span class="caths-ai-history-item-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg></span></div>'}).join('')}
+  async function openHistoryModal(){if(!historyModal)return;const user=state.usageUser||await resolveCurrentUser();if(!user)return;state.usageUser=user;renderHistoryList(user,historySearch?.value||'');historyModal.hidden=false;historyModal.setAttribute('aria-hidden','false');setTimeout(()=>historySearch?.focus({preventScroll:true}),30)}
+  function clearConversationView(){conversation.innerHTML=''}
+  function restoreHistory(id){const user=state.usageUser;if(!user)return;const item=readHistory(user).find(x=>x.id===id);if(!item)return;clearConversationView();state.currentHistoryId=id;closeHistoryModal();(item.messages||[]).forEach(m=>m.role==='user'?addUserMessage(m.text,[],user):addAiMessage(m.text));scrollChat()}
+  function deleteHistory(id){const user=state.usageUser;if(!user)return;writeHistory(user,readHistory(user).filter(x=>x.id!==id));if(state.currentHistoryId===id)state.currentHistoryId=null;renderHistoryList(user,historySearch?.value||'')}
+
   function clearPaywall(){
     if(paywall) paywall.hidden=true;
   }
@@ -12360,8 +12782,9 @@ body.manual-editor-open .cg-shell{
     syncBalances();
     closePlusMenu();
 
-    setTimeout(()=>replyBox.focus({preventScroll:true}),60);
     if(initialQuestion){
+      clearConversationView();
+      startHistorySession(user,initialQuestion);
       replyBox.value='';
       clearPaywall();
       sendMessage(initialQuestion);
@@ -12440,6 +12863,7 @@ body.manual-editor-open .cg-shell{
     syncBalances();
 
     addUserMessage(question,attachments,user);
+    saveHistoryMessage(user,'user',question);
     replyBox.value='';
     closePlusMenu();
     state.sending=true;
@@ -12472,7 +12896,9 @@ body.manual-editor-open .cg-shell{
       }
 
       thinking.row.remove();
-      addAiMessage(data?.output||'I could not generate an answer right now.');
+      const aiOutput=data?.output||'I could not generate an answer right now.';
+      addAiMessage(aiOutput);
+      saveHistoryMessage(user,'ai',aiOutput);
     }catch(error){
       console.error('CATHS fullscreen AI error:',error);
       if(billing==='free'){
@@ -12482,11 +12908,11 @@ body.manual-editor-open .cg-shell{
       }
       syncBalances();
       thinking.row.remove();
-      addAiMessage(
-        billing==='free'
-          ? 'I could not complete that request. Your free question was returned. '+String(error?.message||'Please try again.')
-          : 'I could not complete that request. Your 50 coins were returned. '+String(error?.message||'Please try again.')
-      );
+      const aiError=billing==='free'
+        ? 'I could not complete that request. Your free question was returned. '+String(error?.message||'Please try again.')
+        : 'I could not complete that request. Your 50 coins were returned. '+String(error?.message||'Please try again.');
+      addAiMessage(aiError);
+      saveHistoryMessage(user,'ai',aiError);
     }finally{
       state.sending=false;
       enterBtn.disabled=false;
@@ -12546,6 +12972,15 @@ body.manual-editor-open .cg-shell{
       sendMessage(replyBox.value);
     }
   });
+
+  historyBtn?.addEventListener('click',e=>{e.preventDefault();openHistoryModal()});
+  historyClose?.addEventListener('click',closeHistoryModal);
+  historyModal?.querySelector('[data-history-close]')?.addEventListener('click',closeHistoryModal);
+  historySearch?.addEventListener('input',()=>renderHistoryList(state.usageUser,historySearch.value));
+  historySearch?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();renderHistoryList(state.usageUser,historySearch.value)}});
+  historySearchBtn?.addEventListener('click',()=>renderHistoryList(state.usageUser,historySearch?.value||''));
+  historyList?.addEventListener('click',e=>{const del=e.target.closest?.('[data-history-delete]');if(del){e.preventDefault();e.stopPropagation();deleteHistory(del.getAttribute('data-history-delete'));return}const item=e.target.closest?.('[data-history-id]');if(item)restoreHistory(item.getAttribute('data-history-id'))});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&historyModal&&!historyModal.hidden)closeHistoryModal()});
 
   watchBtn?.addEventListener('click',function(){
     if(state.pendingWatch) return;
