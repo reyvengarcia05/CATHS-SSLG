@@ -7664,7 +7664,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!matchingGameModal.
     if(window.CATHS_ADS_NATIVE && typeof window.CATHS_ADS_NATIVE.watchRewardedCoins==='function'){
       setBusy(true);
       setNote('Loading your rewarded ad…',false);
-      try{window.CATHS_ADS_NATIVE.watchRewardedCoins();}
+      try{window.CATHS_ADS_NATIVE.watchRewardedCoins(25);}
       catch(e){setBusy(false);setNote('The rewarded ad is not available right now.',false);}
       return;
     }
@@ -11370,5 +11370,842 @@ body.manual-editor-open .cg-shell{
 })();
 </script>
 
+
+<!-- =============================================================
+     CATHS-AI FULLSCREEN CHAT — response UI lives only here
+     ============================================================= -->
+<style id="caths-ai-fullscreen-chat-css">
+  #cgAiThread{display:none!important;visibility:hidden!important;pointer-events:none!important}
+
+  #cathsAiFullscreen{
+    position:fixed;
+    inset:0;
+    z-index:1005000;
+    display:none;
+    flex-direction:column;
+    overflow:hidden;
+    background:#f6f8fb;
+    color:#172033;
+  }
+  #cathsAiFullscreen.is-open{display:flex;animation:cathsAiFsIn .22s ease}
+  @keyframes cathsAiFsIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .caths-ai-header{
+    position:relative;
+    flex:0 0 auto;
+    min-height:78px;
+    padding:14px 18px 10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-bottom:1px solid #e3e8ef;
+    background:rgba(255,255,255,.98);
+    box-shadow:0 5px 18px rgba(22,34,56,.055);
+  }
+  .caths-ai-header-copy{text-align:center;line-height:1}
+  .caths-ai-header-copy h1{
+    margin:0;
+    font-size:18px;
+    font-weight:950;
+    letter-spacing:-.35px;
+    color:#10295d;
+  }
+  .caths-ai-header-copy p{
+    margin:6px 0 0;
+    font-size:9px;
+    font-weight:850;
+    color:#8490a4;
+    letter-spacing:.15px;
+  }
+  .caths-ai-back-under-header{
+    position:absolute;
+    left:16px;
+    bottom:-51px;
+    z-index:3;
+    width:54px;
+    height:54px;
+    border:0;
+    border-radius:18px;
+    display:grid;
+    place-items:center;
+    background:#fff;
+    box-shadow:0 10px 24px rgba(26,43,73,.13),0 0 0 1px #e1e7ef;
+    cursor:pointer;
+  }
+  .caths-ai-back-under-header img{
+    width:40px;
+    height:40px;
+    object-fit:contain;
+    display:block;
+  }
+  .caths-ai-cost-pill{
+    position:absolute;
+    right:17px;
+    bottom:-45px;
+    z-index:3;
+    min-height:36px;
+    padding:0 12px;
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    border-radius:999px;
+    background:#fff;
+    border:1px solid #e0e6ef;
+    box-shadow:0 8px 20px rgba(26,43,73,.09);
+    color:#53627b;
+    font-size:8px;
+    font-weight:900;
+  }
+  .caths-ai-cost-pill img{
+    width:18px;
+    height:18px;
+    object-fit:contain;
+    display:block;
+  }
+
+  .caths-ai-chat-wrap{
+    min-height:0;
+    flex:1 1 auto;
+    overflow:auto;
+    padding:68px 24px 118px;
+    overscroll-behavior:contain;
+  }
+  .caths-ai-chat-grid{
+    width:min(1180px,100%);
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    gap:20px;
+    align-items:start;
+  }
+  .caths-ai-pane{
+    min-width:0;
+    min-height:240px;
+    padding:18px;
+    border:1px solid #e2e7ee;
+    border-radius:22px;
+    background:#fff;
+    box-shadow:0 8px 24px rgba(27,41,66,.045);
+  }
+  .caths-ai-pane-head{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin-bottom:13px;
+    font-size:10px;
+    font-weight:950;
+    color:#65738a;
+    text-transform:uppercase;
+    letter-spacing:.55px;
+  }
+  .caths-ai-pane-head .dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#78a6ff;
+    flex:0 0 8px;
+  }
+  .caths-ai-pane.ai-pane .dot{background:#7cc59e}
+  .caths-ai-messages{
+    display:flex;
+    flex-direction:column;
+    gap:11px;
+  }
+  .caths-ai-empty{
+    min-height:172px;
+    display:grid;
+    place-items:center;
+    text-align:center;
+    padding:28px 16px;
+    color:#9aa4b4;
+    font-size:10px;
+    line-height:1.5;
+  }
+  .caths-ai-message-row{display:flex;gap:10px;align-items:flex-end}
+  .caths-ai-message-row.user{justify-content:flex-start}
+  .caths-ai-message-row.ai{justify-content:flex-start}
+  .caths-ai-bubble{
+    max-width:min(90%,620px);
+    border-radius:17px;
+    padding:12px 14px;
+    font-size:11px;
+    line-height:1.55;
+    white-space:pre-wrap;
+    overflow-wrap:anywhere;
+  }
+  .caths-ai-message-row.user .caths-ai-bubble{
+    background:#edf5ff;
+    border:1px solid #d5e6fb;
+    color:#23436d;
+  }
+  .caths-ai-message-row.ai .caths-ai-bubble{
+    background:#f7f9fc;
+    border:1px solid #e4e9f0;
+    color:#35435a;
+  }
+  .caths-ai-avatar{
+    width:34px;
+    height:34px;
+    flex:0 0 34px;
+    border-radius:11px;
+    overflow:hidden;
+    display:grid;
+    place-items:center;
+    background:#eef3ff;
+    border:1px solid #dbe4fb;
+  }
+  .caths-ai-avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .caths-ai-avatar-fallback{font-size:9px;font-weight:950;color:#5471b8}
+  .caths-ai-thinking{display:inline-flex;gap:4px;align-items:center;height:17px}
+  .caths-ai-thinking i{width:5px;height:5px;border-radius:50%;background:#8e9aae;animation:cathsAiDot 1.1s ease-in-out infinite}
+  .caths-ai-thinking i:nth-child(2){animation-delay:.15s}
+  .caths-ai-thinking i:nth-child(3){animation-delay:.3s}
+  @keyframes cathsAiDot{0%,70%,100%{transform:translateY(0);opacity:.5}35%{transform:translateY(-3px);opacity:1}}
+
+  .caths-ai-attachment-chip{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:9px 10px;
+    border-radius:12px;
+    border:1px solid #e2e7ee;
+    background:#fbfcfd;
+    color:#59677d;
+    font-size:9px;
+    font-weight:800;
+  }
+  .caths-ai-attachment-chip small{display:block;color:#96a0ae;font-size:7px;margin-top:2px;font-weight:700}
+  .caths-ai-attachment-remove{
+    margin-left:auto;
+    border:0;
+    width:24px;
+    height:24px;
+    border-radius:8px;
+    background:transparent;
+    color:#98a2b2;
+    font-size:16px;
+    cursor:pointer;
+  }
+
+  .caths-ai-footer{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:10;
+    padding:10px max(14px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));
+    background:rgba(255,255,255,.97);
+    border-top:1px solid #e1e6ed;
+    box-shadow:0 -10px 24px rgba(24,38,61,.075);
+  }
+  .caths-ai-footer-inner{width:min(1180px,100%);margin:0 auto;position:relative}
+  .caths-ai-composer{
+    display:flex;
+    align-items:flex-end;
+    gap:8px;
+  }
+  .caths-ai-plus-wrap{position:relative;flex:0 0 auto}
+  .caths-ai-plus-btn{
+    width:44px;
+    height:44px;
+    border-radius:14px;
+    border:1px solid #dce3ec;
+    background:#fff;
+    color:#3f4d65;
+    font-size:22px;
+    line-height:1;
+    font-weight:500;
+    cursor:pointer;
+    box-shadow:0 4px 12px rgba(30,45,70,.05);
+  }
+  .caths-ai-plus-menu{
+    position:absolute;
+    left:0;
+    bottom:51px;
+    width:220px;
+    padding:8px;
+    border:1px solid #dfe5ec;
+    border-radius:16px;
+    background:#fff;
+    box-shadow:0 16px 35px rgba(25,38,61,.14);
+    display:none;
+  }
+  .caths-ai-plus-menu.open{display:block;animation:cathsAiMenuIn .18s ease}
+  @keyframes cathsAiMenuIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .caths-ai-upload-option{
+    width:100%;
+    min-height:42px;
+    border:0;
+    border-radius:12px;
+    padding:9px 10px;
+    background:#fff;
+    text-align:left;
+    color:#31405a;
+    font-size:9px;
+    font-weight:850;
+    cursor:pointer;
+  }
+  .caths-ai-upload-option:hover{background:#f4f7fb}
+  .caths-ai-upload-option small{display:block;color:#96a0ae;font-size:7px;font-weight:700;margin-top:2px}
+  .caths-ai-reply-box{
+    flex:1;
+    min-width:0;
+    min-height:44px;
+    max-height:110px;
+    resize:none;
+    border:1px solid #dce3ec;
+    border-radius:14px;
+    padding:12px 13px;
+    outline:0;
+    background:#fbfcfe;
+    color:#1e2b42;
+    font:600 11px/1.45 system-ui,sans-serif;
+  }
+  .caths-ai-reply-box:focus{border-color:#9bb9ea;box-shadow:0 0 0 3px rgba(93,139,218,.10);background:#fff}
+  .caths-ai-enter-btn{
+    flex:0 0 auto;
+    height:44px;
+    min-width:70px;
+    padding:0 16px;
+    border:0;
+    border-radius:14px;
+    background:#112b5d;
+    color:#fff;
+    font-size:9px;
+    font-weight:950;
+    cursor:pointer;
+    box-shadow:0 8px 18px rgba(17,43,93,.19);
+  }
+  .caths-ai-enter-btn:disabled{opacity:.55;cursor:not-allowed}
+  .caths-ai-foot-note{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    margin-top:7px;
+    padding:0 2px;
+    color:#8c96a6;
+    font-size:7px;
+    line-height:1.3;
+  }
+  .caths-ai-paywall{
+    width:min(500px,100%);
+    margin:28px auto 0;
+    padding:24px;
+    border:1px solid #e0e6ef;
+    border-radius:22px;
+    background:#fff;
+    box-shadow:0 12px 30px rgba(30,44,68,.07);
+    text-align:center;
+  }
+  .caths-ai-paywall h3{margin:0;color:#172033;font-size:15px;font-weight:950}
+  .caths-ai-paywall p{margin:8px 0 16px;color:#778398;font-size:9px;line-height:1.5}
+  .caths-ai-paywall-balance{font-size:8px;color:#8c96a6;margin-bottom:13px;font-weight:800}
+  .caths-ai-watch-btn{
+    min-height:44px;
+    width:100%;
+    border:0;
+    border-radius:14px;
+    background:#edf6ff;
+    color:#1f5f9d;
+    border:1px solid #d3e7fb;
+    font-size:9px;
+    font-weight:950;
+    cursor:pointer;
+  }
+  .caths-ai-watch-btn:disabled{opacity:.55;cursor:not-allowed}
+  .caths-ai-paywall-note{margin-top:9px;color:#9aa4b4;font-size:7.5px;min-height:14px}
+
+  @media(max-width:760px){
+    .caths-ai-header{min-height:70px;padding-top:12px}
+    .caths-ai-header-copy h1{font-size:16px}
+    .caths-ai-header-copy p{font-size:8px}
+    .caths-ai-back-under-header{left:12px;bottom:-45px;width:48px;height:48px;border-radius:15px}
+    .caths-ai-back-under-header img{width:35px;height:35px}
+    .caths-ai-cost-pill{right:12px;bottom:-40px;min-height:32px;padding:0 9px;font-size:7px}
+    .caths-ai-cost-pill img{width:16px;height:16px}
+    .caths-ai-chat-wrap{padding:59px 10px 122px}
+    .caths-ai-chat-grid{grid-template-columns:1fr;gap:10px}
+    .caths-ai-pane{padding:13px;border-radius:17px;min-height:0}
+    .caths-ai-pane.user-pane{order:1}
+    .caths-ai-pane.ai-pane{order:2}
+    .caths-ai-bubble{max-width:92%;font-size:10px}
+    .caths-ai-footer{padding-top:8px}
+    .caths-ai-composer{gap:6px}
+    .caths-ai-plus-btn{width:42px;height:42px;border-radius:13px}
+    .caths-ai-enter-btn{min-width:61px;padding:0 11px;height:42px;border-radius:13px}
+    .caths-ai-reply-box{font-size:16px;min-height:42px}
+    .caths-ai-foot-note{font-size:6.5px}
+  }
+</style>
+
+<div id="cathsAiFullscreen" aria-hidden="true">
+  <header class="caths-ai-header">
+    <div class="caths-ai-header-copy">
+      <h1>CATHS-AI</h1>
+      <p>Mr. Panda</p>
+    </div>
+    <button type="button" id="cathsAiBack" class="caths-ai-back-under-header" aria-label="Back to Home">
+      <img src="8.png" alt="Back to Home">
+    </button>
+    <div class="caths-ai-cost-pill" title="Using AI requires 50 coins">
+      <img src="3.png" alt="">
+      <span>50 coins / AI request</span>
+    </div>
+  </header>
+
+  <main class="caths-ai-chat-wrap" id="cathsAiChatWrap">
+    <div class="caths-ai-chat-grid">
+      <section class="caths-ai-pane user-pane" aria-label="Your messages">
+        <div class="caths-ai-pane-head"><span class="dot"></span><span>You</span></div>
+        <div class="caths-ai-messages" id="cathsAiUserMessages">
+          <div class="caths-ai-empty">Your messages will appear here.</div>
+        </div>
+      </section>
+      <section class="caths-ai-pane ai-pane" aria-label="CATHS AI responses">
+        <div class="caths-ai-pane-head"><span class="dot"></span><span>Mr. Panda · CATHS-AI</span></div>
+        <div class="caths-ai-messages" id="cathsAiMessages">
+          <div class="caths-ai-empty">Mr. Panda's responses will appear here.</div>
+        </div>
+      </section>
+    </div>
+
+    <section class="caths-ai-paywall" id="cathsAiPaywall" hidden>
+      <h3>Using AI requires 50 coins</h3>
+      <p>You don't have enough coins for this AI request. Watch an ad to earn 20 coins, then try again.</p>
+      <div class="caths-ai-paywall-balance">Current balance: <strong id="cathsAiPaywallBalance">0</strong> coins</div>
+      <button type="button" class="caths-ai-watch-btn" id="cathsAiWatchAdBtn">WATCH ADS FOR 20 COINS</button>
+      <div class="caths-ai-paywall-note" id="cathsAiPaywallNote" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer class="caths-ai-footer">
+    <div class="caths-ai-footer-inner">
+      <div class="caths-ai-composer">
+        <div class="caths-ai-plus-wrap">
+          <button type="button" class="caths-ai-plus-btn" id="cathsAiPlusBtn" aria-label="Upload">+</button>
+          <div class="caths-ai-plus-menu" id="cathsAiPlusMenu">
+            <button type="button" class="caths-ai-upload-option" id="cathsAiUploadDeckBtn">
+              Upload Decks
+              <small>PDF, PPT, PPTX, DOC, DOCX, TXT, MD, CSV, JSON</small>
+            </button>
+            <button type="button" class="caths-ai-upload-option" id="cathsAiUploadMediaBtn">
+              Upload Images / Video
+              <small>JPG, PNG, WEBP, GIF, MP4, MOV and supported media</small>
+            </button>
+          </div>
+        </div>
+        <textarea id="cathsAiReplyBox" class="caths-ai-reply-box" rows="1" placeholder="Reply to Mr. Panda..."></textarea>
+        <button type="button" id="cathsAiEnterBtn" class="caths-ai-enter-btn">Enter</button>
+      </div>
+      <div class="caths-ai-foot-note">
+        <span>Using AI requires 50 coins per request.</span>
+        <span id="cathsAiFooterBalance">0 coins</span>
+      </div>
+    </div>
+  </footer>
+
+  <input id="cathsAiDeckInput" type="file" hidden multiple accept=".pdf,.ppt,.pptx,.doc,.docx,.txt,.md,.csv,.json,.apkg,application/pdf,application/msword,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,text/markdown,text/csv,application/json">
+  <input id="cathsAiMediaInput" type="file" hidden multiple accept="image/*,video/*">
+</div>
+
+<script id="caths-ai-fullscreen-chat-js">
+(function(){
+  'use strict';
+
+  const COST = 50;
+  const AD_REWARD = 20;
+  const COIN_KEY = 'cathiansCoins';
+
+  const fs = document.getElementById('cathsAiFullscreen');
+  const homeInput = document.getElementById('cgStudyInput');
+  const homeEnter = document.getElementById('cgStudyEnter');
+  const backBtn = document.getElementById('cathsAiBack');
+  const replyBox = document.getElementById('cathsAiReplyBox');
+  const enterBtn = document.getElementById('cathsAiEnterBtn');
+  const plusBtn = document.getElementById('cathsAiPlusBtn');
+  const plusMenu = document.getElementById('cathsAiPlusMenu');
+  const uploadDeckBtn = document.getElementById('cathsAiUploadDeckBtn');
+  const uploadMediaBtn = document.getElementById('cathsAiUploadMediaBtn');
+  const deckInput = document.getElementById('cathsAiDeckInput');
+  const mediaInput = document.getElementById('cathsAiMediaInput');
+  const userMessages = document.getElementById('cathsAiUserMessages');
+  const aiMessages = document.getElementById('cathsAiMessages');
+  const chatWrap = document.getElementById('cathsAiChatWrap');
+  const paywall = document.getElementById('cathsAiPaywall');
+  const paywallBalance = document.getElementById('cathsAiPaywallBalance');
+  const paywallNote = document.getElementById('cathsAiPaywallNote');
+  const watchBtn = document.getElementById('cathsAiWatchAdBtn');
+  const footerBalance = document.getElementById('cathsAiFooterBalance');
+
+  if(!fs || !homeInput || !homeEnter || !replyBox || !enterBtn) return;
+
+  const state = {
+    open:false,
+    sending:false,
+    pendingWatch:false,
+    pendingAttachments:[],
+    seeded:false
+  };
+
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[ch]));
+
+  function readCoins(){
+    const n = Number(localStorage.getItem(COIN_KEY));
+    return Number.isFinite(n) && n >= 0 ? Math.floor(n) : 100;
+  }
+  function writeCoins(value){
+    const n = Math.max(0, Math.floor(Number(value)||0));
+    localStorage.setItem(COIN_KEY, String(n));
+    return n;
+  }
+  function syncBalances(){
+    const coins=readCoins();
+    if(paywallBalance) paywallBalance.textContent=coins.toLocaleString();
+    if(footerBalance) footerBalance.textContent=coins.toLocaleString()+' coins';
+    const top=document.getElementById('cgTopCoins');
+    const balance=document.getElementById('coinShopBalance');
+    if(top) top.textContent=coins.toLocaleString();
+    if(balance) balance.textContent=coins.toLocaleString();
+  }
+
+  function removeEmpty(container){
+    const empty=container?.querySelector('.caths-ai-empty');
+    if(empty) empty.remove();
+  }
+
+  function scrollChat(){
+    if(chatWrap) chatWrap.scrollTo({top:chatWrap.scrollHeight,behavior:'smooth'});
+  }
+
+  function addUserMessage(text, attachments){
+    removeEmpty(userMessages);
+    const row=document.createElement('div');
+    row.className='caths-ai-message-row user';
+    const bubble=document.createElement('div');
+    bubble.className='caths-ai-bubble';
+    bubble.textContent=text;
+    row.appendChild(bubble);
+    userMessages.appendChild(row);
+
+    (attachments||[]).forEach(file=>{
+      const chip=document.createElement('div');
+      chip.className='caths-ai-attachment-chip';
+      chip.innerHTML='<div><strong>'+esc(file.name)+'</strong><small>'+esc(file.label||'Attachment')+'</small></div>';
+      userMessages.appendChild(chip);
+    });
+  }
+
+  function addAiMessage(text){
+    removeEmpty(aiMessages);
+    const row=document.createElement('div');
+    row.className='caths-ai-message-row ai';
+    const avatar=document.createElement('div');
+    avatar.className='caths-ai-avatar';
+    const img=document.createElement('img');
+    img.src='aiprofile.png';
+    img.alt='CATHS-AI';
+    img.onerror=function(){
+      this.remove();
+      const f=document.createElement('span');
+      f.className='caths-ai-avatar-fallback';
+      f.textContent='AI';
+      avatar.appendChild(f);
+    };
+    avatar.appendChild(img);
+    const bubble=document.createElement('div');
+    bubble.className='caths-ai-bubble';
+    bubble.textContent=text;
+    row.append(avatar,bubble);
+    aiMessages.appendChild(row);
+    scrollChat();
+    return bubble;
+  }
+
+  function addAiThinking(){
+    removeEmpty(aiMessages);
+    const row=document.createElement('div');
+    row.className='caths-ai-message-row ai';
+    row.dataset.thinking='1';
+    const avatar=document.createElement('div');
+    avatar.className='caths-ai-avatar';
+    const img=document.createElement('img');
+    img.src='aiprofile.png';
+    img.alt='CATHS-AI';
+    img.onerror=function(){
+      this.remove();
+      const f=document.createElement('span');
+      f.className='caths-ai-avatar-fallback';
+      f.textContent='AI';
+      avatar.appendChild(f);
+    };
+    avatar.appendChild(img);
+    const bubble=document.createElement('div');
+    bubble.className='caths-ai-bubble';
+    bubble.innerHTML='<span class="caths-ai-thinking"><i></i><i></i><i></i></span>';
+    row.append(avatar,bubble);
+    aiMessages.appendChild(row);
+    scrollChat();
+    return {row,bubble};
+  }
+
+  function clearPaywall(){
+    if(paywall) paywall.hidden=true;
+  }
+  function showPaywall(note){
+    if(!paywall) return;
+    syncBalances();
+    paywall.hidden=false;
+    if(paywallNote) paywallNote.textContent=note||'';
+    scrollChat();
+  }
+
+  function closePlusMenu(){plusMenu?.classList.remove('open')}
+
+  function openFullscreen(initialQuestion){
+    state.open=true;
+    fs.classList.add('is-open');
+    fs.setAttribute('aria-hidden','false');
+    document.body.classList.add('modal-open');
+    document.documentElement.classList.add('caths-ai-open');
+    syncBalances();
+    closePlusMenu();
+    setTimeout(()=>replyBox.focus({preventScroll:true}),60);
+    if(initialQuestion){
+      replyBox.value='';
+      clearPaywall();
+      sendMessage(initialQuestion);
+    }
+  }
+
+  function closeFullscreen(){
+    state.open=false;
+    state.sending=false;
+    fs.classList.remove('is-open');
+    fs.setAttribute('aria-hidden','true');
+    document.body.classList.remove('modal-open');
+    document.documentElement.classList.remove('caths-ai-open');
+    closePlusMenu();
+    clearPaywall();
+    try{ window.cgSetView?.('home'); }catch(_){ }
+    document.querySelector('[data-cg-view="home"]')?.click();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function getAttachmentsSummary(){
+    if(!state.pendingAttachments.length) return '';
+    return '\nAttached materials: '+state.pendingAttachments.map(f=>f.name).join(', ')+'.';
+  }
+
+  function attachmentPayloadText(){
+    const textFiles=state.pendingAttachments.filter(x=>x.textContent);
+    if(!textFiles.length) return '';
+    let all='';
+    textFiles.forEach(file=>{ all+='\n\n[Attachment: '+file.name+']\n'+file.textContent.slice(0,12000); });
+    return all.slice(0,24000);
+  }
+
+  async function resolveCurrentUser(){
+    try{
+      return window.currentUser || (window.studyAuthStateReady ? await window.studyAuthStateReady : null);
+    }catch(_){ return null; }
+  }
+
+  async function sendMessage(rawQuestion){
+    if(state.sending) return;
+    const question=String(rawQuestion??'').trim();
+    if(!question) return;
+
+    const user=await resolveCurrentUser();
+    if(!user){
+      addUserMessage(question,state.pendingAttachments);
+      state.pendingAttachments=[];
+      addAiMessage('Please sign in first so CATHS-AI can process your request.');
+      replyBox.value='';
+      return;
+    }
+
+    const coins=readCoins();
+    if(coins<COST){
+      showPaywall('Not enough coins. Watch an ad to earn 20 coins.');
+      return;
+    }
+
+    const attachments=[...state.pendingAttachments];
+    const attachmentSummary=getAttachmentsSummary();
+    const attachmentText=attachmentPayloadText();
+    state.pendingAttachments=[];
+    syncBalances();
+    clearPaywall();
+
+    // Charge only when an authenticated AI request is actually sent.
+    writeCoins(coins-COST);
+    syncBalances();
+
+    addUserMessage(question,attachments);
+    replyBox.value='';
+    closePlusMenu();
+    state.sending=true;
+    enterBtn.disabled=true;
+    homeEnter.disabled=true;
+    const thinking=addAiThinking();
+
+    try{
+      const token=await user.getIdToken();
+      const message =
+        'You are the CATHS-MAIN AI Study Assistant. Answer the student clearly, accurately, and simply. '+
+        'Use the attached text material when present. Student question: '+question+
+        attachmentSummary+attachmentText;
+
+      const response=await fetch(window.CATHS_AI_API_URL,{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+        body:JSON.stringify({message})
+      });
+
+      const rawText=await response.text();
+      let data={};
+      try{data=rawText?JSON.parse(rawText):{}}catch(_){data={raw:rawText}}
+      if(!response.ok){
+        const detail=data?.error||data?.message||data?.raw||response.statusText||'Unknown server error.';
+        const err=new Error(String(detail));
+        err.status=response.status;
+        err.statusText=response.statusText;
+        throw err;
+      }
+
+      thinking.row.remove();
+      addAiMessage(data?.output||'I could not generate an answer right now.');
+    }catch(error){
+      console.error('CATHS fullscreen AI error:',error);
+      // Refund on a failed request so users are not charged for a response they did not receive.
+      writeCoins(readCoins()+COST);
+      syncBalances();
+      thinking.row.remove();
+      addAiMessage('I could not complete that request. Your 50 coins were returned. '+String(error?.message||'Please try again.'));
+    }finally{
+      state.sending=false;
+      enterBtn.disabled=false;
+      homeEnter.disabled=false;
+      syncBalances();
+      scrollChat();
+    }
+  }
+
+  function queueAttachments(files,kind){
+    const list=[...files];
+    if(!list.length)return;
+    list.forEach(file=>{
+      const item={name:file.name,label:kind==='media'?'Image / Video':'Study deck'};
+      if(/\.(txt|md|csv|json)$/i.test(file.name)){
+        file.text().then(t=>{item.textContent=t}).catch(()=>{});
+      }
+      state.pendingAttachments.push(item);
+    });
+    const names=list.map(f=>f.name).join(', ');
+    if(paywallNote)paywallNote.textContent='Attached: '+names;
+    closePlusMenu();
+    replyBox.focus({preventScroll:true});
+  }
+
+  // Intercept the old Home Enter button before its legacy listener can render an inline response.
+  homeEnter.addEventListener('click',function(e){
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    const question=homeInput.value.trim();
+    if(!question)return;
+    openFullscreen(question);
+  },true);
+
+  homeInput.addEventListener('keydown',function(e){
+    if((e.ctrlKey||e.metaKey) && e.key==='Enter'){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      const question=homeInput.value.trim();
+      if(question)openFullscreen(question);
+    }
+  },true);
+
+  backBtn?.addEventListener('click',e=>{e.preventDefault();closeFullscreen();});
+  plusBtn?.addEventListener('click',e=>{e.preventDefault();plusMenu?.classList.toggle('open');});
+  document.addEventListener('click',e=>{
+    if(!e.target.closest?.('.caths-ai-plus-wrap')) closePlusMenu();
+  },true);
+  uploadDeckBtn?.addEventListener('click',()=>deckInput?.click());
+  uploadMediaBtn?.addEventListener('click',()=>mediaInput?.click());
+  deckInput?.addEventListener('change',()=>{queueAttachments(deckInput.files,'deck');deckInput.value='';});
+  mediaInput?.addEventListener('change',()=>{queueAttachments(mediaInput.files,'media');mediaInput.value='';});
+
+  enterBtn.addEventListener('click',()=>sendMessage(replyBox.value));
+  replyBox.addEventListener('keydown',e=>{
+    if(e.key==='Enter' && !e.shiftKey){
+      e.preventDefault();
+      sendMessage(replyBox.value);
+    }
+  });
+
+  watchBtn?.addEventListener('click',function(){
+    if(state.pendingWatch)return;
+    if(readCoins()>=COST){
+      showPaywall('You already have enough coins.');
+      return;
+    }
+    state.pendingWatch=true;
+    watchBtn.disabled=true;
+    if(paywallNote)paywallNote.textContent='Loading rewarded ad…';
+    const native=window.CATHS_ADS_NATIVE;
+    if(native && typeof native.watchRewardedCoins==='function'){
+      try{native.watchRewardedCoins(AD_REWARD);}
+      catch(_){state.pendingWatch=false;watchBtn.disabled=false;if(paywallNote)paywallNote.textContent='The rewarded ad is not available right now.';}
+    }else{
+      state.pendingWatch=false;
+      watchBtn.disabled=false;
+      if(paywallNote)paywallNote.textContent='Rewarded ads are available in the Android app.';
+    }
+  });
+
+  // Extend the existing rewarded callback for the new 20-coin AI paywall.
+  const ads=window.CATHS_ADS=window.CATHS_ADS||{};
+  const previousReward=ads.onCoinsRewarded;
+  ads.onCoinsRewarded=function(amount){
+    const reward=Math.max(1,Math.floor(Number(amount)||0));
+    if(state.pendingWatch){
+      state.pendingWatch=false;
+      writeCoins(readCoins()+AD_REWARD);
+      syncBalances();
+      if(watchBtn)watchBtn.disabled=false;
+      if(readCoins()>=COST){
+        if(paywallNote)paywallNote.textContent='You received +20 coins. You now have enough to use AI.';
+      }else{
+        if(paywallNote)paywallNote.textContent='You received +20 coins. You need '+Math.max(0,COST-readCoins())+' more coins.';
+      }
+      return;
+    }
+    if(typeof previousReward==='function') previousReward(reward);
+    syncBalances();
+  };
+
+  const previousAvailability=ads.onRewardedAvailabilityChanged;
+  ads.onRewardedAvailabilityChanged=function(ready){
+    if(typeof previousAvailability==='function') previousAvailability(ready);
+    if(watchBtn && state.pendingWatch===false && paywall && !paywall.hidden){
+      watchBtn.disabled=!ready;
+      if(!ready && paywallNote && !paywallNote.textContent)paywallNote.textContent='Rewarded ad is loading. Try again in a moment.';
+    }
+  };
+
+  // Keep the UI in sync when another part of the page changes the coin balance.
+  window.addEventListener('storage',syncBalances);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncBalances()});
+
+  syncBalances();
+})();
+</script>
 </body>
 </html>
