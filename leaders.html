@@ -77,6 +77,32 @@
   .hero-title span,.hero-title em{letter-spacing:-1.7px}.hero-title em{margin-top:6px}
 }
 
+
+/* CP VIEW — compact 5-card viewport feel without making names unreadable */
+@media(max-width:620px){
+  .org-layout{gap:14px}
+  .org-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .org-row.centered{grid-template-columns:1fr}
+  .org-row-label{font-size:9px;margin-top:2px}
+  .org-row > .officer{border-radius:15px}
+  .org-row .officer-top{padding:10px 6px 8px;gap:5px}
+  .org-row .avatar-wrap,.org-row .avatar{width:72px;height:72px}
+  .org-row .rank-dot{min-width:22px;height:22px;font-size:7px;border-width:2px;right:0;bottom:1px}
+  .org-row .officer-name{font-size:10px;line-height:1.15}
+  .org-row .officer-role{font-size:7.5px;line-height:1.25;min-height:0;margin-top:3px}
+  .org-row .quote-box{margin:0 7px 7px;padding:7px;border-radius:9px}
+  .org-row .quote-label{font-size:5.5px;margin-bottom:3px}
+  .org-row .quote-box blockquote{font-size:7.5px;line-height:1.35}
+  .org-row .tag-row{gap:3px;padding:0 6px 8px}
+  .org-row .tag{font-size:5.8px;padding:4px 5px}
+}
+@media(max-width:390px){
+  .org-row{gap:6px}
+  .org-row .avatar-wrap,.org-row .avatar{width:64px;height:64px}
+  .org-row .officer-name{font-size:9px}
+  .org-row .officer-role{font-size:6.8px}
+  .org-row .quote-box blockquote{font-size:6.8px}
+}
 </style></head>
 <body id="top">
 <header class="header">
@@ -312,53 +338,48 @@ function go(i){show(i);reset();} function reset(){clearInterval(timer);timer=set
 let touchX=0; document.getElementById('galleryBox').addEventListener('touchstart',e=>touchX=e.touches[0].clientX,{passive:true}); document.getElementById('galleryBox').addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-touchX;if(Math.abs(dx)>45){show(current+(dx<0?1:-1));reset()}});
 document.getElementById('closeLightbox').onclick=()=>document.getElementById('lightbox').classList.remove('open');document.getElementById('lightbox').onclick=e=>{if(e.target.id==='lightbox')e.currentTarget.classList.remove('open')};
 const bkbData = [
-  {kind:'group',label:'Adviser'},
-  {name:'Sir Neil Ramos',role:'BKB Adviser',photo:'photos/bkb-adviser.jpg',tags:['BKB','Adviser','Mentorship'],quote:'Quotes talaga dito HAHAHA',adviser:true},
   {kind:'group',label:'Leaders'},
-  {name:'James Patrick Tejadal',role:'BKB President',photo:'bkb-president.jpg',tags:['BKB','President','Leadership'],quote:'Real friends help each other stay on the right path',leader:true},
-  {name:'Jane Yalung',role:'BKB Vice President',photo:'photos/bkb-vice-president.jpg',tags:['BKB','Vice President','Leadership'],quote:'Be strong enough to say no to vices',leader:true},
-  {name:'Ashtrid Gomez',role:'BKB Secretary',photo:'photos/bkb-secretary.jpg',tags:['BKB','Secretary','Organization'],quote:'Choose your dreams, not your vices',leader:true},
-  {name:'Zandra Francisco',role:'BKB Treasurer',photo:'bkb-treasurer.jpg',tags:['BKB','Treasurer','Accountability'],quote:'Together we stand, against vices we fight',leader:true},
-  {name:'Jhon Dave Intal',role:'BKB Auditor',photo:'photos/bkb-auditor.jpg',tags:['BKB','Auditor','Accountability'],quote:'A strong barkada builds a brighter future',leader:true},
-  {name:'Ashley Jean Mutuc',role:'BKB PIO',photo:'photos/bkb-pio.jpg',tags:['BKB','Information','Media'],quote:'True friendship inspires better choices',leader:true},
-  {name:'Kylie Dimarucut',role:'BKB PO',photo:'photos/bkb-po.jpg',tags:['BKB','Publicity & Outreach'],quote:'You don’t need vices to have a good time',leader:true},
-  {kind:'group',label:'Representatives'},
-  {name:'Aldred Santos 1',role:'BKB Grade 12 Representative',photo:'photos/bkb-g12-01.jpg',tags:['Grade 12','Representation'],quote:'Protect your future. Stay away from vices'},
-  {name:'Clark Mondragon 2',role:'BKB Grade 12 Representative',photo:'photos/bkb-g12-02.jpg',tags:['Grade 12','Representation'],quote:'United as friends, stronger against vices'},
-  {name:'Ahmir Sangil 1',role:'BKB Grade 11 Representative',photo:'photos/bkb-g11-01.jpg',tags:['Grade 11','Representation'],quote:'Good friends lead you toward a better life'},
-  {name:'Kiara Cambaliza 2',role:'BKB Grade 11 Representative',photo:'photos/bkb-g11-02.jpg',tags:['Grade 11','Representation'],quote:'Stay clean, stay strong,stay together'},
-  {name:'Elaiza Vigillia 1',role:'BKB Grade 10 Representative',photo:'bkb-g10-01.jpg',tags:['Grade 10','Representation'],quote:'Your choices today shape your tomorrow'},
-  {name:'Jerald Baniqued 2',role:'BKB Grade 10 Representative',photo:'photos/bkb-g10-02.jpg',tags:['Grade 10','Representation'],quote:'Be the friend who inspires, not the one who influences'},
-  {name:'Ezekiel Cortez 1',role:'BKB Grade 9 Representative',photo:'photos/bkb-g9-01.jpg',tags:['Grade 9','Representation'],quote:'Addiction takes more than it gives'},
-  {name:'Kazumi Guinto 2',role:'BKB Grade 9 Representative',photo:'photos/bkb-g9-02.jpg',tags:['Grade 9','Representation'],quote:'Real friends don’t lead you to vices; they lead you to a better life'},
-  {name:'Joel Paderan 1',role:'BKB Grade 8 Representative',photo:'photos/bkb-g8-01.jpg',tags:['Grade 8','Representation'],quote:'Breath easy, Live Free: A Smoke Free and Drug Free School Community.'},
-  {name:'BKB Grade 8 Representative Name 2',role:'BKB Grade 8 Representative',photo:'photos/bkb-g8-02.jpg',tags:['Grade 8','Representation'],quote:'Quotes talaga dito HAHAHA'},
-  {name:'BKB Grade 7 Representative Name',role:'BKB Grade 7 Representative',photo:'photos/bkb-g7-01.jpg',tags:['Grade 7','Representation'],quote:'Quotes talaga dito HAHAHA'}
+  {name:'James L. Patrick Tejadal',role:'BKB President',photo:'photos/bkb-president.jpg',tags:['BKB','President','Leadership'],quote:'Real friends help each other stay on the right path',leader:true},
+  {name:'Jane Nicole Yalung',role:'BKB Vice President',photo:'photos/bkb-vice-president.jpg',tags:['BKB','Vice President','Leadership'],quote:'Be strong enough to say no to vices',leader:true},
+  {name:'Ashtrid Dael G. Gomez',role:'BKB Secretary',photo:'photos/bkb-secretary.jpg',tags:['BKB','Secretary','Organization'],quote:'Choose your dreams, not your vices',leader:true},
+  {name:'Zandra Laroco Francisco',role:'BKB Treasurer',photo:'photos/bkb-treasurer.jpg',tags:['BKB','Treasurer','Accountability'],quote:'Together we stand, against vices we fight',leader:true},
+  {name:'Jhon Dave D. Intal',role:'BKB Auditor',photo:'photos/bkb-auditor.jpg',tags:['BKB','Auditor','Accountability'],quote:'A strong barkada builds a brighter future',leader:true},
+  {name:'Ashley Jean Mutuc',role:'BKB P.I.O.',photo:'photos/bkb-pio.jpg',tags:['BKB','Information','Media'],quote:'True friendship inspires better choices',leader:true},
+  {name:'Kylie Myrna Torres Dimarucut',role:'BKB P.O.',photo:'photos/bkb-po.jpg',tags:['BKB','Publicity & Outreach'],quote:'You don’t need vices to have a good time',leader:true},
+  {name:'Joel Bayuga Paderan',role:'BKB Grade 8 Representative',photo:'photos/bkb-g8-01.jpg',tags:['Grade 8','Representation'],quote:'Breath easy, Live Free: A Smoke Free and Drug Free School Community.',leader:true},
+  {name:'Felix Ezekiel B. Cortes',role:'BKB Grade 9 Representative',photo:'photos/bkb-g9-01.jpg',tags:['Grade 9','Representation'],quote:'Addiction takes more than it gives',leader:true},
+  {name:'Kazumi Alexa Bautista Guinto',role:'BKB Grade 9 Representative',photo:'photos/bkb-g9-02.jpg',tags:['Grade 9','Representation'],quote:'Real friends don’t lead you to vices; they lead you to a better life',leader:true},
+  {name:'Elaiza Vigilia',role:'BKB Grade 10 Representative',photo:'photos/bkb-g10-01.jpg',tags:['Grade 10','Representation'],quote:'Your choices today shape your tomorrow',leader:true},
+  {name:'Jerald Baniqued',role:'BKB Grade 10 Representative',photo:'photos/bkb-g10-02.jpg',tags:['Grade 10','Representation'],quote:'Be the friend who inspires, not the one who influences',leader:true},
+  {name:'Ahmir Sangil',role:'BKB Grade 11 Representative',photo:'photos/bkb-g11-01.jpg',tags:['Grade 11','Representation'],quote:'Good friends lead you toward a better life',leader:true},
+  {name:'Kiara Cambaliza',role:'BKB Grade 11 Representative',photo:'photos/bkb-g11-02.jpg',tags:['Grade 11','Representation'],quote:'Stay clean, stay strong, stay together',leader:true},
+  {name:'Aldred A. Santos',role:'BKB Grade 12 Representative',photo:'photos/bkb-g12-01.jpg',tags:['Grade 12','Representation'],quote:'Protect your future. Stay away from vices',leader:true},
+  {name:'Clark Mondragon',role:'BKB Grade 12 Representative',photo:'photos/bkb-g12-02.jpg',tags:['Grade 12','Representation'],quote:'United as friends, stronger against vices',leader:true}
 ];
+
 const yesoData = [
-  {kind:'group',label:'Adviser'},
-  {name:'YES-O Adviser Sir Joe Carlo Sahagun',role:'YES-O Adviser',photo:'photos/yeso-adviser.jpg',tags:['YES-O','Adviser','Mentorship'],quote:'WAITING KAY SIR JOE',adviser:true},
   {kind:'group',label:'Leaders'},
-  {name:'Adrianne Macasiog ',role:'YES-O President',photo:'photos/yeso-president.jpg',tags:['YES-O','President','Leadership'],quote:'Leadership without competence is just a title with a flower',leader:true},
-  {name:'Leila Iseiah Paras',role:'YES-O Vice President',photo:'photos/yeso-vice-president.jpg',tags:['YES-O','Vice President','Leadership'],quote:'Dream big, start small',leader:true},
-  {name:'Apple Olidar',role:'YES-O Secretary',photo:'photos/yeso-secretary.jpg',tags:['YES-O','Secretary','Organization'],quote:'Believe, and you will see',leader:true},
-  {name:'Kyla Jane Tacusalme',role:'YES-O Treasurer',photo:'photos/yeso-treasurer.jpg',tags:['YES-O','Treasurer','Accountability'],quote:'Every day is a fresh start',leader:true},
-  {name:'Manuel Cedric Jazareno',role:'YES-O Auditor',photo:'photos/yeso-auditor.jpg',tags:['YES-O','Auditor','Accountability'],quote:'Life doesn’t have to be perfect to be meaningful',leader:true},
-  {name:'John Khiane Tuazon',role:'YES-O PIO',photo:'photos/yeso-pio.jpg',tags:['YES-O','Information','Media'],quote:'Be the light you seek',leader:true},
-  {name:'Clarizza Tamundong',role:'YES-O PO',photo:'photos/yeso-po.jpg',tags:['YES-O','Publicity & Outreach'],quote:'Growth begins where comfort ends',leader:true},
-  {kind:'group',label:'Representatives'},
-  {name:'Darren Compuesto 1',role:'YES-O Grade 12 Representative',photo:'photos/yeso-g12-01.jpg',tags:['Grade 12','Representation'],quote:'Kindness costs nothing'},
-  {name:'Alexa Marie Quiambao 2',role:'YES-O Grade 12 Representative',photo:'photos/yeso-g12-02.jpg',tags:['Grade 12','Representation'],quote:'The only way to do great work is to love what you do'},
-  {name:'Thea Alva Dueñas 1',role:'YES-O Grade 11 Representative',photo:'photos/yeso-g11-01.jpg',tags:['Grade 11','Representation'],quote:'Effort is the reflection of interest; Seize the chance'},
-  {name:'Crisel Resurreccion 2',role:'YES-O Grade 11 Representative',photo:'photos/yeso-g11-02.jpg',tags:['Grade 11','Representation'],quote:'When you believe, you achieve'},
-  {name:'Joanna Mae Nuqui 1',role:'YES-O Grade 10 Representative',photo:'photos/yeso-g10-01.jpg',tags:['Grade 10','Representation'],quote:'Everything happens for a reason'},
-  {name:'Mica Ella De Guzman 2',role:'YES-O Grade 10 Representative',photo:'photos/yeso-g10-02.jpg',tags:['Grade 10','Representation'],quote:'Just grow with the flow'},
-  {name:'Jeron Donato 1',role:'YES-O Grade 9 Representative',photo:'photos/yeso-g9-01.jpg',tags:['Grade 9','Representation'],quote:'Hope anchors the soul'},
-  {name:'Julls Lorenz Mendoza 2',role:'YES-O Grade 9 Representative',photo:'photos/yeso-g9-02.jpg',tags:['Grade 9','Representation'],quote:'Courage starts with one step'},
-  {name:'Abiella Eunice Basa 1',role:'YES-O Grade 8 Representative',photo:'photos/yeso-g8-01.jpg',tags:['Grade 8','Representation'],quote:'Peace begins within you'},
-  {name:'Bright Dungo 2',role:'YES-O Grade 8 Representative',photo:'photos/yeso-g8-02.jpg',tags:['Grade 8','Representation'],quote:'Love deeply, live fully'},
-  {name:'Jazmine Aquizha',role:'YES-O Grade 7 Representative',photo:'photos/yeso-g7-01.jpg',tags:['Grade 7','Representation'],quote:'Your potential is endless'}
+  {name:'Adrianne M. Macasiog',role:'YES-O President',photo:'photos/yeso-president.jpg',tags:['YES-O','President','Leadership'],quote:'Leadership without competence is just a title with a flower',leader:true},
+  {name:'Leila Iseiah G. Paras',role:'YES-O Vice President',photo:'photos/yeso-vice-president.jpg',tags:['YES-O','Vice President','Leadership'],quote:'Dream big, start small',leader:true},
+  {name:'Apple T. Olidar',role:'YES-O Secretary',photo:'photos/yeso-secretary.jpg',tags:['YES-O','Secretary','Organization'],quote:'Believe, and you will see',leader:true},
+  {name:'Kyla Jane D. Tacusalme',role:'YES-O Treasurer',photo:'photos/yeso-treasurer.jpg',tags:['YES-O','Treasurer','Accountability'],quote:'Every day is a fresh start',leader:true},
+  {name:'Manuel Cedric T. Jazareno',role:'YES-O Auditor',photo:'photos/yeso-auditor.jpg',tags:['YES-O','Auditor','Accountability'],quote:'Life doesn’t have to be perfect to be meaningful',leader:true},
+  {name:'John Khiane B. Tuazon',role:'YES-O P.I.O.',photo:'photos/yeso-pio.jpg',tags:['YES-O','Information','Media'],quote:'Be the light you seek',leader:true},
+  {name:'Clarizza Fae C. Tamundong',role:'YES-O P.O.',photo:'photos/yeso-po.jpg',tags:['YES-O','Publicity & Outreach'],quote:'Growth begins where comfort ends',leader:true},
+  {name:'Krishyanna H. Martinez',role:'YES-O Grade 7 Representative',photo:'photos/yeso-g7-01.jpg',tags:['Grade 7','Representation'],quote:'Your potential is endless',leader:true},
+  {name:'Jazmine Aquizha Z. Ortiz',role:'YES-O Grade 7 Representative',photo:'photos/yeso-g7-02.jpg',tags:['Grade 7','Representation'],quote:'Your potential is endless',leader:true},
+  {name:'Abiella Eunice M. Basa',role:'YES-O Grade 8 Representative',photo:'photos/yeso-g8-01.jpg',tags:['Grade 8','Representation'],quote:'Peace begins within you',leader:true},
+  {name:'Bright Jemdie T. Dungo',role:'YES-O Grade 8 Representative',photo:'photos/yeso-g8-02.jpg',tags:['Grade 8','Representation'],quote:'Love deeply, live fully',leader:true},
+  {name:'Jeron S. Donato',role:'YES-O Grade 9 Representative',photo:'photos/yeso-g9-01.jpg',tags:['Grade 9','Representation'],quote:'Hope anchors the soul',leader:true},
+  {name:'Julls Lorenz C. Mendoza',role:'YES-O Grade 9 Representative',photo:'photos/yeso-g9-02.jpg',tags:['Grade 9','Representation'],quote:'Courage starts with one step',leader:true},
+  {name:'Mica Ella De Guzman',role:'YES-O Grade 10 Representative',photo:'photos/yeso-g10-01.jpg',tags:['Grade 10','Representation'],quote:'Just grow with the flow',leader:true},
+  {name:'Joanna Mae D. Nuqui',role:'YES-O Grade 10 Representative',photo:'photos/yeso-g10-02.jpg',tags:['Grade 10','Representation'],quote:'Everything happens for a reason',leader:true},
+  {name:'Crisel Joy Resurrection',role:'YES-O Grade 11 Representative',photo:'photos/yeso-g11-02.jpg',tags:['Grade 11','Representation'],quote:'When you believe, you achieve',leader:true},
+  {name:'Thea Alva S. Dueñas',role:'YES-O Grade 11 Representative',photo:'photos/yeso-g11-01.jpg',tags:['Grade 11','Representation'],quote:'Effort is the reflection of interest; Seize the chance',leader:true},
+  {name:'Darren M. Compuesto',role:'YES-O Grade 12 Representative',photo:'photos/yeso-g12-01.jpg',tags:['Grade 12','Representation'],quote:'Kindness costs nothing',leader:true},
+  {name:'Alexa Marie Quiambao',role:'YES-O Grade 12 Representative',photo:'photos/yeso-g12-02.jpg',tags:['Grade 12','Representation'],quote:'The only way to do great work is to love what you do',leader:true}
 ];
+
 function buildOfficerCard(o,idx,prefix){
   const card=document.createElement('article');
   card.className='officer'+(o.adviser?' adviser-card':'')+(o.leader||o.role.includes('President')?' president-card':'');
