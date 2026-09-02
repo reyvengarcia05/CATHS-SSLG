@@ -9037,8 +9037,39 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
 .has-image::after{content:none!important;display:none!important}
 .cg-image-slot.has-image,.cg-pill-image-slot.has-image{background:transparent!important;border:0!important;box-shadow:none!important}
 
-/* --- Top stat row: coin icon swap --- */
-.coin-dot-custom::after{content:none!important}
+/* --- Top stat row: larger CP / balance animated image --- */
+.cg-coin-pill{
+  min-height:52px!important;
+  padding:0 16px!important;
+  gap:11px!important;
+}
+.coin-dot-custom{
+  width:34px!important;
+  height:34px!important;
+  flex:0 0 34px!important;
+  border:none!important;
+  border-radius:50%!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  overflow:hidden!important;
+}
+.coin-dot-custom img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  display:block!important;
+}
+.cg-coin-pill #cgTopCoins{
+  font-size:16px!important;
+  font-weight:900!important;
+  line-height:1!important;
+}
+/* Keep the larger balance compact on smaller screens. */
+@media(max-width:980px){
+  .cg-coin-pill{min-height:46px!important;padding:0 13px!important;gap:9px!important}
+  .coin-dot-custom{width:30px!important;height:30px!important;flex-basis:30px!important}
+  .cg-coin-pill #cgTopCoins{font-size:14px!important}
+}
 
 /* --- Top stat row: notification bell button --- */
 .cg-notif-btn{color:#4a5468;cursor:pointer}
@@ -9067,9 +9098,9 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
 <style id="panda-gif-final-fix">
 .floating-cat-container{
   position:relative!important;
-  width:250px!important;
-  height:190px!important;
-  flex:0 0 250px!important;
+  width:320px!important;
+  height:225px!important;
+  flex:0 0 320px!important;
   display:flex!important;
   align-items:center!important;
   justify-content:center!important;
@@ -9079,7 +9110,7 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
 }
 .floating-cat-video{
   display:block!important;
-  width:250px!important;
+  width:320px!important;
   max-width:100%!important;
   height:auto!important;
   object-fit:contain!important;
@@ -9105,18 +9136,18 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
 }
 @keyframes pandaFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-14px) scale(1.015)}}
 @media(max-width:980px){
-  .floating-cat-container{width:200px!important;height:165px!important;flex-basis:200px!important}
-  .floating-cat-video{width:200px!important}
+  .floating-cat-container{width:255px!important;height:200px!important;flex-basis:255px!important}
+  .floating-cat-video{width:255px!important}
 }
 @media(max-width:760px){
-  .cg-study-hero{display:grid!important;grid-template-columns:128px minmax(0,1fr)!important;gap:12px!important;justify-content:initial!important}
-  .floating-cat-container{width:128px!important;height:150px!important;flex-basis:128px!important}
-  .floating-cat-video{width:122px!important}
+  .cg-study-hero{display:grid!important;grid-template-columns:165px minmax(0,1fr)!important;gap:16px!important;justify-content:initial!important}
+  .floating-cat-container{width:165px!important;height:175px!important;flex-basis:165px!important}
+  .floating-cat-video{width:158px!important}
 }
 @media(max-width:430px){
-  .cg-study-hero{grid-template-columns:105px minmax(0,1fr)!important;gap:8px!important}
-  .floating-cat-container{width:105px!important;height:135px!important;flex-basis:105px!important}
-  .floating-cat-video{width:102px!important}
+  .cg-study-hero{grid-template-columns:135px minmax(0,1fr)!important;gap:10px!important}
+  .floating-cat-container{width:135px!important;height:150px!important;flex-basis:135px!important}
+  .floating-cat-video{width:130px!important}
 }
 </style>
 
@@ -9784,15 +9815,16 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
   */
   .cg-shell{
     transition:
-      transform .44s cubic-bezier(.22,1,.36,1),
-      opacity .34s ease,
-      visibility .34s ease,
+      opacity .36s ease,
+      visibility .36s ease,
       box-shadow .30s ease!important;
-    will-change:transform,opacity,visibility;
+    will-change:opacity,visibility;
   }
 
-  body.cathians-overlay-open .cg-shell{
-    transform:translateX(calc(-100% - 24px))!important;
+  /* Fade the side/bottom navigation away whenever any popup or game overlay is open. */
+  body.cathians-overlay-open .cg-shell,
+  body.modal-open .cg-shell,
+  body.sak-modal-open .cg-shell{
     opacity:0!important;
     visibility:hidden!important;
     pointer-events:none!important;
@@ -9850,8 +9882,10 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
   }
 
   @media(max-width:760px){
-    body.cathians-overlay-open .cg-shell{
-      transform:translateY(calc(100% + 28px))!important;
+    /* Keep the bottom navigation in place while it fades out; no sliding. */
+    body.cathians-overlay-open .cg-shell,
+    body.modal-open .cg-shell,
+    body.sak-modal-open .cg-shell{
       opacity:0!important;
       visibility:hidden!important;
       pointer-events:none!important;
