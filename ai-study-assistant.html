@@ -1899,6 +1899,52 @@ button{font-family:'Poppins',sans-serif!important}
 .coin-dot::after{content:'';width:6px;height:6px;border-radius:50%;border:1.4px solid rgba(255,255,255,.7)}
 .coin-dot.small{width:13px;height:13px;border-width:1.5px}.coin-dot.small::after{width:4px;height:4px;border-width:1px}.coin-dot.large{width:24px;height:24px}
 
+/* ===== AdMob-ready monetization UI ===== */
+.cathians-ad-dock{
+  position:fixed;left:0;right:0;bottom:0;z-index:9990;
+  height:64px;display:grid;place-items:center;
+  padding:5px 8px calc(5px + var(--safe-bottom,0px));
+  background:rgba(255,255,255,.96);border-top:1px solid #e3e8ef;
+  box-shadow:0 -8px 24px rgba(20,35,60,.06);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+}
+.cathians-ad-placeholder{
+  width:min(100%,728px);height:50px;border:1px solid #dfe5ec;border-radius:10px;
+  background:#f8fafc;display:flex;align-items:center;justify-content:center;gap:8px;
+  color:#8490a2;font-size:8px;font-weight:900;letter-spacing:1.2px;
+}
+.cathians-ad-placeholder small{font-size:7px;font-weight:700;letter-spacing:.2px;color:#a0aab8}
+html.cathians-native-ad-ready .cathians-ad-dock{display:none!important}
+html.cathians-native-ad-ready .cg-shell{bottom:calc(10px + var(--safe-bottom,0px)) !important}
+html.cathians-native-ad-ready body{padding-bottom:0 !important}
+html.cathians-native-ad-ready .cg-main{padding-bottom:56px!important}
+
+.coin-watch-ad-btn{
+  width:100%;display:grid;grid-template-columns:36px minmax(0,1fr) auto;align-items:center;gap:10px;
+  margin:12px 0 18px;padding:10px 11px;border:1px solid #d8e8fb;border-radius:16px;
+  background:linear-gradient(135deg,#f5faff,#edf6ff);color:#17263b;cursor:pointer;
+  text-align:left;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+}
+.coin-watch-ad-btn:hover{transform:translateY(-1px);border-color:#b9d7f7;box-shadow:0 10px 24px rgba(40,115,190,.10)}
+.coin-watch-ad-btn:disabled{opacity:.58;cursor:wait;transform:none;box-shadow:none}
+.coin-watch-ad-icon{width:32px;height:32px;border-radius:11px;display:grid;place-items:center;
+  background:#dcedff;color:#2575cf;font-size:12px;font-weight:900}
+.coin-watch-ad-copy{min-width:0;display:flex;flex-direction:column;gap:2px}
+.coin-watch-ad-copy strong{font-size:10px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.coin-watch-ad-copy small{font-size:7.5px;color:#718198;line-height:1.35}
+.coin-watch-ad-reward{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:900;color:#9a6b00;white-space:nowrap}
+@media(max-width:760px){
+  .cathians-ad-dock{height:60px}
+  .cathians-ad-placeholder{height:50px}
+  .cg-shell{bottom:calc(70px + var(--safe-bottom,0px))!important}
+  body{padding-bottom:calc(78px + var(--safe-bottom,0px))!important}
+  .coin-watch-ad-btn{grid-template-columns:34px minmax(0,1fr) auto;padding:9px 10px}
+  .coin-watch-ad-icon{width:30px;height:30px}
+}
+@media(min-width:761px){
+  .cathians-ad-dock{position:relative;left:auto;right:auto;bottom:auto;height:88px;margin-top:22px;border:1px solid #e1e7ef;border-radius:18px;box-shadow:0 8px 24px rgba(20,35,60,.05)}
+}
+
 /* Clean app-like popup treatment for study/settings/library/shop popups. */
 .manual-flashcard-backdrop,.game-modal-backdrop,.study-library-panel,.coin-shop-backdrop{background:rgba(23,28,37,.42)!important;backdrop-filter:blur(12px) saturate(.8)!important;-webkit-backdrop-filter:blur(12px) saturate(.8)!important}
 .manual-flashcard-card,.study-library-card,.game-modal-card{background:#fff!important;color:var(--c-text)!important;border:1px solid var(--c-border)!important;box-shadow:0 28px 80px rgba(25,33,48,.18)!important}
@@ -3958,7 +4004,9 @@ input:focus,textarea:focus,select:focus{
   #cathiansMobileAddReviewer{
     position:fixed!important;
     right:18px!important;
-    bottom:104px!important;
+    /* Above the mobile bottom navigation. The value is adjusted below
+       when the web ad dock moves the navigation upward. */
+    bottom:calc(104px + var(--safe-bottom,0px))!important;
     z-index:98999!important;
     width:72px!important;
     height:72px!important;
@@ -4087,7 +4135,7 @@ input:focus,textarea:focus,select:focus{
       btn.type='button';
       btn.setAttribute('aria-label','Add Reviewer');
       btn.title='Add Reviewer';
-      btn.innerHTML='<img src="4.png" alt="">';
+      btn.innerHTML='<img src="8.png" alt="">';
 
       btn.addEventListener('click',function(e){
         e.preventDefault();
@@ -4249,6 +4297,89 @@ input:focus,textarea:focus,select:focus{
 // Secure AI backend endpoint. Keep the OpenAI API key inside Cloudflare Worker Secrets (never in this HTML).
 window.CATHS_AI_API_URL = "https://cathsmain.reyvengarcia05.workers.dev";
 </script>
+<style id="caths-bottom-ad-behavior">
+/* =========================================================
+   CATHS SSLG — PAGE-FLOW AD SLOT
+   The banner is part of the document flow. It is NOT fixed
+   above the mobile bottom navigation.
+   ========================================================= */
+.cathians-bottom-ad-dock{
+  position:relative!important;
+  left:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:min(100%,728px)!important;
+  min-height:84px!important;
+  height:auto!important;
+  margin:28px auto 0!important;
+  padding:8px!important;
+  z-index:1!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  box-sizing:border-box!important;
+  background:rgba(255,255,255,.98)!important;
+  border:1px solid #e0e5ec!important;
+  border-radius:16px!important;
+  box-shadow:0 8px 24px rgba(20,35,60,.06)!important;
+  font:800 8px/1 Arial,sans-serif!important;
+  color:#8792a2!important;
+  letter-spacing:1px!important;
+  overflow:hidden!important;
+}
+.cathians-bottom-ad-dock .ad-inner{
+  width:100%;
+  min-height:68px;
+  border:1px solid #dfe5ec;
+  border-radius:11px;
+  background:#f8fafc;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  box-sizing:border-box;
+}
+.cathians-bottom-ad-dock .ad-inner small{
+  font-size:7px;
+  letter-spacing:.2px;
+  font-weight:700;
+  color:#a1aab8;
+}
+
+/* The Android native AdMob view uses this slot as its page-flow anchor. */
+html.cathians-native-ad-ready .cathians-bottom-ad-dock .ad-inner{
+  visibility:hidden!important;
+}
+
+/* The mobile navigation stays in its original floating position. */
+@media(max-width:760px){
+  .cathians-bottom-ad-dock{
+    width:calc(100% - 4px)!important;
+    min-height:82px!important;
+    margin:28px 2px 0!important;
+    padding:7px!important;
+    border-radius:16px!important;
+  }
+  .cathians-bottom-ad-dock .ad-inner{min-height:66px}
+
+  /* Only reserve space after the final content so the fixed nav does not
+     cover the page-flow ad. The ad itself is still scrollable content. */
+  .cg-main{padding-bottom:112px!important}
+  .page{padding-bottom:0!important}
+  body{padding-bottom:0!important}
+
+  /* Bottom navigation: no artificial 50/70px ad offset. */
+  html:not(.cathians-native-ad-ready) .cg-shell{
+    bottom:calc(10px + var(--safe-bottom,0px))!important;
+  }
+
+  /* Bubble stays directly above the bottom navigation. */
+  html:not(.cathians-native-ad-ready) #cathiansMobileAddReviewer,
+  html.cathians-native-ad-ready #cathiansMobileAddReviewer{
+    bottom:calc(104px + var(--safe-bottom,0px))!important;
+  }
+}
+</style>
 </head>
 <body>
 <main class="page">
@@ -4515,6 +4646,11 @@ window.CATHS_AI_API_URL = "https://cathsmain.reyvengarcia05.workers.dev";
         <div><span class="coin-dot large" aria-hidden="true"></span><span>Available coins</span></div>
         <strong id="coinShopBalance">100</strong>
       </div>
+      <button class="coin-watch-ad-btn" id="coinWatchAdBtn" type="button">
+        <span class="coin-watch-ad-icon" aria-hidden="true">▶</span>
+        <span class="coin-watch-ad-copy"><strong>Watch ads to get coins</strong><small>Watch one optional rewarded ad</small></span>
+        <span class="coin-watch-ad-reward"><span class="coin-dot small" aria-hidden="true"></span>+25</span>
+      </button>
       <div class="coin-shop-section-title">Features</div>
       <button class="shop-feature-card" type="button" data-shop-item="dark-mode" data-price="75">
         <div class="shop-feature-art dark-art"><span>Dark Mode</span></div>
@@ -4955,7 +5091,61 @@ window.CATHS_AI_API_URL = "https://cathsmain.reyvengarcia05.workers.dev";
       </div>
     </div>
   </section>
-</div>
+
+  <!-- Monetization: the Android app replaces this preview with a real AdMob banner. -->
+  <div class="cathians-bottom-ad-dock" id="cathiansAdDock" aria-label="Advertisement">
+    <div class="ad-inner" aria-hidden="true"><span>ADVERTISEMENT</span><small>Educational sponsor</small></div>
+  </div>
+
+  <script id="cathians-inline-ad-anchor">
+  (function(){
+    'use strict';
+    if(window.__CATHS_INLINE_AD_TRACKER) return;
+    window.__CATHS_INLINE_AD_TRACKER=true;
+    var slot=document.getElementById('cathiansAdDock');
+    if(!slot) return;
+    var raf=0;
+    function report(){
+      raf=0;
+      var bridge=window.CATHS_ADS_NATIVE;
+      if(!bridge || typeof bridge.updateInlineBannerPosition!=='function') return;
+      var r=slot.getBoundingClientRect();
+      var vh=window.innerHeight||document.documentElement.clientHeight||0;
+      var vw=window.innerWidth||document.documentElement.clientWidth||0;
+      var visible=!!(r.width>0 && r.height>0 && r.bottom>0 && r.top<vh);
+      try{
+        bridge.updateInlineBannerPosition(
+          Math.round(r.left),
+          Math.round(r.top),
+          Math.round(r.width),
+          Math.round(r.height),
+          Math.max(1,window.devicePixelRatio||1),
+          visible,
+          Math.round(vw),
+          Math.round(vh)
+        );
+      }catch(e){}
+    }
+    function schedule(){
+      if(raf) return;
+      raf=requestAnimationFrame(report);
+    }
+    window.addEventListener('scroll',schedule,{passive:true});
+    window.addEventListener('resize',schedule,{passive:true});
+    window.addEventListener('orientationchange',schedule,{passive:true});
+    if(window.ResizeObserver){
+      try{ new ResizeObserver(schedule).observe(slot); }catch(e){}
+    }
+    if(window.MutationObserver){
+      try{ new MutationObserver(schedule).observe(document.body,{childList:true,subtree:true,attributes:true}); }catch(e){}
+    }
+    window.addEventListener('load',function(){setTimeout(schedule,100);setTimeout(schedule,500);});
+    document.addEventListener('visibilitychange',schedule);
+    setTimeout(schedule,300);
+  })();
+  </script>
+
+  </div>
 </main>
 
 <script>
@@ -7381,6 +7571,83 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!matchingGameModal.
     note.textContent=item==='dark-mode'?'Dark Mode unlocked.':item==='hints'?'Added 5 hints to your inventory.':'Added 3 study hearts to your inventory.';
   }));
   render();
+})();
+</script>
+
+<script id="cathians-admob-bridge">
+(function(){
+  'use strict';
+  const COIN_KEY='cathiansCoins';
+  const REWARD=25;
+  const btn=document.getElementById('coinWatchAdBtn');
+  const note=document.getElementById('coinShopNote');
+
+  function readCoins(){
+    const n=Number(localStorage.getItem(COIN_KEY));
+    return Number.isFinite(n)&&n>=0?n:100;
+  }
+  function writeCoins(n){
+    const v=Math.max(0,Math.floor(Number(n)||0));
+    localStorage.setItem(COIN_KEY,String(v));
+    return v;
+  }
+  function renderCoins(){
+    const c=readCoins();
+    const top=document.getElementById('cgTopCoins');
+    const balance=document.getElementById('coinShopBalance');
+    if(top)top.textContent=c.toLocaleString();
+    if(balance)balance.textContent=c.toLocaleString();
+  }
+  function setNote(message,good){
+    if(!note)return;
+    note.textContent=message;
+    note.style.background=good?'#f1f7f3':'#fff7e8';
+    note.style.color=good?'#3e6d54':'#86601f';
+  }
+  function setBusy(busy){
+    if(!btn)return;
+    btn.disabled=!!busy;
+    btn.setAttribute('aria-busy',String(!!busy));
+    if(!busy){
+      const strong=btn.querySelector('.coin-watch-ad-copy strong');
+      if(strong)strong.textContent='Watch ads to get coins';
+    }
+  }
+
+  window.CATHS_ADS=window.CATHS_ADS||{};
+
+  // Called only by the Android bridge after the rewarded-ad callback succeeds.
+  window.CATHS_ADS.onCoinsRewarded=function(amount){
+    const reward=Math.max(1,Math.floor(Number(amount)||REWARD));
+    const next=writeCoins(readCoins()+reward);
+    renderCoins();
+    setBusy(false);
+    setNote('Reward received: +'+reward+' coins. Your new balance is '+next.toLocaleString()+'.',true);
+  };
+
+  window.CATHS_ADS.onRewardedAvailabilityChanged=function(ready){
+    if(!btn)return;
+    btn.dataset.rewardedReady=ready?'1':'0';
+    btn.disabled=!ready;
+    if(ready){
+      const strong=btn.querySelector('.coin-watch-ad-copy strong');
+      if(strong)strong.textContent='Watch ads to get coins';
+    }
+  };
+
+  btn?.addEventListener('click',function(){
+    if(window.CATHS_ADS_NATIVE && typeof window.CATHS_ADS_NATIVE.watchRewardedCoins==='function'){
+      setBusy(true);
+      setNote('Loading your rewarded ad…',false);
+      try{window.CATHS_ADS_NATIVE.watchRewardedCoins();}
+      catch(e){setBusy(false);setNote('The rewarded ad is not available right now.',false);}
+      return;
+    }
+    setNote('Rewarded ads are available in the Android app.',false);
+  });
+
+  if(btn)btn.disabled=true;
+  renderCoins();
 })();
 </script>
 
