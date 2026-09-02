@@ -11644,6 +11644,112 @@ body.manual-editor-open .cg-shell{
 }
 </style>
 
+<style id="caths-ai-final-header-perfect-alignment">
+/* FINAL: compact header with all three areas on one shared center line */
+#cathsAiFullscreen .caths-ai-header{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)!important;
+  align-items:center!important;
+  justify-items:stretch!important;
+  width:100%!important;
+  min-height:72px!important;
+  height:72px!important;
+  padding:7px 16px!important;
+  margin:0!important;
+  gap:0!important;
+  overflow:visible!important;
+  box-sizing:border-box!important;
+}
+
+#cathsAiFullscreen .caths-ai-back-under-header,
+#cathsAiFullscreen .caths-ai-header-copy,
+#cathsAiFullscreen .caths-ai-cost-pill{
+  position:static!important;
+  align-self:center!important;
+  transform:none!important;
+  margin:0!important;
+}
+
+#cathsAiFullscreen .caths-ai-back-under-header{
+  grid-column:1!important;
+  justify-self:start!important;
+  width:42px!important;
+  height:42px!important;
+}
+
+#cathsAiFullscreen .caths-ai-header-copy{
+  grid-column:2!important;
+  justify-self:center!important;
+  width:100%!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  line-height:1!important;
+}
+
+#cathsAiFullscreen .caths-ai-header-copy h1{
+  margin:0!important;
+  line-height:1.05!important;
+}
+
+#cathsAiFullscreen .caths-ai-header-copy p{
+  margin:4px 0 0!important;
+  line-height:1!important;
+}
+
+#cathsAiFullscreen .caths-ai-cost-pill{
+  grid-column:3!important;
+  justify-self:end!important;
+  min-height:38px!important;
+  height:38px!important;
+  max-width:240px!important;
+}
+
+#cathsAiFullscreen .caths-ai-cost-pill img{
+  width:24px!important;
+  height:24px!important;
+  flex:0 0 24px!important;
+}
+
+@media(max-width:760px){
+  #cathsAiFullscreen .caths-ai-header{
+    min-height:62px!important;
+    height:62px!important;
+    padding:5px 9px!important;
+  }
+
+  #cathsAiFullscreen .caths-ai-back-under-header{
+    width:38px!important;
+    height:38px!important;
+  }
+
+  #cathsAiFullscreen .caths-ai-cost-pill{
+    min-height:34px!important;
+    height:34px!important;
+    max-width:calc(100% - 2px)!important;
+  }
+
+  #cathsAiFullscreen .caths-ai-cost-pill img{
+    width:22px!important;
+    height:22px!important;
+    flex-basis:22px!important;
+  }
+}
+
+@media(max-width:430px){
+  #cathsAiFullscreen .caths-ai-header{padding-inline:6px!important}
+  #cathsAiFullscreen .caths-ai-back-under-header{width:36px!important;height:36px!important}
+  #cathsAiFullscreen .caths-ai-cost-pill{
+    max-width:100%!important;
+    padding-inline:7px!important;
+    font-size:6.5px!important;
+  }
+}
+</style>
+
 <div id="cathsAiFullscreen" aria-hidden="true">
   <header class="caths-ai-header">
     <div class="caths-ai-header-copy">
