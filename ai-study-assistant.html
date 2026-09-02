@@ -4474,6 +4474,78 @@ html.cathians-native-ad-ready .cathians-bottom-ad-dock .ad-inner{
   #cathsAiFullscreen .caths-ai-header-copy p{top:calc(50% + 12px)!important}
 }
 </style>
+
+<style id="caths-ai-semi-header-mrpanda-fix">
+/* Compact semi-header: the divider lines meet the exact vertical center of the subtitle text. */
+#cathsAiFullscreen .caths-ai-header-copy{
+  position:relative!important;
+  align-self:stretch!important;
+  justify-self:stretch!important;
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:0!important;
+  transform:none!important;
+  margin:0!important;
+}
+#cathsAiFullscreen .caths-ai-header-copy h1{
+  position:absolute!important;
+  left:50%!important;
+  top:24%!important;
+  transform:translate(-50%,-50%)!important;
+  margin:0!important;
+  white-space:nowrap!important;
+  line-height:1!important;
+  z-index:3!important;
+}
+#cathsAiFullscreen .caths-ai-header-copy::after{
+  content:none!important;
+  display:none!important;
+}
+#cathsAiFullscreen .caths-ai-header-copy p{
+  position:absolute!important;
+  left:50%!important;
+  top:56%!important;
+  transform:translate(-50%,-50%)!important;
+  margin:0!important;
+  padding:0!important;
+  width:min(250px,90%)!important;
+  min-height:14px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:9px!important;
+  background:transparent!important;
+  white-space:nowrap!important;
+  line-height:1!important;
+  z-index:2!important;
+  font-size:clamp(8px,.85vw,10px)!important;
+  font-weight:850!important;
+  color:#8490a4!important;
+  letter-spacing:.15px!important;
+  text-align:center!important;
+}
+#cathsAiFullscreen .caths-ai-header-copy p::before,
+#cathsAiFullscreen .caths-ai-header-copy p::after{
+  content:"";
+  flex:1 1 auto;
+  min-width:24px;
+  height:1px;
+  background:#dfe5ec;
+  opacity:.95;
+}
+@media(max-width:760px){
+  #cathsAiFullscreen .caths-ai-header-copy h1{top:24%!important}
+  #cathsAiFullscreen .caths-ai-header-copy p{top:57%!important;width:min(230px,88%)!important;gap:8px!important}
+}
+@media(max-width:430px){
+  #cathsAiFullscreen .caths-ai-header-copy h1{top:23%!important}
+  #cathsAiFullscreen .caths-ai-header-copy p{top:58%!important;width:min(215px,92%)!important;gap:7px!important;font-size:7px!important}
+  #cathsAiFullscreen .caths-ai-header-copy p::before,
+  #cathsAiFullscreen .caths-ai-header-copy p::after{min-width:18px}
+}
+</style>
+
 </head>
 <body>
 <main class="page">
@@ -11940,7 +12012,7 @@ body.manual-editor-open .cg-shell{
   <header class="caths-ai-header">
     <div class="caths-ai-header-copy">
       <h1>CATHS-AI</h1>
-      <p>Mr. Panda</p>
+      <p>Mr.Panda Ai Assistant</p>
     </div>
     <button type="button" id="cathsAiBack" class="caths-ai-back-under-header" aria-label="Back to Home" title="Back to Home">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path><path d="M9 12h10"></path></svg>
@@ -12469,20 +12541,6 @@ body.manual-editor-open .cg-shell{
 
   enterBtn.addEventListener('click',()=>sendMessage(replyBox.value));
   replyBox.addEventListener('keydown',e=>{
-    /* Enter sends. Alt+Enter inserts a real new paragraph. Shift+Enter
-       remains a normal newline as well. */
-    if(e.key==='Enter' && e.altKey){
-      e.preventDefault();
-      const start=replyBox.selectionStart ?? replyBox.value.length;
-      const end=replyBox.selectionEnd ?? start;
-      const value=replyBox.value;
-      replyBox.value=value.slice(0,start)+'\n'+value.slice(end);
-      const caret=start+1;
-      replyBox.selectionStart=caret;
-      replyBox.selectionEnd=caret;
-      replyBox.dispatchEvent(new Event('input',{bubbles:true}));
-      return;
-    }
     if(e.key==='Enter'&&!e.shiftKey){
       e.preventDefault();
       sendMessage(replyBox.value);
