@@ -346,7 +346,7 @@ function go(i){show(i);reset();} function reset(){clearInterval(timer);timer=set
 let touchX=0; document.getElementById('galleryBox').addEventListener('touchstart',e=>touchX=e.touches[0].clientX,{passive:true}); document.getElementById('galleryBox').addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-touchX;if(Math.abs(dx)>45){show(current+(dx<0?1:-1));reset()}});
 document.getElementById('closeLightbox').onclick=()=>document.getElementById('lightbox').classList.remove('open');document.getElementById('lightbox').onclick=e=>{if(e.target.id==='lightbox')e.currentTarget.classList.remove('open')};
 const bkbData = [
-  {name:'Sir Neil Francis Ramos',role:'BKB Adviser',photo:'neil.png',tags:['Guidance','Adviser','Mentorship'],quote:'',adviser:true},
+  {name:'Sir Neil Francis Ramos',role:'BKB Adviser',photo:'photos/neil.png',tags:['Guidance','Adviser','Mentorship'],quote:'',adviser:true},
   {kind:'group',label:'Leaders'},
   {name:'James L. Patrick Tejadal',role:'BKB President',photo:'photos/James.png',tags:['BKB','President','Leadership'],quote:'Real friends help each other stay on the right path',leader:true},
   {name:'Jane Nicole Yalung',role:'BKB Vice President',photo:'photos/Jane Nicole.png',tags:['BKB','Vice President','Leadership'],quote:'Be strong enough to say no to vices',leader:true},
@@ -368,7 +368,7 @@ const bkbData = [
 ];
 
 const yesoData = [
-  {name:'Sir Joe Carlo Sahagun',role:'YES-O Adviser',photo:'joe.png',tags:['Guidance','Adviser','Mentorship'],quote:'',adviser:true},
+  {name:'Sir Joe Carlo Sahagun',role:'YES-O Adviser',photo:'photos/joe.png',tags:['Guidance','Adviser','Mentorship'],quote:'',adviser:true},
   {kind:'group',label:'Leaders'},
   {name:'Adrianne M. Macasiog',role:'YES-O President',photo:'photos/Adrianne.png',tags:['YES-O','President','Leadership'],quote:'Leadership without competence is just a title with a flower',leader:true},
   {name:'Leila Iseiah G. Paras',role:'YES-O Vice President',photo:'photos/Leila Iseiah.png',tags:['YES-O','Vice President','Leadership'],quote:'Dream big, start small',leader:true},
