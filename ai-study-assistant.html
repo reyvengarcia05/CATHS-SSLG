@@ -11394,19 +11394,19 @@ body.manual-editor-open .cg-shell{
   .caths-ai-header{
     position:relative;
     flex:0 0 auto;
-    min-height:76px;
+    min-height:68px;
     height:auto;
-    padding:12px clamp(14px,2.2vw,28px);
+    padding:9px clamp(16px,2.8vw,34px);
     display:grid;
     grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);
     align-items:center;
-    gap:clamp(8px,2vw,18px);
+    gap:0;
     border-bottom:1px solid #e3e8ef;
     background:rgba(255,255,255,.98);
     box-shadow:0 5px 18px rgba(22,34,56,.055);
     box-sizing:border-box;
   }
-  .caths-ai-header-copy{grid-column:2;justify-self:stretch;align-self:center;text-align:center;line-height:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:translateY(6px)}
+  .caths-ai-header-copy{grid-column:2;justify-self:stretch;align-self:center;text-align:center;line-height:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:translateY(5px)}
   .caths-ai-header-copy h1{margin:0;font-size:clamp(16px,1.6vw,20px);font-weight:950;letter-spacing:-.35px;color:#10295d;white-space:nowrap}
   .caths-ai-header-copy p{margin:6px 0 0;font-size:clamp(8px,.85vw,10px);font-weight:850;color:#8490a4;letter-spacing:.15px;white-space:nowrap}
 
@@ -11438,7 +11438,7 @@ body.manual-editor-open .cg-shell{
     grid-column:3;
     justify-self:end;
     z-index:3;
-    min-height:36px;
+    min-height:38px;
     width:fit-content;
     max-width:min(220px,100%);
     padding:0 12px;
@@ -11458,7 +11458,7 @@ body.manual-editor-open .cg-shell{
     overflow:hidden;
     text-overflow:ellipsis;
   }
-  .caths-ai-cost-pill img{width:clamp(21px,2vw,26px);height:clamp(21px,2vw,26px);object-fit:contain;display:block;flex:0 0 auto}
+  .caths-ai-cost-pill img{width:22px;height:22px;object-fit:contain;display:block}
 
   .caths-ai-chat-wrap{
     min-height:0;
@@ -11534,11 +11534,11 @@ body.manual-editor-open .cg-shell{
   .caths-ai-paywall-note{margin-top:9px;color:#9aa4b4;font-size:7.5px;min-height:14px}
 
   @media(max-width:760px){
-    .caths-ai-header{min-height:66px;padding:10px 10px;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
-    .caths-ai-header-copy{transform:translateY(5px)}.caths-ai-header-copy h1{font-size:15px}.caths-ai-header-copy p{font-size:7.5px;margin-top:5px}
-    .caths-ai-back-under-header{width:42px;height:42px;border-radius:13px}
+    .caths-ai-header{min-height:60px;padding:8px 12px;grid-template-columns:repeat(3,minmax(0,1fr));gap:0}
+    .caths-ai-header-copy h1{font-size:15px}.caths-ai-header-copy p{font-size:7.5px;margin-top:5px}
+    .caths-ai-back-under-header{width:40px;height:40px;border-radius:13px}
     .caths-ai-back-under-header svg{width:19px;height:19px}
-    .caths-ai-cost-pill{min-height:34px;max-width:100%;padding:0 9px;font-size:6.8px;gap:6px}.caths-ai-cost-pill img{width:19px;height:19px}
+    .caths-ai-cost-pill{min-height:31px;max-width:100%;padding:0 9px;font-size:6.8px;gap:5px}.caths-ai-cost-pill img{width:19px;height:19px}
     .caths-ai-chat-wrap{padding:16px 10px 126px}
     .caths-ai-pane{padding:6px 0 16px;min-height:0}
     .caths-ai-bubble{font-size:10px;padding:10px 12px}
@@ -11558,20 +11558,41 @@ body.manual-editor-open .cg-shell{
   }
 
   @media(max-width:430px){
-    .caths-ai-header{grid-template-columns:repeat(3,minmax(0,1fr));padding-inline:8px}
-    .caths-ai-header-copy{transform:translateY(4px)}.caths-ai-header-copy h1{font-size:14px}
+    .caths-ai-header{grid-template-columns:repeat(3,minmax(0,1fr));padding-inline:9px}
+    .caths-ai-header-copy{transform:translateY(4px)}
+    .caths-ai-header-copy h1{font-size:14px}
     .caths-ai-header-copy p{font-size:7px}
-    .caths-ai-cost-pill{max-width:100%;padding-inline:8px}.caths-ai-cost-pill img{width:20px;height:20px}
+    .caths-ai-cost-pill{max-width:100%;padding-inline:8px}
+    .caths-ai-cost-pill img{width:19px;height:19px}
   }
 
   @media(orientation:landscape) and (max-height:540px){
-    .caths-ai-header{min-height:56px;padding-block:7px}.caths-ai-header-copy{transform:translateY(4px)}
+    .caths-ai-header{min-height:54px;padding-block:6px}
     .caths-ai-back-under-header{width:36px;height:36px}
     .caths-ai-back-under-header svg{width:17px;height:17px}
     .caths-ai-cost-pill{min-height:30px}
+    .caths-ai-cost-pill img{width:18px;height:18px}
     .caths-ai-chat-wrap{padding-top:12px;padding-bottom:108px}
     .caths-ai-footer{padding-top:6px}
   }
+
+/* Final header alignment: edge controls + lowered centered title */
+.caths-ai-header{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)!important;align-items:center!important}
+.caths-ai-back-under-header{justify-self:start!important;align-self:center!important}
+.caths-ai-header-copy{grid-column:2!important;justify-self:stretch!important;align-self:center!important;transform:translateY(5px)!important}
+.caths-ai-cost-pill{grid-column:3!important;justify-self:end!important;align-self:center!important}
+.caths-ai-cost-pill img{width:22px!important;height:22px!important}
+@media(max-width:760px){
+  .caths-ai-header{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)!important}
+  .caths-ai-back-under-header{justify-self:start!important}
+  .caths-ai-header-copy{transform:translateY(4px)!important}
+  .caths-ai-cost-pill{justify-self:end!important}
+  .caths-ai-cost-pill img{width:19px!important;height:19px!important}
+}
+@media(max-width:430px){
+  .caths-ai-cost-pill{padding-inline:7px!important}
+  .caths-ai-cost-pill img{width:19px!important;height:19px!important}
+}
 </style>
 
 <div id="cathsAiFullscreen" aria-hidden="true">
