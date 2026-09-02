@@ -4311,7 +4311,7 @@ window.CATHS_AI_API_URL = "https://cathsmain.reyvengarcia05.workers.dev";
   width:min(100%,728px)!important;
   min-height:84px!important;
   height:auto!important;
-  margin:28px auto 0!important;
+  margin:42px auto 150px!important;
   padding:8px!important;
   z-index:1!important;
   display:flex!important;
@@ -4356,15 +4356,18 @@ html.cathians-native-ad-ready .cathians-bottom-ad-dock .ad-inner{
   .cathians-bottom-ad-dock{
     width:calc(100% - 4px)!important;
     min-height:82px!important;
-    margin:28px 2px 0!important;
+    margin:44px 2px 150px!important;
     padding:7px!important;
     border-radius:16px!important;
   }
   .cathians-bottom-ad-dock .ad-inner{min-height:66px}
+  .cathians-bottom-ad-dock{scroll-margin-bottom:170px!important}
 
   /* Only reserve space after the final content so the fixed nav does not
      cover the page-flow ad. The ad itself is still scrollable content. */
-  .cg-main{padding-bottom:112px!important}
+  /* Large end-of-page safe zone: the ad is scrollable content and the
+     fixed mobile navigation/bubble must never sit on top of it. */
+  .cg-main{padding-bottom:26px!important}
   .page{padding-bottom:0!important}
   body{padding-bottom:0!important}
 
@@ -4378,6 +4381,28 @@ html.cathians-native-ad-ready .cathians-bottom-ad-dock .ad-inner{
   html.cathians-native-ad-ready #cathiansMobileAddReviewer{
     bottom:calc(104px + var(--safe-bottom,0px))!important;
   }
+}
+</style>
+
+<style id="coin-popup-image-icons">
+/* Replace coin symbols in the Coins popup with 3.png at the same footprint. */
+.coin-shop-card .coin-image-dot{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0!important;
+  overflow:hidden!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.coin-shop-card .coin-image-dot::after{display:none!important;content:none!important}
+.coin-shop-card .coin-image-dot img{
+  width:100%!important;
+  height:100%!important;
+  display:block!important;
+  object-fit:contain!important;
+  border:0!important;
 }
 </style>
 </head>
@@ -4643,31 +4668,31 @@ html.cathians-native-ad-ready .cathians-bottom-ad-dock .ad-inner{
         <button class="coin-shop-close" id="coinShopClose" type="button" aria-label="Close shop">×</button>
       </div>
       <div class="coin-balance-card">
-        <div><span class="coin-dot large" aria-hidden="true"></span><span>Available coins</span></div>
+        <div><span class="coin-dot large coin-image-dot" aria-hidden="true"><img src="3.png" alt=""></span><span>Available coins</span></div>
         <strong id="coinShopBalance">100</strong>
       </div>
       <button class="coin-watch-ad-btn" id="coinWatchAdBtn" type="button">
         <span class="coin-watch-ad-icon" aria-hidden="true">▶</span>
         <span class="coin-watch-ad-copy"><strong>Watch ads to get coins</strong><small>Watch one optional rewarded ad</small></span>
-        <span class="coin-watch-ad-reward"><span class="coin-dot small" aria-hidden="true"></span>+25</span>
+        <span class="coin-watch-ad-reward"><span class="coin-dot small coin-image-dot" aria-hidden="true"><img src="3.png" alt=""></span>+25</span>
       </button>
       <div class="coin-shop-section-title">Features</div>
       <button class="shop-feature-card" type="button" data-shop-item="dark-mode" data-price="75">
         <div class="shop-feature-art dark-art"><span>Dark Mode</span></div>
         <div class="shop-feature-copy"><strong>Dark Mode</strong><small>Unlock a darker study appearance for focused sessions.</small></div>
-        <div class="shop-buy"><span class="coin-dot small" aria-hidden="true"></span><span>75</span><b>Buy</b></div>
+        <div class="shop-buy"><span class="coin-dot small coin-image-dot" aria-hidden="true"><img src="3.png" alt=""></span><span>75</span><b>Buy</b></div>
       </button>
       <div class="coin-shop-section-title">Power ups</div>
       <div class="shop-grid">
         <button class="shop-item" type="button" data-shop-item="hints" data-price="25">
           <div class="shop-art"><span class="shop-letter">H</span><em id="shopHintsCount">0</em></div>
           <strong>Hints</strong><small>+5 hints</small>
-          <div class="shop-item-buy"><span class="coin-dot small" aria-hidden="true"></span><span>25</span><b>Buy more</b></div>
+          <div class="shop-item-buy"><span class="coin-dot small coin-image-dot" aria-hidden="true"><img src="3.png" alt=""></span><span>25</span><b>Buy more</b></div>
         </button>
         <button class="shop-item" type="button" data-shop-item="hearts" data-price="20">
           <div class="shop-art"><span class="shop-letter heart-letter">H</span><em id="shopHeartsCount">0</em></div>
           <strong>Study Hearts</strong><small>+3 hearts</small>
-          <div class="shop-item-buy"><span class="coin-dot small" aria-hidden="true"></span><span>20</span><b>Buy more</b></div>
+          <div class="shop-item-buy"><span class="coin-dot small coin-image-dot" aria-hidden="true"><img src="3.png" alt=""></span><span>20</span><b>Buy more</b></div>
         </button>
       </div>
       <div class="coin-shop-note" id="coinShopNote" aria-live="polite">Select an item to purchase.</div>
@@ -9365,9 +9390,9 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
 <style id="panda-gif-final-fix">
 .floating-cat-container{
   position:relative!important;
-  width:320px!important;
-  height:225px!important;
-  flex:0 0 320px!important;
+  width:390px!important;
+  height:275px!important;
+  flex:0 0 390px!important;
   display:flex!important;
   align-items:center!important;
   justify-content:center!important;
@@ -9377,7 +9402,7 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
 }
 .floating-cat-video{
   display:block!important;
-  width:320px!important;
+  width:390px!important;
   max-width:100%!important;
   height:auto!important;
   object-fit:contain!important;
@@ -9403,18 +9428,18 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
 }
 @keyframes pandaFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-14px) scale(1.015)}}
 @media(max-width:980px){
-  .floating-cat-container{width:255px!important;height:200px!important;flex-basis:255px!important}
-  .floating-cat-video{width:255px!important}
+  .floating-cat-container{width:300px!important;height:220px!important;flex-basis:300px!important}
+  .floating-cat-video{width:300px!important}
 }
 @media(max-width:760px){
-  .cg-study-hero{display:grid!important;grid-template-columns:165px minmax(0,1fr)!important;gap:16px!important;justify-content:initial!important}
-  .floating-cat-container{width:165px!important;height:175px!important;flex-basis:165px!important}
-  .floating-cat-video{width:158px!important}
+  .cg-study-hero{display:grid!important;grid-template-columns:190px minmax(0,1fr)!important;gap:16px!important;justify-content:initial!important}
+  .floating-cat-container{width:190px!important;height:195px!important;flex-basis:190px!important}
+  .floating-cat-video{width:185px!important}
 }
 @media(max-width:430px){
-  .cg-study-hero{grid-template-columns:135px minmax(0,1fr)!important;gap:10px!important}
-  .floating-cat-container{width:135px!important;height:150px!important;flex-basis:135px!important}
-  .floating-cat-video{width:130px!important}
+  .cg-study-hero{grid-template-columns:155px minmax(0,1fr)!important;gap:10px!important}
+  .floating-cat-container{width:155px!important;height:165px!important;flex-basis:155px!important}
+  .floating-cat-video{width:152px!important}
 }
 </style>
 
