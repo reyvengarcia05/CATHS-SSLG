@@ -2,87 +2,118 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#03152f">
 <title>Student Profile | CATHS-MAIN</title>
 <link rel="icon" type="image/png" href="sslg-logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{color-scheme:dark;--blue:#3c9aff;--blue-bright:#77c4ff;--dark:#03152f;--glass:rgba(255,255,255,.10);--line:rgba(255,255,255,.12)}
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
-html,body{min-height:100%;background:#03152f}
-body{min-height:100vh;color:#fff;background:radial-gradient(900px 600px at 8% 8%,rgba(0,120,255,.28),transparent 60%),radial-gradient(800px 560px at 92% 14%,rgba(60,154,255,.14),transparent 58%),radial-gradient(700px 500px at 78% 92%,rgba(0,77,190,.24),transparent 62%),linear-gradient(135deg,#03152f 0%,#062b68 34%,#0a4ca2 66%,#173b78 100%);background-attachment:fixed;padding-bottom:95px}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(circle at 20% 25%,rgba(100,180,255,.10) 0 1px,transparent 1.5px),radial-gradient(circle at 78% 72%,rgba(119,196,255,.08) 0 1px,transparent 1.5px);background-size:180px 180px,240px 240px;opacity:.5}
-body::after{content:"";position:fixed;inset:-15%;pointer-events:none;z-index:-1;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.035) 48%,transparent 60%);transform:rotate(-4deg);opacity:.7}
-.header{position:sticky;top:0;z-index:20;padding:12px 20px;display:grid;grid-template-columns:220px 1fr 220px;align-items:center;gap:15px;background:rgba(3,21,47,.42);border-bottom:1px solid rgba(119,196,255,.12);backdrop-filter:blur(20px) saturate(135%);-webkit-backdrop-filter:blur(20px) saturate(135%);box-shadow:0 8px 28px rgba(0,0,0,.10)}
-.logo-group{display:flex;align-items:center;gap:8px}.logo,.caths-logo{width:54px;height:54px;object-fit:contain;display:block}.header-center{text-align:center;padding:0 10px}.header-center h1{font-size:18px;font-weight:700}.header-center p{font-size:11px;opacity:.82;margin-top:2px}.header-spacer{width:100%}
-.container{max-width:980px;margin:0 auto;padding:26px 18px}
-.profile-card{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(18px) saturate(125%);-webkit-backdrop-filter:blur(18px) saturate(125%);border-radius:28px;overflow:hidden;box-shadow:0 18px 55px rgba(0,0,0,.25)}
-.cover{height:205px;background:linear-gradient(135deg,#031d45 0%,#064c9e 52%,#187bd2 100%);position:relative;overflow:hidden}.cover::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 30%,rgba(119,196,255,.28),transparent 38%),linear-gradient(120deg,transparent 25%,rgba(255,255,255,.07) 50%,transparent 72%)}
-.profile-main{padding:0 32px 32px}.avatar-wrap{position:relative;margin-top:-68px;width:136px;height:136px;border-radius:50%;border:6px solid rgba(255,255,255,.95);background:#dfe7f5;overflow:hidden;box-shadow:0 12px 34px rgba(0,0,0,.30),0 0 0 1px rgba(119,196,255,.20)}.avatar-wrap img{width:100%;height:100%;object-fit:cover}.fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:60px;color:#285b9f}
-.name{font-size:30px;font-weight:800;margin-top:16px;letter-spacing:-.3px}.username{font-size:13px;color:rgba(255,255,255,.72);margin-top:2px}.email{font-size:12px;color:rgba(255,255,255,.60);margin-top:5px}.bio{margin-top:15px;line-height:1.75;font-size:14px;max-width:720px;color:rgba(255,255,255,.90)}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.chip{padding:7px 11px;border-radius:999px;background:rgba(60,154,255,.13);border:1px solid rgba(119,196,255,.18);font-size:11px;color:#eaf6ff}
-.actions{display:flex;gap:10px;margin-top:22px}.back-btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:linear-gradient(135deg,#1678d4,#3c9aff);color:#fff;padding:11px 18px;border:1px solid rgba(255,255,255,.14);border-radius:13px;font-weight:800;font-size:13px;box-shadow:0 8px 22px rgba(20,120,255,.20);transition:transform .25s ease,box-shadow .25s ease,filter .25s ease}.back-btn:hover{transform:translateY(-2px);filter:brightness(1.06);box-shadow:0 12px 28px rgba(20,120,255,.28)}
-.status{margin-top:18px;padding:12px;border-radius:14px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08);font-size:12px;text-align:center;color:rgba(255,255,255,.76)}
-.bottom-nav{position:fixed!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;height:75px!important;min-height:75px!important;margin:0!important;padding:4px 10px calc(4px + env(safe-area-inset-bottom))!important;display:flex!important;align-items:center!important;justify-content:space-around!important;gap:0!important;border-top:1px solid rgba(255,255,255,.12)!important;border-radius:0!important;background:rgba(0,0,0,.28)!important;-webkit-backdrop-filter:blur(20px) saturate(135%)!important;backdrop-filter:blur(20px) saturate(135%)!important;box-shadow:0 -10px 28px rgba(0,0,0,.14)!important;z-index:2147483000!important;overflow:visible!important}
-.bottom-nav::before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;pointer-events:none;background:linear-gradient(90deg,transparent 2%,rgba(119,196,255,.10) 18%,rgba(119,196,255,.36) 50%,rgba(119,196,255,.10) 82%,transparent 98%)}
-.nav-item{position:relative;flex:1 1 0;max-width:190px;height:61px;margin:0;padding:5px 8px;border-radius:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center;white-space:nowrap;color:rgba(255,255,255,.78);font:600 11px/1.1 Poppins,Arial,sans-serif;text-decoration:none;transition:color .25s ease,transform .28s cubic-bezier(.22,1,.36,1),background .25s ease,text-shadow .25s ease}.nav-item div{width:30px;height:28px;display:flex;align-items:center;justify-content:center;font-size:23px;line-height:1;color:currentColor;margin:0}.nav-item:hover{color:#fff;transform:translateY(-2px);background:rgba(255,255,255,.035)}.nav-item:active{transform:translateY(-1px) scale(.97)}.nav-item.active{color:#fff;transform:translateY(-4px) scale(1.035);text-shadow:0 0 12px rgba(119,196,255,.16)}.nav-item.active div{font-size:26px;transform:translateY(-1px)}.nav-item.active::after{content:"";position:absolute;left:50%;bottom:3px;width:24px;height:3px;transform:translateX(-50%);border-radius:999px;background:#77c4ff;box-shadow:0 0 13px rgba(119,196,255,.72)}
-@media(max-width:768px){.header{padding:9px 10px;grid-template-columns:105px 1fr 105px}.logo,.caths-logo{width:42px;height:42px}.header-center h1{font-size:13px}.header-center p{font-size:8px}.container{padding:15px 12px}.cover{height:145px}.profile-main{padding:0 19px 23px}.avatar-wrap{width:108px;height:108px;margin-top:-54px}.name{font-size:23px}.bio{font-size:12px}.bottom-nav{height:75px;min-height:75px;padding:4px 4px calc(4px + env(safe-area-inset-bottom))!important}.nav-item{height:61px;padding:5px 3px;border-radius:13px;font-size:10px}.nav-item div{width:27px;height:26px;font-size:21px}.nav-item.active div{font-size:24px}}
-@media(max-width:420px){.bottom-nav{height:70px;min-height:70px}.nav-item{height:55px;font-size:9.5px}.nav-item div{font-size:19px}.nav-item.active div{font-size:22px}}
-@media(prefers-reduced-motion:reduce){.back-btn,.nav-item{transition:none}}
+:root{--blue:#003da5;--dark:#03152f;--cyan:#77c4ff;--glass:rgba(255,255,255,.10);--line:rgba(255,255,255,.14)}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Poppins,Arial,sans-serif}
+html,body{min-height:100%;width:100%}
+body{color:#fff;overflow-x:hidden;padding-bottom:105px;background:radial-gradient(900px 600px at 8% 8%,rgba(0,120,255,.28),transparent 60%),radial-gradient(800px 560px at 92% 14%,rgba(60,154,255,.14),transparent 58%),radial-gradient(700px 500px at 78% 92%,rgba(0,77,190,.24),transparent 62%),linear-gradient(135deg,#03152f 0%,#062b68 34%,#0a4ca2 66%,#173b78 100%);background-attachment:fixed}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(circle at 20% 25%,rgba(119,196,255,.10) 0 1px,transparent 1.5px),radial-gradient(circle at 78% 72%,rgba(119,196,255,.07) 0 1px,transparent 1.5px);background-size:180px 180px,240px 240px;opacity:.5}
+.header{position:sticky;top:0;z-index:100;display:grid;grid-template-columns:220px 1fr 220px;align-items:center;gap:15px;padding:10px 18px;background:rgba(0,21,47,.58);border-bottom:1px solid rgba(255,255,255,.10);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.logo-group{display:flex;align-items:center;gap:7px}.logo,.caths-logo{width:50px;height:50px;object-fit:contain}.header-center{text-align:center}.header-center h1{font-size:18px;font-weight:800}.header-center p{font-size:10px;opacity:.72}.header-right{display:flex;justify-content:flex-end}
+.container{width:min(980px,100%);margin:auto;padding:22px 16px 35px}
+.profile-card{overflow:hidden;border:1px solid var(--line);border-radius:28px;background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.055));box-shadow:0 22px 55px rgba(0,0,0,.22);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.cover{height:205px;position:relative;background:radial-gradient(circle at 25% 25%,rgba(119,196,255,.22),transparent 35%),linear-gradient(135deg,#03152f,#063d91 52%,#0a62c9)}
+.cover:after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 35%,rgba(255,255,255,.06) 50%,transparent 65%);pointer-events:none}
+.profile-main{padding:0 32px 30px}.avatar-wrap{position:relative;margin-top:-68px;width:136px;height:136px;border-radius:50%;border:6px solid rgba(255,255,255,.96);background:#dce8f7;overflow:hidden;box-shadow:0 12px 34px rgba(0,0,0,.28);z-index:2}.avatar-wrap img{width:100%;height:100%;object-fit:cover}.fallback{width:100%;height:100%;display:grid;place-items:center;color:#174c9a;font-size:50px;font-weight:800}
+.name-row{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:16px}.name{font-size:30px;font-weight:800;line-height:1.2}.username{font-size:13px;opacity:.72;margin-top:3px}.bio{margin-top:14px;max-width:760px;font-size:13px;line-height:1.7;opacity:.9}.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.chip{display:inline-flex;align-items:center;padding:7px 11px;border-radius:999px;background:rgba(119,196,255,.10);border:1px solid rgba(119,196,255,.18);font-size:10px;font-weight:700}
+.admin-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;background:#e8f2ff;color:#1769d1;border:1px solid #cfe2ff;font-size:9px;font-weight:800;line-height:1.5;vertical-align:middle;white-space:nowrap}.admin-check{display:inline-grid;place-items:center;width:13px;height:13px;border-radius:50%;background:#2b86ff;color:#fff;font-size:8px;font-weight:900}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}.action-btn{border:1px solid rgba(119,196,255,.20);background:rgba(119,196,255,.11);color:#fff;padding:10px 15px;border-radius:12px;font-size:11px;font-weight:800;text-decoration:none;transition:.22s}.action-btn:hover{transform:translateY(-2px);background:rgba(119,196,255,.18)}
+.profile-sections{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:14px}.section-card{border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.065);padding:17px}.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}.section-head h3{font-size:15px}.count{min-width:28px;padding:4px 8px;text-align:center;border-radius:999px;background:rgba(119,196,255,.12);border:1px solid rgba(119,196,255,.16);font-size:9px;font-weight:800}.friends-list{display:grid;gap:9px}.friend-row{display:flex;align-items:center;gap:10px;padding:9px;border-radius:13px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.07);text-decoration:none;color:#fff}.friend-avatar{width:39px;height:39px;border-radius:50%;object-fit:cover;background:#dce8f7;display:grid;place-items:center;color:#174c9a;font-size:13px;font-weight:800;flex:0 0 auto}.friend-info{min-width:0}.friend-info strong{font-size:11px;display:flex;align-items:center;flex-wrap:wrap;gap:3px}.friend-info small{display:block;font-size:9px;opacity:.6;margin-top:1px}.empty,.loading{padding:20px;text-align:center;font-size:10px;opacity:.62;border:1px dashed rgba(255,255,255,.12);border-radius:13px}.post-list{display:grid;gap:11px}.post{padding:13px;border:1px solid rgba(255,255,255,.09);border-radius:15px;background:rgba(255,255,255,.055)}.post-top{display:flex;align-items:center;gap:9px}.post-avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;background:#dce8f7;display:grid;place-items:center;color:#174c9a;font-size:11px;font-weight:800}.post-author{font-size:10px;font-weight:800}.post-time{font-size:8px;opacity:.52;margin-top:2px}.post-text{font-size:11px;line-height:1.6;margin-top:10px;white-space:pre-wrap;word-break:break-word}.post-meta{margin-top:9px;font-size:8px;opacity:.48}.status{margin-top:18px;padding:11px 13px;border-radius:13px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.07);font-size:10px;text-align:center;opacity:.72}
+#cathsMasterNav{position:fixed!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;height:75px!important;min-height:75px!important;margin:0!important;padding:4px 10px calc(4px + env(safe-area-inset-bottom))!important;display:flex!important;align-items:center!important;justify-content:space-around!important;gap:0!important;border-top:1px solid rgba(255,255,255,.12)!important;background:rgba(0,0,0,.28)!important;-webkit-backdrop-filter:blur(20px) saturate(135%)!important;backdrop-filter:blur(20px) saturate(135%)!important;box-shadow:0 -10px 28px rgba(0,0,0,.14)!important;z-index:2147483000!important;overflow:visible!important;isolation:isolate}
+#cathsMasterNav:before{content:"";position:absolute;left:0;right:0;top:-1px;height:1px;pointer-events:none;background:linear-gradient(90deg,transparent 2%,rgba(119,196,255,.10) 18%,rgba(119,196,255,.36) 50%,rgba(119,196,255,.10) 82%,transparent 98%)}
+#cathsMasterNav .nav-glider{position:absolute;z-index:0;top:6px;left:0;height:61px;width:0;border-radius:15px;background:linear-gradient(180deg,rgba(60,154,255,.20),rgba(60,154,255,.07));border:1px solid rgba(119,196,255,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 7px 24px rgba(20,120,255,.12);opacity:0;pointer-events:none;transition:transform .52s cubic-bezier(.22,1,.36,1),width .30s ease,opacity .16s ease}
+#cathsMasterNav .nav-item{position:relative!important;z-index:1!important;flex:1 1 0!important;width:auto!important;max-width:190px!important;height:61px!important;margin:0!important;padding:5px 8px!important;border-radius:15px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;text-align:center!important;white-space:nowrap!important;color:rgba(255,255,255,.78)!important;font:600 11px/1.1 Poppins,Arial,sans-serif!important;text-decoration:none!important;cursor:pointer;user-select:none;transition:color .25s ease,transform .28s cubic-bezier(.22,1,.36,1),background .25s ease,text-shadow .25s ease!important}
+#cathsMasterNav .nav-icon{width:30px;height:28px;display:flex;align-items:center;justify-content:center;color:currentColor;transition:transform .28s cubic-bezier(.22,1,.36,1)}#cathsMasterNav .nav-icon svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.nav-item.active .nav-icon svg{width:27px;height:27px}.nav-item:hover{color:#fff!important;transform:translateY(-2px)!important;background:rgba(255,255,255,.035)!important}.nav-item:active{transform:translateY(-1px) scale(.97)!important}.nav-item.active{color:#fff!important;transform:translateY(-4px) scale(1.035)!important;text-shadow:0 0 12px rgba(119,196,255,.16)}.nav-item.active:after{content:""!important;position:absolute;left:50%;bottom:3px;width:24px;height:3px;transform:translateX(-50%);border-radius:999px;background:#77c4ff;box-shadow:0 0 13px rgba(119,196,255,.72)}
+#cathsMasterNav .profile-nav-icon{width:29px;height:29px;display:flex;align-items:center;justify-content:center;border-radius:50%;overflow:hidden;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#fff;font:600 11px/1 Poppins,Arial,sans-serif}.profile-nav-icon img{width:27px;height:27px;object-fit:cover;border-radius:50%}.nav-item.active .profile-nav-icon{box-shadow:0 0 0 2px rgba(119,196,255,.18),0 0 14px rgba(119,196,255,.18)}
+@media(max-width:768px){.header{grid-template-columns:100px 1fr 100px;padding:8px 10px}.logo,.caths-logo{width:39px;height:39px}.header-center h1{font-size:13px}.header-center p{font-size:7px}.container{padding:14px 11px 25px}.cover{height:145px}.profile-main{padding:0 18px 22px}.avatar-wrap{width:106px;height:106px;margin-top:-53px}.name{font-size:23px}.profile-sections{grid-template-columns:1fr}.section-card{padding:14px}.post-text{font-size:10.5px}#cathsMasterNav{height:75px!important;min-height:75px!important;padding:4px 4px calc(4px + env(safe-area-inset-bottom))!important}#cathsMasterNav .nav-item{height:61px!important;padding:5px 3px!important;border-radius:13px!important;font-size:10px!important}#cathsMasterNav .nav-icon{width:27px;height:26px}#cathsMasterNav .nav-icon svg{width:22px;height:22px}.nav-item.active .nav-icon svg{width:24px;height:24px}.profile-nav-icon{width:26px!important;height:26px!important}.profile-nav-icon img{width:24px!important;height:24px!important}}
+@media(max-width:420px){.header{grid-template-columns:80px 1fr 80px}.logo,.caths-logo{width:34px;height:34px}.header-center h1{font-size:11px}.cover{height:125px}.name{font-size:21px}#cathsMasterNav{height:70px!important;min-height:70px!important}#cathsMasterNav .nav-item{height:55px!important;font-size:9.5px!important}#cathsMasterNav .nav-icon{height:24px}.nav-item.active .nav-icon svg{width:22px;height:22px}}
 </style>
 </head>
 <body>
 <header class="header">
   <div class="logo-group"><img src="sslg-logo.png" class="logo" alt="SSLG"><img src="caths-logo.png" class="caths-logo" alt="CATHS"></div>
   <div class="header-center"><h1>CATHS-MAIN Student Profile</h1><p>School Community Profile</p></div>
-  <div class="header-spacer"></div>
+  <div class="header-right"></div>
 </header>
 <main class="container">
   <div class="profile-card">
     <div class="cover"></div>
     <section class="profile-main">
-      <div class="avatar-wrap"><img id="avatar" style="display:none" alt="Profile photo"><div id="fallback" class="fallback">👤</div></div>
-      <h2 id="name" class="name">Loading...</h2>
+      <div class="avatar-wrap"><img id="avatar" style="display:none" alt="Profile photo"><div id="fallback" class="fallback">U</div></div>
+      <div class="name-row"><h2 id="name" class="name">Loading...</h2><span id="adminBadge"></span></div>
       <div id="username" class="username"></div>
-      <div id="email" class="email"></div>
       <div id="bio" class="bio">Loading profile...</div>
-      <div class="chips"><span id="sectionChip" class="chip" style="display:none"></span><span class="chip">🎓 CATHS-MAIN Student</span></div>
-      <div class="actions"><a class="back-btn" href="friends.html">← Back to Friends</a></div>
+      <div class="chips"><span id="sectionChip" class="chip" style="display:none"></span><span class="chip">CATHS-MAIN Student</span></div>
+      <div class="actions"><a class="action-btn" href="friends.html">Back to Friends</a><a id="messageBtn" class="action-btn" href="#">Message</a></div>
+      <div class="profile-sections">
+        <section class="section-card"><div class="section-head"><h3>Posts</h3><span id="postsCount" class="count">0</span></div><div id="postsList" class="post-list"><div class="loading">Loading posts...</div></div></section>
+        <section class="section-card"><div class="section-head"><h3>Friends</h3><span id="friendsCount" class="count">0</span></div><div id="friendsList" class="friends-list"><div class="loading">Loading friends...</div></div></section>
+      </div>
       <div id="status" class="status">Loading profile...</div>
     </section>
   </div>
 </main>
-<nav class="bottom-nav">
-  <a href="index.html" class="nav-item"><div>🏠</div><span>Home</span></a>
-  <a href="news.html" class="nav-item"><div>📢</div><span>News</span></a>
-  <a href="voice.html" class="nav-item"><div>🗣️</div><span>Student Voice</span></a>
-  <a href="friends.html" class="nav-item active"><div>👥</div><span>Friends</span></a>
-  <a href="profile.html" class="nav-item"><div>👤</div><span>Profile</span></a>
+<nav id="cathsMasterNav" aria-label="Primary navigation">
+  <div class="nav-glider" aria-hidden="true"></div>
+  <a href="index.html" class="nav-item" data-route="home" aria-label="Home"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.8 12 3l9 7.8"/><path d="M5.5 9.5V21h13V9.5"/><path d="M9.5 21v-6.5h5V21"/></svg></span><span>Home</span></a>
+  <a href="news.html" class="nav-item" data-route="news-feed" aria-label="News Feed"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg></span><span>News Feed</span></a>
+  <a href="voice.html" class="nav-item" data-route="voice" aria-label="Student Voice"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5h14v10H9l-4 3v-13z"/><path d="M9 9.5h6M9 12.5h4"/></svg></span><span>Student Voice</span></a>
+  <a href="friends.html" class="nav-item active" data-route="friends" aria-label="Friends"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 19c.5-3.2 2.2-5 5.5-5s5 1.8 5.5 5"/><circle cx="17" cy="9" r="2.3"/><path d="M15.5 14.5c2.5.1 4.1 1.5 4.7 4"/></svg></span><span>Friends</span></a>
+  <a href="profile.html" class="nav-item" data-route="profile" aria-label="Profile"><span class="profile-nav-icon" id="masterProfilePhoto">U</span><span>Profile</span></a>
 </nav>
 <script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-import {getFirestore,doc,getDoc} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-const firebaseConfig={apiKey:"AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",authDomain:"caths-page.firebaseapp.com",projectId:"caths-page",storageBucket:"caths-page.firebasestorage.app",messagingSenderId:"945498022620",appId:"1:945498022620:web:71aeb4cd2472e061aeca19",measurementId:"G-CBG1YSK13G"};
+import {initializeApp} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js';
+import {getAuth,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js';
+import {getFirestore,doc,getDoc,getDocs,collection,query,where,limit} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js';
+const firebaseConfig={apiKey:'AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc',authDomain:'caths-page.firebaseapp.com',projectId:'caths-page',storageBucket:'caths-page.firebasestorage.app',messagingSenderId:'945498022620',appId:'1:945498022620:web:71aeb4cd2472e061aeca19',measurementId:'G-CBG1YSK13G'};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
-const $=id=>document.getElementById(id); const params=new URLSearchParams(location.search); const uid=params.get('uid');
-function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[c]));}
-async function load(){
-  if(!uid){$('status').textContent='No profile was selected.';return;}
-  try{
-    const snap=await getDoc(doc(db,'users',uid));
-    if(!snap.exists()){ $('name').textContent='Profile not found'; $('bio').textContent='This student profile is no longer available.'; $('status').textContent='Profile unavailable.'; return; }
-    const d=snap.data()||{};
-    $('name').textContent=d.name||d.nickname||d.displayName||'Student';
-    $('username').textContent=d.username?`@${d.username}`:'';
-    $('email').textContent='';
-    $('bio').textContent=d.bio||'No bio yet.';
-    if(d.section){$('sectionChip').style.display='inline-flex';$('sectionChip').textContent=`📚 ${d.section}`;}
-    if(d.photoURL){$('avatar').src=d.photoURL;$('avatar').style.display='block';$('fallback').style.display='none';}
-    $('status').textContent='Profile loaded successfully.';
-  }catch(e){console.error(e);$('name').textContent='Unable to load profile';$('bio').textContent='Please check your Firebase Firestore rules.';$('status').textContent='Could not load this profile.';}
+const $=id=>document.getElementById(id),params=new URLSearchParams(location.search),uid=params.get('uid');
+const VERIFIED_ADMIN_EMAILS=new Set(['reyvengarcia15@gmail.com','reyvenbermudo091@gmail.com','reyvengarcia05@gmail.com','chezcadc14@gmail.com','nathanielgarc679@gmail.com','marteena.133@gmail.com','gabbicastillo0126@gmail.com','leddadanielle91@gmail.com','jennapastor062@gmail.com','dhenmark1313@gmail.com','christianangelointes0@gmail.com','alexaislacruz@gmail.com','galangjullianne016@gmail.com','vanessajotic2403@gmail.com','aquinobernardjr0@gmail.com','angellyar0909@gmail.com','vhergelnarciso@gmail.com','sicatmadisson487@gmail.com'].map(x=>x.toLowerCase()));
+const isAdmin=u=>!!u&&(u.isAdmin===true||u.admin===true||String(u.role||'').toLowerCase()==='admin'||VERIFIED_ADMIN_EMAILS.has(String(u.email||u.fromEmail||u.toEmail||'').trim().toLowerCase()));
+const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+const badge=u=>isAdmin(u)?'<span class="admin-badge"><span class="admin-check">✓</span>ADMIN</span>':'';
+function avatar(user,cls){if(user?.photoURL)return `<img class="${cls}" src="${esc(user.photoURL)}" alt="">`;return `<span class="${cls}">${esc((user?.name||user?.nickname||user?.displayName||'U').charAt(0).toUpperCase())}</span>`}
+function formatTime(ts){if(!ts?.toDate)return '';const d=ts.toDate();return d.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});}
+async function loadProfile(){
+ if(!uid){$('status').textContent='No profile was selected.';return;}
+ try{
+  const snap=await getDoc(doc(db,'users',uid));
+  if(!snap.exists()){$('name').textContent='Profile not found';$('bio').textContent='This student profile is no longer available.';$('status').textContent='Profile unavailable.';return;}
+  const d=snap.data()||{};
+  $('name').textContent=d.name||d.nickname||d.displayName||'Student';$('adminBadge').innerHTML=badge(d);$('username').textContent=d.username?`@${d.username}`:'';$('bio').textContent=d.bio||'No bio yet.';
+  if(d.section){$('sectionChip').style.display='inline-flex';$('sectionChip').textContent=d.section;}
+  if(d.photoURL){$('avatar').src=d.photoURL;$('avatar').style.display='block';$('fallback').style.display='none';}
+  const me=auth.currentUser;if(me?.uid!==uid&&me){$('messageBtn').href=`messages.html?uid=${encodeURIComponent(uid)}`;}else{$('messageBtn').style.display='none';}
+  await Promise.all([loadPosts(d),loadFriends()]);$('status').textContent='Profile loaded successfully.';
+ }catch(e){console.error(e);$('status').textContent='Could not load this profile. Check your Firestore rules.';}
 }
-onAuthStateChanged(auth,user=>{ if(!user){ location.href='profile.html'; return; } load(); });
+async function loadPosts(profile){
+ const list=$('postsList');try{
+  const snap=await getDocs(query(collection(db,'posts'),where('authorUid','==',uid),limit(100)));
+  const posts=snap.docs.map(x=>({id:x.id,...x.data()})).sort((a,b)=>(b.createdAt?.toMillis?.()||0)-(a.createdAt?.toMillis?.()||0));
+  $('postsCount').textContent=posts.length;
+  if(!posts.length){list.innerHTML='<div class="empty">No posts yet.</div>';return;}
+  list.innerHTML=posts.map(p=>`<article class="post"><div class="post-top">${avatar({...profile},'post-avatar')}<div><div class="post-author">${esc(p.authorName||profile.name||'Student')} ${badge(profile)}</div><div class="post-time">${formatTime(p.createdAt)}</div></div></div><div class="post-text">${esc(p.text||'')}</div><div class="post-meta">${Number(p.likeCount||0)} reactions · ${Number(p.commentCount||0)} comments · ${Number(p.shareCount||0)} shares</div></article>`).join('');
+ }catch(e){console.error('posts',e);$('postsCount').textContent='0';list.innerHTML='<div class="empty">Posts are temporarily unavailable.</div>';}
+}
+async function loadFriends(){
+ const list=$('friendsList');try{
+  const snap=await getDocs(query(collection(db,'friends',uid,'list'),limit(100)));
+  const rows=snap.docs.map(x=>({id:x.id,...x.data(),uid:x.data()?.uid||x.id}));
+  $('friendsCount').textContent=rows.length;
+  if(!rows.length){list.innerHTML='<div class="empty">No friends yet.</div>';return;}
+  const enriched=await Promise.all(rows.map(async f=>{try{const s=await getDoc(doc(db,'users',f.uid));return s.exists()?{...f,...s.data()}:f;}catch{return f;}}));
+  enriched.sort((a,b)=>String(a.name||a.nickname||a.username||'').localeCompare(String(b.name||b.nickname||b.username||'')));
+  list.innerHTML=enriched.map(f=>`<a class="friend-row" href="user-profile.html?uid=${encodeURIComponent(f.uid)}">${avatar(f,'friend-avatar')}<div class="friend-info"><strong>${esc(f.name||f.nickname||f.displayName||'Student')} ${badge(f)}</strong><small>${f.username?'@'+esc(f.username):'Student'}</small></div></a>`).join('');
+ }catch(e){console.error('friends',e);$('friendsCount').textContent='0';list.innerHTML='<div class="empty">Friends are temporarily unavailable.</div>';}
+}
+function setupNav(){const nav=$('cathsMasterNav'),items=[...nav.querySelectorAll('.nav-item')],glider=nav.querySelector('.nav-glider');function move(){const active=nav.querySelector('.nav-item.active');if(!active)return;const nr=nav.getBoundingClientRect(),r=active.getBoundingClientRect();glider.style.width=r.width+'px';glider.style.transform=`translate3d(${r.left-nr.left}px,0,0)`;glider.style.opacity='1'}requestAnimationFrame(move);window.addEventListener('resize',move);items.forEach(item=>item.addEventListener('click',()=>{items.forEach(x=>x.classList.remove('active'));item.classList.add('active');requestAnimationFrame(move)}));const p=$('masterProfilePhoto');const u=auth.currentUser;if(u?.photoURL)p.innerHTML=`<img src="${esc(u.photoURL)}" alt="">`;else if(u?.displayName)p.textContent=esc(u.displayName.charAt(0).toUpperCase());}
+onAuthStateChanged(auth,user=>{if(!user){location.href='profile.html';return;}setupNav();loadProfile();});
 </script>
 </body>
 </html>
