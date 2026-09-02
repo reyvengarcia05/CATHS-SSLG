@@ -7090,38 +7090,16 @@ function mergeSavedMaterials(){
   let localDocs=[];try{localDocs=JSON.parse(localStorage.getItem(storageKey)||'[]')}catch{localDocs=[]}
   return {localDocs,storageKey};
 }
-function deletedMaterialsKey(){
-  return currentUser?('cathsStudyMaterialsDeleted:'+currentUser.uid):'cathsStudyMaterialsDeleted:guest';
-}
-function getDeletedMaterialIds(){
-  try{
-    const raw=JSON.parse(localStorage.getItem(deletedMaterialsKey())||'[]');
-    return new Set(Array.isArray(raw)?raw.map(String):[]);
-  }catch{return new Set();}
-}
-function markStudyMaterialDeleted(id){
-  const target=String(id||'').trim();
-  if(!target)return;
-  try{
-    const key=deletedMaterialsKey();
-    const raw=JSON.parse(localStorage.getItem(key)||'[]');
-    const arr=Array.isArray(raw)?raw.map(String):[];
-    if(!arr.includes(target))arr.push(target);
-    localStorage.setItem(key,JSON.stringify(arr.slice(-500)));
-  }catch{}
-}
 async function fetchSavedMaterials(){
   const {localDocs}=mergeSavedMaterials();
-  const deleted=getDeletedMaterialIds();
-  const visibleLocal=localDocs.filter(x=>!deleted.has(String(x?.id||'')));
-  if(!currentUser||!window.studyFirebase)return visibleLocal;
+  if(!currentUser||!window.studyFirebase)return localDocs;
   try{
     const {db,collection,query,where,limit,getDocs}=window.studyFirebase;
     const snap=await getDocs(query(collection(db,'studyMaterials'),where('ownerUid','==',currentUser.uid),limit(100)));
-    const cloud=snap.docs.map(d=>({id:d.id,...(d.data()||{})})).filter(x=>!deleted.has(String(x.id)));
-    const map=new Map(); cloud.forEach(x=>map.set(String(x.id),x)); visibleLocal.forEach(x=>{if(!map.has(String(x.id)))map.set(String(x.id),x)});
+    const cloud=snap.docs.map(d=>({id:d.id,...(d.data()||{})}));
+    const map=new Map(); cloud.forEach(x=>map.set(String(x.id),x)); localDocs.forEach(x=>{if(!map.has(String(x.id)))map.set(String(x.id),x)});
     return [...map.values()].sort((a,b)=>new Date(b.savedAt||0)-new Date(a.savedAt||0));
-  }catch{return visibleLocal;}
+  }catch{return localDocs;}
 }
 
 const DECK_COLOR_PALETTE=["#6C63FF", "#FF5C8A", "#10B981", "#F59E0B", "#3B82F6", "#A855F7", "#14B8A6", "#F97316", "#EC4899", "#22C55E", "#8B5CF6", "#06B6D4", "#EF4444", "#84CC16", "#E11D48", "#0EA5E9", "#D946EF", "#F97316", "#2563EB", "#7C3AED"];
@@ -9827,12 +9805,14 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
   async function loadDecks(){
     const box=$('#cgDecksAll');if(!box)return;
     let docs=[];try{docs=await (typeof fetchSavedMaterials==='function'?fetchSavedMaterials():[])}catch(_){}
+    let deletedIds=[];try{deletedIds=JSON.parse(localStorage.getItem('cathsStudyMaterialDeletedIds')||'[]')}catch(_){deletedIds=[]}
+    if(deletedIds.length) docs=docs.filter(x=>!deletedIds.includes(String(x.id)));
     if(!docs.length){box.innerHTML='<div class="cg-view-empty">No saved decks yet. Use Add Reviewer to create your first one.</div>';return;}
     const count=item=>{try{return typeof cardCount==='function'?cardCount(item):(item?.content?.cards?.length||0)}catch(_){return 0}};
     box.classList.add('v25-compact-grid');
     box.innerHTML=docs.map((item,index)=>{
       const color=typeof getDeckColor==='function'?getDeckColor(item,index):DECK_COLOR_PALETTE[index%DECK_COLOR_PALETTE.length];
-      return `<article class="cg-deck-card v25-compact-card" tabindex="0" style="--deck-accent:${color}" data-v28-deck-id="${esc(item.id)}"><div class="v25-deck-color"></div><div class="v25-deck-body"><h3>${esc(item.topic||'Untitled Study Material')}</h3><div class="v25-deck-meta"><span class="v25-deck-count">${count(item)} cards</span><span class="v25-deck-open-hint">Open deck</span></div><div class="v27-card-actions"><button type="button" class="v27-card-copy" data-v28-copy="${esc(item.id)}">Copy</button><button type="button" class="v27-card-edit" data-v28-edit="${esc(item.id)}">Edit Decks</button><button type="button" class="v27-card-play" data-v28-play="${esc(item.id)}">Play</button></div></div></article>`;
+      return `<article class="cg-deck-card v25-compact-card" tabindex="0" style="--deck-accent:${color}" data-v28-deck-id="${esc(item.id)}"><div class="v25-deck-color"></div><div class="v25-deck-body"><h3>${esc(item.topic||'Untitled Study Material')}</h3><div class="v25-deck-meta"><span class="v25-deck-count">${count(item)} cards</span><span class="v25-deck-open-hint">Open deck</span></div><div class="v27-card-actions"><button type="button" class="v27-card-copy" data-v28-copy="${esc(item.id)}">Copy</button><button type="button" class="v27-card-edit" data-v28-edit="${esc(item.id)}">Edit Decks</button><button type="button" class="v27-card-play" data-v28-play="${esc(item.id)}">Play</button><button type="button" class="v27-card-delete" data-v28-delete="${esc(item.id)}">Delete</button></div></div></article>`;
     }).join('');
 
     box.querySelectorAll('[data-v28-deck-id]').forEach(card=>{
@@ -9842,6 +9822,33 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     box.querySelectorAll('[data-v28-copy]').forEach(btn=>btn.onclick=async e=>{e.stopPropagation();const item=docs.find(x=>String(x.id)===String(btn.dataset.v28Copy));if(!item)return;const payload=location.href+'#deck='+encodeURIComponent(item.id||item.topic||'deck');try{await navigator.clipboard.writeText(payload);toast('Deck link copied.')}catch(_){toast('Copy is not available in this browser.')}});
     box.querySelectorAll('[data-v28-edit]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();const item=docs.find(x=>String(x.id)===String(btn.dataset.v28Edit));if(item)window.__v27OpenEditDeck?.(item)});
     box.querySelectorAll('[data-v28-play]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();const item=docs.find(x=>String(x.id)===String(btn.dataset.v28Play));if(item)window.__v28LaunchDeckGame?window.__v28LaunchDeckGame(item):window.__v27PlayDeckGame?.(item)});
+    box.querySelectorAll('[data-v28-delete]').forEach(btn=>btn.onclick=async e=>{
+      e.preventDefault();e.stopPropagation();
+      const id=String(btn.dataset.v28Delete||''); if(!id)return;
+      const item=docs.find(x=>String(x.id)===id); if(!item)return;
+      btn.disabled=true; btn.textContent='Deleting…';
+      const tombstoneKey='cathsStudyMaterialDeletedIds';
+      let deletedIds=[]; try{deletedIds=JSON.parse(localStorage.getItem(tombstoneKey)||'[]')}catch(_){deletedIds=[]}
+      if(!deletedIds.includes(id)) deletedIds.push(id);
+      try{localStorage.setItem(tombstoneKey,JSON.stringify(deletedIds.slice(-300)))}catch(_){ }
+      try{
+        const u=window.currentUser||window.studyFirebase?.auth?.currentUser||null;
+        if(u&&window.studyFirebase&&!id.startsWith('local-')){
+          const {db,doc,deleteDoc}=window.studyFirebase;
+          if(typeof deleteDoc==='function') await deleteDoc(doc(db,'studyMaterials',id));
+        }
+      }catch(err){console.warn('Permanent deck delete cloud sync failed:',err)}
+      try{
+        const key=window.currentUser?('cathsStudyMaterials:'+window.currentUser.uid):'cathsStudyMaterials:guest';
+        const arr=JSON.parse(localStorage.getItem(key)||'[]');
+        localStorage.setItem(key,JSON.stringify(arr.filter(x=>String(x.id)!==id)));
+      }catch(_){ }
+      const card=btn.closest('.cg-deck-card');
+      if(card){card.style.transition='opacity .18s ease,transform .18s ease';card.style.opacity='0';card.style.transform='scale(.98)';setTimeout(()=>card.remove(),180)}
+      const remaining=box.querySelectorAll('.cg-deck-card').length-1;
+      if(remaining<=0){box.innerHTML='<div class="cg-view-empty">No saved decks yet. Use Add Reviewer to create your first one.</div>'}
+      window.showGameToast?.('Deleted permanently.');
+    });
   }
   window.loadCgDecksView=loadDecks;
   setTimeout(()=>loadDecks(),500);
@@ -10555,31 +10562,30 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     if(!item)return;
     const id=String(item.id||'');
     if(!id)return;
-    /* Create a local deletion tombstone first so this material can never
-       reappear from a stale/local cache even if a cloud response lags. */
-    markStudyMaterialDeleted(id);
     let localOk=true,cloudAttempted=false,cloudOk=true;
     try{
       const key=storageKey();
       const arr=JSON.parse(localStorage.getItem(key)||'[]');
       localStorage.setItem(key,JSON.stringify(arr.filter(x=>String(x.id)!==id)));
-    }catch(e){localOk=false;console.warn('Permanent local delete failed:',e)}
+    }catch(e){localOk=false;console.warn('Recycle Bin local delete failed:',e)}
     const u=currentUser();
     if(u&&window.studyFirebase&&!id.startsWith('local-')){
       cloudAttempted=true;
       try{
         const {db,doc,deleteDoc}=window.studyFirebase;
         if(typeof deleteDoc==='function')await deleteDoc(doc(db,'studyMaterials',id));
-      }catch(e){cloudOk=false;console.warn('Permanent cloud delete failed:',e)}
+      }catch(e){cloudOk=false;console.warn('Recycle Bin cloud delete failed:',e)}
     }
-    /* Remove it from every visible My Decks/Game Reviewers renderer right away.
-       The deletion tombstone also prevents a stale cloud copy from returning. */
-    removeRenderedDeck(id);
-    await render();
     if(localOk&&(cloudOk||!cloudAttempted)){
-      window.showGameToast?.('Deleted permanently.');
+      /* Permanently remove it without reloading the deck view. Re-fetching
+         immediately can briefly show a stale cloud copy; update the current
+         cards in-place instead. */
+      removeRenderedDeck(id);
+      window.showGameToast?.('Deck permanently deleted.');
+      await render();
     }else{
-      window.showGameToast?.('Deleted from this device. Cloud deletion could not be confirmed.');
+      await render();
+      window.showGameToast?.('The deck could not be fully removed.');
     }
   }
   async function render(){
@@ -13425,6 +13431,17 @@ body.manual-editor-open .cg-shell{
   window.addEventListener('load',applyNewDeckCopy);
   setTimeout(applyNewDeckCopy,120);
 })();
+</script>
+
+<style id="direct-permanent-delete-ui">
+#cgLibraryView .v27-card-delete{border:1px solid #efcdd2!important;background:#fff6f7!important;color:#b33b4b!important;border-radius:10px!important;padding:8px 10px!important;font:800 8px/1 Poppins,sans-serif!important;cursor:pointer!important}
+#cgLibraryView .v27-card-delete:hover{background:#ffedf0!important;border-color:#e8adb6!important}
+#cgLibraryView .v27-card-delete:disabled{opacity:.6!important;cursor:wait!important}
+#cgLibraryView #cgOpenRecycleBin{display:none!important}
+</style>
+</body>
+</html>
+
 
 <style id="cathians-fixed-sidebar-black-add-reviewer">
 /* PC/Desktop: keep the left sidebar fixed while the page scrolls. */
@@ -13512,7 +13529,3 @@ body.manual-editor-open .cg-shell{
   }
 }
 </style>
-  
-</script>
-</body>
-</html>
