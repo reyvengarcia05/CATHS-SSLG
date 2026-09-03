@@ -1,6 +1,39 @@
+# Git
 .git
 .git/**
+
+# Node / Wrangler
 node_modules
 node_modules/**
 .wrangler
 .wrangler/**
+
+# Package / development files
+package-lock.json
+package.json
+
+# Project archives
+*.zip
+*.rar
+*.7z
+*.tar
+*.gz
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Source/config files that should NOT be publicly served
+README.md
+
+# Cloudflare / development configuration
+wrangler.toml
+wrangler.jsonc
+.dev.vars
+.dev.vars.*
+.env
+.env.*
