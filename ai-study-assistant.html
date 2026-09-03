@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#f7f8fa">
-<title>CATHS-MAIN • AI Study Assistant TEST</title>
+<title>CATHS-MAIN • AI Study Assistant</title>
 <link rel="icon" type="image/png" href="sslg-logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -5235,9 +5235,10 @@ html.cathians-native-ad-ready .cathians-bottom-ad-dock .ad-inner{
       <div class="cg-perm-delete-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M7 7l1 13h8l1-13"/><path d="M10 11v5M14 11v5"/></svg>
       </div>
-      <div class="cg-perm-delete-eyebrow">PERMANENT DELETION</div>
+      <div class="cg-perm-delete-eyebrow" id="cgPermanentDeleteType">PERMANENT DELETION</div>
       <h3 class="cg-perm-delete-title" id="cgPermanentDeleteTitle">Are you sure?</h3>
-      <p class="cg-perm-delete-copy">This deck will be permanently deleted from your saved materials. This action cannot be undone.</p>
+      <p class="cg-perm-delete-copy" id="cgPermanentDeleteCopy">This item will be permanently deleted from your saved materials. This action cannot be undone.</p>
+      <div class="cg-perm-delete-name" id="cgPermanentDeleteName" aria-live="polite"></div>
       <div class="cg-perm-delete-actions">
         <button class="cg-perm-delete-cancel" id="cgPermanentDeleteCancel" type="button">Cancel</button>
         <button class="cg-perm-delete-confirm" id="cgPermanentDeleteConfirm" type="button">Delete Permanently</button>
@@ -6134,7 +6135,7 @@ async function saveGeneratedStudyMaterial(payload){
   try{
     const localItems=JSON.parse(localStorage.getItem(storageKey)||'[]');
     localItems.unshift({id:'local-'+Date.now(),...payload,savedAt:new Date().toISOString()});
-    localStorage.setItem(storageKey,JSON.stringify(localItems.slice(0,100)));
+    localStorage.setItem(storageKey,JSON.stringify(localItems));
   }catch(e){console.warn('Local study material save failed:',e);}
   if(!currentUser||!window.studyFirebase)return;
   try{
@@ -6625,15 +6626,15 @@ async function saveManualFlashcardSet(){
       if(idx>=0){
         const updated={...existing[idx],id:targetId,type:'flashcards',topic:title,notes:'User-created flashcards',content,savedAt};
         existing[idx]=updated;
-        localStorage.setItem(key,JSON.stringify(existing.slice(0,100)));
+        localStorage.setItem(key,JSON.stringify(existing));
       }else{
         existing.unshift({id:targetId,type:'flashcards',topic:title,notes:'User-created flashcards',content,savedAt});
-        localStorage.setItem(key,JSON.stringify(existing.slice(0,100)));
+        localStorage.setItem(key,JSON.stringify(existing));
       }
     }else{
       targetId='local-'+Date.now()+'-'+Math.random().toString(36).slice(2,7);
       existing.unshift({id:targetId,type:'flashcards',topic:title,notes:'User-created flashcards',content,savedAt});
-      localStorage.setItem(key,JSON.stringify(existing.slice(0,100)));
+      localStorage.setItem(key,JSON.stringify(existing));
       manualEditingId=targetId;
     }
 
@@ -7066,7 +7067,7 @@ async function fetchSavedMaterials(){
   if(!currentUser||!window.studyFirebase)return localDocs;
   try{
     const {db,collection,query,where,limit,getDocs}=window.studyFirebase;
-    const snap=await getDocs(query(collection(db,'studyMaterials'),where('ownerUid','==',currentUser.uid),limit(100)));
+    const snap=await getDocs(query(collection(db,'studyMaterials'),where('ownerUid','==',currentUser.uid)));
     const cloud=snap.docs.map(d=>({id:d.id,...(d.data()||{})}));
     const map=new Map(); cloud.forEach(x=>map.set(String(x.id),x)); localDocs.forEach(x=>{if(!map.has(String(x.id)))map.set(String(x.id),x)});
     return [...map.values()].sort((a,b)=>new Date(b.savedAt||0)-new Date(a.savedAt||0));
@@ -7145,14 +7146,14 @@ async function loadStudyLibrary(){
   studyLibraryList.innerHTML='<div class="study-library-empty">Loading your saved study materials…</div>';
   try{
     const {db,collection,query,where,orderBy,limit,getDocs}=window.studyFirebase;
-    const snap=await getDocs(query(collection(db,'studyMaterials'),where('ownerUid','==',currentUser.uid),limit(100)));
+    const snap=await getDocs(query(collection(db,'studyMaterials'),where('ownerUid','==',currentUser.uid)));
     const cloudDocs=snap.docs.map(d=>({id:d.id,...(d.data()||{})}));
     cloudDocs.sort((a,b)=>{const ad=a.createdAt?.toDate?a.createdAt.toDate().getTime():0;const bd=b.createdAt?.toDate?b.createdAt.toDate().getTime():0;return bd-ad;});
     const cloudKeys=new Set(cloudDocs.map(x=>`${x.topic}|${x.type}|${x.notes||''}`));
     const merged=[...cloudDocs,...localDocs.filter(x=>!cloudKeys.has(`${x.topic}|${x.type}|${x.notes||''}`))];
     merged.sort((a,b)=>{const ad=a.createdAt?.toDate?a.createdAt.toDate().getTime():new Date(a.savedAt||0).getTime();const bd=b.createdAt?.toDate?b.createdAt.toDate().getTime():new Date(b.savedAt||0).getTime();return bd-ad;});
     if(!merged.length){studyLibraryList.innerHTML='<div class="study-library-empty">No saved materials yet. Generate a reviewer, flashcard set, quiz, summary, or study guide and it will appear here automatically.</div>';return;}
-    renderStudyLibraryItems(merged.slice(0,100));
+    renderStudyLibraryItems(merged);
   }catch(e){
     console.error('Could not load study library:',e);
     if(localDocs.length)renderStudyLibraryItems(localDocs);
@@ -7217,7 +7218,7 @@ function renderReviewerChoices(docs){
 async function openReviewerSelection(gameId){
   selectedGame=gameId;gameModalStep='reviewer';gameChoiceGrid.classList.add('hidden');gameSelectGrid.classList.add('hidden');friendsInviteList.classList.add('hidden');reviewerSelectList.classList.remove('hidden');gameModalTitle.textContent='Choose a Reviewer';gameModalSubtitle.textContent='Choose which saved reviewer or flashcards you want to use.';gameToast.classList.add('hidden');setGameBack(true,openSoloGameSelection);reviewerSelectList.innerHTML='<div class="leaderboard-status">Loading your saved reviewers…</div>';
   const localDocs=getLocalGameMaterials();const localMap=new Map(localDocs.map(x=>[String(x.id),x]));let docs=localDocs;
-  if(currentUser&&window.studyFirebase){try{const {db,collection,getDocs,query,where,limit}=window.studyFirebase;const snap=await getDocs(query(collection(db,'studyMaterials'),where('ownerUid','==',currentUser.uid),limit(100)));snap.docs.forEach(d=>{const item={id:d.id,...(d.data()||{})};localMap.set(String(item.id),item);});docs=[...localMap.values()];}catch(e){console.warn('Could not load cloud study materials for game:',e);}}
+  if(currentUser&&window.studyFirebase){try{const {db,collection,getDocs,query,where,limit}=window.studyFirebase;const snap=await getDocs(query(collection(db,'studyMaterials'),where('ownerUid','==',currentUser.uid)));snap.docs.forEach(d=>{const item={id:d.id,...(d.data()||{})};localMap.set(String(item.id),item);});docs=[...localMap.values()];}catch(e){console.warn('Could not load cloud study materials for game:',e);}}
   docs.sort((a,b)=>{const ad=a.createdAt?.toDate?a.createdAt.toDate().getTime():new Date(a.savedAt||0).getTime();const bd=b.createdAt?.toDate?b.createdAt.toDate().getTime():new Date(b.savedAt||0).getTime();return bd-ad;});
   renderReviewerChoices(docs);
 }
@@ -9695,7 +9696,7 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     if(!activeDeck)return;
     const copy={...activeDeck,id:'local-'+Date.now()+'-'+Math.random().toString(36).slice(2,7),topic:(activeDeck.topic||'Untitled Study Material')+' (Copy)',savedAt:new Date().toISOString()};
     const key=window.currentUser?('cathsStudyMaterials:'+window.currentUser.uid):'cathsStudyMaterials:guest';
-    try{const arr=JSON.parse(localStorage.getItem(key)||'[]');arr.unshift(copy);localStorage.setItem(key,JSON.stringify(arr.slice(0,100)))}catch(_){ }
+    try{const arr=JSON.parse(localStorage.getItem(key)||'[]');arr.unshift(copy);localStorage.setItem(key,JSON.stringify(arr))}catch(_){ }
     if(window.currentUser&&window.studyFirebase){try{const {db,collection,addDoc,serverTimestamp}=window.studyFirebase;await addDoc(collection(db,'studyMaterials'),{ownerUid:window.currentUser.uid,topic:copy.topic,type:copy.type||'flashcards',content:copy.content||{},notes:copy.notes||'',createdAt:serverTimestamp()})}catch(_){}}
     activeDeck=copy;openViewer(copy);window.loadCgDecksView?.();
   }
@@ -10389,7 +10390,7 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
   /* Permanent-delete confirmation modal */
   .cg-perm-delete-modal{
     position:fixed;inset:0;z-index:1000800;display:flex;align-items:center;justify-content:center;
-    padding:18px;background:rgba(14,24,42,.44);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    padding:18px;background:rgba(14,24,42,.50);backdrop-filter:blur(22px) saturate(.78);-webkit-backdrop-filter:blur(22px) saturate(.78);
     animation:cgPermFadeIn .2s ease both;
   }
   .cg-perm-delete-modal.hidden{display:none!important}
@@ -10403,6 +10404,7 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
   .cg-perm-delete-eyebrow{font-size:7px;letter-spacing:1.1px;font-weight:900;color:#b33b4b}
   .cg-perm-delete-title{margin:4px 38px 0 0;font-size:19px;line-height:1.3;color:#172033;font-weight:900}
   .cg-perm-delete-copy{margin:8px 0 0;color:#7a8597;font-size:9px;line-height:1.55}
+  .cg-perm-delete-name{display:none;margin-top:11px;padding:10px 11px;border:1px solid #edf0f4;border-radius:11px;background:#fafbfc;color:#2a3448;font-size:8.5px;line-height:1.45;font-weight:800;word-break:break-word}
   .cg-perm-delete-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:19px}
   .cg-perm-delete-actions button{min-height:40px;padding:9px 14px;border-radius:11px;font:800 8.5px/1 Poppins,sans-serif;cursor:pointer}
   .cg-perm-delete-cancel{border:1px solid #dfe4eb;background:#fff;color:#172033}
@@ -10453,6 +10455,8 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
   const permModal=document.getElementById('cgPermanentDeleteModal');
   const permTitle=document.getElementById('cgPermanentDeleteTitle');
   const permName=document.getElementById('cgPermanentDeleteName');
+  const permType=document.getElementById('cgPermanentDeleteType');
+  const permCopy=document.getElementById('cgPermanentDeleteCopy');
   const permConfirm=document.getElementById('cgPermanentDeleteConfirm');
   const permCancel=document.getElementById('cgPermanentDeleteCancel');
   const permClose=document.getElementById('cgPermanentDeleteClose');
@@ -10516,13 +10520,21 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     });
   }
 
+  function itemKind(item){
+    const t=String(item?.type||'').toLowerCase();
+    return t==='flashcards'?'Flashcard':'Deck';
+  }
   function openPermanentDelete(item){
     if(!item)return;
     pendingPermanentDelete=item;
     const name=String(item.topic||'Untitled Study Material').trim()||'Untitled Study Material';
-    if(permTitle)permTitle.textContent=`Are you sure you want to delete "${name}"?`;
+    const kind=itemKind(item);
+    if(permTitle)permTitle.textContent=`Delete this ${kind.toLowerCase()}?`;
+    if(permType)permType.textContent=`PERMANENT ${kind.toUpperCase()} DELETION`;
     if(permName)permName.textContent=name;
-    if(permConfirm){permConfirm.disabled=false;permConfirm.textContent='Delete Permanently';}
+    if(permName)permName.style.display='block';
+    if(permCopy)permCopy.textContent=`This ${kind.toLowerCase()} will be permanently deleted from your saved materials. This action cannot be undone.`;
+    if(permConfirm){permConfirm.disabled=false;permConfirm.textContent=`Delete ${kind} Permanently`;}
     permModal.classList.remove('hidden');
     permModal.setAttribute('aria-hidden','false');
     document.body.classList.add('modal-open');
@@ -10531,6 +10543,7 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     permModal.classList.add('hidden');
     permModal.setAttribute('aria-hidden','true');
     pendingPermanentDelete=null;
+    window.__cathiansPendingDeleteItem=null;
     if(modal.classList.contains('hidden'))document.body.classList.remove('modal-open');
   }
 
@@ -10538,6 +10551,7 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     if(!item)return;
     const id=String(item.id||'');
     if(!id)return;
+    const kind=itemKind(item);
     let localOk=true,cloudAttempted=false,cloudOk=true;
     try{
       const key=storageKey();
@@ -10557,7 +10571,7 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
          immediately can briefly show a stale cloud copy; update the current
          cards in-place instead. */
       removeRenderedDeck(id);
-      window.showGameToast?.('Deck permanently deleted.');
+      window.showGameToast?.(`${kind} permanently deleted.`);
       await render();
     }else{
       await render();
@@ -10571,7 +10585,7 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     list.innerHTML=docs.map((item,i)=>`<div class="cg-recycle-row" data-recycle-id="${esc(item.id)}">
       <div class="cg-recycle-type">${icon(item.type)}</div>
       <div class="cg-recycle-copy"><strong>${esc(item.topic||'Untitled Study Material')}</strong><small>${esc(label(item.type))} • ${esc(typeof window.materialSavedDate==='function'?window.materialSavedDate(item):(item.savedAt?'Saved':'Study material'))}</small></div>
-      <button class="cg-recycle-delete" type="button" data-recycle-delete="${esc(item.id)}" aria-label="Delete ${esc(item.topic||'study material')}">${icon('trash')}<span>Delete</span></button>
+      <button class="cg-recycle-delete" type="button" data-recycle-delete="${esc(item.id)}" aria-label="Delete ${esc(label(item.type))} ${esc(item.topic||'study material')}">${icon('trash')}<span>Delete</span></button>
     </div>`).join('');
     // Replace the generic icon returned for trash with a proper SVG trash icon.
     list.querySelectorAll('[data-recycle-delete]').forEach(btn=>{
@@ -10592,11 +10606,13 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
   permClose?.addEventListener('click',closePermanentDelete);
   permModal.querySelector('[data-perm-delete-close]')?.addEventListener('click',closePermanentDelete);
   permConfirm?.addEventListener('click',async()=>{
-    if(!pendingPermanentDelete)return;
-    const item=pendingPermanentDelete;
+    const item=pendingPermanentDelete || window.__cathiansPendingDeleteItem;
+    if(!item)return;
+    pendingPermanentDelete=item;
     permConfirm.disabled=true;
     permConfirm.textContent='Deleting…';
     await removeDeck(item);
+    window.__cathiansPendingDeleteItem=null;
     closePermanentDelete();
   });
 
@@ -13686,13 +13702,13 @@ body.new-deck-page-open .cg-main{
     const key=deckStorageKey();
     try{
       let existing=[];try{existing=JSON.parse(localStorage.getItem(key)||'[]')}catch{existing=[]}
-      existing.unshift(item);localStorage.setItem(key,JSON.stringify(existing.slice(0,100)));
+      existing.unshift(item);localStorage.setItem(key,JSON.stringify(existing));
       if(window.currentUser&&window.studyFirebase){
         const {db,collection,addDoc,serverTimestamp}=window.studyFirebase;
         const ref=await addDoc(collection(db,'studyMaterials'),{ownerUid:window.currentUser.uid,type:'deck',topic:title,notes:'',content,createdAt:serverTimestamp()});
         if(ref?.id){
           const arr=JSON.parse(localStorage.getItem(key)||'[]');const idx=arr.findIndex(x=>x.id===id);
-          if(idx>=0){arr[idx].id=ref.id;arr[idx].savedAt=new Date().toISOString();localStorage.setItem(key,JSON.stringify(arr.slice(0,100)));}
+          if(idx>=0){arr[idx].id=ref.id;arr[idx].savedAt=new Date().toISOString();localStorage.setItem(key,JSON.stringify(arr));}
         }
       }
       setStatus('Deck saved successfully.','success');
@@ -14186,8 +14202,27 @@ body.new-deck-page-open .cg-main{
   async function copyLink(){const link=makeLink(activeDeck);try{await navigator.clipboard?.writeText(link);page.querySelector('#catShareStatus').textContent='Deck link copied.'}catch(_){page.querySelector('#catShareStatus').textContent=link}}
   async function messageFriends(){const link=makeLink(activeDeck),msg=`Check out my deck: ${activeDeck?.topic||'Study deck'} ${link}`;try{if(navigator.share){await navigator.share({title:activeDeck?.topic||'Study deck',text:'Study this deck with me',url:link});page.querySelector('#catShareStatus').textContent='Share sheet opened.';return}}catch(_){}location.href='sms:?&body='+encodeURIComponent(msg)}
   async function deleteActive(){
-    if(!activeDeck)return;const title=activeDeck.topic||'this deck';if(!confirm(`Delete “${title}” permanently?`))return;
+    if(!activeDeck)return;
     const id=String(activeDeck.id||'');
+    const itemType=String(activeDeck.type||'').toLowerCase()==='flashcards'?'Flashcard':'Deck';
+    const modal=document.getElementById('cgPermanentDeleteModal');
+    if(modal){
+      const titleEl=document.getElementById('cgPermanentDeleteTitle');
+      const typeEl=document.getElementById('cgPermanentDeleteType');
+      const copyEl=document.getElementById('cgPermanentDeleteCopy');
+      const nameEl=document.getElementById('cgPermanentDeleteName');
+      const confirmEl=document.getElementById('cgPermanentDeleteConfirm');
+      window.__cathiansPendingDeleteItem=activeDeck;
+      if(titleEl)titleEl.textContent=`Delete this ${itemType.toLowerCase()}?`;
+      if(typeEl)typeEl.textContent=`PERMANENT ${itemType.toUpperCase()} DELETION`;
+      if(copyEl)copyEl.textContent=`This ${itemType.toLowerCase()} will be permanently deleted from your saved materials. This action cannot be undone.`;
+      if(nameEl){nameEl.textContent=String(activeDeck.topic||'Untitled Study Material');nameEl.style.display='block';}
+      if(confirmEl){confirmEl.disabled=false;confirmEl.textContent=`Delete ${itemType} Permanently`;}
+      modal.classList.remove('hidden'); modal.setAttribute('aria-hidden','false'); document.body.classList.add('modal-open');
+      return;
+    }
+    const title=activeDeck.topic||'this deck';
+    if(!window.confirm(`Delete “${title}” permanently?`))return;
     try{let ids=JSON.parse(localStorage.getItem('cathsStudyMaterialDeletedIds')||'[]');if(id&&!ids.includes(id))ids.push(id);localStorage.setItem('cathsStudyMaterialDeletedIds',JSON.stringify(ids.slice(-300)))}catch(_){ }
     try{const key=storageKey();const arr=JSON.parse(localStorage.getItem(key)||'[]');localStorage.setItem(key,JSON.stringify(arr.filter(x=>String(x.id)!==id)))}catch(_){ }
     try{const u=window.currentUser||window.studyFirebase?.auth?.currentUser;if(u&&window.studyFirebase&&id&&!id.startsWith('local-')){const {db,doc,deleteDoc}=window.studyFirebase;if(typeof deleteDoc==='function')await deleteDoc(doc(db,'studyMaterials',id))}}catch(e){console.warn('Deck delete sync failed',e)}
@@ -14196,8 +14231,8 @@ body.new-deck-page-open .cg-main{
   async function duplicateActive(){
     if(!activeDeck)return;
     const copy=JSON.parse(JSON.stringify(activeDeck));copy.id='local-'+Date.now()+'-'+Math.random().toString(36).slice(2,7);copy.topic=(activeDeck.topic||'Untitled Deck')+' (Copy)';copy.savedAt=new Date().toISOString();copy.ownerUid=window.currentUser?.uid||copy.ownerUid;
-    try{const key=storageKey(),arr=JSON.parse(localStorage.getItem(key)||'[]');arr.unshift(copy);localStorage.setItem(key,JSON.stringify(arr.slice(0,100)))}catch(_){ }
-    if(window.currentUser&&window.studyFirebase){try{const {db,collection,addDoc,serverTimestamp}=window.studyFirebase;const ref=await addDoc(collection(db,'studyMaterials'),{ownerUid:window.currentUser.uid,topic:copy.topic,type:copy.type||'deck',content:copy.content||{},notes:copy.notes||'',createdAt:serverTimestamp()});if(ref?.id){const oldLocalId=copy.id;copy.id=ref.id;try{const key=storageKey(),arr=JSON.parse(localStorage.getItem(key)||'[]');const idx=arr.findIndex(x=>String(x.id)===String(oldLocalId));if(idx>=0){arr[idx]={...arr[idx],id:ref.id};localStorage.setItem(key,JSON.stringify(arr.slice(0,100)))}}catch(_){}}}catch(e){console.warn('Duplicate cloud sync failed',e)}}
+    try{const key=storageKey(),arr=JSON.parse(localStorage.getItem(key)||'[]');arr.unshift(copy);localStorage.setItem(key,JSON.stringify(arr))}catch(_){ }
+    if(window.currentUser&&window.studyFirebase){try{const {db,collection,addDoc,serverTimestamp}=window.studyFirebase;const ref=await addDoc(collection(db,'studyMaterials'),{ownerUid:window.currentUser.uid,topic:copy.topic,type:copy.type||'deck',content:copy.content||{},notes:copy.notes||'',createdAt:serverTimestamp()});if(ref?.id){const oldLocalId=copy.id;copy.id=ref.id;try{const key=storageKey(),arr=JSON.parse(localStorage.getItem(key)||'[]');const idx=arr.findIndex(x=>String(x.id)===String(oldLocalId));if(idx>=0){arr[idx]={...arr[idx],id:ref.id};localStorage.setItem(key,JSON.stringify(arr))}}catch(_){}}}catch(e){console.warn('Duplicate cloud sync failed',e)}}
     activeDeck=copy;window.__v27ActiveDeck=copy;openPage(copy);window.loadCgDecksView?.();
   }
   function gameActive(){if(!activeDeck)return;window.__v27GameDeck=activeDeck;closePage();try{window.__v27PlayDeckGame?.(activeDeck)}catch(_){try{document.getElementById('playGameTool')?.click()}catch(__){}}}
