@@ -2,13 +2,13 @@
 .git
 .git/**
 
-# Node / Wrangler
+# Node / Wrangler generated files
 node_modules
 node_modules/**
 .wrangler
 .wrangler/**
 
-# Package / development files
+# Package files
 package-lock.json
 package.json
 
@@ -27,12 +27,10 @@ desktop.ini
 # Logs
 *.log
 
-# Source/config files that should NOT be publicly served
+# Documentation
 README.md
 
-# Cloudflare / development configuration
-wrangler.toml
-wrangler.jsonc
+# Local environment secrets
 .dev.vars
 .dev.vars.*
 .env
