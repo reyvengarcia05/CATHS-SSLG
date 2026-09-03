@@ -5755,7 +5755,7 @@ function openAddReviewerFlow(){
   addReviewerFormat=null;setFlowStep(1);renderImportSources();addReviewerFlowModal.classList.remove('hidden');addReviewerFlowModal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');
 }
 function closeAddReviewerFlow(){addReviewerFlowModal.classList.add('hidden');addReviewerFlowModal.setAttribute('aria-hidden','true');if(!document.querySelector('.manual-flashcard-modal:not(.hidden)'))document.body.classList.remove('modal-open');if(cgMain && !cgMain.classList.contains('study-tools-open')){cgMain.dataset.navView='home';setCgNavActive('home');}}
-function showDeckPicker(){setFlowStep(4);addReviewerDeckList.innerHTML='<div class="flow-empty">Loading your decks…</div>';fetchSavedMaterials().then(docs=>{if(!docs.length){addReviewerDeckList.innerHTML='<div class="flow-empty">No saved decks yet. Create one first.</div>';return;} addReviewerDeckList.innerHTML=docs.map(item=>`<button class="flow-deck-choice" type="button" data-flow-deck-id="${esc(item.id)}"><span><strong>${esc(item.topic||'Untitled Study Material')}</strong><small>${esc(materialDisplayLabel(item))} • ${esc(materialSavedDate(item))}</small></span><b>Choose</b></button>`).join('');addReviewerDeckList.querySelectorAll('[data-flow-deck-id]').forEach(btn=>btn.onclick=()=>selectDeckForOwnReview(docs.find(x=>String(x.id)===String(btn.dataset.flowDeckId))));}).catch(()=>{addReviewerDeckList.innerHTML='<div class="flow-empty">Your saved decks could not be loaded.</div>';});}
+function showDeckPicker(){setFlowStep(4);addReviewerDeckList.innerHTML='<div class="flow-empty">Loading your decks…</div>';fetchSavedMaterials().then(docs=>{const decks=(Array.isArray(docs)?docs:[]).filter(item=>{const type=String(item?.type||'').toLowerCase();return type==='deck'||item?.content?.mode==='deck';});if(!decks.length){addReviewerDeckList.innerHTML='<div class="flow-empty">No saved decks yet. Create one first.</div>';return;} addReviewerDeckList.innerHTML=decks.map(item=>{const count=Array.isArray(item?.content?.cards)?item.content.cards.length:0;return `<button class="flow-deck-choice" type="button" data-flow-deck-id="${esc(item.id)}"><span><strong>${esc(item.topic||'Untitled Deck')}</strong><small>${count} ${count===1?'card':'cards'}</small></span><b>Choose</b></button>`;}).join('');addReviewerDeckList.querySelectorAll('[data-flow-deck-id]').forEach(btn=>btn.onclick=()=>selectDeckForOwnReview(decks.find(x=>String(x.id)===String(btn.dataset.flowDeckId))));}).catch(()=>{addReviewerDeckList.innerHTML='<div class="flow-empty">Your saved decks could not be loaded.</div>';});}
 function extractSavedText(item){
   const data=item?.content||{}; if(item?.notes) return String(item.notes);
   if(Array.isArray(data.cards)) return data.cards.map(c=>`${c.front||''}: ${c.back||''}`).join('\n');
@@ -14359,5 +14359,22 @@ body.new-deck-page-open .cg-main{
 }
 </style>
 
+
+<script id="cathians-final-add-reviewer-deck-only-fix">
+(function(){
+  const modal=document.getElementById('addReviewerFlowModal');
+  if(!modal)return;
+  document.addEventListener('click',function(e){
+    const btn=e.target?.closest?.('#addReviewerFormatStep [data-add-format="cards"],#addReviewerFormatStep [data-add-format="notes"]');
+    if(!btn)return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    const format=btn.dataset.addFormat;
+    window.__cathiansAddFormat=format;
+    try{ addReviewerFormat=format; }catch(_){}
+    try{ showDeckPicker(); }catch(err){ console.error('Deck picker failed to open:',err); }
+  },true);
+})();
+</script>
 </body>
 </html>
