@@ -5212,56 +5212,6 @@ html.cathians-native-ad-ready .cathians-bottom-ad-dock .ad-inner{
 @media(max-width:900px){.progress-admin-page-body{grid-template-columns:1fr}.progress-admin-list{max-height:none}}
 @media(max-width:760px){.progress-admin-page-head{padding:12px 13px;gap:10px}.progress-admin-page-title h1{font-size:20px}.progress-admin-page-title p{font-size:7px}.progress-admin-back{padding:9px 10px;font-size:9px}.progress-admin-page-body{padding:12px 10px 45px;gap:10px}.progress-admin-create-card,.progress-admin-assignments-card{padding:14px;border-radius:18px}.progress-admin-section-head strong{font-size:13px}.progress-admin-task-grid{grid-template-columns:1fr}.progress-admin-reward-grid{grid-template-columns:1fr}.progress-admin-page-actions{display:grid;grid-template-columns:1fr;}.progress-admin-page-actions button{width:100%}}
 </style>
-
-<style id="progress-task-admin-final-fix">
-/* The task creator belongs only to the Admin Tasks screen. */
-#cgProgressTaskInput,
-#cgProgressTaskAdd,
-#cgProgressTasksModal .progress-task-add{
-  display:none!important;
-}
-
-/* Admin Task button is invisible until Firebase permission is resolved. */
-#cgProgressAdminBtn.hidden{
-  display:none!important;
-}
-
-/* Full-screen admin editor */
-#cgProgressAdminModal .progress-admin-task-box{
-  border-left-color:var(--task-border,#3b82f6)!important;
-}
-
-#cgProgressAdminModal .progress-admin-item{
-  border-left:4px solid var(--task-border,#dfe4eb);
-}
-
-#cgProgressAdminModal .progress-admin-create-card{
-  min-width:0;
-}
-
-#cgProgressAdminModal .progress-admin-page-body{
-  align-items:start;
-}
-
-#cgProgressAdminModal .progress-admin-page-actions button:disabled{
-  opacity:.5;
-  cursor:not-allowed;
-  transform:none!important;
-}
-
-@media(max-width:760px){
-  #cgProgressAdminModal .progress-admin-page-head{
-    grid-template-columns:auto minmax(0,1fr) auto;
-  }
-  #cgProgressAdminModal .progress-admin-page-title{
-    min-width:0;
-  }
-  #cgProgressAdminModal .progress-admin-page-title h1{
-    white-space:nowrap;
-  }
-}
-</style>
-
 </head>
 <body>
 <main class="page">
@@ -5354,6 +5304,7 @@ html.cathians-native-ad-ready .cathians-bottom-ad-dock .ad-inner{
           <div><span class="cg-eyebrow">Daily focus</span><h3 id="cgProgressTasksTitle">Study Tasks</h3><p>Keep your important study goals in one place.</p></div>
           <button type="button" class="progress-tasks-close" id="cgProgressTasksClose" aria-label="Close tasks">×</button>
         </div>
+        <div class="progress-task-add"><input id="cgProgressTaskInput" type="text" maxlength="120" placeholder="Add a study task…" aria-label="New study task"><button id="cgProgressTaskAdd" type="button">Add Task</button></div>
         <div class="progress-task-list" id="cgProgressTaskList"></div>
         <div class="progress-task-empty" id="cgProgressTaskEmpty">No tasks yet. Add something you want to finish today.</div>
       </div>
@@ -7412,1029 +7363,171 @@ function updateCgProgressView(){
   }
 }
 
-// ============================================================
-// PROGRESS TASKS — STUDENT + ADMIN TASK MANAGER
-// ============================================================
+// Progress task assignments + administrator controls.
 (function(){
-  'use strict';
+  const q=s=>document.querySelector(s);
+  const progressModal=q('#cgProgressTasksModal');
+  const adminModal=q('#cgProgressAdminModal');
+  const adminBtn=q('#cgProgressAdminBtn');
+  const taskBtn=q('#cgProgressTasksBtn');
+  const taskList=q('#cgProgressTaskList');
+  const taskEmpty=q('#cgProgressTaskEmpty');
+  const taskCount=q('#cgProgressTaskCount');
+  const input=q('#cgProgressTaskInput');
+  const adminStudent=q('#cgAdminStudentSelect');
+  const adminTitle=q('#cgAdminTaskTitle');
+  const adminXp=q('#cgAdminTaskXp');
+  const adminDue=q('#cgAdminTaskDue');
+  const adminNote=q('#cgAdminTaskNote');
+  const adminStatus=q('#cgAdminStatus');
+  const adminList=q('#cgAdminTaskList');
 
-  const $ = s => document.querySelector(s);
-  const qa = s => Array.from(document.querySelectorAll(s));
-
-  const safe = v => String(v ?? '').replace(/[&<>"']/g, m => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-  }[m]));
-
-  const validColor = v => /^#[0-9a-f]{6}$/i.test(String(v||''));
-
-  const ADMIN_EMAILS = new Set([
-    "reyvengarcia15@gmail.com",
-    "reyvenbermudo091@gmail.com",
-    "reyvgarcia05@gmail.com",
-    "chezcadc14@gmail.com",
-    "nathanielgarc679@gmail.com",
-    "marteena.133@gmail.com",
-    "gabbicastillo0126@gmail.com",
-    "leddadanielle91@gmail.com",
-    "jennapastor062@gmail.com",
-    "dhenmark1313@gmail.com",
-    "christianangelointes0@gmail.com",
-    "alexaislacruz@gmail.com",
-    "galangjullianne016@gmail.com",
-    "vanessajotic2403@gmail.com",
-    "aquinobernardjr0@gmail.com",
-    "angellyar0909@gmail.com",
-    "vhergelnarciso@gmail.com",
-    "sicatmadisson487@gmail.com"
-  ]);
-
-  const colors = [
-    ["Red","#ef4444"],
-    ["Orange","#f97316"],
-    ["Yellow","#eab308"],
-    ["Green","#22c55e"],
-    ["Blue","#3b82f6"],
-    ["Indigo","#6366f1"],
-    ["Violet","#8b5cf6"]
-  ];
-
-  let builderCounter = 0;
-
-  function currentUser(){
-    return window.currentUser ||
-      window.studyFirebase?.auth?.currentUser ||
-      null;
+  function uid(){return window.currentUser?.uid||window.studyFirebase?.auth?.currentUser?.uid||''}
+  function taskStorageKey(){return uid()?`cathsProgressTasks:${uid()}`:'cathsProgressTasks:guest'}
+  function readLocalTasks(){try{const x=JSON.parse(localStorage.getItem(taskStorageKey())||'[]');return Array.isArray(x)?x:[]}catch{return []}}
+  function writeLocalTasks(tasks){localStorage.setItem(taskStorageKey(),JSON.stringify(tasks.slice(0,100)))}
+  function safe(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+  function adminLike(data){
+    const roles=[data?.role,data?.accountType,data?.userRole].map(v=>String(v||'').toLowerCase());
+    if(roles.includes('admin')||data?.isAdmin===true||data?.admin===true)return true;
+    const perms=data?.permissions;
+    return Array.isArray(perms)&&perms.map(v=>String(v).toLowerCase()).includes('admin');
   }
-
-  function currentUid(){
-    return currentUser()?.uid || '';
-  }
-
-  function isAdminProfile(data){
-    return String(data?.role || '').toLowerCase() === 'admin';
-  }
-
+  const ADMIN_EMAILS=new Set(['reyvengarcia15@gmail.com','reyvenbermudo091@gmail.com','reyvgarcia05@gmail.com','chezcadc14@gmail.com','nathanielgarc679@gmail.com','marteena.133@gmail.com','gabbicastillo0126@gmail.com','leddadanielle91@gmail.com','jennapastor062@gmail.com','dhenmark1313@gmail.com','christianangelointes0@gmail.com','alexaislacruz@gmail.com','galangjullianne016@gmail.com','vanessajotic2403@gmail.com','aquinobernardjr0@gmail.com','angellyar0909@gmail.com','vhergelnarciso@gmail.com','sicatmadisson487@gmail.com',]);
   async function amIAdmin(){
-    const user = currentUser();
-    if(!user) return false;
-
-    const email = String(user.email || '').trim().toLowerCase();
-    if(ADMIN_EMAILS.has(email)) return true;
-
-    if(!window.studyFirebase) return false;
-
+    const user=window.currentUser||window.studyFirebase?.auth?.currentUser;
+    if(!user)return false;
+    const email=String(user.email||'').trim().toLowerCase();
+    if(email && ADMIN_EMAILS.has(email))return true;
+    if(!window.studyFirebase)return false;
     try{
-      const {db,doc,getDoc} = window.studyFirebase;
-      const snap = await getDoc(doc(db,'users',user.uid));
-      return snap.exists() && isAdminProfile(snap.data() || {});
-    }catch(error){
-      console.warn('Task admin permission check failed:', error);
-      return false;
-    }
+      const {db,doc,getDoc}=window.studyFirebase;
+      const snap=await getDoc(doc(db,'users',user.uid));
+      if(snap.exists()&&adminLike(snap.data()||{}))return true;
+      const adminSnap=await getDoc(doc(db,'admins',user.uid));
+      return adminSnap.exists()&&adminLike(adminSnap.data()||{}) || adminSnap.exists();
+    }catch(e){console.warn('Admin check failed:',e);return false}
   }
+  function openModal(modal){if(!modal)return;modal.classList.remove('hidden');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open')}
+  function closeModal(modal){if(!modal)return;modal.classList.add('hidden');modal.setAttribute('aria-hidden','true');if(!document.querySelector('.progress-tasks-modal:not(.hidden),.progress-admin-modal:not(.hidden)'))document.body.classList.remove('modal-open')}
 
-  function setAdminButtonVisible(visible){
-    const btn = $('#cgProgressAdminBtn');
-    if(btn) btn.classList.toggle('hidden', !visible);
-  }
-
-  async function refreshAdminVisibility(){
-    setAdminButtonVisible(await amIAdmin());
-  }
-
-  function bodyLock(){
-    document.body.classList.add('modal-open');
-  }
-
-  function bodyUnlock(){
-    if(
-      !$('#cgProgressTasksModal')?.classList.contains('hidden') === false &&
-      !$('#cgProgressAdminModal')?.classList.contains('hidden') === false
-    ){
-      document.body.classList.remove('modal-open');
-    }
-  }
-
-  async function openAdminPage(){
-    if(!(await amIAdmin())){
-      setAdminButtonVisible(false);
-      return;
-    }
-
-    const modal = $('#cgProgressAdminModal');
-    if(!modal) return;
-    modal.classList.remove('hidden');
-    modal.setAttribute('aria-hidden','false');
-    bodyLock();
-
-    const builder = $('#cgAdminTaskBuilder');
-    if(builder && !builder.children.length) addTaskBox();
-
-    loadAdminStudents();
-    loadAdminAssignments();
-    setAdminStatus('');
-  }
-
-  function closeAdminPage(){
-    const modal = $('#cgProgressAdminModal');
-    if(!modal) return;
-    modal.classList.add('hidden');
-    modal.setAttribute('aria-hidden','true');
-
-    const taskModal = $('#cgProgressTasksModal');
-    if(taskModal?.classList.contains('hidden')){
-      document.body.classList.remove('modal-open');
-    }
-  }
-
-  function addTaskBox(){
-    const stack = $('#cgAdminTaskBuilder');
-    if(!stack || stack.children.length >= 5) return;
-
-    builderCounter++;
-    const number = stack.children.length + 1;
-    const defaultColor = '#3b82f6';
-
-    const card = document.createElement('article');
-    card.className = 'progress-admin-task-box';
-    card.dataset.color = defaultColor;
-    card.dataset.builderId = `task-${Date.now()}-${builderCounter}`;
-    card.style.setProperty('--task-border', defaultColor);
-
-    card.innerHTML = `
-      <div class="progress-admin-task-box-head">
-        <span class="progress-admin-task-number">Task ${number}</span>
-        ${number > 1 ? `
-          <button type="button" class="progress-admin-remove-box" data-remove-task-box>
-            Remove
-          </button>
-        ` : ''}
-      </div>
-
-      <div class="progress-admin-task-grid">
-        <div class="progress-admin-field wide">
-          <label>Task</label>
-          <textarea
-            data-task-title
-            maxlength="180"
-            rows="3"
-            placeholder="Example: Reach 2,000 EXP"
-          ></textarea>
-        </div>
-
-        <div class="progress-admin-field">
-          <label>EXP goal to unlock</label>
-          <input
-            data-task-goal
-            type="number"
-            min="0"
-            max="1000000"
-            step="1"
-            value="0"
-            inputmode="numeric"
-            placeholder="0 = ready immediately"
-          >
-        </div>
-
-        <div class="progress-admin-field">
-          <label>Due date</label>
-          <input data-task-due type="date">
-        </div>
-      </div>
-
-      <div class="progress-admin-color-wrap">
-        <div class="progress-admin-field">
-          <label>Task border color</label>
-          <div class="progress-admin-color-row">
-            ${colors.map(([name,color]) => `
-              <button
-                type="button"
-                class="progress-admin-color-swatch ${color === defaultColor ? 'selected' : ''}"
-                data-color="${color}"
-                title="${name}"
-                aria-label="${name}"
-                style="background:${color}"
-              ></button>
-            `).join('')}
-
-            <input
-              class="progress-admin-color-wheel"
-              type="color"
-              data-color-wheel
-              value="${defaultColor}"
-              title="Choose custom color"
-              aria-label="Choose custom task border color"
-            >
-          </div>
-        </div>
-      </div>
-
-      <div class="progress-admin-reward-grid">
-        <div class="progress-admin-reward">
-          <label>EXP reward</label>
-          <input
-            data-reward-xp
-            type="number"
-            min="0"
-            max="100000"
-            step="1"
-            value="0"
-            inputmode="numeric"
-          >
-        </div>
-
-        <div class="progress-admin-reward">
-          <label>Coins reward</label>
-          <input
-            data-reward-coins
-            type="number"
-            min="0"
-            max="100000"
-            step="1"
-            value="0"
-            inputmode="numeric"
-          >
-        </div>
-
-        <div class="progress-admin-reward">
-          <label>AI-Coins reward</label>
-          <input
-            data-reward-ai
-            type="number"
-            min="0"
-            max="100000"
-            step="1"
-            value="0"
-            inputmode="numeric"
-          >
-        </div>
-      </div>
-
-      <div class="progress-admin-field" style="margin-top:11px">
-        <label>Instructions (optional)</label>
-        <textarea
-          data-task-note
-          maxlength="500"
-          rows="2"
-          placeholder="Optional instructions for the student"
-        ></textarea>
-      </div>
-    `;
-
-    stack.appendChild(card);
-    updateBuilderCount();
-  }
-
-  function renumberTaskBoxes(){
-    qa('#cgAdminTaskBuilder .progress-admin-task-box')
-      .forEach((card,index) => {
-        const label = card.querySelector('.progress-admin-task-number');
-        if(label) label.textContent = `Task ${index + 1}`;
-
-        const remove = card.querySelector('[data-remove-task-box]');
-        if(index === 0){
-          remove?.remove();
-        }else if(!remove){
-          const head = card.querySelector('.progress-admin-task-box-head');
-          if(head){
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'progress-admin-remove-box';
-            btn.dataset.removeTaskBox = '';
-            btn.textContent = 'Remove';
-            head.appendChild(btn);
-          }
-        }
-      });
-  }
-
-  function updateBuilderCount(){
-    const count = $('#cgAdminTaskBuilder')?.children.length || 0;
-    const pill = $('#cgAdminTaskBuilderCount');
-    if(pill) pill.textContent = `${count} / 5`;
-
-    const add = $('#cgAdminAddTaskBox');
-    if(add) add.disabled = count >= 5;
-
-    renumberTaskBoxes();
-  }
-
-  function getBuilderData(){
-    return qa('#cgAdminTaskBuilder .progress-admin-task-box')
-      .map(card => ({
-        title: String(card.querySelector('[data-task-title]')?.value || '').trim(),
-        goalXp: Math.max(0, Math.floor(Number(card.querySelector('[data-task-goal]')?.value || 0))),
-        dueDate: String(card.querySelector('[data-task-due]')?.value || ''),
-        borderColor: validColor(card.dataset.color) ? card.dataset.color : '#3b82f6',
-        xpReward: Math.max(0, Math.floor(Number(card.querySelector('[data-reward-xp]')?.value || 0))),
-        coinsReward: Math.max(0, Math.floor(Number(card.querySelector('[data-reward-coins]')?.value || 0))),
-        aiCoinsReward: Math.max(0, Math.floor(Number(card.querySelector('[data-reward-ai]')?.value || 0))),
-        note: String(card.querySelector('[data-task-note]')?.value || '').trim()
-      }));
-  }
-
-  function setAdminStatus(message, good=false){
-    const el = $('#cgAdminStatus');
-    if(!el) return;
-    el.textContent = message || '';
-    el.style.color = good ? '#4e8d34' : '#5d6b7e';
-  }
-
-  async function loadAdminStudents(){
-    const select = $('#cgAdminStudentSelect');
-    if(!select || !window.studyFirebase) return;
-
-    select.innerHTML = '<option value="">Loading Google accounts…</option>';
-
+  async function cloudTasksForMe(){
+    if(!uid()||!window.studyFirebase)return [];
     try{
-      const {db,collection,getDocs} = window.studyFirebase;
-      const snap = await getDocs(collection(db,'users'));
-
-      const rows = snap.docs
-        .map(d => ({ uid:d.id, ...(d.data() || {}) }))
-        .filter(r => r.uid)
-        .sort((a,b) =>
-          String(a.displayName || a.name || a.email || '')
-            .localeCompare(String(b.displayName || b.name || b.email || ''))
-        );
-
-      select.innerHTML =
-        '<option value="">Select a Google account…</option>' +
-        rows.map(r => `
-          <option value="${safe(r.uid)}">
-            ${safe(r.displayName || r.name || 'Student')} — ${safe(r.email || 'Google account')}
-          </option>
-        `).join('');
-
-      if(!rows.length){
-        select.innerHTML = '<option value="">No Google accounts found</option>';
-      }
-    }catch(error){
-      console.error('Could not load users:', error);
-      select.innerHTML = '<option value="">Could not load Google accounts</option>';
-      setAdminStatus('Could not load Google accounts. Check the users read rule.');
-    }
+      const {db,collection,getDocs,query,where,limit}=window.studyFirebase;
+      const snap=await getDocs(query(collection(db,'studyTasks'),where('assignedUid','==',uid()),limit(100)));
+      return snap.docs.map(d=>({id:d.id,...(d.data()||{}),cloud:true})).sort((a,b)=>String(a.title||'').localeCompare(String(b.title||'')));
+    }catch(e){console.warn('Could not load assigned tasks:',e);return []}
   }
-
-  async function loadAdminAssignments(){
-    const list = $('#cgAdminTaskList');
-    if(!list || !window.studyFirebase) return;
-
-    list.innerHTML = '<div class="progress-admin-item"><small>Loading assignments…</small></div>';
-
-    try{
-      const {
-        db,collection,getDocs,query,where,limit
-      } = window.studyFirebase;
-
-      const isAdmin = await amIAdmin();
-      if(!isAdmin){
-        list.innerHTML = '<div class="progress-admin-item"><small>Administrator access denied.</small></div>';
-        return;
-      }
-
-      const snap = await getDocs(
-        query(
-          collection(db,'studyTasks'),
-          where('createdBy','==',currentUid()),
-          limit(100)
-        )
-      );
-
-      const tasks = snap.docs
-        .map(d => ({id:d.id, ...(d.data() || {})}))
-        .sort((a,b) => {
-          const ad = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
-          const bd = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
-          return bd - ad;
-        });
-
-      const targetUids = [...new Set(tasks.map(t => t.assignedUid).filter(Boolean))];
-      const users = new Map();
-
-      for(const uid of targetUids){
-        try{
-          const ref = window.studyFirebase.doc(db,'users',uid);
-          const snap = await window.studyFirebase.getDoc(ref);
-          if(snap.exists()) users.set(uid, snap.data() || {});
-        }catch(_){}
-      }
-
-      const total = $('#cgAdminTaskTotal');
-      if(total) total.textContent = String(tasks.length);
-
-      list.innerHTML = tasks.length
-        ? tasks.map(t => {
-            const u = users.get(t.assignedUid) || {};
-            const goal = Math.max(0, Number(t.goalXp || 0));
-            const xp = Math.max(0, Number(t.xpReward || 0));
-            const coins = Math.max(0, Number(t.coinsReward || 0));
-            const aiCoins = Math.max(0, Number(t.aiCoinsReward || 0));
-            const rewards = [
-              xp ? `+${xp} EXP` : '',
-              coins ? `+${coins} Coins` : '',
-              aiCoins ? `+${aiCoins} AI-Coins` : ''
-            ].filter(Boolean).join(' • ');
-
-            return `
-              <div
-                class="progress-admin-item"
-                style="--task-border:${validColor(t.borderColor) ? t.borderColor : '#dfe4eb'}"
-              >
-                <div>
-                  <strong>${safe(t.title || 'Untitled task')}</strong>
-                  <small>
-                    ${safe(u.displayName || u.name || u.email || t.assignedUid || 'Unknown student')}
-                    • ${t.completed ? 'Claimed' : 'Pending'}
-                    ${goal ? ` • Requires ${goal.toLocaleString()} EXP` : ''}
-                    ${t.dueDate ? ` • Due ${safe(t.dueDate)}` : ''}
-                  </small>
-                  ${rewards ? `<small>${safe(rewards)}</small>` : ''}
-                </div>
-              </div>
-            `;
-          }).join('')
-        : '<div class="progress-admin-item"><small>No assignments yet.</small></div>';
-
-    }catch(error){
-      console.error('Could not load task assignments:', error);
-      list.innerHTML =
-        '<div class="progress-admin-item"><small>Could not load assignments. Add the studyTasks rules below.</small></div>';
-    }
+  async function loadMyTasks(){
+    const local=readLocalTasks();
+    const cloud=await cloudTasksForMe();
+    const map=new Map();
+    [...cloud,...local].forEach(t=>map.set(String(t.id||''),t));
+    return [...map.values()].sort((a,b)=>Number(a.completed)-Number(b.completed)||String(a.title||'').localeCompare(String(b.title||'')));
   }
-
-  async function createAdminTasks(){
-    const admin = await amIAdmin();
-    if(!admin){
-      setAdminStatus('Administrator access denied.');
-      return;
-    }
-
-    const assignedUid = String($('#cgAdminStudentSelect')?.value || '').trim();
-    if(!assignedUid){
-      setAdminStatus('Select a Google account first.');
-      return;
-    }
-
-    const tasks = getBuilderData();
-
-    if(!tasks.length){
-      setAdminStatus('Add at least one task.');
-      return;
-    }
-
-    if(tasks.some(t => !t.title)){
-      setAdminStatus('Every task box needs task text.');
-      return;
-    }
-
-    if(!window.studyFirebase){
-      setAdminStatus('Firebase is not connected.');
-      return;
-    }
-
-    const button = $('#cgAdminCreateTask');
-    if(button) button.disabled = true;
-
-    try{
-      const {
-        db,collection,addDoc,serverTimestamp
-      } = window.studyFirebase;
-
-      for(const task of tasks){
-        await addDoc(collection(db,'studyTasks'), {
-          assignedUid,
-          title: task.title,
-          note: task.note,
-          goalXp: task.goalXp,
-          dueDate: task.dueDate,
-          borderColor: task.borderColor,
-          xpReward: task.xpReward,
-          coinsReward: task.coinsReward,
-          aiCoinsReward: task.aiCoinsReward,
-          completed: false,
-          createdBy: currentUid(),
-          createdAt: serverTimestamp()
-        });
-      }
-
-      setAdminStatus(
-        `${tasks.length} task${tasks.length > 1 ? 's' : ''} assigned successfully.`,
-        true
-      );
-
-      const stack = $('#cgAdminTaskBuilder');
-      if(stack) stack.innerHTML = '';
-
-      builderCounter = 0;
-      addTaskBox();
-
-      await loadAdminAssignments();
-
-    }catch(error){
-      console.error('Task creation failed:', error);
-      setAdminStatus(
-        'Task creation failed. Publish the studyTasks Firestore rules below, then try again.'
-      );
-    }finally{
-      if(button) button.disabled = false;
-    }
-  }
-
-  function taskKey(){
-    return currentUid()
-      ? `cathsProgressTasks:${currentUid()}`
-      : 'cathsProgressTasks:guest';
-  }
-
-  function localTasks(){
-    try{
-      const data = JSON.parse(localStorage.getItem(taskKey()) || '[]');
-      return Array.isArray(data) ? data : [];
-    }catch(_){
-      return [];
-    }
-  }
-
-  function saveLocalTasks(tasks){
-    try{
-      localStorage.setItem(
-        taskKey(),
-        JSON.stringify(tasks.slice(0,100))
-      );
-    }catch(_){}
-  }
-
-  async function cloudTasks(){
-    const uid = currentUid();
-    if(!uid || !window.studyFirebase) return [];
-
-    try{
-      const {
-        db,collection,getDocs,query,where,limit
-      } = window.studyFirebase;
-
-      const snap = await getDocs(
-        query(
-          collection(db,'studyTasks'),
-          where('assignedUid','==',uid),
-          limit(100)
-        )
-      );
-
-      return snap.docs.map(d => ({
-        id:d.id,
-        ...(d.data() || {}),
-        cloud:true
-      }));
-    }catch(error){
-      console.warn('Could not load assigned cloud tasks:', error);
-      return [];
-    }
-  }
-
-  async function mergedStudentTasks(){
-    const local = localTasks();
-    const cloud = await cloudTasks();
-
-    const map = new Map();
-
-    [...cloud,...local].forEach(task => {
-      const id = String(task.id || '');
-      if(id) map.set(id,task);
-    });
-
-    return [...map.values()]
-      .sort((a,b) => {
-        const ad = a.completed || a.done ? 1 : 0;
-        const bd = b.completed || b.done ? 1 : 0;
-        if(ad !== bd) return ad - bd;
-        return String(a.title || '').localeCompare(String(b.title || ''));
-      });
-  }
-
-  function accountXp(){
-    return Math.max(0, Number(window.xp) || 0);
-  }
-
-  async function claimTask(task){
-    if(task.completed || task.done) return;
-
-    const goal = Math.max(0, Number(task.goalXp || 0));
-
-    if(accountXp() < goal){
-      return;
-    }
-
-    const xpReward =
-      Math.max(0, Math.floor(Number(task.xpReward || 0)));
-
-    const coinsReward =
-      Math.max(0, Math.floor(Number(task.coinsReward || 0)));
-
-    const aiCoinsReward =
-      Math.max(0, Math.floor(Number(task.aiCoinsReward || 0)));
-
-    try{
-      // Cloud task completion is saved FIRST so the same task cannot
-      // be claimed twice after a refresh.
-      if(task.cloud && window.studyFirebase){
-        const {
-          db,doc,setDoc,serverTimestamp
-        } = window.studyFirebase;
-
-        await setDoc(
-          doc(db,'studyTasks',String(task.id)),
-          {
-            completed: true,
-            completedAt: serverTimestamp()
-          },
-          {merge:true}
-        );
-      }
-
-      if(xpReward && typeof addXP === 'function'){
-        addXP(xpReward);
-      }
-
-      const coinKey = 'cathiansCoins';
-      const aiCoinKey = 'cathiansAiCoins';
-
-      const oldCoins =
-        Math.max(0, Number(localStorage.getItem(coinKey) || 0));
-
-      const oldAiCoins =
-        Math.max(0, Number(localStorage.getItem(aiCoinKey) || 0));
-
-      const newCoins = oldCoins + coinsReward;
-      const newAiCoins = oldAiCoins + aiCoinsReward;
-
-      localStorage.setItem(coinKey,String(newCoins));
-      localStorage.setItem(aiCoinKey,String(newAiCoins));
-
-      const topCoins = $('#cgTopCoins');
-      if(topCoins) topCoins.textContent = newCoins.toLocaleString();
-
-      // Keep reward balances in the signed-in student's profile.
-      if(currentUid() && window.studyFirebase){
-        try{
-          const {db,doc,setDoc} = window.studyFirebase;
-
-          await setDoc(
-            doc(db,'studyProfiles',currentUid()),
-            {
-              coins: newCoins,
-              aiCoins: newAiCoins
-            },
-            {merge:true}
-          );
-        }catch(error){
-          console.warn('Reward balance cloud sync failed:',error);
-        }
-      }
-
-      if(!task.cloud){
-        const local = localTasks();
-        const index = local.findIndex(
-          x => String(x.id) === String(task.id)
-        );
-
-        if(index >= 0){
-          local[index].completed = true;
-          local[index].done = true;
-          local[index].completedAt = new Date().toISOString();
-          saveLocalTasks(local);
-        }
-      }
-
-      await renderStudentTasks();
-
-      if(typeof window.updateCgProgressView === 'function'){
-        window.updateCgProgressView();
-      }
-
-    }catch(error){
-      console.error('Task claim failed:',error);
-      alert('The task could not be claimed yet. Please try again.');
-    }
-  }
-
-  async function renderStudentTasks(){
-    const list = $('#cgProgressTaskList');
-    const empty = $('#cgProgressTaskEmpty');
-    const count = $('#cgProgressTaskCount');
-
-    if(!list) return;
-
-    const tasks = await mergedStudentTasks();
-    const xpNow = accountXp();
-
-    const pending = tasks.filter(
-      t => !(t.completed || t.done)
-    ).length;
-
-    if(count) count.textContent = String(pending);
-
-    if(empty){
-      empty.style.display = tasks.length ? 'none' : 'block';
-    }
-
-    list.innerHTML = tasks.map(task => {
-      const completed = !!(task.completed || task.done);
-      const goal = Math.max(0, Number(task.goalXp || 0));
-      const ready = xpNow >= goal;
-
-      const xp = Math.max(0, Number(task.xpReward || 0));
-      const coins = Math.max(0, Number(task.coinsReward || 0));
-      const aiCoins = Math.max(0, Number(task.aiCoinsReward || 0));
-
-      const rewardText = [
-        xp ? `+${xp} EXP` : '',
-        coins ? `+${coins} Coins` : '',
-        aiCoins ? `+${aiCoins} AI-Coins` : ''
-      ].filter(Boolean).join(' • ');
-
-      const requirement = goal
-        ? `Requires ${goal.toLocaleString()} EXP${ready ? ' • Ready to claim' : ' • Locked'}`
-        : 'Claimable now';
-
-      const color =
-        validColor(task.borderColor)
-          ? task.borderColor
-          : '#6b7280';
-
-      return `
-        <div
-          class="progress-task-item ${completed ? 'completed ' : ''}${!completed && !ready ? 'locked' : ''}"
-          style="--task-border:${color}"
-          data-task-id="${safe(task.id || '')}"
-        >
-          <div class="progress-task-text">
-            <strong>${safe(task.title || 'Untitled task')}</strong>
-            <span class="progress-task-meta">
-              ${safe(task.note || '')}
-              ${task.dueDate ? ` • Due ${safe(task.dueDate)}` : ''}
-              • ${safe(requirement)}
-            </span>
-            ${rewardText ? `
-              <span class="progress-task-reward">
-                ${safe(rewardText)}
-              </span>
-            ` : ''}
-          </div>
-
-          <button
-            type="button"
-            class="progress-task-claim"
-            data-task-claim
-            ${completed || !ready ? 'disabled' : ''}
-          >
-            ${completed ? 'Claimed' : ready ? 'Claim' : 'Locked'}
-          </button>
-        </div>
-      `;
+  async function renderMyTasks(){
+    const tasks=await loadMyTasks();
+    const pending=tasks.filter(t=>!t.completed).length;
+    if(taskCount)taskCount.textContent=String(pending);
+    if(taskEmpty)taskEmpty.style.display=tasks.length?'none':'block';
+    if(!taskList)return;
+    taskList.innerHTML=tasks.map(t=>{
+      const xpReward=Math.max(0,Number(t.xpReward||0));
+      const due=t.dueDate?` • Due ${safe(t.dueDate)}`:'';
+      return `<div class="progress-task-item ${t.completed?'completed':''}" data-task-id="${safe(t.id)}"><label><input type="checkbox" data-task-complete ${t.completed?'checked':''}><span><strong>${safe(t.title||'Untitled task')}</strong><small>${safe(t.note||'')} ${due}</small></span></label><b class="progress-task-xp">+${xpReward} XP</b><button type="button" class="progress-task-delete" data-task-delete aria-label="Delete task">×</button></div>`;
     }).join('');
   }
+  async function rewardTask(task){
+    const id=String(task.id||'');
+    if(task.completed)return;
+    const xpReward=Math.max(0,Math.min(1000,Number(task.xpReward||0)));
+    if(task.cloud&&window.studyFirebase){
+      try{
+        const {db,doc,setDoc,serverTimestamp}=window.studyFirebase;
+        await setDoc(doc(db,'studyTasks',id),{completed:true,completedAt:serverTimestamp()},{merge:true});
+      }catch(e){alert('Could not complete this assigned task yet. Please try again.');return}
+    }
+    const local=readLocalTasks();const idx=local.findIndex(x=>String(x.id)===id);
+    if(idx>=0){local[idx].completed=true;local[idx].completedAt=new Date().toISOString();writeLocalTasks(local)}
+    if(xpReward>0&&typeof addXP==='function')addXP(xpReward);
+    await renderMyTasks();
+  }
+  function deleteTask(id){const local=readLocalTasks().filter(t=>String(t.id)!==String(id));writeLocalTasks(local);renderMyTasks()}
 
-  function openStudentTasks(){
-    const modal = $('#cgProgressTasksModal');
-    if(!modal) return;
-
-    // The old local "Add a study task" control is not allowed anymore.
-    const localAdd = modal.querySelector('.progress-task-add');
-    if(localAdd) localAdd.remove();
-
-    modal.classList.remove('hidden');
-    modal.setAttribute('aria-hidden','false');
-    bodyLock();
-
-    renderStudentTasks();
+  async function loadAdminStudents(){
+    if(!adminStudent||!window.studyFirebase)return;
+    adminStudent.innerHTML='<option value="">Loading Google accounts…</option>';
+    try{
+      const {db,collection,getDocs}=window.studyFirebase;
+      const snap=await getDocs(collection(db,'users'));
+      const rows=snap.docs.map(d=>({uid:d.id,...(d.data()||{})})).filter(x=>x.uid).sort((a,b)=>String(a.displayName||a.name||a.email||'').localeCompare(String(b.displayName||b.name||b.email||'')));
+      adminStudent.innerHTML='<option value="">Select a student…</option>'+rows.map(r=>`<option value="${safe(r.uid)}">${safe(r.displayName||r.name||'Student')} — ${safe(r.email||'Google account')}</option>`).join('');
+      if(!rows.length)adminStudent.innerHTML='<option value="">No Google accounts found</option>';
+    }catch(e){console.error(e);adminStudent.innerHTML='<option value="">Could not load accounts</option>'}
+  }
+  async function loadAdminAssignments(){
+    if(!adminList||!window.studyFirebase)return;
+    adminList.innerHTML='<div class="progress-admin-item"><small>Loading assignments…</small></div>';
+    try{
+      const {db,collection,getDocs,query,orderBy,limit}=window.studyFirebase;
+      const snap=await getDocs(query(collection(db,'studyTasks'),orderBy('createdAt','desc'),limit(50)));
+      const tasks=snap.docs.map(d=>({id:d.id,...(d.data()||{})}));
+      const ids=[...new Set(tasks.map(t=>t.assignedUid).filter(Boolean))];
+      const users=new Map();
+      for(const id of ids){try{const u=await window.studyFirebase.getDoc(window.studyFirebase.doc(db,'users',id));if(u.exists())users.set(id,u.data()||{})}catch{}}
+      if(q('#cgAdminTaskTotal'))q('#cgAdminTaskTotal').textContent=String(tasks.length);
+      adminList.innerHTML=tasks.length?tasks.map(t=>{const u=users.get(t.assignedUid)||{};return `<div class="progress-admin-item"><div><strong>${safe(t.title||'Untitled task')}</strong><small>${safe(u.displayName||u.name||u.email||t.assignedUid||'Unknown student')} • ${t.completed?'Completed':'Pending'}${t.dueDate?' • Due '+safe(t.dueDate):''}</small></div><b class="progress-admin-xp">+${Math.max(0,Number(t.xpReward||0))} XP</b></div>`}).join(''):'<div class="progress-admin-item"><small>No assignments yet.</small></div>';
+    }catch(e){console.error(e);adminList.innerHTML='<div class="progress-admin-item"><small>Could not load assignments. Check the Firestore rules for studyTasks.</small></div>'}
+  }
+  async function openAdmin(){
+    if(!(await amIAdmin())){alert('Administrator access is not enabled for this Google account.');return}
+    openModal(adminModal);loadAdminStudents();loadAdminAssignments();
+  }
+  async function createAdminTask(){
+    if(!(await amIAdmin())){if(adminStatus)adminStatus.textContent='Administrator access denied.';return}
+    const assignedUid=String(adminStudent?.value||'').trim(), title=String(adminTitle?.value||'').trim();
+    const xpReward=Math.max(0,Math.min(1000,Math.round(Number(adminXp?.value||0))));
+    if(!assignedUid||!title){if(adminStatus)adminStatus.textContent='Select a student and enter a task.';return}
+    if(!window.studyFirebase){if(adminStatus)adminStatus.textContent='Firebase is not connected.';return}
+    try{
+      const {db,collection,addDoc,serverTimestamp}=window.studyFirebase;
+      await addDoc(collection(db,'studyTasks'),{assignedUid,title,note:String(adminNote?.value||'').trim(),xpReward,dueDate:String(adminDue?.value||''),completed:false,createdBy:uid(),createdAt:serverTimestamp()});
+      if(adminStatus)adminStatus.textContent='Task created successfully.';
+      if(adminTitle)adminTitle.value=''; if(adminNote)adminNote.value=''; if(adminXp)adminXp.value='25'; if(adminDue)adminDue.value='';
+      await loadAdminAssignments();
+    }catch(e){console.error(e);if(adminStatus)adminStatus.textContent='Task creation failed. Check your Firestore studyTasks rules.'}
   }
 
-  function closeStudentTasks(){
-    const modal = $('#cgProgressTasksModal');
-    if(!modal) return;
-
-    modal.classList.add('hidden');
-    modal.setAttribute('aria-hidden','true');
-
-    if($('#cgProgressAdminModal')?.classList.contains('hidden')){
-      document.body.classList.remove('modal-open');
-    }
-  }
-
-  document.addEventListener('click', async event => {
-    const adminButton =
-      event.target?.closest?.('#cgProgressAdminBtn');
-
-    if(adminButton){
-      event.preventDefault();
-      event.stopImmediatePropagation();
-
-      await openAdminPage();
-
-      return;
-    }
-
-    const tasksButton =
-      event.target?.closest?.('#cgProgressTasksBtn');
-
-    if(tasksButton){
-      event.preventDefault();
-      event.stopImmediatePropagation();
-
-      openStudentTasks();
-
-      return;
-    }
-
-    if(
-      event.target?.closest?.('#cgProgressTasksClose') ||
-      event.target?.closest?.('[data-progress-tasks-close]')
-    ){
-      closeStudentTasks();
-      return;
-    }
-
-    if(
-      event.target?.closest?.('#cgProgressAdminClose') ||
-      event.target?.closest?.('[data-progress-admin-close]')
-    ){
-      closeAdminPage();
-      return;
-    }
-
-    if(
-      event.target?.closest?.('#cgAdminAddTaskBox')
-    ){
-      const ok = await amIAdmin();
-      if(ok) addTaskBox();
-      return;
-    }
-
-    if(
-      event.target?.closest?.('#cgAdminCreateTask')
-    ){
-      await createAdminTasks();
-      return;
-    }
-
-    if(
-      event.target?.closest?.('#cgAdminRefreshUsers')
-    ){
-      if(await amIAdmin()){
-        await loadAdminStudents();
-        await loadAdminAssignments();
-      }
-      return;
-    }
-
-    const remove =
-      event.target?.closest?.('[data-remove-task-box]');
-
-    if(remove){
-      const card =
-        remove.closest('.progress-admin-task-box');
-      card?.remove();
-      updateBuilderCount();
-      return;
-    }
-
-    const swatch =
-      event.target?.closest?.('[data-color]');
-
-    if(swatch){
-      const card =
-        swatch.closest('.progress-admin-task-box');
-
-      if(!card) return;
-
-      const color =
-        validColor(swatch.dataset.color)
-          ? swatch.dataset.color
-          : '#3b82f6';
-
-      card.dataset.color = color;
-      card.style.setProperty(
-        '--task-border',
-        color
-      );
-
-      card.querySelectorAll('[data-color]')
-        .forEach(btn =>
-          btn.classList.toggle('selected', btn === swatch)
-        );
-
-      const wheel =
-        card.querySelector('[data-color-wheel]');
-
-      if(wheel) wheel.value = color;
-
-      return;
-    }
-
-    const claim =
-      event.target?.closest?.('[data-task-claim]');
-
-    if(claim){
-      event.preventDefault();
-
-      const item =
-        claim.closest('[data-task-id]');
-
-      if(!item) return;
-
-      const tasks =
-        await mergedStudentTasks();
-
-      const task =
-        tasks.find(
-          t => String(t.id) === String(item.dataset.taskId)
-        );
-
-      if(task) await claimTask(task);
-
-      return;
-    }
-  }, true);
-
-  document.addEventListener('input', event => {
-    const wheel =
-      event.target?.closest?.('[data-color-wheel]');
-
-    if(!wheel) return;
-
-    const card =
-      wheel.closest('.progress-admin-task-box');
-
-    if(!card) return;
-
-    const color =
-      validColor(wheel.value)
-        ? wheel.value
-        : '#3b82f6';
-
-    card.dataset.color = color;
-    card.style.setProperty(
-      '--task-border',
-      color
-    );
-
-    card.querySelectorAll(
-      '.progress-admin-color-swatch'
-    ).forEach(btn =>
-      btn.classList.remove('selected')
-    );
+  document.addEventListener('click',e=>{
+    if(e.target?.closest?.('#cgProgressTasksBtn')){openModal(progressModal);renderMyTasks()}
+    if(e.target?.closest?.('[data-progress-tasks-close]')||e.target?.closest?.('#cgProgressTasksClose'))closeModal(progressModal)
+    if(e.target?.closest?.('#cgProgressAdminBtn'))openAdmin()
+    if(e.target?.closest?.('[data-progress-admin-close]')||e.target?.closest?.('#cgProgressAdminClose'))closeModal(adminModal)
+    const del=e.target?.closest?.('[data-task-delete]');if(del){const item=del.closest('[data-task-id]');if(item)deleteTask(item.dataset.taskId)}
   });
-
-  // Hide the old local task creator for everyone. Tasks now come from admins.
-  function hideOldStudentTaskCreator(){
-    const modal = $('#cgProgressTasksModal');
-    if(!modal) return;
-    modal.querySelector('.progress-task-add')?.remove();
-  }
-
-  hideOldStudentTaskCreator();
-
-  // Wait for the shared Firebase auth restoration before deciding
-  // whether the admin button should be shown.
-  Promise.resolve(window.studyAuthStateReady)
-    .catch(()=>null)
-    .finally(() => {
-      setTimeout(refreshAdminVisibility,0);
-    });
-
-  // Re-check whenever the shared auth state changes.
-  if(window.studyFirebase?.onAuthStateChanged &&
-     window.studyFirebase?.auth){
-
-    window.studyFirebase.onAuthStateChanged(
-      window.studyFirebase.auth,
-      () => {
-        setTimeout(refreshAdminVisibility,0);
-        setTimeout(renderStudentTasks,50);
-      }
-    );
-  }
-
-  // Refresh when the Progress view becomes active.
-  document.addEventListener('click', event => {
-    if(event.target?.closest?.('[data-cg-view="progress"]')){
-      setTimeout(refreshAdminVisibility,60);
-      setTimeout(renderStudentTasks,80);
+  taskList?.addEventListener('change',e=>{
+    if(!e.target.matches('[data-task-complete]'))return;
+    const item=e.target.closest('[data-task-id]');if(!item)return;
+    const id=String(item.dataset.taskId);
+    const localTask=readLocalTasks().find(t=>String(t.id)===id);
+    if(localTask){
+      if(e.target.checked) rewardTask(localTask);
+      else { localTask.completed=false;localTask.completedAt='';writeLocalTasks(readLocalTasks().map(t=>String(t.id)===id?localTask:t));renderMyTasks(); }
+      return;
     }
+    // Assigned cloud tasks are completed once and cannot be reverted by students.
+    if(!e.target.checked)e.target.checked=true;
+    loadMyTasks().then(ts=>{const t=ts.find(x=>String(x.id)===id);if(t&& !t.completed) rewardTask(t);});
   });
+  q('#cgProgressTaskAdd')?.addEventListener('click',async()=>{if(typeof window.refreshProgressAdminVisibility==='function'){try{await window.refreshProgressAdminVisibility()}catch(_){}}const adminBtn=q('#cgProgressAdminBtn');if(adminBtn&&!adminBtn.classList.contains('hidden')===false)return;const title=String(input?.value||'').trim();if(!title)return;const tasks=readLocalTasks();tasks.unshift({id:'local-task-'+Date.now(),title,note:'',xpReward:0,completed:false,createdAt:new Date().toISOString()});writeLocalTasks(tasks);if(input)input.value='';renderMyTasks()});
+  input?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();q('#cgProgressTaskAdd')?.click()}});
+  q('#cgAdminRefreshUsers')?.addEventListener('click',loadAdminStudents);
+  q('#cgAdminCreateTask')?.addEventListener('click',createAdminTask);
 
-  // Public helpers for the rest of the app.
-  window.refreshProgressAdminVisibility =
-    refreshAdminVisibility;
-
-  window.openProgressAdminTaskPage =
-    openAdminPage;
-
-  window.renderProgressStudentTasks =
-    renderStudentTasks;
-
+  async function refreshAdminVisibility(){if(adminBtn){const ok=await amIAdmin();adminBtn.classList.toggle('hidden',!ok)}}
+  window.refreshProgressAdminVisibility=refreshAdminVisibility;
+  refreshAdminVisibility();
 })();
 function mergeSavedMaterials(){
   const storageKey=currentUser?('cathsStudyMaterials:'+currentUser.uid):'cathsStudyMaterials:guest';
@@ -15997,7 +15090,21 @@ body.new-deck-page-open .cg-main{
   let builderCount=0;
   function adminUser(){return window.currentUser||window.studyFirebase?.auth?.currentUser||null}
   function adminLike(data){const roles=[data?.role,data?.accountType,data?.userRole].map(v=>String(v||'').toLowerCase());if(roles.includes('admin')||data?.isAdmin===true||data?.admin===true)return true;const p=data?.permissions;return Array.isArray(p)&&p.map(v=>String(v).toLowerCase()).includes('admin')}
-  async function isAdmin(){const u=adminUser();if(!u||!window.studyFirebase)return false;try{const {db,doc,getDoc}=window.studyFirebase;const a=await getDoc(doc(db,'users',u.uid));if(a.exists()&&adminLike(a.data()||{}))return true;const b=await getDoc(doc(db,'admins',u.uid));return b.exists()&&(adminLike(b.data()||{})||b.exists())}catch(_){return false}}
+  const ADMIN_EMAILS=new Set(['reyvengarcia15@gmail.com','reyvenbermudo091@gmail.com','reyvgarcia05@gmail.com','chezcadc14@gmail.com','nathanielgarc679@gmail.com','marteena.133@gmail.com','gabbicastillo0126@gmail.com','leddadanielle91@gmail.com','jennapastor062@gmail.com','dhenmark1313@gmail.com','christianangelointes0@gmail.com','alexaislacruz@gmail.com','galangjullianne016@gmail.com','vanessajotic2403@gmail.com','aquinobernardjr0@gmail.com','angellyar0909@gmail.com','vhergelnarciso@gmail.com','sicatmadisson487@gmail.com',]);
+  async function isAdmin(){
+    const u=adminUser();
+    if(!u)return false;
+    const email=String(u.email||'').trim().toLowerCase();
+    if(email && ADMIN_EMAILS.has(email))return true;
+    if(!window.studyFirebase)return false;
+    try{
+      const {db,doc,getDoc}=window.studyFirebase;
+      const a=await getDoc(doc(db,'users',u.uid));
+      if(a.exists()&&adminLike(a.data()||{}))return true;
+      const b=await getDoc(doc(db,'admins',u.uid));
+      return b.exists()&&(adminLike(b.data()||{})||b.exists());
+    }catch(_){return false}
+  }
   function openPage(){const m=$('#cgProgressAdminModal');if(!m)return;m.classList.remove('hidden');m.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');ensureBuilder();loadStudents();loadAssignments()}
   function closePage(){const m=$('#cgProgressAdminModal');if(!m)return;m.classList.add('hidden');m.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}
   function ensureBuilder(){const wrap=$('#cgAdminTaskBuilder');if(!wrap)return;if(!wrap.children.length)addBox();updateCount()}
@@ -16157,20 +15264,22 @@ body.new-deck-page-open .cg-main{
   'use strict';
   const modal=()=>document.getElementById('cgProgressTasksModal');
   const row=()=>document.querySelector('#cgProgressTasksModal .progress-task-add');
+  const ADMIN_EMAILS=new Set(['reyvengarcia15@gmail.com','reyvenbermudo091@gmail.com','reyvgarcia05@gmail.com','chezcadc14@gmail.com','nathanielgarc679@gmail.com','marteena.133@gmail.com','gabbicastillo0126@gmail.com','leddadanielle91@gmail.com','jennapastor062@gmail.com','dhenmark1313@gmail.com','christianangelointes0@gmail.com','alexaislacruz@gmail.com','galangjullianne016@gmail.com','vanessajotic2403@gmail.com','aquinobernardjr0@gmail.com','angellyar0909@gmail.com','vhergelnarciso@gmail.com','sicatmadisson487@gmail.com']);
   async function sync(){
     const m=modal(),r=row();
     if(!m||!r)return;
     let admin=false;
     try{
-      const btn=document.getElementById('cgProgressAdminBtn');
-      if(btn) admin=!btn.classList.contains('hidden');
+      const user=window.currentUser||window.studyFirebase?.auth?.currentUser;
+      const email=String(user?.email||'').trim().toLowerCase();
+      admin=email && ADMIN_EMAILS.has(email);
       if(!admin && typeof window.refreshProgressAdminVisibility==='function'){
         await window.refreshProgressAdminVisibility();
         const b=document.getElementById('cgProgressAdminBtn');
         admin=!!b && !b.classList.contains('hidden');
       }
     }catch(_){admin=false}
-    m.classList.toggle('progress-admin-can-create',admin);
+    m.classList.toggle('progress-admin-can-create',!!admin);
   }
   window.syncProgressTaskCreatorVisibility=sync;
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync,{once:true});
