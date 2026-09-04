@@ -5188,6 +5188,30 @@ html.cathians-native-ad-ready .cathians-bottom-ad-dock .ad-inner{
 .progress-task-list{display:grid;gap:8px}.progress-task-row{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;padding:10px 11px;border:1px solid #e4e8ee;border-radius:14px;background:#fafbfd}.progress-task-check{width:22px;height:22px;border-radius:7px;border:1px solid #cfd7e3;background:#fff;display:grid;place-items:center;cursor:pointer;font-size:12px;color:#fff}.progress-task-row.done{background:#f2f8ef;border-color:#d3e6c9}.progress-task-row.done .progress-task-check{background:#5f9a4f;border-color:#5f9a4f}.progress-task-text{min-width:0;font-size:9.5px;color:#253047;word-break:break-word}.progress-task-row.done .progress-task-text{text-decoration:line-through;color:#8993a3}.progress-task-delete{border:0;background:transparent;color:#98a2b2;font-size:16px;cursor:pointer;padding:4px 6px}.progress-task-empty{text-align:center;padding:26px 10px;font-size:9px;color:#8a95a5}
 @media(max-width:760px){.progress-period{font-size:8px}.progress-head-actions{gap:5px}.progress-tasks-btn{padding:8px 9px;font-size:8px;border-radius:11px}.progress-tasks-icon{width:18px;height:18px;font-size:10px}.streak-share{width:38px;height:38px;font-size:18px}.progress-calendar-nav{margin-top:10px}.progress-calendar-nav strong{font-size:11px}.progress-month-btn{width:34px;height:31px}.calendar-week,.calendar-days{gap:7px;margin-top:12px}.calendar-week{font-size:8px}.calendar-days button{font-size:9px}.progress-stat{padding:8px 5px}.progress-stat span{font-size:6.5px}.progress-stat strong{font-size:15px}.progress-stat small{font-size:6px}.progress-tasks-card{padding:15px;border-radius:19px}.progress-tasks-head h3{font-size:17px}.progress-task-add{grid-template-columns:1fr}.progress-task-add button{width:100%}.progress-task-row{grid-template-columns:26px 1fr auto;padding:9px}.progress-task-text{font-size:9px}}
 </style>
+
+<style id="progress-admin-fullscreen-task-builder">
+#cgProgressAdminModal{position:fixed!important;inset:0!important;z-index:1000200!important;padding:0!important;background:#f6f8fb!important;display:block!important}
+#cgProgressAdminModal.hidden{display:none!important}
+#cgProgressAdminModal .progress-admin-backdrop{display:none!important}
+.progress-admin-page{min-height:100dvh;width:100%;overflow:auto;background:linear-gradient(180deg,#f8fafc 0%,#eef2f7 100%);color:#172033}
+.progress-admin-page-head{position:sticky;top:0;z-index:5;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:18px;padding:18px 28px;border-bottom:1px solid #e1e6ee;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);box-shadow:0 6px 22px rgba(29,45,72,.06)}
+.progress-admin-back{justify-self:start;display:inline-flex;align-items:center;gap:7px;border:1px solid #dfe4eb;background:#fff;color:#172033;border-radius:12px;padding:10px 14px;font:800 11px/1 system-ui,sans-serif;cursor:pointer}
+.progress-admin-page-title{text-align:center}.progress-admin-page-title h1{margin:2px 0 0;font-size:26px;letter-spacing:-.6px}.progress-admin-page-title p{margin-top:5px;color:#7b8799;font-size:9px}
+.progress-admin-page-spacer{min-width:90px}
+.progress-admin-page-body{width:min(1180px,100%);margin:0 auto;padding:24px 22px 60px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);gap:18px}
+.progress-admin-create-card,.progress-admin-assignments-card{background:#fff;border:1px solid #e0e5ed;border-radius:22px;box-shadow:0 12px 34px rgba(29,45,72,.06);padding:20px}
+.progress-admin-section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}.progress-admin-section-head strong{display:block;font-size:15px}.progress-admin-section-head span{display:block;margin-top:3px;color:#7b8799;font-size:8px;line-height:1.45}.progress-admin-count-pill{display:inline-flex!important;align-items:center;justify-content:center;min-width:56px;padding:7px 10px;border-radius:999px;background:#f0f4f8;color:#5d6b7e!important;font-size:8px!important;font-weight:900}
+.progress-admin-field{display:grid;gap:6px}.progress-admin-field label{font-size:8.5px;font-weight:900;color:#68758a}.progress-admin-field input,.progress-admin-field select,.progress-admin-field textarea{width:100%;border:1px solid #dfe4eb;background:#fbfcfd;color:#172033;border-radius:12px;padding:10px 11px;font-size:9px;outline:0}.progress-admin-field input:focus,.progress-admin-field select:focus,.progress-admin-field textarea:focus{border-color:#94acd0;box-shadow:0 0 0 3px rgba(74,120,163,.08)}
+.progress-admin-task-stack{display:grid;gap:12px;margin-top:14px}.progress-admin-task-box{position:relative;padding:15px;border:1px solid #dfe4eb;border-left:5px solid var(--task-border,#6b7280);border-radius:17px;background:linear-gradient(145deg,#fff,#fafbfd);box-shadow:0 8px 20px rgba(29,45,72,.045)}
+.progress-admin-task-box-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px}.progress-admin-task-number{font-size:9px;font-weight:900;color:#5d6b7e}.progress-admin-remove-box{border:0;background:#fff1f1;color:#ad4d4d;border-radius:9px;padding:6px 8px;font-size:7px;font-weight:900;cursor:pointer}.progress-admin-task-grid{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:10px}.progress-admin-task-grid .wide{grid-column:1/-1}
+.progress-admin-color-wrap{display:grid;gap:7px;margin-top:11px}.progress-admin-color-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.progress-admin-color-swatch{width:24px;height:24px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px #cfd7e2;cursor:pointer;padding:0}.progress-admin-color-swatch.selected{box-shadow:0 0 0 2px #172033,0 0 0 4px #fff}.progress-admin-color-wheel{width:34px;height:34px;padding:0;border:0;border-radius:50%;overflow:hidden;background:conic-gradient(red,orange,yellow,green,cyan,blue,violet,red);cursor:pointer}.progress-admin-color-wheel::-webkit-color-swatch-wrapper{padding:0}.progress-admin-color-wheel::-webkit-color-swatch{border:0;border-radius:50%}.progress-admin-color-wheel::-moz-color-swatch{border:0;border-radius:50%}
+.progress-admin-reward-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:11px}.progress-admin-reward{display:grid;gap:5px;padding:10px;border-radius:12px;background:#f7f9fc;border:1px solid #e6eaf0}.progress-admin-reward label{font-size:7.5px}.progress-admin-reward input{background:#fff}
+.progress-admin-page-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:15px}.progress-admin-page-actions button{min-height:40px;border-radius:12px;padding:9px 14px;font:800 9px/1 system-ui,sans-serif;cursor:pointer}.progress-admin-primary{border:0;background:#171c2d;color:#fff}.progress-admin-secondary{border:1px solid #dfe4eb;background:#fff;color:#172033}.progress-admin-status{min-height:18px;margin-top:9px;font-size:8px;color:#5d6b7e}
+.progress-admin-assignments-card{min-height:100%}.progress-admin-list{display:grid;gap:8px;max-height:65dvh;overflow:auto}.progress-admin-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:10px 12px;border:1px solid #e4e8ee;border-left:4px solid var(--task-border,#dfe4eb);border-radius:13px;background:#fafbfc}.progress-admin-item strong{display:block;font-size:9.5px;color:#172033}.progress-admin-item small{display:block;margin-top:3px;font-size:7.5px;color:#778397;line-height:1.4}.progress-admin-xp{font-size:10px;font-weight:900;color:#4e8d34;white-space:nowrap}
+.progress-task-item{--task-border:#6b7280;border-left:4px solid var(--task-border)!important}.progress-task-item .progress-task-meta{display:block;margin-top:4px;font-size:7.5px;color:#788597;line-height:1.45}.progress-task-item .progress-task-claim{border:0;border-radius:10px;padding:8px 10px;background:#171c2d;color:#fff;font-size:8px;font-weight:900;cursor:pointer;white-space:nowrap}.progress-task-item .progress-task-claim:disabled{background:#dfe4eb;color:#8a95a5;cursor:not-allowed}.progress-task-item .progress-task-reward{font-size:7.5px;color:#4e8d34;font-weight:900}.progress-task-item.locked{background:#fbfcfd}.progress-task-item.completed .progress-task-claim{background:#dff1d8;color:#4e8d34}.progress-task-item.completed{background:#f5faf2}
+@media(max-width:900px){.progress-admin-page-body{grid-template-columns:1fr}.progress-admin-list{max-height:none}}
+@media(max-width:760px){.progress-admin-page-head{padding:12px 13px;gap:10px}.progress-admin-page-title h1{font-size:20px}.progress-admin-page-title p{font-size:7px}.progress-admin-back{padding:9px 10px;font-size:9px}.progress-admin-page-body{padding:12px 10px 45px;gap:10px}.progress-admin-create-card,.progress-admin-assignments-card{padding:14px;border-radius:18px}.progress-admin-section-head strong{font-size:13px}.progress-admin-task-grid{grid-template-columns:1fr}.progress-admin-reward-grid{grid-template-columns:1fr}.progress-admin-page-actions{display:grid;grid-template-columns:1fr;}.progress-admin-page-actions button{width:100%}}
+</style>
 </head>
 <body>
 <main class="page">
@@ -5287,23 +5311,34 @@ html.cathians-native-ad-ready .cathians-bottom-ad-dock .ad-inner{
     </section>
 
     <section class="progress-admin-modal hidden" id="cgProgressAdminModal" aria-hidden="true">
-      <div class="progress-admin-backdrop" data-progress-admin-close></div>
-      <div class="progress-admin-card" role="dialog" aria-modal="true" aria-labelledby="cgProgressAdminTitle">
-        <div class="progress-admin-head">
-          <div><span class="cg-eyebrow">Administrator</span><h3 id="cgProgressAdminTitle">Assign Study Tasks</h3><p>Choose a Google account, create a task, and set the XP reward.</p></div>
-          <button type="button" class="progress-admin-close" id="cgProgressAdminClose" aria-label="Close admin tasks">×</button>
-        </div>
-        <div class="progress-admin-grid">
-          <div class="progress-admin-field progress-admin-wide"><label for="cgAdminStudentSelect">Student Google account</label><select id="cgAdminStudentSelect"><option value="">Loading student accounts…</option></select></div>
-          <div class="progress-admin-field progress-admin-wide"><label for="cgAdminTaskTitle">Task</label><input id="cgAdminTaskTitle" type="text" maxlength="140" placeholder="e.g. Finish Chapter 3 reviewer"></div>
-          <div class="progress-admin-field"><label for="cgAdminTaskXp">EXP reward</label><input id="cgAdminTaskXp" type="number" min="0" max="1000" step="1" value="25" inputmode="numeric"></div>
-          <div class="progress-admin-field"><label for="cgAdminTaskDue">Due date</label><input id="cgAdminTaskDue" type="date"></div>
-          <div class="progress-admin-field progress-admin-wide"><label for="cgAdminTaskNote">Instructions / note</label><textarea id="cgAdminTaskNote" maxlength="300" placeholder="Optional instructions for the student"></textarea></div>
-        </div>
-        <div class="progress-admin-actions"><button type="button" class="progress-admin-secondary" id="cgAdminRefreshUsers">Refresh Accounts</button><button type="button" class="progress-admin-primary" id="cgAdminCreateTask">Create Task</button></div>
-        <div class="progress-admin-status" id="cgAdminStatus" role="status"></div>
-        <div class="progress-admin-section-title"><strong>Recent assignments</strong><span id="cgAdminTaskTotal">0</span></div>
-        <div class="progress-admin-list" id="cgAdminTaskList"></div>
+      <div class="progress-admin-page" role="dialog" aria-modal="true" aria-labelledby="cgProgressAdminTitle">
+        <header class="progress-admin-page-head">
+          <button type="button" class="progress-admin-back" id="cgProgressAdminClose" aria-label="Back">← <span>Back</span></button>
+          <div class="progress-admin-page-title"><span class="cg-eyebrow">Administrator</span><h1 id="cgProgressAdminTitle">Add Task</h1><p>Create 1–5 tasks and assign them to a Google account.</p></div>
+          <div class="progress-admin-page-spacer"></div>
+        </header>
+
+        <main class="progress-admin-page-body">
+          <section class="progress-admin-create-card">
+            <div class="progress-admin-section-head"><div><strong>Task builder</strong><span>Set the task text, border color, and rewards.</span></div><span class="progress-admin-count-pill" id="cgAdminTaskBuilderCount">1 / 5</span></div>
+
+            <div class="progress-admin-field progress-admin-wide"><label for="cgAdminStudentSelect">Google account</label><select id="cgAdminStudentSelect"><option value="">Loading Google accounts…</option></select></div>
+
+            <div class="progress-admin-task-stack" id="cgAdminTaskBuilder"></div>
+
+            <div class="progress-admin-page-actions">
+              <button type="button" class="progress-admin-secondary" id="cgAdminRefreshUsers">Refresh Accounts</button>
+              <button type="button" class="progress-admin-secondary" id="cgAdminAddTaskBox">+ Add Task</button>
+              <button type="button" class="progress-admin-primary" id="cgAdminCreateTask">Add Task</button>
+            </div>
+            <div class="progress-admin-status" id="cgAdminStatus" role="status"></div>
+          </section>
+
+          <section class="progress-admin-assignments-card">
+            <div class="progress-admin-section-head"><div><strong>Recent assignments</strong><span>Tasks already assigned to students.</span></div><span class="progress-admin-count-pill" id="cgAdminTaskTotal">0</span></div>
+            <div class="progress-admin-list" id="cgAdminTaskList"></div>
+          </section>
+        </main>
       </div>
     </section>
 
@@ -7482,7 +7517,7 @@ function updateCgProgressView(){
     if(!e.target.checked)e.target.checked=true;
     loadMyTasks().then(ts=>{const t=ts.find(x=>String(x.id)===id);if(t&& !t.completed) rewardTask(t);});
   });
-  q('#cgProgressTaskAdd')?.addEventListener('click',()=>{const title=String(input?.value||'').trim();if(!title)return;const tasks=readLocalTasks();tasks.unshift({id:'local-task-'+Date.now(),title,note:'',xpReward:0,completed:false,createdAt:new Date().toISOString()});writeLocalTasks(tasks);if(input)input.value='';renderMyTasks()});
+  q('#cgProgressTaskAdd')?.addEventListener('click',async()=>{if(typeof window.refreshProgressAdminVisibility==='function'){try{await window.refreshProgressAdminVisibility()}catch(_){}}const adminBtn=q('#cgProgressAdminBtn');if(adminBtn&&!adminBtn.classList.contains('hidden')===false)return;const title=String(input?.value||'').trim();if(!title)return;const tasks=readLocalTasks();tasks.unshift({id:'local-task-'+Date.now(),title,note:'',xpReward:0,completed:false,createdAt:new Date().toISOString()});writeLocalTasks(tasks);if(input)input.value='';renderMyTasks()});
   input?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();q('#cgProgressTaskAdd')?.click()}});
   q('#cgAdminRefreshUsers')?.addEventListener('click',loadAdminStudents);
   q('#cgAdminCreateTask')?.addEventListener('click',createAdminTask);
@@ -15039,6 +15074,59 @@ body.new-deck-page-open .cg-main{
 
 <style id="progress-calendar-nav-disabled-fix">.progress-month-btn:disabled{opacity:.38!important;cursor:not-allowed!important;transform:none!important;background:#f2f4f7!important;color:#8a94a4!important}</style>
 
+
+<script id="progress-admin-task-builder-runtime">
+(function(){
+  'use strict';
+  const $=s=>document.querySelector(s);
+  const qa=s=>Array.from(document.querySelectorAll(s));
+  const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const colors=[
+    ['Red','#ef4444'],['Orange','#f97316'],['Yellow','#eab308'],['Green','#22c55e'],['Blue','#3b82f6'],['Indigo','#6366f1'],['Violet','#8b5cf6']
+  ];
+  let builderCount=0;
+  function adminUser(){return window.currentUser||window.studyFirebase?.auth?.currentUser||null}
+  function adminLike(data){const roles=[data?.role,data?.accountType,data?.userRole].map(v=>String(v||'').toLowerCase());if(roles.includes('admin')||data?.isAdmin===true||data?.admin===true)return true;const p=data?.permissions;return Array.isArray(p)&&p.map(v=>String(v).toLowerCase()).includes('admin')}
+  async function isAdmin(){const u=adminUser();if(!u||!window.studyFirebase)return false;try{const {db,doc,getDoc}=window.studyFirebase;const a=await getDoc(doc(db,'users',u.uid));if(a.exists()&&adminLike(a.data()||{}))return true;const b=await getDoc(doc(db,'admins',u.uid));return b.exists()&&(adminLike(b.data()||{})||b.exists())}catch(_){return false}}
+  function openPage(){const m=$('#cgProgressAdminModal');if(!m)return;m.classList.remove('hidden');m.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');ensureBuilder();loadStudents();loadAssignments()}
+  function closePage(){const m=$('#cgProgressAdminModal');if(!m)return;m.classList.add('hidden');m.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}
+  function ensureBuilder(){const wrap=$('#cgAdminTaskBuilder');if(!wrap)return;if(!wrap.children.length)addBox();updateCount()}
+  function updateCount(){const n=document.querySelectorAll('#cgAdminTaskBuilder .progress-admin-task-box').length;const el=$('#cgAdminTaskBuilderCount');if(el)el.textContent=`${n} / 5`;const add=$('#cgAdminAddTaskBox');if(add)add.disabled=n>=5;}
+  function addBox(){const wrap=$('#cgAdminTaskBuilder');if(!wrap||wrap.children.length>=5)return;builderCount++;const i=wrap.children.length+1;const id='cg-admin-task-'+Date.now()+'-'+builderCount;const color='#3b82f6';const el=document.createElement('article');el.className='progress-admin-task-box';el.dataset.color=color;el.style.setProperty('--task-border',color);el.innerHTML=`
+    <div class="progress-admin-task-box-head"><span class="progress-admin-task-number">Task ${i}</span>${i>1?'<button type="button" class="progress-admin-remove-box" data-remove-task-box>Remove</button>':''}</div>
+    <div class="progress-admin-task-grid">
+      <div class="progress-admin-field wide"><label>Task text</label><textarea data-task-title maxlength="180" rows="3" placeholder="Example: Goal 2k EXP"></textarea></div>
+      <div class="progress-admin-field"><label>EXP goal to unlock</label><input data-task-goal type="number" min="0" max="1000000" step="1" value="0" inputmode="numeric" placeholder="0 = claim now"></div>
+      <div class="progress-admin-field"><label>Due date</label><input data-task-due type="date"></div>
+    </div>
+    <div class="progress-admin-color-wrap"><div class="progress-admin-field"><label>Task border color</label><div class="progress-admin-color-row" data-color-row>${colors.map(([name,c])=>`<button type="button" class="progress-admin-color-swatch ${c===color?'selected':''}" title="${name}" aria-label="${name}" data-color="${c}" style="background:${c}"></button>`).join('')}<input class="progress-admin-color-wheel" type="color" data-color-wheel value="${color}" aria-label="Custom task border color" title="Custom color"></div></div></div>
+    <div class="progress-admin-reward-grid">
+      <div class="progress-admin-reward"><label>EXP reward</label><input data-reward-xp type="number" min="0" max="100000" step="1" value="0" inputmode="numeric"></div>
+      <div class="progress-admin-reward"><label>Coins reward</label><input data-reward-coins type="number" min="0" max="100000" step="1" value="0" inputmode="numeric"></div>
+      <div class="progress-admin-reward"><label>AI-Coins reward</label><input data-reward-ai type="number" min="0" max="100000" step="1" value="0" inputmode="numeric"></div>
+    </div>
+    <div class="progress-admin-field" style="margin-top:11px"><label>Instructions (optional)</label><textarea data-task-note maxlength="300" rows="2" placeholder="Optional instructions for the student"></textarea></div>`;
+    wrap.appendChild(el);updateCount();
+  }
+  function collectBoxes(){return qa('#cgAdminTaskBuilder .progress-admin-task-box').map((box,idx)=>({box,idx,title:String(box.querySelector('[data-task-title]')?.value||'').trim(),goal:Math.max(0,Math.floor(Number(box.querySelector('[data-task-goal]')?.value||0))),due:String(box.querySelector('[data-task-due]')?.value||''),color:box.dataset.color||'#3b82f6',xp:Math.max(0,Math.floor(Number(box.querySelector('[data-reward-xp]')?.value||0))),coins:Math.max(0,Math.floor(Number(box.querySelector('[data-reward-coins]')?.value||0))),aiCoins:Math.max(0,Math.floor(Number(box.querySelector('[data-reward-ai]')?.value||0))),note:String(box.querySelector('[data-task-note]')?.value||'').trim()}));}
+  async function loadStudents(){const sel=$('#cgAdminStudentSelect');if(!sel||!window.studyFirebase)return;sel.innerHTML='<option value="">Loading Google accounts…</option>';try{const {db,collection,getDocs}=window.studyFirebase;const snap=await getDocs(collection(db,'users'));const rows=snap.docs.map(d=>({uid:d.id,...(d.data()||{})})).filter(x=>x.uid).sort((a,b)=>String(a.displayName||a.name||a.email||'').localeCompare(String(b.displayName||b.name||b.email||'')));sel.innerHTML='<option value="">Select a student…</option>'+rows.map(r=>`<option value="${esc(r.uid)}">${esc(r.displayName||r.name||'Student')} — ${esc(r.email||'Google account')}</option>`).join('');if(!rows.length)sel.innerHTML='<option value="">No Google accounts found</option>'}catch(e){console.error(e);sel.innerHTML='<option value="">Could not load accounts</option>'}}
+  async function loadAssignments(){const list=$('#cgAdminTaskList');if(!list||!window.studyFirebase)return;list.innerHTML='<div class="progress-admin-item"><small>Loading assignments…</small></div>';try{const {db,collection,getDocs,query,orderBy,limit}=window.studyFirebase;const snap=await getDocs(query(collection(db,'studyTasks'),orderBy('createdAt','desc'),limit(50)));const tasks=snap.docs.map(d=>({id:d.id,...(d.data()||{})}));if($('#cgAdminTaskTotal'))$('#cgAdminTaskTotal').textContent=String(tasks.length);list.innerHTML=tasks.length?tasks.map(t=>`<div class="progress-admin-item" style="--task-border:${esc(t.borderColor||'#dfe4eb')}"><div><strong>${esc(t.title||'Untitled task')}</strong><small>${esc(t.assignedUid||'Unknown student')} • ${t.completed?'Completed':'Pending'}${Number(t.goalXp||0)?' • Goal '+Number(t.goalXp).toLocaleString()+' XP':''}${t.dueDate?' • Due '+esc(t.dueDate):''}</small></div><b class="progress-admin-xp">+${Number(t.xpReward||0).toLocaleString()} XP</b></div>`).join(''):'<div class="progress-admin-item"><small>No assignments yet.</small></div>'}catch(e){console.error(e);list.innerHTML='<div class="progress-admin-item"><small>Could not load assignments. Check your Firestore studyTasks rules.</small></div>'}}
+  async function createTasks(){const status=$('#cgAdminStatus');if(!(await isAdmin())){if(status)status.textContent='Administrator access denied.';return}const uidTarget=String($('#cgAdminStudentSelect')?.value||'').trim();const boxes=collectBoxes();const valid=boxes.filter(x=>x.title);if(!uidTarget||!valid.length){if(status)status.textContent='Select a Google account and add at least one task.';return}if(!window.studyFirebase){if(status)status.textContent='Firebase is not connected.';return}try{const {db,collection,addDoc,serverTimestamp}=window.studyFirebase;for(const t of valid){await addDoc(collection(db,'studyTasks'),{assignedUid:uidTarget,title:t.title,note:t.note,goalXp:t.goal,dueDate:t.due,borderColor:t.color,xpReward:t.xp,coinsReward:t.coins,aiCoinsReward:t.aiCoins,completed:false,createdBy:adminUser().uid,createdAt:serverTimestamp()})}if(status)status.textContent=`${valid.length} task${valid.length>1?'s':''} added successfully.`;$('#cgAdminTaskBuilder').innerHTML='';builderCount=0;ensureBuilder();await loadAssignments()}catch(e){console.error(e);if(status)status.textContent='Task creation failed. Check your Firestore studyTasks rules.'}}
+  document.addEventListener('click',async e=>{
+    const admin=e.target?.closest?.('#cgProgressAdminBtn'); if(admin){e.preventDefault();e.stopImmediatePropagation();if(await isAdmin())openPage();else alert('Administrator access is not enabled for this Google account.');return;}
+    if(e.target?.closest?.('#cgProgressAdminClose,[data-progress-admin-close]')){e.preventDefault();e.stopImmediatePropagation();closePage();return;}
+    if(e.target?.closest?.('#cgAdminAddTaskBox')){e.preventDefault();e.stopImmediatePropagation();addBox();return;}
+    if(e.target?.closest?.('#cgAdminCreateTask')){e.preventDefault();e.stopImmediatePropagation();createTasks();return;}
+    const rem=e.target?.closest?.('[data-remove-task-box]');if(rem){e.preventDefault();const box=rem.closest('.progress-admin-task-box');box?.remove();qa('#cgAdminTaskBuilder .progress-admin-task-box').forEach((b,i)=>{const n=b.querySelector('.progress-admin-task-number');if(n)n.textContent=`Task ${i+1}`});updateCount();return;}
+    const sw=e.target?.closest?.('[data-color]');if(sw){const box=sw.closest('.progress-admin-task-box');const c=sw.dataset.color||'#3b82f6';if(box){box.dataset.color=c;box.style.setProperty('--task-border',c);box.querySelectorAll('.progress-admin-color-swatch').forEach(b=>b.classList.toggle('selected',b===sw));const wheel=box.querySelector('[data-color-wheel]');if(wheel)wheel.value=c}return;}
+  },true);
+  document.addEventListener('input',e=>{if(e.target?.matches?.('[data-color-wheel]')){const box=e.target.closest('.progress-admin-task-box');const c=e.target.value;if(box){box.dataset.color=c;box.style.setProperty('--task-border',c);box.querySelectorAll('.progress-admin-color-swatch').forEach(b=>b.classList.remove('selected'))}}},true);
+  window.openProgressAdminTaskPage=openPage;
+  window.refreshProgressAdminVisibility=async function(){const btn=$('#cgProgressAdminBtn');if(btn)btn.classList.toggle('hidden',!(await isAdmin()))};
+  window.refreshProgressAdminVisibility();
+})();
+</script>
+
 <script id="progress-calendar-tasks-runtime">
 (function(){
   'use strict';
@@ -15079,18 +15167,40 @@ body.new-deck-page-open .cg-main{
     [['#cgStreakInline',s],['#cgStreakCta',s],['#cgProgressCurrentStreak',s],['#cgProgressLongestStreak',long],['#cgProgressStudyDays',set.size]].forEach(([sel,val])=>{const el=$(sel);if(el)el.textContent=String(val)});
     const q=$('#cgStreakQuestions');if(q)q.textContent=s>0?'1':'2';
   }
-  function loadTasks(){try{const a=JSON.parse(localStorage.getItem(taskStorage())||'[]');return Array.isArray(a)?a.filter(x=>x&&typeof x.text==='string'):[]}catch{return[]}}
-  function saveTasks(tasks){try{localStorage.setItem(taskStorage(),JSON.stringify(tasks))}catch(_){}renderTasks()}
-  function renderTasks(){
-    const list=$('#cgProgressTaskList'),empty=$('#cgProgressTaskEmpty'),count=$('#cgProgressTaskCount');if(!list)return;
-    const tasks=loadTasks(),open=tasks.filter(t=>!t.done).length;
-    list.innerHTML=tasks.map((t,i)=>`<div class="progress-task-row ${t.done?'done':''}" data-task-index="${i}"><button type="button" class="progress-task-check" data-task-toggle aria-label="${t.done?'Mark task incomplete':'Mark task complete'}">${t.done?'✓':''}</button><div class="progress-task-text">${escTask(t.text)}</div><button type="button" class="progress-task-delete" data-task-delete aria-label="Delete task">×</button></div>`).join('');
-    if(empty)empty.style.display=tasks.length?'none':'block';
-    if(count)count.textContent=String(open);
-    list.querySelectorAll('[data-task-toggle]').forEach(b=>b.addEventListener('click',()=>{const i=Number(b.closest('[data-task-index]')?.dataset.taskIndex);const a=loadTasks();if(a[i]){a[i].done=!a[i].done;saveTasks(a)}}));
-    list.querySelectorAll('[data-task-delete]').forEach(b=>b.addEventListener('click',()=>{const i=Number(b.closest('[data-task-index]')?.dataset.taskIndex);const a=loadTasks();a.splice(i,1);saveTasks(a)}));
+  async function loadTasks(){
+    const local=(()=>{try{const a=JSON.parse(localStorage.getItem(taskStorage())||'[]');return Array.isArray(a)?a:[]}catch{return[]}})();
+    const u=window.currentUser||window.studyFirebase?.auth?.currentUser;
+    let cloud=[];
+    if(u&&window.studyFirebase){try{const {db,collection,getDocs,query,where,limit}=window.studyFirebase;const snap=await getDocs(query(collection(db,'studyTasks'),where('assignedUid','==',u.uid),limit(100)));cloud=snap.docs.map(d=>({id:d.id,...(d.data()||{}),cloud:true}));}catch(e){console.warn('Assigned task load failed:',e)}}
+    const map=new Map();[...cloud,...local].forEach(t=>map.set(String(t.id||''),t));return [...map.values()];
   }
-  function escTask(v){return String(v).replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\\':'\\\\','"':'&quot;'}[m]||m))}
+  function saveLocalTasks(tasks){try{localStorage.setItem(taskStorage(),JSON.stringify(tasks))}catch(_){} }
+  async function rewardTask(task){
+    if(task.completed)return false;
+    const u=window.currentUser||window.studyFirebase?.auth?.currentUser;
+    const currentXp=Math.max(0,Number(window.xp)||0);
+    const goal=Math.max(0,Number(task.goalXp||0));
+    if(currentXp<goal)return false;
+    const xpReward=Math.max(0,Math.floor(Number(task.xpReward||0))), coinsReward=Math.max(0,Math.floor(Number(task.coinsReward||0))), aiCoinsReward=Math.max(0,Math.floor(Number(task.aiCoinsReward||0)));
+    try{
+      if(task.cloud&&window.studyFirebase){const {db,doc,setDoc,serverTimestamp}=window.studyFirebase;await setDoc(doc(db,'studyTasks',String(task.id)),{completed:true,completedAt:serverTimestamp()},{merge:true});}
+      if(xpReward&&typeof addXP==='function')addXP(xpReward);
+      const coinKey='cathiansCoins',aiKey='cathiansAiCoins';
+      const coins=Math.max(0,Number(localStorage.getItem(coinKey)||0)||0)+coinsReward;const ai=Math.max(0,Number(localStorage.getItem(aiKey)||0)||0)+aiCoinsReward;
+      localStorage.setItem(coinKey,String(coins));localStorage.setItem(aiKey,String(ai));
+      const top=$('#cgTopCoins');if(top)top.textContent=coins.toLocaleString();
+      if(u&&window.studyFirebase){try{const {db,doc,setDoc}=window.studyFirebase;await setDoc(doc(db,'studyProfiles',u.uid),{coins,aiCoins:ai},{merge:true})}catch(_){}
+      }
+      if(!task.cloud){const a=(()=>{try{return JSON.parse(localStorage.getItem(taskStorage())||'[]')}catch{return[]}})();const i=a.findIndex(x=>String(x.id)===String(task.id));if(i>=0){a[i].done=true;a[i].completed=true;saveLocalTasks(a)}}
+      return true;
+    }catch(e){console.error(e);return false}
+  }
+  async function renderTasks(){
+    const list=$('#cgProgressTaskList'),empty=$('#cgProgressTaskEmpty'),count=$('#cgProgressTaskCount');if(!list)return;
+    const tasks=await loadTasks();const currentXp=Math.max(0,Number(window.xp)||0);const open=tasks.filter(t=>!t.completed&&!t.done).length;
+    list.innerHTML=tasks.map((t,i)=>{const done=!!(t.completed||t.done);const goal=Math.max(0,Number(t.goalXp||0));const ready=currentXp>=goal;const xpR=Math.max(0,Number(t.xpReward||0));const cR=Math.max(0,Number(t.coinsReward||0));const aR=Math.max(0,Number(t.aiCoinsReward||0));const rewards=[xpR?`+${xpR} EXP`:'',cR?`+${cR} Coins`:'',aR?`+${aR} AI-Coins`:'' ].filter(Boolean).join(' • ');const req=goal?`Requires ${goal.toLocaleString()} EXP${ready?' • Ready to claim':' • Locked'}`:'Claimable now';return `<div class="progress-task-item ${done?'completed ':''}${!ready&&!done?'locked':''}" style="--task-border:${escTask(t.borderColor||'#6b7280')}" data-task-index="${i}" data-task-id="${escTask(t.id||'')}" data-cloud="${t.cloud?'1':'0'}"><label><span class="progress-task-text"><strong>${escTask(t.title||t.text||'Untitled task')}</strong><span class="progress-task-meta">${escTask(t.note||'')} ${escTask(req)}</span>${rewards?`<span class="progress-task-reward">${escTask(rewards)}</span>`:''}</span></label><button type="button" class="progress-task-claim" data-task-claim ${done?'disabled':''} ${!ready?'disabled':''}>${done?'Claimed':ready?'Claim':'Locked'}</button></div>`}).join('');
+    if(empty)empty.style.display=tasks.length?'none':'block';if(count)count.textContent=String(open);
+  }
   function openTasks(){const m=$('#cgProgressTasksModal');if(!m)return;m.classList.remove('hidden');m.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');renderTasks();setTimeout(()=>$('#cgProgressTaskInput')?.focus(),50)}
   function closeTasks(){const m=$('#cgProgressTasksModal');if(!m)return;m.classList.add('hidden');m.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}
   function addTask(){const input=$('#cgProgressTaskInput');const text=input?.value.trim();if(!text)return;const tasks=loadTasks();tasks.unshift({text,done:false,createdAt:Date.now()});if(input)input.value='';saveTasks(tasks);input?.focus()}
@@ -15100,7 +15210,7 @@ body.new-deck-page-open .cg-main{
   }
   const originalUpdate=window.updateCgProgressView;
   window.updateCgProgressView=function(){try{originalUpdate?.()}catch(_){}markTodayAndRefresh();renderStats();renderCalendar()};
-  document.addEventListener('click',e=>{
+  document.addEventListener('click',async e=>{
     if(e.target?.closest?.('#cgCalendarPrev')){
       viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth()-1,1);
       renderCalendar();
@@ -15114,7 +15224,7 @@ body.new-deck-page-open .cg-main{
     }
     if(e.target?.closest?.('#cgProgressTasksBtn')){e.preventDefault();openTasks()}
     if(e.target?.closest?.('#cgProgressTasksClose,[data-progress-tasks-close]'))closeTasks();
-    if(e.target?.closest?.('#cgProgressTaskAdd'))addTask();
+    const claim=e.target?.closest?.('[data-task-claim]');if(claim){const row=claim.closest('[data-task-id]');if(row){const tasks=await loadTasks();const task=tasks.find(t=>String(t.id||'')===String(row.dataset.taskId||''));if(task&&await rewardTask(task)){await renderTasks();alert('Task claimed! Your rewards have been added.')}}return;}
     if(e.target?.closest?.('#cgStreakShare')){const s=localStreak(),text=`I’m on a ${s}-day study streak!`;if(navigator.share){navigator.share({title:'My Study Streak',text}).catch(()=>{})}else if(navigator.clipboard){navigator.clipboard.writeText(text)}}
   },true);
   document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.activeElement?.id==='cgProgressTaskInput'){e.preventDefault();addTask()}if(e.key==='Escape')closeTasks()});
@@ -15123,5 +15233,49 @@ body.new-deck-page-open .cg-main{
   window.addEventListener('load',boot,{once:true});
 })();
 </script>
+
+<style id="progress-admin-only-add-task-visibility">
+/* Task creation controls are hidden by default and revealed only for admins. */
+#cgProgressTaskAdd,
+#cgProgressTaskInput,
+#cgProgressTaskInput + #cgProgressTaskAdd,
+#cgProgressTasksModal .progress-task-add{visibility:hidden;opacity:0;pointer-events:none}
+#cgProgressTasksModal.progress-admin-can-create .progress-task-add{visibility:visible;opacity:1;pointer-events:auto}
+</style>
+<script id="progress-admin-only-add-task-runtime">
+(function(){
+  'use strict';
+  const modal=()=>document.getElementById('cgProgressTasksModal');
+  const row=()=>document.querySelector('#cgProgressTasksModal .progress-task-add');
+  async function sync(){
+    const m=modal(),r=row();
+    if(!m||!r)return;
+    let admin=false;
+    try{
+      const btn=document.getElementById('cgProgressAdminBtn');
+      if(btn) admin=!btn.classList.contains('hidden');
+      if(!admin && typeof window.refreshProgressAdminVisibility==='function'){
+        await window.refreshProgressAdminVisibility();
+        const b=document.getElementById('cgProgressAdminBtn');
+        admin=!!b && !b.classList.contains('hidden');
+      }
+    }catch(_){admin=false}
+    m.classList.toggle('progress-admin-can-create',admin);
+  }
+  window.syncProgressTaskCreatorVisibility=sync;
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync,{once:true});
+  else sync();
+  window.addEventListener('load',sync,{once:true});
+  window.addEventListener('resize',sync,{passive:true});
+  const obs=new MutationObserver(()=>sync());
+  const btn=document.getElementById('cgProgressAdminBtn');
+  if(btn)obs.observe(btn,{attributes:true,attributeFilter:['class']});
+  const authWatcher=setInterval(()=>{
+    sync();
+    if(document.getElementById('cgProgressAdminBtn')) clearInterval(authWatcher);
+  },1500);
+})();
+</script>
+
 </body>
 </html>
