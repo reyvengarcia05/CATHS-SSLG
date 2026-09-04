@@ -15136,13 +15136,15 @@ body.new-deck-page-open .cg-main{
       <div class="progress-admin-reward"><label>Coins reward</label><input data-reward-coins type="number" min="0" max="100000" step="1" value="0" inputmode="numeric"></div>
       <div class="progress-admin-reward"><label>AI-Coins reward</label><input data-reward-ai type="number" min="0" max="100000" step="1" value="0" inputmode="numeric"></div>
     </div>
-    <div class="progress-admin-field" style="margin-top:11px"><label>Instructions (optional)</label><textarea data-task-note maxlength="300" rows="2" placeholder="Optional instructions for the student"></textarea></div>`;
+    <div class="progress-admin-field" style="margin-top:11px"><label>Instructions (optional)</label><textarea data-task-note maxlength="300" rows="2" placeholder="Optional instructions for the student"></textarea></div>
+    <label class="progress-admin-earn-new-toggle"><input type="checkbox" data-earn-new><span><strong>Earn it as new</strong><small>The required XP and study time must be earned after this task is published. Previous progress will not count.</small></span></label>`;
     wrap.appendChild(el);updateCount();
   }
-  function collectBoxes(){return qa('#cgAdminTaskBuilder .progress-admin-task-box').map((box,idx)=>({box,idx,title:String(box.querySelector('[data-task-title]')?.value||'').trim(),goal:Math.max(0,Math.floor(Number(box.querySelector('[data-task-goal]')?.value||0))),studyMinutes:Math.max(0,Math.floor(Number(box.querySelector('[data-study-minutes]')?.value||0))),due:String(box.querySelector('[data-task-due]')?.value||''),color:box.dataset.color||'#3b82f6',xp:Math.max(0,Math.floor(Number(box.querySelector('[data-reward-xp]')?.value||0))),coins:Math.max(0,Math.floor(Number(box.querySelector('[data-reward-coins]')?.value||0))),aiCoins:Math.max(0,Math.floor(Number(box.querySelector('[data-reward-ai]')?.value||0))),note:String(box.querySelector('[data-task-note]')?.value||'').trim()}));}
+  function collectBoxes(){return qa('#cgAdminTaskBuilder .progress-admin-task-box').map((box,idx)=>({box,idx,title:String(box.querySelector('[data-task-title]')?.value||'').trim(),goal:Math.max(0,Math.floor(Number(box.querySelector('[data-task-goal]')?.value||0))),studyMinutes:Math.max(0,Math.floor(Number(box.querySelector('[data-study-minutes]')?.value||0))),due:String(box.querySelector('[data-task-due]')?.value||''),color:box.dataset.color||'#3b82f6',xp:Math.max(0,Math.floor(Number(box.querySelector('[data-reward-xp]')?.value||0))),coins:Math.max(0,Math.floor(Number(box.querySelector('[data-reward-coins]')?.value||0))),aiCoins:Math.max(0,Math.floor(Number(box.querySelector('[data-reward-ai]')?.value||0))),note:String(box.querySelector('[data-task-note]')?.value||'').trim(),earnItAsNew:!!box.querySelector('[data-earn-new]')?.checked}));}
   async function loadStudents(){const sel=$('#cgAdminStudentSelect');if(!sel||!window.studyFirebase)return;sel.innerHTML='<option value="">Loading Google accounts…</option>';try{const {db,collection,getDocs}=window.studyFirebase;const snap=await getDocs(collection(db,'users'));const rows=snap.docs.map(d=>({uid:d.id,...(d.data()||{})})).filter(x=>x.uid).sort((a,b)=>String(a.displayName||a.name||a.email||'').localeCompare(String(b.displayName||b.name||b.email||'')));sel.innerHTML='<option value="">Select a student…</option>'+rows.map(r=>`<option value="${esc(r.uid)}">${esc(r.displayName||r.name||'Student')} — ${esc(r.email||'Google account')}</option>`).join('');if(!rows.length)sel.innerHTML='<option value="">No Google accounts found</option>'}catch(e){console.error(e);sel.innerHTML='<option value="">Could not load accounts</option>'}}
   async function loadAssignments(){const list=$('#cgAdminTaskList');if(!list||!window.studyFirebase)return;list.innerHTML='<div class="progress-admin-item"><small>Loading assignments…</small></div>';try{const {db,collection,getDocs,query,orderBy,limit}=window.studyFirebase;const snap=await getDocs(query(collection(db,'studyTasks'),orderBy('createdAt','desc'),limit(50)));const tasks=snap.docs.map(d=>({id:d.id,...(d.data()||{})}));if($('#cgAdminTaskTotal'))$('#cgAdminTaskTotal').textContent=String(tasks.length);list.innerHTML=tasks.length?tasks.map(t=>`<div class="progress-admin-item" style="--task-border:${esc(t.borderColor||'#dfe4eb')}"><div><strong>${esc(t.title||'Untitled task')}</strong><small>${esc(t.assignedUid||'Unknown student')} • ${t.completed?'Completed':'Pending'}${Number(t.goalXp||0)?' • Goal '+Number(t.goalXp).toLocaleString()+' XP':''}${t.dueDate?' • Due '+esc(t.dueDate):''}</small></div><b class="progress-admin-xp">+${Number(t.xpReward||0).toLocaleString()} XP</b></div>`).join(''):'<div class="progress-admin-item"><small>No assignments yet.</small></div>'}catch(e){console.error(e);list.innerHTML='<div class="progress-admin-item"><small>Could not load assignments. Check your Firestore studyTasks rules.</small></div>'}}
-  async function createTasks(){const status=$('#cgAdminStatus');if(!(await isAdmin())){if(status)status.textContent='Administrator access denied.';return}const uidTarget=String($('#cgAdminStudentSelect')?.value||'').trim();const boxes=collectBoxes();const valid=boxes.filter(x=>x.title);if(!uidTarget||!valid.length){if(status)status.textContent='Select a Google account and add at least one task.';return}if(!window.studyFirebase){if(status)status.textContent='Firebase is not connected.';return}try{const {db,collection,addDoc,serverTimestamp}=window.studyFirebase;for(const t of valid){await addDoc(collection(db,'studyTasks'),{assignedUid:uidTarget,title:t.title,note:t.note,goalXp:t.goal,dueDate:t.due,borderColor:t.color,xpReward:t.xp,coinsReward:t.coins,aiCoinsReward:t.aiCoins,completed:false,createdBy:adminUser().uid,createdAt:serverTimestamp()})}if(status)status.textContent=`${valid.length} task${valid.length>1?'s':''} added successfully.`;$('#cgAdminTaskBuilder').innerHTML='';builderCount=0;ensureBuilder();await loadAssignments()}catch(e){console.error(e);if(status)status.textContent='Task creation failed. Check your Firestore studyTasks rules.'}}
+  async function createTasks(){return typeof window.__createEveryoneTasksV2==='function'?await window.__createEveryoneTasksV2():false}
+
   document.addEventListener('click',async e=>{
     const admin=e.target?.closest?.('#cgProgressAdminBtn'); if(admin){e.preventDefault();e.stopImmediatePropagation();if(await isAdmin())openPage();else alert('Administrator access is not enabled for this Google account.');return;}
     if(e.target?.closest?.('#cgProgressAdminClose,[data-progress-admin-close]')){e.preventDefault();e.stopImmediatePropagation();closePage();return;}
@@ -15601,41 +15603,69 @@ body.new-deck-page-open .cg-main{
     return [...grouped.values()].sort((a,b)=>Number(a.completed||a.done)-Number(b.completed||b.done)||String(a.title||a.text||'').localeCompare(String(b.title||b.text||'')));
   }
   function num(v){return Math.max(0,Math.floor(Number(v||0)))}
+  function num(v){return Math.max(0,Math.floor(Number(v||0)))}
+  function getEarnNewBaseline(task,currentXp,currentSeconds){
+    if(!task?.earnItAsNew)return {xp:0,seconds:0};
+    const key=`cathsTaskBaseline:${uid()}:${String(task.id||'')}`;
+    try{
+      const saved=JSON.parse(localStorage.getItem(key)||'null');
+      if(saved&&Number.isFinite(Number(saved.xp))&&Number.isFinite(Number(saved.seconds)))return {xp:num(saved.xp),seconds:num(saved.seconds)};
+      const base={xp:num(currentXp),seconds:num(currentSeconds)};
+      localStorage.setItem(key,JSON.stringify(base));
+      return base;
+    }catch(_){return {xp:num(currentXp),seconds:num(currentSeconds)}}
+  }
+  function taskProgress(task){
+    const currentXp=Math.max(0,Number(window.xp)||0);
+    const currentSeconds=studySeconds;
+    const earnNew=task?.earnItAsNew===true;
+    const base=getEarnNewBaseline(task,currentXp,currentSeconds);
+    return {
+      earnNew,
+      xpDelta:earnNew?Math.max(0,currentXp-base.xp):currentXp,
+      studyDelta:earnNew?Math.max(0,currentSeconds-base.seconds):currentSeconds
+    };
+  }
   async function renderTasksV2(){
     const list=$('#cgProgressTaskList'),empty=$('#cgProgressTaskEmpty'),count=$('#cgProgressTaskCount');if(!list)return;
-    const tasks=await loadTasks(),seconds=studySeconds,xpNow=Math.max(0,Number(window.xp)||0);
+    const tasks=await loadTasks();
     const pending=tasks.filter(t=>!(t.completed||t.done)).length;
     if(count)count.textContent=String(pending);
     if(empty)empty.style.display=tasks.length?'none':'block';
-    list.innerHTML=tasks.map(t=>{
-      const done=!!(t.completed||t.done),goal=num(t.goalXp),mins=num(t.studyMinutes),xpReady=xpNow>=goal,timeReady=seconds>=mins*60,ready=xpReady&&timeReady;
-      const xpR=num(t.xpReward),coins=num(t.coinsReward),ai=num(t.aiCoinsReward);
-      const rewards=[xpR?`+${xpR.toLocaleString()} EXP`:'',coins?`+${coins.toLocaleString()} Coins`:'',ai?`+${ai.toLocaleString()} AI-Coins`:'' ].filter(Boolean).join(' • ');
-      const parts=[];
-      if(t.note)parts.push(safe(t.note));
-      if(goal)parts.push(`EXP goal: ${xpNow.toLocaleString()} / ${goal.toLocaleString()}`);
-      if(mins){
-        const gotSeconds=Math.min(seconds,mins*60),gotMin=Math.floor(gotSeconds/60),gotExtra=gotSeconds%60;
-        const remain=Math.max(0,mins*60-seconds),remainMin=Math.floor(remain/60),remainSec=remain%60;
-        const progress=remain>0?`Study Deck / Flashcards: ${gotMin} / ${mins} min • ${remainMin}${remainSec?'m '+remainSec+'s':''} remaining`:`Study Deck / Flashcards: ${Math.floor(seconds/60)} / ${mins} min • Requirement met`;
-        parts.push(progress);
-      }
-      if(t.createdByName)parts.push(`Added by ${safe(t.createdByName)}`);
-      if(t.dueDate)parts.push(`Due ${safe(t.dueDate)}`);
-      if(goal&&!xpReady)parts.push('Locked until the EXP goal is reached');
-      if(mins&&!timeReady)parts.push('Keep studying Decks or Flashcards to unlock this task');
-      if(!goal&&!mins&&!done)parts.push('Ready to claim');
-      if(ready&&!done)parts.push('Ready to claim');
-      if(done)parts.push('Completed');
-      return `<div class="progress-task-item ${done?'completed':''}${!ready&&!done?' locked':''}" style="--task-border:${safe(t.borderColor||'#6b7280')}" data-task-id="${safe(t.id||'')}" data-cloud="${t.cloud?'1':'0'}">
-        <div class="progress-task-text"><strong>${safe(t.title||t.text||'Untitled task')}</strong><span class="progress-task-meta">${parts.join(' • ')}</span>${rewards?`<span class="progress-task-reward">${safe(rewards)}</span>`:''}</div>
-        <button type="button" class="progress-task-claim" data-task-claim-v2 ${done||!ready?'disabled':''}>${done?'Completed':ready?'Claim':'Locked'}</button>
-      </div>`;
+    list.innerHTML=tasks.map((t,index)=>{
+      const done=!!(t.completed||t.done);
+      const goal=num(t.goalXp),mins=num(t.studyMinutes),pr=taskProgress(t);
+      const xpReady=pr.xpDelta>=goal;
+      const timeReady=pr.studyDelta>=mins*60;
+      const ready=xpReady&&timeReady&&!done;
+      const adminName=safe(t.createdByName||'Administrator');
+      const adminPhoto=safe(t.createdByPhotoURL||'');
+      const rewards=[
+        num(t.xpReward)?`+${num(t.xpReward).toLocaleString()} XP`:'',
+        num(t.coinsReward)?`+${num(t.coinsReward).toLocaleString()} Coins`:'',
+        num(t.aiCoinsReward)?`+${num(t.aiCoinsReward).toLocaleString()} AI Coins`:''
+      ].filter(Boolean);
+      const xpCard=goal?`<div class="study-task-req-box study-task-xp-box"><div class="study-task-req-icon">XP</div><div><small>Needed XP</small><strong>${goal.toLocaleString()}</strong><span>${Math.min(pr.xpDelta,goal).toLocaleString()} / ${goal.toLocaleString()}${pr.earnNew?' • new XP':''}</span></div></div>`:'';
+      const deckCard=mins?`<div class="study-task-req-box study-task-deck-box"><div class="study-task-deck-image"><img src="Flashcards.png" alt="" onerror="this.closest('.study-task-deck-image').classList.add('fallback')"></div><div><small>Decks / Flashcards</small><strong>${mins} min</strong><span>${Math.min(Math.floor(pr.studyDelta/60),mins)} / ${mins} min${pr.earnNew?' • new study time':''}</span></div></div>`:'';
+      const status=done?'Completed':ready?'Claimable':'Locked';
+      const statusClass=done?'completed':ready?'claimable':'locked';
+      return `<article class="study-task-card ${statusClass}" style="--task-border:${safe(t.borderColor||'#6b7280')}" data-task-id="${safe(t.id||'')}" data-cloud="${t.cloud?'1':'0'}">
+        <div class="study-task-card-head">
+          <div class="study-task-number">Task ${index+1}</div>
+          <div class="study-task-admin">${adminPhoto?`<img src="${adminPhoto}" alt="">`:`<div class="study-task-admin-placeholder">A</div>`}<div><small>Added by</small><strong>${adminName}</strong></div></div>
+        </div>
+        <div class="study-task-description"><h4>${safe(t.title||t.text||'Untitled task')}</h4>${t.note?`<p>${safe(t.note)}</p>`:''}</div>
+        ${(xpCard||deckCard)?`<div class="study-task-requirements">${xpCard}${deckCard}</div>`:''}
+        ${rewards.length?`<div class="study-task-rewards"><span>Rewards</span><div>${rewards.map(r=>`<b>${safe(r)}</b>`).join('')}</div></div>`:''}
+        ${pr.earnNew?`<div class="study-task-new-badge">Earn it as new • only progress after publishing counts</div>`:''}
+        <div class="study-task-card-foot"><span class="study-task-status ${statusClass}">${status}</span><button type="button" class="progress-task-claim" data-task-claim-v2 ${done||!ready?'disabled':''}>${done?'Claimed':ready?'Claim Reward':'Locked'}</button></div>
+      </article>`;
     }).join('');
   }
   async function claimV2(task){
     if(!task||task.completed||task.done)return false;
-    if(Math.max(0,Number(window.xp)||0)<num(task.goalXp)||studySeconds<num(task.studyMinutes)*60)return false;
+    const pr=taskProgress(task);
+    if(pr.xpDelta<num(task.goalXp)||pr.studyDelta<num(task.studyMinutes)*60)return false;
     const u=getUser(),fb=window.studyFirebase;
     try{
       if(task.cloud&&fb){
@@ -15668,9 +15698,9 @@ body.new-deck-page-open .cg-main{
   }
 
   async function createEveryoneTasksV2(){
-    const status=$('#cgAdminStatus'),adminBtn=$('#cgProgressAdminBtn');
-    try{if(typeof window.refreshProgressAdminVisibility==='function')await window.refreshProgressAdminVisibility()}catch(_){}
-    if(adminBtn?.classList.contains('hidden')){if(status)status.textContent='Administrator access denied.';return}
+    const status=$('#cgAdminStatus');
+    try{if(typeof window.refreshProgressAdminVisibility==='function')await window.refreshProgressAdminVisibility()}catch(_){ }
+    if($('#cgProgressAdminBtn')?.classList.contains('hidden')){if(status)status.textContent='Administrator access denied.';return false}
     const boxes=qa('#cgAdminTaskBuilder .progress-admin-task-box').map(box=>({
       title:String(box.querySelector('[data-task-title]')?.value||'').trim(),
       goal:num(box.querySelector('[data-task-goal]')?.value),
@@ -15680,26 +15710,31 @@ body.new-deck-page-open .cg-main{
       xp:num(box.querySelector('[data-reward-xp]')?.value),
       coins:num(box.querySelector('[data-reward-coins]')?.value),
       aiCoins:num(box.querySelector('[data-reward-ai]')?.value),
-      note:String(box.querySelector('[data-task-note]')?.value||'').trim()
+      note:String(box.querySelector('[data-task-note]')?.value||'').trim(),
+      earnItAsNew:!!box.querySelector('[data-earn-new]')?.checked
     })).filter(x=>x.title);
-    if(!boxes.length){if(status)status.textContent='Enter at least one task before adding it.';return}
+    if(!boxes.length){if(status)status.textContent='Add at least one task before publishing.';return false}
     const fb=window.studyFirebase,adminU=getUser();
-    if(!fb||!adminU){if(status)status.textContent='Sign in with an administrator account first.';return}
+    if(!fb||!adminU){if(status)status.textContent='Sign in with an administrator account first.';return false}
     const adminName=String(adminU.displayName||adminU.name||adminU.email||'Administrator').trim()||'Administrator';
+    const adminPhotoURL=String(adminU.photoURL||'').trim();
     try{
       const {db,collection,addDoc,serverTimestamp}=fb;
       for(const t of boxes){
-        const group=`everyone-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
         await addDoc(collection(db,'studyTasks'),{
-          audience:'everyone',shared:true,audienceGroupId:group,title:t.title,note:t.note,goalXp:t.goal,
-          studyMinutes:t.studyMinutes,dueDate:t.due,borderColor:t.color,xpReward:t.xp,coinsReward:t.coins,
-          aiCoinsReward:t.aiCoins,createdBy:adminU.uid,createdByName:adminName,createdAt:serverTimestamp()
+          audience:'everyone',shared:true,audienceGroupId:`everyone-${Date.now()}-${Math.random().toString(36).slice(2,8)}`,
+          title:t.title,note:t.note,goalXp:t.goal,studyMinutes:t.studyMinutes,dueDate:t.due,borderColor:t.color,
+          xpReward:t.xp,coinsReward:t.coins,aiCoinsReward:t.aiCoins,
+          createdBy:adminU.uid,createdByName:adminName,createdByPhotoURL:adminPhotoURL,
+          earnItAsNew:t.earnItAsNew,
+          createdAt:serverTimestamp()
         });
       }
-      if(status)status.textContent=`${boxes.length} task${boxes.length>1?'s':''} created for everyone.`;
-      const builder=$('#cgAdminTaskBuilder');if(builder){builder.innerHTML='';document.querySelector('#cgAdminAddTaskBox')?.click()}
+      if(status)status.textContent=`${boxes.length} task${boxes.length>1?'s':''} published for everyone.`;
+      const builder=$('#cgAdminTaskBuilder');if(builder){builder.innerHTML='';builderCount=0;ensureBuilder()}
       window.renderProgressAdminEveryoneList?.();
-    }catch(e){console.error(e);if(status)status.textContent='Task creation failed. Check your Firestore studyTasks rules.'}
+      return true;
+    }catch(e){console.error(e);if(status)status.textContent='Task creation failed. Check your Firestore studyTasks rules.';return false}
   }
   window.__createEveryoneTasksV2=createEveryoneTasksV2;
   window.renderProgressAdminEveryoneList=async function(){
@@ -15718,6 +15753,7 @@ body.new-deck-page-open .cg-main{
         if(num(t.goalXp))bits.push(`EXP ${num(t.goalXp).toLocaleString()}`);
         if(mins)bits.push(`Study ${mins} min`);
         if(t.createdByName)bits.push(`By ${safe(t.createdByName)}`);
+        if(t.earnItAsNew)bits.push('Earn it as new');
         if(t.dueDate)bits.push(`Due ${safe(t.dueDate)}`);
         return `<div class="progress-admin-item" style="--task-border:${safe(t.borderColor||'#dfe4eb')}"><div><strong>${safe(t.title||'Untitled task')}</strong><small>${bits.join(' • ')}</small></div><b class="progress-admin-xp">${num(t.xpReward)?`+${num(t.xpReward).toLocaleString()} XP`:'No XP reward'}</b></div>`;
       }).join(''):'<div class="progress-admin-item"><small>No tasks created yet.</small></div>';
@@ -15762,6 +15798,28 @@ body.new-deck-page-open .cg-main{
 })();
 </script>
 
+<style id="study-task-card-design-v3">
+  #cgProgressTasksModal .progress-tasks-card{width:min(94vw,920px);max-height:90dvh;padding:26px;border-radius:28px}
+  #cgProgressTasksModal .progress-tasks-head{align-items:flex-start;padding-bottom:16px;border-bottom:1px solid #edf1f5;margin-bottom:14px}
+  #cgProgressTasksModal .progress-tasks-head p{margin-top:4px;font-size:10px;color:#7a8798;line-height:1.5}
+  .study-task-card{position:relative;overflow:hidden;margin:12px 0;padding:20px 20px 18px;border:1px solid #e2e7ee;border-left:6px solid var(--task-border,#6b7280);border-radius:22px;background:linear-gradient(145deg,#fff 0%,#fbfcfe 100%);box-shadow:0 12px 32px rgba(25,41,63,.08)}
+  .study-task-card.completed{background:linear-gradient(145deg,#fbfef9,#f4faf0)}
+  .study-task-card.locked{background:linear-gradient(145deg,#fff,#fafbfd)}
+  .study-task-card-head{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:14px}
+  .study-task-number{font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#728096}
+  .study-task-admin{display:flex;align-items:center;gap:8px;min-width:0}
+  .study-task-admin img,.study-task-admin-placeholder{width:38px;height:38px;border-radius:50%;object-fit:cover;border:1px solid #e2e7ef;background:#eef2f7;display:grid;place-items:center;font-size:12px;font-weight:900;color:#59687c}
+  .study-task-admin div:last-child{display:grid;line-height:1.15}.study-task-admin small{font-size:7px;color:#8a96a7}.study-task-admin strong{font-size:9px;color:#243149;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .study-task-description h4{margin:0;font-size:18px;line-height:1.25;color:#142038;letter-spacing:-.01em}.study-task-description p{margin:7px 0 0;font-size:10px;line-height:1.6;color:#68778b}
+  .study-task-requirements{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:17px}
+  .study-task-req-box{display:flex;align-items:center;gap:11px;min-height:70px;padding:10px 12px;border-radius:16px;border:1px solid #e0e5ec}.study-task-req-box small,.study-task-req-box span{display:block}.study-task-req-box small{font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#6e7b8f}.study-task-req-box strong{display:block;margin-top:2px;font-size:15px;color:#17233a}.study-task-req-box span{margin-top:3px;font-size:7.5px;color:#758398}.study-task-xp-box{background:#f4efff;border-color:#ded1ff}.study-task-req-icon{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:#7b4bc4;color:#fff;font-size:11px;font-weight:900;box-shadow:0 6px 14px rgba(123,75,196,.22)}
+  .study-task-deck-box{background:#fff8dc;border-color:#f1df91}.study-task-deck-image{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;overflow:hidden;background:#ffd84a}.study-task-deck-image img{width:100%;height:100%;object-fit:cover}.study-task-deck-image.fallback:before{content:'✦';font-size:18px;font-weight:900;color:#5f4b00}
+  .study-task-rewards{margin-top:16px;padding-top:14px;border-top:1px solid #edf0f4}.study-task-rewards>span{font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;color:#78869a}.study-task-rewards>div{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.study-task-rewards b{padding:7px 10px;border-radius:10px;background:#f2f7f0;color:#4e7e39;font-size:8.5px}
+  .study-task-new-badge{display:inline-flex;margin-top:13px;padding:7px 9px;border-radius:9px;background:#eef5ff;color:#456e9c;font-size:7.5px;font-weight:800}
+  .study-task-card-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px}.study-task-status{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.study-task-status.locked{color:#8a95a5}.study-task-status.claimable{color:#4c8b37}.study-task-status.completed{color:#4c8b37}.study-task-card .progress-task-claim{min-width:118px;padding:10px 13px;border-radius:12px;font-size:9px}.study-task-card.claimable .progress-task-claim{background:#182238;color:#fff}.study-task-card.completed .progress-task-claim{background:#dcefd7;color:#4b8138}
+  .progress-admin-earn-new-toggle{display:flex;align-items:flex-start;gap:10px;margin-top:13px;padding:12px 13px;border:1px solid #d8e4f2;border-radius:13px;background:#f7faff;cursor:pointer}.progress-admin-earn-new-toggle input{margin-top:2px;accent-color:#4b72a3}.progress-admin-earn-new-toggle strong{display:block;font-size:9px;color:#34577f}.progress-admin-earn-new-toggle small{display:block;margin-top:3px;font-size:7.5px;line-height:1.45;color:#718198}
+  @media(max-width:760px){#cgProgressTasksModal .progress-tasks-card{width:94vw;padding:16px;border-radius:21px}.study-task-card{padding:16px 14px;border-radius:18px}.study-task-card-head{align-items:flex-start}.study-task-description h4{font-size:15px}.study-task-description p{font-size:9px}.study-task-requirements{grid-template-columns:1fr;gap:9px}.study-task-req-box{min-height:64px}.study-task-admin img,.study-task-admin-placeholder{width:32px;height:32px}.study-task-admin strong{font-size:8px;max-width:125px}.study-task-card-foot{align-items:stretch;flex-direction:column}.study-task-card .progress-task-claim{width:100%}}
+</style>
 </main>
 </body>
 </html>
