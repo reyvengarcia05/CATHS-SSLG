@@ -878,6 +878,149 @@ window.studyAuthReady = (async () => {
   return auth;
 })();
 </script>
+
+<script id="cathians-account-cloud-sync">
+(function(){
+  'use strict';
+  const PROFILE='studyProfiles';
+  const VERSION=1;
+  const MAX_TOTAL_BYTES=720000;
+  const nativeGet=Storage.prototype.getItem;
+  const nativeSet=Storage.prototype.setItem;
+  const nativeRemove=Storage.prototype.removeItem;
+  let restoring=false;
+  let ready=false;
+  let signedUid='';
+  let saveTimer=0;
+  let saveQueue=Promise.resolve();
+  let lastSnapshot='';
+
+  function accountKey(key){
+    key=String(key||'');
+    if(!key)return false;
+    if(/^cathsStudyMaterials:/.test(key))return false; // Dedicated Firestore collection.
+    return /^(caths|cathians)/i.test(key) || /^(userName|userPhoto|userEmail)$/.test(key);
+  }
+  function activeUid(){return signedUid||window.currentUser?.uid||window.studyFirebase?.auth?.currentUser?.uid||'';}
+  function keys(){
+    const out=[];
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(accountKey(k))out.push(k);
+    }
+    return out;
+  }
+  function collect(){
+    const values={};let total=0;
+    for(const k of keys()){
+      let v='';try{v=nativeGet.call(localStorage,k)||''}catch(_){continue}
+      const bytes=k.length+v.length;
+      if(v.length>250000||total+bytes>MAX_TOTAL_BYTES)continue;
+      values[k]=v;total+=bytes;
+    }
+    return {version:VERSION,updatedAt:new Date().toISOString(),values};
+  }
+  function snap(state){try{return JSON.stringify(state)}catch(_){return ''}}
+
+  async function saveNow(){
+    const u=window.currentUser||window.studyFirebase?.auth?.currentUser;
+    if(!u||!window.studyFirebase||!ready)return;
+    const state=collect();const text=snap(state);
+    if(!text||text===lastSnapshot)return;
+    lastSnapshot=text;
+    const {db,doc,setDoc,serverTimestamp}=window.studyFirebase;
+    await setDoc(doc(db,PROFILE,u.uid),{accountState:state,accountStateVersion:VERSION,accountStateUpdatedAt:serverTimestamp()},{merge:true});
+  }
+  function schedule(){
+    if(!ready||restoring||!activeUid())return;
+    clearTimeout(saveTimer);
+    saveTimer=setTimeout(()=>{saveQueue=saveQueue.catch(()=>{}).then(saveNow).catch(e=>console.warn('Account cloud save failed:',e));},650);
+  }
+  function restore(state){
+    const values=state&&typeof state==='object'&&state.values&&typeof state.values==='object'?state.values:{};
+    restoring=true;
+    try{
+      for(const k of keys()){try{nativeRemove.call(localStorage,k)}catch(_){}}
+      for(const [k,v] of Object.entries(values)){
+        if(!accountKey(k))continue;
+        try{nativeSet.call(localStorage,k,String(v??''))}catch(_){ }
+      }
+    }finally{restoring=false}
+  }
+  async function ensureProfile(ref,user){
+    const {db,doc,getDoc,setDoc,serverTimestamp}=window.studyFirebase;
+    const snap=await getDoc(ref);
+    if(snap.exists())return;
+    let section='';let grade='';
+    try{
+      const userSnap=await getDoc(doc(db,'users',user.uid));
+      if(userSnap.exists()){
+        const data=userSnap.data()||{};
+        section=String(data.section||'').trim();
+        const m=section.match(/^(7|8|9|10|11|12|13|14|15|16|17)-/);
+        grade=m?m[1]:String(data.grade||'').trim();
+      }
+    }catch(_){}
+    await setDoc(ref,{
+      uid:user.uid,
+      displayName:user.displayName||'Student',
+      email:user.email||'',
+      photoURL:user.photoURL||'',
+      section,
+      grade,
+      xp:0,
+      createdAt:serverTimestamp(),
+      updatedAt:serverTimestamp()
+    },{merge:true});
+  }
+
+  async function loadForUser(user){
+    if(!user||!window.studyFirebase)return;
+    signedUid=user.uid;ready=false;clearTimeout(saveTimer);
+    try{
+      const {db,doc,getDoc,setDoc,serverTimestamp}=window.studyFirebase;
+      const ref=doc(db,PROFILE,user.uid);
+      await ensureProfile(ref,user);
+      const server=await getDoc(ref);
+      const remote=server.exists()?server.data()?.accountState:null;
+      const remoteValues=remote?.values&&Object.keys(remote.values).length>0;
+      const lastUid=nativeGet.call(localStorage,'cathiansLastAccountUid')||'';
+      if(remoteValues){
+        restore(remote);
+      }else if(lastUid===user.uid){
+        // First migration of this account's existing browser data.
+        await setDoc(ref,{accountState:collect(),accountStateVersion:VERSION,accountStateUpdatedAt:serverTimestamp()},{merge:true});
+      }else{
+        // Switching accounts: do not let the previous user's browser state leak into this account.
+        restore({values:{}});
+      }
+      nativeSet.call(localStorage,'cathiansLastAccountUid',user.uid);
+      ready=true;lastSnapshot=snap(collect());
+    }catch(e){
+      console.warn('Account state restore failed:',e);
+      ready=true;
+    }
+  }
+
+  const originalSet=Storage.prototype.setItem;
+  const originalRemove=Storage.prototype.removeItem;
+  Storage.prototype.setItem=function(k,v){
+    const r=originalSet.call(this,k,v);
+    if(this===localStorage&&accountKey(k)&&!restoring)schedule();
+    return r;
+  };
+  Storage.prototype.removeItem=function(k){
+    const r=originalRemove.call(this,k);
+    if(this===localStorage&&accountKey(k)&&!restoring)schedule();
+    return r;
+  };
+
+  window.cathiansAccountCloud={loadForUser,saveNow,schedule,isReady:()=>ready};
+  window.studyAuthStateReady?.then(u=>{if(!u)ready=true}).catch(()=>{ready=true});
+  window.addEventListener('beforeunload',()=>{if(ready&&activeUid())saveNow().catch(()=>{})});
+})();
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -2573,7 +2716,7 @@ body{min-height:100dvh;overflow-x:hidden}
   /* Open viewer wrapper: reuse original viewer and retain the active deck reference. */
   const tryWrapOpen=()=>{if(typeof window.openSavedStudyMaterial==='function'&&!window.__v27WrappedSaved){const old=window.openSavedStudyMaterial;window.openSavedStudyMaterial=function(item){window.__v27ActiveDeck=item||null;return old(item)};window.__v27WrappedSaved=true;}};
   setTimeout(tryWrapOpen,100);setTimeout(tryWrapOpen,700);
-  window.__v27OpenDeck=item=>{window.__v27ActiveDeck=item||null;try{if(typeof openViewer==='function')openViewer(item);else if(typeof window.openSavedStudyMaterial==='function')window.openSavedStudyMaterial(item);}catch(_){try{window.openSavedStudyMaterial?.(item)}catch(__){}}};
+  window.__v27OpenDeck=item=>{if(item&&isStudyMaterialDeleted(item.id)){window.showGameToast?.('This deck was deleted.');return;}window.__v27ActiveDeck=item||null;try{if(typeof openViewer==='function')openViewer(item);else if(typeof window.openSavedStudyMaterial==='function')window.openSavedStudyMaterial(item);}catch(_){try{window.openSavedStudyMaterial?.(item)}catch(__){}}};
   function getStorageKey(){try{return currentUser?('cathsStudyMaterials:'+currentUser.uid):'cathsStudyMaterials:guest'}catch(_){return 'cathsStudyMaterials:guest'}}
   async function persistEdit(item,topic,notes,cards){
     const content=JSON.parse(JSON.stringify(item.content||{}));if(Array.isArray(cards))content.cards=cards;
@@ -6980,8 +7123,12 @@ async function initializeStudyAuth(){
       signinBtn.classList.add('hidden');
       signinBtn.setAttribute('aria-hidden','true');
       leaderboardStatus.textContent='Signed in as '+(user.displayName||'Student')+'.';
+      if(window.cathiansAccountCloud){
+        try{await window.cathiansAccountCloud.loadForUser(user);}catch(e){console.warn('Account state restore skipped:',e);}
+      }
       await loadCurrentUserXP(user);
       await refreshRankCard();
+      window.cathiansAccountCloud?.schedule?.();
     }else{
       signinBtn.classList.remove('hidden');
       signinBtn.setAttribute('aria-hidden','false');
@@ -7066,11 +7213,55 @@ function mergeSavedMaterials(){
   let localDocs=[];try{localDocs=JSON.parse(localStorage.getItem(storageKey)||'[]')}catch{localDocs=[]}
   return {localDocs,storageKey};
 }
+function getDeletedStudyMaterialIds(){
+  const u=window.currentUser||window.studyFirebase?.auth?.currentUser||null;
+  const key=u?('cathsStudyMaterialDeletedIds:'+u.uid):'cathsStudyMaterialDeletedIds:guest';
+  try{const ids=JSON.parse(localStorage.getItem(key)||'[]');return new Set(Array.isArray(ids)?ids.map(String):[]);}catch(_){return new Set();}
+}
+function isStudyMaterialDeleted(id){
+  const target=String(id||'').trim();
+  return !!target && getDeletedStudyMaterialIds().has(target);
+}
+function purgeDeletedStudyMaterialDom(id){
+  const target=String(id||'').trim();
+  if(!target)return;
+  document.querySelectorAll('[data-deck-id],[data-mid],[data-v28-deck-id],[data-v25-deck-id],[data-v27-deck-id],[data-final-open-id],[data-open-id],[data-material-id],[data-flow-deck-id]').forEach(el=>{
+    const ids=[el.dataset.deckId,el.dataset.mid,el.dataset.v28DeckId,el.dataset.v25DeckId,el.dataset.v27DeckId,el.dataset.finalOpenId,el.dataset.openId,el.dataset.materialId,el.dataset.flowDeckId].filter(Boolean).map(String);
+    if(ids.includes(target)){
+      const card=el.closest('.cg-deck-card,.cg-game-card,.study-library-item,.reviewer-select-item,.flow-deck-choice')||el;
+      if(card!==el || card.matches('.cg-deck-card,.cg-game-card,.study-library-item,.reviewer-select-item,.flow-deck-choice')){card.remove();}
+    }
+  });
+}
+if(!window.__cathiansGlobalDeleteGuard){
+  window.__cathiansGlobalDeleteGuard=true;
+  window.addEventListener('cathians:study-material-deleted',e=>{
+    const id=String(e?.detail?.id||'').trim();
+    if(!id)return;
+    purgeDeletedStudyMaterialDom(id);
+    try{
+      if(String(window.__cathiansActiveMaterialId||'')===id){
+        window.__cathiansActiveMaterialId='';
+        const output=document.getElementById('outputBox');
+        if(output)output.innerHTML='<div class=\"empty-state\"><div><strong>This study material was deleted.</strong><p>It is no longer available in your saved materials.</p></div></div>';
+      }
+      if(String(window.__v27ActiveDeck?.id||'')===id){window.__v27ActiveDeck=null;}
+      if(String(window.__v27GameDeck?.id||'')===id){window.__v27GameDeck=null;}
+      if(typeof window.__cathiansCloseDeletedDeckPage==='function' && String(window.__cathiansOpenDeckPageId||'')===id){
+        window.__cathiansCloseDeletedDeckPage();
+      }
+    }catch(_){}
+  });
+  window.addEventListener('storage',e=>{
+    if(e.key&&e.key.startsWith('cathsStudyMaterialDeletedIds:')){
+      try{const ids=JSON.parse(e.newValue||'[]');(Array.isArray(ids)?ids:[]).forEach(id=>purgeDeletedStudyMaterialDom(id));}catch(_){}
+    }
+  });
+}
+
 async function fetchSavedMaterials(){
   const {localDocs}=mergeSavedMaterials();
-  const deletedKey=currentUser?('cathsStudyMaterialDeletedIds:'+currentUser.uid):'cathsStudyMaterialDeletedIds:guest';
-  let deletedIds=[];try{deletedIds=JSON.parse(localStorage.getItem(deletedKey)||'[]')}catch{deletedIds=[]}
-  const deleted=new Set(Array.isArray(deletedIds)?deletedIds.map(String):[]);
+  const deleted=getDeletedStudyMaterialIds();
   let filteredLocal=localDocs.filter(x=>!deleted.has(String(x?.id||'')));
   if(!currentUser||!window.studyFirebase)return filteredLocal;
   try{
@@ -7101,8 +7292,9 @@ function getDeckColor(item,index=0){
 function deckColorStyle(item,index=0){return `--deck-accent:${getDeckColor(item,index)};`}
 
 async function loadCgDecksView(){
+  document.querySelectorAll('#cgDecksAll .cg-deck-card').forEach(card=>{const id=card.dataset.v28DeckId||card.dataset.v25DeckId||card.dataset.v27DeckId||card.dataset.deckId;if(id&&isStudyMaterialDeleted(id))card.remove();});
   const box=document.getElementById('cgDecksAll'); if(!box)return; box.innerHTML='<div class="cg-view-empty">Loading your decks…</div>';
-  const docs=await fetchSavedMaterials();
+  const docs=(await fetchSavedMaterials()).filter(x=>!isStudyMaterialDeleted(x?.id));
   if(!docs.length){box.innerHTML='<div class="cg-view-empty">No saved decks yet. Use Add Reviewer to create your first one.</div>';return;}
   box.innerHTML=docs.map((item,index)=>`<article class="cg-deck-card color-tint" style="${deckColorStyle(item,index)}"><div class="cg-deck-card-top"><div style="display:flex;align-items:center;gap:8px"><span class="cg-deck-color-dot" aria-hidden="true"></span><span class="cg-deck-type">${esc(materialDisplayLabel(item))}</span></div><span class="cg-deck-type">${esc(materialSavedDate(item))}</span></div><h3>${esc(item.topic||'Untitled Study Material')}</h3><p>${esc(item.notes||'Saved study material')}</p><div class="cg-deck-actions"><button class="cg-deck-open" type="button" data-deck-id="${esc(item.id)}">Open</button><button class="cg-deck-ai" type="button" data-ai-deck-id="${esc(item.id)}">Add to AI conversation</button></div></article>`).join('');
   box.querySelectorAll('[data-deck-id]').forEach(btn=>btn.onclick=()=>{const item=docs.find(x=>String(x.id)===String(btn.dataset.deckId));openSavedStudyMaterial(item);});
@@ -7117,7 +7309,7 @@ async function loadCgDecksView(){
 }
 async function loadCgGameReviewersView(){
   const box=document.getElementById('cgGameReviewersGrid'); if(!box)return; box.innerHTML='<div class="cg-view-empty">Loading your game reviewers…</div>';
-  const docs=await fetchSavedMaterials();
+  const docs=(await fetchSavedMaterials()).filter(x=>!isStudyMaterialDeleted(x?.id));
   if(!docs.length){box.innerHTML='<div class="cg-view-empty">No game reviewers yet. Create study material first.</div>';return;}
   box.innerHTML=docs.map((item,index)=>`<article class="cg-game-card color-tint" style="${deckColorStyle(item,index)}"><div style="display:flex;align-items:center;gap:8px"><span class="cg-deck-color-dot" aria-hidden="true"></span><span class="cg-deck-type">${esc(gameMaterialLabel(item))}</span></div><h3>${esc(item.topic||'Untitled Study Material')}</h3><p>Use this reviewer with a study game.</p><div class="cg-game-actions"><button class="cg-game-action" data-game="quiz-battle" data-mid="${esc(item.id)}">Quiz Shooting</button><button class="cg-game-action" data-game="matching-game" data-mid="${esc(item.id)}">Matching</button><button class="cg-game-action" data-game="serve-knowledge" data-mid="${esc(item.id)}">Serve a Knowledge</button></div></article>`).join('');
   box.querySelectorAll('.cg-game-action').forEach(btn=>btn.onclick=()=>{const item=docs.find(x=>String(x.id)===String(btn.dataset.mid));selectedGame=btn.dataset.game;startSoloGameFromMaterial(item);});
@@ -7149,9 +7341,7 @@ function openStudyLibrary(){studyLibraryPanel.classList.remove('hidden');documen
 function closeStudyLibrary(){studyLibraryPanel.classList.add('hidden');document.body.classList.remove('modal-open');}
 async function loadStudyLibrary(){
   const storageKey=currentUser?('cathsStudyMaterials:'+currentUser.uid):'cathsStudyMaterials:guest';
-  const deletedKey=currentUser?('cathsStudyMaterialDeletedIds:'+currentUser.uid):'cathsStudyMaterialDeletedIds:guest';
-  let deletedIds=[];try{deletedIds=JSON.parse(localStorage.getItem(deletedKey)||'[]');}catch(e){deletedIds=[];}
-  const deletedSet=new Set(Array.isArray(deletedIds)?deletedIds.map(String):[]);
+  const deletedSet=typeof getDeletedStudyMaterialIds==='function'?getDeletedStudyMaterialIds():new Set();
   let localDocs=[];
   try{localDocs=JSON.parse(localStorage.getItem(storageKey)||'[]');}catch(e){localDocs=[];}
   localDocs=localDocs.filter(x=>!deletedSet.has(String(x?.id||'')));
@@ -7184,6 +7374,11 @@ function renderStudyLibraryItems(docs){
 
 function openSavedStudyMaterial(item){
   if(!item)return;
+  if(isStudyMaterialDeleted(item.id)){
+    window.showGameToast?.('This study material was deleted.');
+    return;
+  }
+  window.__cathiansActiveMaterialId=String(item.id||'');
   /* Decks must open in the dedicated Deck Opening Page, never the old AI study workspace. */
   if(String(item.type||'').toLowerCase()==='deck' || String(item?.content?.mode||'').toLowerCase()==='deck'){
     try{ if(typeof window.__cathiansOpenDeckOpeningPage==='function'){ window.__cathiansOpenDeckOpeningPage(item); return; } }catch(_){}
@@ -7225,8 +7420,9 @@ async function selectFriendForGame(friendUid){try{const friends=await getMyFrien
 function openSoloGameSelection(){selectedFriend=null;selectedGame=null;selectedStudyMaterial=null;gameModalStep='game-solo';gameChoiceGrid.classList.add('hidden');friendsInviteList.classList.add('hidden');reviewerSelectList.classList.add('hidden');gameSelectGrid.classList.remove('hidden');gameModalTitle.textContent='Choose a Game';gameModalSubtitle.textContent='Choose a type of game to play.';gameToast.classList.add('hidden');setGameBack(true,resetGameModal);}
 function materialIconForGame(type){return type==='flashcards'?'🃏':type==='quiz'?'📝':type==='summary'?'📄':type==='studyguide'?'📚':'📖';}
 function gameMaterialLabel(item){if(item?.type==='flashcards'&&item?.content?.mode==='manual')return 'Your Own Flashcards';return materialLabel(item?.type);}
-function getLocalGameMaterials(){const storageKey=currentUser?('cathsStudyMaterials:'+currentUser.uid):'cathsStudyMaterials:guest';try{return JSON.parse(localStorage.getItem(storageKey)||'[]');}catch{return [];}}
+function getLocalGameMaterials(){const storageKey=currentUser?('cathsStudyMaterials:'+currentUser.uid):'cathsStudyMaterials:guest';try{return JSON.parse(localStorage.getItem(storageKey)||'[]').filter(x=>!isStudyMaterialDeleted(x?.id));}catch{return [];}}
 function renderReviewerChoices(docs){
+  docs=(Array.isArray(docs)?docs:[]).filter(x=>!isStudyMaterialDeleted(x?.id));
   if(!docs.length){reviewerSelectList.innerHTML='<div class="leaderboard-status">No saved reviewers yet. Create a reviewer, flashcard set, quiz, summary, or study guide first.</div>';return;}
   reviewerSelectList.innerHTML=docs.map(item=>`<button class="reviewer-select-item" type="button" data-material-id="${esc(item.id)}"><span class="reviewer-select-icon">${materialIconForGame(item.type)}</span><span class="reviewer-select-copy"><strong>${esc(item.topic||'Untitled Study Material')}</strong><small>${esc(gameMaterialLabel(item))} • ${esc(materialSavedDate(item))}</small></span><span class="reviewer-select-action">Play</span></button>`).join('');
   reviewerSelectList.querySelectorAll('[data-material-id]').forEach(btn=>btn.onclick=()=>startSoloGameFromMaterial(docs.find(x=>String(x.id)===String(btn.dataset.materialId))));
@@ -7239,7 +7435,7 @@ async function openReviewerSelection(gameId){
   renderReviewerChoices(docs);
 }
 async function startSoloGameFromMaterial(item){
-  if(!item)return;selectedStudyMaterial=item;const game=selectedGame;closeGameModal();if(game==='quiz-battle'){openQuizShooting(item);}else if(game==='serve-knowledge'){openServeKnowledge(item);}else if(game==='matching-game'){openMatchingGame(item);}else if(game==='flashcard-race'){if(item?.type==='flashcards'&&Array.isArray(item?.content?.cards)){currentType='flashcards';modeBadge.textContent='Flashcards';toolCards.forEach(c=>c.classList.toggle('active',c.dataset.type==='flashcards'));topicInput.value=item.topic||'Flashcards';flashCardsData=item.content.cards.map(c=>({front:c.front||'',back:c.back||''}));currentFlashIndex=0;flashSessionCorrect=new Set();outputBox.innerHTML=`<div class="result"><h5>${esc(topicInput.value)} — Flashcard Game</h5><div id="flashcardArea"></div></div>`;renderCurrentFlashcard();showStudyWorkspace();}else{showGameToast('Flashcard Game needs a saved flashcard set.');}}else{showGameToast('That game is not available yet.');}
+  if(!item||isStudyMaterialDeleted(item.id)){showGameToast?.('This study material was deleted.');return;}window.__cathiansActiveMaterialId=String(item.id||'');selectedStudyMaterial=item;const game=selectedGame;closeGameModal();if(game==='quiz-battle'){openQuizShooting(item);}else if(game==='serve-knowledge'){openServeKnowledge(item);}else if(game==='matching-game'){openMatchingGame(item);}else if(game==='flashcard-race'){if(item?.type==='flashcards'&&Array.isArray(item?.content?.cards)){currentType='flashcards';modeBadge.textContent='Flashcards';toolCards.forEach(c=>c.classList.toggle('active',c.dataset.type==='flashcards'));topicInput.value=item.topic||'Flashcards';flashCardsData=item.content.cards.map(c=>({front:c.front||'',back:c.back||''}));currentFlashIndex=0;flashSessionCorrect=new Set();outputBox.innerHTML=`<div class="result"><h5>${esc(topicInput.value)} — Flashcard Game</h5><div id="flashcardArea"></div></div>`;renderCurrentFlashcard();showStudyWorkspace();}else{showGameToast('Flashcard Game needs a saved flashcard set.');}}else{showGameToast('That game is not available yet.');}
 }
 function gameDisplayName(gameId){return gameId==='quiz-battle'?'Quiz Shooting':gameId==='flashcard-race'?'Flashcard Race':gameId==='serve-knowledge'?'Serve a Knowledge':gameId==='matching-game'?'Matching Game':'Study Game';}
 function chooseGame(gameId){selectedGame=gameId;if(selectedFriend){sendGameInvite(selectedFriend.uid,gameDisplayName(gameId));}else{openReviewerSelection(gameId);}}
@@ -9847,6 +10043,7 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
       if(card){card.style.transition='opacity .18s ease,transform .18s ease';card.style.opacity='0';card.style.transform='scale(.98)';setTimeout(()=>card.remove(),180)}
       const remaining=box.querySelectorAll('.cg-deck-card').length-1;
       if(remaining<=0){box.innerHTML='<div class="cg-view-empty">No saved decks yet. Use Add Reviewer to create your first one.</div>'}
+      window.dispatchEvent(new CustomEvent('cathians:study-material-deleted',{detail:{id}}));
       window.showGameToast?.('Deleted permanently.');
     });
   }
@@ -10692,6 +10889,7 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
     }
 
     writeDeletedId(id);
+    window.dispatchEvent(new CustomEvent('cathians:study-material-deleted',{detail:{id}}));
     removeRenderedDeck(id);
     return true;
   }
@@ -14287,6 +14485,7 @@ body.new-deck-page-open .cg-main{
   }
   async function openPage(item){
     if(!item)return;
+    if(typeof isStudyMaterialDeleted==='function'&&isStudyMaterialDeleted(item.id)){window.showGameToast?.('This deck was deleted.');return;}
     try{
       document.querySelectorAll('.cg-main .workspace,.cg-main .output,.cg-main [data-study-workspace],#outputBox').forEach(el=>{
         if(el && !el.closest('#cathiansDeckOpeningPage')) el.dataset.catDeckHidden='1';
@@ -14294,7 +14493,7 @@ body.new-deck-page-open .cg-main{
     }catch(_){}
     // Remove the old deck page so only this new page exists.
     document.querySelectorAll('.v25-deck-viewer,.v25-share-overlay').forEach(x=>x.remove());
-    activeDeck=item;window.__v27ActiveDeck=item;tab='cards';query='';
+    activeDeck=item;window.__v27ActiveDeck=item;window.__cathiansOpenDeckPageId=String(item.id||'');window.__cathiansActiveMaterialId=String(item.id||'');tab='cards';query='';
     const p=ensurePage();p.classList.add('open');p.setAttribute('aria-hidden','false');
     document.body.classList.add('modal-open');
     const cards=cardsOf(item);p.querySelector('#catDeckTitle').textContent=item.topic||'Untitled Deck';p.querySelector('#catDeckCountTop').textContent=`${cards.length} card${cards.length===1?'':'s'}`;
@@ -14306,12 +14505,19 @@ body.new-deck-page-open .cg-main{
   }
   function closePage(){
     closeShare();
+    window.__cathiansOpenDeckPageId='';
     page?.classList.remove('open');
     page?.setAttribute('aria-hidden','true');
     document.body.classList.remove('modal-open');
     try{ window.cgSetView?.('library'); }catch(_){}
     setTimeout(()=>{try{window.loadCgDecksView?.()}catch(_){ }},80);
   }
+  window.__cathiansCloseDeletedDeckPage=()=>{try{closePage()}catch(_){} };
+  window.addEventListener('cathians:study-material-deleted',e=>{
+    const id=String(e?.detail?.id||'').trim();
+    if(id&&String(activeDeck?.id||'')===id){try{closePage()}catch(_){} }
+  });
+
   function openShare(){
     if(!activeDeck)return;
     const menu=page.querySelector('#catDeckShareMenu');
@@ -14360,7 +14566,8 @@ body.new-deck-page-open .cg-main{
       let ids=JSON.parse(localStorage.getItem(tk)||'[]'); if(!Array.isArray(ids))ids=[];
       if(!ids.includes(id))ids.push(id); localStorage.setItem(tk,JSON.stringify(ids.slice(-500)));
     }catch(_){ }
-    closePage();window.loadCgDecksView?.();window.showGameToast?.('Deleted permanently.');
+    closePage();window.loadCgDecksView?.();window.dispatchEvent(new CustomEvent('cathians:study-material-deleted',{detail:{id}}));
+      window.showGameToast?.('Deleted permanently.');
   }
   async function duplicateActive(){
     if(!activeDeck)return;
