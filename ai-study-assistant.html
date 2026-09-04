@@ -15147,7 +15147,7 @@ body.new-deck-page-open .cg-main{
     const admin=e.target?.closest?.('#cgProgressAdminBtn'); if(admin){e.preventDefault();e.stopImmediatePropagation();if(await isAdmin())openPage();else alert('Administrator access is not enabled for this Google account.');return;}
     if(e.target?.closest?.('#cgProgressAdminClose,[data-progress-admin-close]')){e.preventDefault();e.stopImmediatePropagation();closePage();return;}
     if(e.target?.closest?.('#cgAdminAddTaskBox')){e.preventDefault();e.stopImmediatePropagation();addBox();return;}
-    if(e.target?.closest?.('#cgAdminCreateTask')){e.preventDefault();e.stopImmediatePropagation();createTasks();return;}
+    if(e.target?.closest?.('#cgAdminCreateTask')){e.preventDefault();e.stopImmediatePropagation();if(typeof window.__createEveryoneTasksV2==='function'){window.__createEveryoneTasksV2();}return;}
     const rem=e.target?.closest?.('[data-remove-task-box]');if(rem){e.preventDefault();const box=rem.closest('.progress-admin-task-box');box?.remove();qa('#cgAdminTaskBuilder .progress-admin-task-box').forEach((b,i)=>{const n=b.querySelector('.progress-admin-task-number');if(n)n.textContent=`Task ${i+1}`});updateCount();return;}
     const sw=e.target?.closest?.('[data-color]');if(sw){const box=sw.closest('.progress-admin-task-box');const c=sw.dataset.color||'#3b82f6';if(box){box.dataset.color=c;box.style.setProperty('--task-border',c);box.querySelectorAll('.progress-admin-color-swatch').forEach(b=>b.classList.toggle('selected',b===sw));const wheel=box.querySelector('[data-color-wheel]');if(wheel)wheel.value=c}return;}
   },true);
@@ -15620,6 +15620,7 @@ body.new-deck-page-open .cg-main{
         const progress=remain>0?`Study Deck / Flashcards: ${gotMin} / ${mins} min • ${remainMin}${remainSec?'m '+remainSec+'s':''} remaining`:`Study Deck / Flashcards: ${Math.floor(seconds/60)} / ${mins} min • Requirement met`;
         parts.push(progress);
       }
+      if(t.createdByName)parts.push(`Added by ${safe(t.createdByName)}`);
       if(t.dueDate)parts.push(`Due ${safe(t.dueDate)}`);
       if(goal&&!xpReady)parts.push('Locked until the EXP goal is reached');
       if(mins&&!timeReady)parts.push('Keep studying Decks or Flashcards to unlock this task');
@@ -15638,12 +15639,18 @@ body.new-deck-page-open .cg-main{
     const u=getUser(),fb=window.studyFirebase;
     try{
       if(task.cloud&&fb){
-        const {db,doc,setDoc,serverTimestamp}=fb;
+        const {db,doc,getDoc,setDoc,serverTimestamp}=fb;
         if(task.shared&&!task.assignedUid){
           if(!u)return false;
-          await setDoc(doc(db,'studyTasks',String(task.id),'completions',u.uid),{completed:true,completedAt:serverTimestamp()},{merge:true});
+          const completionRef=doc(db,'studyTasks',String(task.id),'completions',u.uid);
+          const already=await getDoc(completionRef);
+          if(already.exists()&&already.data()?.completed===true)return false;
+          await setDoc(completionRef,{studentUid:u.uid,taskId:String(task.id),completed:true,completedAt:serverTimestamp()});
         }else{
-          await setDoc(doc(db,'studyTasks',String(task.id)),{completed:true,completedAt:serverTimestamp(),studySeconds},{merge:true});
+          const taskRef=doc(db,'studyTasks',String(task.id));
+          const latest=await getDoc(taskRef);
+          if(latest.exists()&&latest.data()?.completed===true)return false;
+          await setDoc(taskRef,{...task,completed:true,completedAt:serverTimestamp(),studySeconds},{merge:true});
         }
       }
       if(num(task.xpReward)&&typeof addXP==='function')addXP(num(task.xpReward));
@@ -15678,6 +15685,7 @@ body.new-deck-page-open .cg-main{
     if(!boxes.length){if(status)status.textContent='Enter at least one task before adding it.';return}
     const fb=window.studyFirebase,adminU=getUser();
     if(!fb||!adminU){if(status)status.textContent='Sign in with an administrator account first.';return}
+    const adminName=String(adminU.displayName||adminU.name||adminU.email||'Administrator').trim()||'Administrator';
     try{
       const {db,collection,addDoc,serverTimestamp}=fb;
       for(const t of boxes){
@@ -15685,7 +15693,7 @@ body.new-deck-page-open .cg-main{
         await addDoc(collection(db,'studyTasks'),{
           audience:'everyone',shared:true,audienceGroupId:group,title:t.title,note:t.note,goalXp:t.goal,
           studyMinutes:t.studyMinutes,dueDate:t.due,borderColor:t.color,xpReward:t.xp,coinsReward:t.coins,
-          aiCoinsReward:t.aiCoins,createdBy:adminU.uid,createdAt:serverTimestamp()
+          aiCoinsReward:t.aiCoins,createdBy:adminU.uid,createdByName:adminName,createdAt:serverTimestamp()
         });
       }
       if(status)status.textContent=`${boxes.length} task${boxes.length>1?'s':''} created for everyone.`;
@@ -15693,6 +15701,7 @@ body.new-deck-page-open .cg-main{
       window.renderProgressAdminEveryoneList?.();
     }catch(e){console.error(e);if(status)status.textContent='Task creation failed. Check your Firestore studyTasks rules.'}
   }
+  window.__createEveryoneTasksV2=createEveryoneTasksV2;
   window.renderProgressAdminEveryoneList=async function(){
     const list=$('#cgAdminTaskList'),total=$('#cgAdminTaskTotal');if(!list)return;
     list.innerHTML='<div class="progress-admin-item"><small>Loading tasks…</small></div>';
@@ -15708,6 +15717,7 @@ body.new-deck-page-open .cg-main{
         const mins=num(t.studyMinutes),bits=['Everyone',t.audience==='everyone'?'Active':t.completed?'Completed':'Active'];
         if(num(t.goalXp))bits.push(`EXP ${num(t.goalXp).toLocaleString()}`);
         if(mins)bits.push(`Study ${mins} min`);
+        if(t.createdByName)bits.push(`By ${safe(t.createdByName)}`);
         if(t.dueDate)bits.push(`Due ${safe(t.dueDate)}`);
         return `<div class="progress-admin-item" style="--task-border:${safe(t.borderColor||'#dfe4eb')}"><div><strong>${safe(t.title||'Untitled task')}</strong><small>${bits.join(' • ')}</small></div><b class="progress-admin-xp">${num(t.xpReward)?`+${num(t.xpReward).toLocaleString()} XP`:'No XP reward'}</b></div>`;
       }).join(''):'<div class="progress-admin-item"><small>No tasks created yet.</small></div>';
