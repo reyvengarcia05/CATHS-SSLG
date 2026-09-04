@@ -15346,6 +15346,36 @@ body.new-deck-page-open .cg-main{
 
 <style id="progress-admin-everyone-page-polish">
   body.progress-admin-page-open{overflow:hidden!important}
+
+  /* Smoothly hide the main side/bottom navigation while the full-screen
+     Administrator > Add Task page is open. The navigation returns with
+     the same smooth transition when the page is closed. */
+  .cg-shell{
+    opacity:1;
+    visibility:visible;
+    transform:translateX(0);
+    transition:
+      opacity .38s ease,
+      transform .46s cubic-bezier(.22,1,.36,1),
+      visibility 0s linear 0s;
+    will-change:opacity,transform;
+  }
+  body.progress-admin-page-open .cg-shell{
+    opacity:0!important;
+    visibility:hidden!important;
+    transform:translateX(-24px)!important;
+    pointer-events:none!important;
+    transition:
+      opacity .34s ease,
+      transform .44s cubic-bezier(.22,1,.36,1),
+      visibility 0s linear .34s;
+  }
+  @media(max-width:760px){
+    .cg-shell{transform:translateY(0);}
+    body.progress-admin-page-open .cg-shell{
+      transform:translateY(24px)!important;
+    }
+  }
   #cgProgressAdminPage.progress-admin-page-view{
     position:fixed!important;inset:0!important;z-index:1000200!important;
     display:block!important;padding:0!important;margin:0!important;
