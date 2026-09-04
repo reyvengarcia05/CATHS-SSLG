@@ -5114,6 +5114,80 @@ html.cathians-native-ad-ready .cathians-bottom-ad-dock .ad-inner{
 .cat-deck-reviewer-empty small{display:block;margin-top:7px;font-size:9px;color:#8490a3}
 @media(max-width:760px){.cat-deck-reviewer-empty{min-height:200px!important;padding:26px 16px!important}.cat-deck-reviewer-empty strong{font-size:12px}.cat-deck-reviewer-empty small{font-size:8px}}
 </style>
+
+<style id="progress-calendar-tasks-enhancement">
+.progress-period{margin-top:3px;font-size:11px;color:#7b8799;font-weight:600}
+.progress-head-actions{display:flex;align-items:center;gap:8px}
+.progress-tasks-btn{display:inline-flex;align-items:center;gap:7px;border:1px solid #dce3eb;background:#fff;color:#172033;border-radius:14px;padding:10px 12px;font-size:11px;font-weight:900;cursor:pointer;box-shadow:0 5px 15px rgba(25,38,61,.05);transition:.2s ease}
+.progress-tasks-btn:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(25,38,61,.08);border-color:#cdd7e5}
+.progress-tasks-icon{width:21px;height:21px;border-radius:7px;display:grid;place-items:center;background:#eef8e9;color:#4e8d34;font-size:12px}
+.progress-tasks-btn b{min-width:20px;height:20px;padding:0 5px;border-radius:999px;display:grid;place-items:center;background:#171c2d;color:#fff;font-size:8px}
+.progress-calendar-nav{display:grid;grid-template-columns:38px 1fr 38px;align-items:center;gap:8px;margin-top:12px}
+.progress-calendar-nav strong{text-align:center;font-size:13px;color:#172033}
+.progress-month-btn{width:38px;height:34px;border:1px solid #dde3eb;background:#fff;border-radius:10px;color:#172033;font-size:22px;line-height:1;cursor:pointer}
+.progress-month-btn:hover{background:#f7f9fc}
+.calendar-days button{position:relative;cursor:pointer!important;transition:transform .15s ease,background .15s ease,box-shadow .15s ease}
+.calendar-days button:hover{transform:translateY(-1px)}
+.calendar-days button.other-month{opacity:.36}
+.calendar-days button.studied{background:#dff1d7;color:#4e8d34;box-shadow:inset 0 0 0 1px #c5e3b8}
+.calendar-days button.today{box-shadow:inset 0 0 0 2px #2d6ca3,0 3px 9px rgba(45,108,163,.08)}
+.progress-streak-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:13px}
+.progress-stat{padding:10px 8px;border:1px solid #e1e6ed;border-radius:13px;background:#fafbfd;text-align:center}
+.progress-stat span{display:block;font-size:8px;color:#7b8799;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
+.progress-stat strong{display:inline-block;margin-top:3px;font-size:18px;color:#172033;line-height:1}.progress-stat small{margin-left:3px;font-size:7px;color:#8993a3;font-weight:700}
+.progress-tasks-modal{position:fixed;inset:0;z-index:1000090;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(10,17,29,.40);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+
+/* Progress Tasks + Admin */
+.progress-top-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 20px 0}
+.progress-tasks-btn,.progress-admin-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;border-radius:14px;padding:10px 14px;font-size:11px;font-weight:900;cursor:pointer;transition:.2s ease}
+.progress-tasks-btn{border:1px solid #dce3eb;background:#171c2d;color:#fff;box-shadow:0 8px 20px rgba(23,28,45,.12)}
+.progress-tasks-btn:hover{transform:translateY(-2px);box-shadow:0 12px 25px rgba(23,28,45,.16)}
+.progress-tasks-btn b{min-width:22px;height:22px;border-radius:999px;display:grid;place-items:center;background:#fff;color:#171c2d;font-size:9px}
+.progress-tasks-icon{font-size:13px;line-height:1}
+.progress-admin-btn{border:1px solid #dfe4eb;background:#fff;color:#172033}
+.progress-admin-btn:hover{transform:translateY(-2px);background:#f7f9fc}
+.progress-admin-field label{display:block;font-size:9px;font-weight:800;color:#66748a;margin:0 0 6px}
+.progress-admin-field input,.progress-admin-field select,.progress-admin-field textarea{width:100%;border:1px solid #dfe4eb;background:#fbfcfd;color:#172033;border-radius:12px;padding:11px;font:600 10px/1.4 Poppins,sans-serif;outline:0}
+.progress-admin-field textarea{min-height:88px;resize:vertical}
+.progress-admin-field input:focus,.progress-admin-field select:focus,.progress-admin-field textarea:focus{border-color:#8cb6e8;box-shadow:0 0 0 3px rgba(76,130,190,.08)}
+.progress-admin-modal{position:fixed;inset:0;z-index:1000100;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(9,16,28,.42);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.progress-admin-modal.hidden{display:none!important}
+.progress-admin-backdrop{position:absolute;inset:0}
+.progress-admin-card{position:relative;z-index:1;width:min(94vw,760px);max-height:min(90dvh,760px);overflow:auto;padding:22px;border:1px solid #dfe5ed;border-radius:24px;background:#fff;box-shadow:0 30px 90px rgba(20,27,42,.25);color:#172033}
+.progress-admin-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
+.progress-admin-head h3{margin:3px 0 0;font-size:20px;letter-spacing:-.4px}
+.progress-admin-head p{margin:5px 0 0;font-size:9px;line-height:1.5;color:#7b8799}
+.progress-admin-close{width:36px;height:36px;border:1px solid #dfe4eb;border-radius:11px;background:#fff;color:#172033;font-size:20px;cursor:pointer}
+.progress-admin-grid{display:grid;grid-template-columns:minmax(0,1fr) 180px;gap:12px}
+.progress-admin-wide{grid-column:1/-1}
+.progress-admin-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+.progress-admin-actions button{min-height:40px;padding:9px 14px;border-radius:12px;font:800 9px/1 Poppins,sans-serif;cursor:pointer}
+.progress-admin-secondary{border:1px solid #dfe4eb;background:#fff;color:#172033}
+.progress-admin-primary{border:0;background:#171c2d;color:#fff}
+.progress-admin-status{min-height:18px;margin-top:10px;font-size:8.5px;color:#5f6d80}
+.progress-admin-section-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px;margin-bottom:8px;padding-top:14px;border-top:1px solid #edf0f4;font-size:10px;color:#66748a}
+.progress-admin-list{display:grid;gap:8px}
+.progress-admin-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:10px 12px;border:1px solid #e4e8ee;border-radius:13px;background:#fafbfc}
+.progress-admin-item strong{display:block;font-size:9.5px;color:#172033}
+.progress-admin-item small{display:block;margin-top:3px;font-size:7.5px;color:#778397;line-height:1.4}
+.progress-admin-xp{font-size:10px;font-weight:900;color:#4e8d34;white-space:nowrap}
+@media(max-width:760px){
+  .progress-top-actions{padding:12px 12px 0}
+  .progress-tasks-btn,.progress-admin-btn{min-height:40px;font-size:9px;padding:9px 11px}
+  .progress-admin-grid{grid-template-columns:1fr}
+  .progress-admin-card{padding:15px;border-radius:20px;max-height:calc(100dvh - 20px)}
+  .progress-admin-head h3{font-size:16px}
+  .progress-admin-actions{flex-direction:column}
+  .progress-admin-actions button{width:100%}
+}
+.progress-tasks-modal.hidden{display:none!important}
+.progress-tasks-backdrop{position:absolute;inset:0}
+.progress-tasks-card{position:relative;z-index:1;width:min(94vw,620px);max-height:88dvh;overflow:auto;background:#fff;border:1px solid #dce3eb;border-radius:24px;box-shadow:0 28px 80px rgba(17,28,48,.22);padding:22px;color:#172033}
+.progress-tasks-head{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;border-bottom:1px solid #edf0f4;padding-bottom:14px}.progress-tasks-head h3{font-size:22px;letter-spacing:-.5px}.progress-tasks-head p{margin-top:4px;font-size:9px;color:#7b8799}.progress-tasks-close{width:36px;height:36px;border:1px solid #dfe4eb;background:#fff;border-radius:11px;font-size:21px;color:#172033;cursor:pointer}
+.progress-task-add{display:grid;grid-template-columns:1fr auto;gap:8px;margin:15px 0}.progress-task-add input{border:1px solid #dfe5ec!important;background:#fbfcfd!important;color:#172033!important;border-radius:12px!important;padding:11px 12px!important;font-size:10px!important}.progress-task-add input:focus{border-color:#9cb3cc!important;box-shadow:0 0 0 3px rgba(74,120,163,.08)!important}.progress-task-add button{border:0;border-radius:12px;padding:11px 14px;background:#171c2d;color:#fff;font-size:9px;font-weight:900;cursor:pointer}
+.progress-task-list{display:grid;gap:8px}.progress-task-row{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;padding:10px 11px;border:1px solid #e4e8ee;border-radius:14px;background:#fafbfd}.progress-task-check{width:22px;height:22px;border-radius:7px;border:1px solid #cfd7e3;background:#fff;display:grid;place-items:center;cursor:pointer;font-size:12px;color:#fff}.progress-task-row.done{background:#f2f8ef;border-color:#d3e6c9}.progress-task-row.done .progress-task-check{background:#5f9a4f;border-color:#5f9a4f}.progress-task-text{min-width:0;font-size:9.5px;color:#253047;word-break:break-word}.progress-task-row.done .progress-task-text{text-decoration:line-through;color:#8993a3}.progress-task-delete{border:0;background:transparent;color:#98a2b2;font-size:16px;cursor:pointer;padding:4px 6px}.progress-task-empty{text-align:center;padding:26px 10px;font-size:9px;color:#8a95a5}
+@media(max-width:760px){.progress-period{font-size:8px}.progress-head-actions{gap:5px}.progress-tasks-btn{padding:8px 9px;font-size:8px;border-radius:11px}.progress-tasks-icon{width:18px;height:18px;font-size:10px}.streak-share{width:38px;height:38px;font-size:18px}.progress-calendar-nav{margin-top:10px}.progress-calendar-nav strong{font-size:11px}.progress-month-btn{width:34px;height:31px}.calendar-week,.calendar-days{gap:7px;margin-top:12px}.calendar-week{font-size:8px}.calendar-days button{font-size:9px}.progress-stat{padding:8px 5px}.progress-stat span{font-size:6.5px}.progress-stat strong{font-size:15px}.progress-stat small{font-size:6px}.progress-tasks-card{padding:15px;border-radius:19px}.progress-tasks-head h3{font-size:17px}.progress-task-add{grid-template-columns:1fr}.progress-task-add button{width:100%}.progress-task-row{grid-template-columns:26px 1fr auto;padding:9px}.progress-task-text{font-size:9px}}
+</style>
 </head>
 <body>
 <main class="page">
@@ -5166,6 +5240,12 @@ html.cathians-native-ad-ready .cathians-bottom-ad-dock .ad-inner{
       <div class="progress-dashboard">
         <div class="progress-dashboard-title"><span class="cg-eyebrow">Your learning</span><h2>Progress</h2></div>
         <div class="progress-profile-card">
+          <div class="progress-top-actions">
+            <button class="progress-tasks-btn progress-tasks-btn-top" id="cgProgressTasksBtn" type="button" aria-haspopup="dialog" aria-controls="cgProgressTasksModal">
+              <span class="progress-tasks-icon" aria-hidden="true">✓</span><span>Tasks</span><b id="cgProgressTaskCount">0</b>
+            </button>
+            <button class="progress-admin-btn hidden" id="cgProgressAdminBtn" type="button" aria-haspopup="dialog" aria-controls="cgProgressAdminModal">⚙ Admin Tasks</button>
+          </div>
           <div class="progress-level-row">
             <div class="progress-avatar-slot" aria-hidden="true"></div>
             <div class="progress-level-copy"><strong>Veteran</strong><div class="progress-bar-track"><div id="cgProgressXpBar" class="progress-bar-fill" style="width:0%"></div><span id="cgProgressXpBadge" class="progress-xp-badge">0 XP</span></div></div>
@@ -5173,10 +5253,15 @@ html.cathians-native-ad-ready .cathians-bottom-ad-dock .ad-inner{
           </div>
           <div class="progress-streak-grid">
             <div class="streak-calendar-panel">
-              <div class="streak-head"><div><h3>Keep your <span id="cgStreakInline">3</span> day streak!</h3></div><button class="streak-share" id="cgStreakShare" type="button" aria-label="Share streak">↥</button></div>
+              <div class="streak-head"><div><h3>Keep your <span id="cgStreakInline">0</span> day streak!</h3><p class="progress-period" id="cgProgressMonthLabel">This month</p></div><button class="streak-share" id="cgStreakShare" type="button" aria-label="Share streak">↥</button></div>
+<div class="progress-calendar-nav"><button type="button" class="progress-month-btn" id="cgCalendarPrev" aria-label="Previous month">‹</button><strong id="cgCalendarMonth">Month</strong><button type="button" class="progress-month-btn" id="cgCalendarNext" aria-label="Next month">›</button></div>
               <div class="calendar-week"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div>
               <div id="cgStreakCalendar" class="calendar-days"></div>
-              <div class="streak-rewards"><span class="reward-pill reward-coin">25</span><span class="reward-pill reward-fire">3</span><span class="reward-pill reward-heart">1</span></div>
+              <div class="progress-streak-stats" aria-label="Streak statistics">
+                <div class="progress-stat"><span>Current</span><strong id="cgProgressCurrentStreak">0</strong><small>days</small></div>
+                <div class="progress-stat"><span>Longest</span><strong id="cgProgressLongestStreak">0</strong><small>days</small></div>
+                <div class="progress-stat"><span>Study days</span><strong id="cgProgressStudyDays">0</strong><small>total</small></div>
+              </div>
             </div>
             <div class="streak-ring-panel">
               <div class="ring-value"><strong id="cgStreakQuestions">2</strong><span>Questions to continue your streak</span></div>
@@ -5185,6 +5270,40 @@ html.cathians-native-ad-ready .cathians-bottom-ad-dock .ad-inner{
           </div>
           <button class="streak-cta" id="cgProgressLeaderboardBtn" type="button">Keep your <span id="cgStreakCta">3</span> day streak</button>
         </div>
+      </div>
+    </section>
+
+    <section class="progress-tasks-modal hidden" id="cgProgressTasksModal" aria-hidden="true">
+      <div class="progress-tasks-backdrop" data-progress-tasks-close></div>
+      <div class="progress-tasks-card" role="dialog" aria-modal="true" aria-labelledby="cgProgressTasksTitle">
+        <div class="progress-tasks-head">
+          <div><span class="cg-eyebrow">Daily focus</span><h3 id="cgProgressTasksTitle">Study Tasks</h3><p>Keep your important study goals in one place.</p></div>
+          <button type="button" class="progress-tasks-close" id="cgProgressTasksClose" aria-label="Close tasks">×</button>
+        </div>
+        <div class="progress-task-add"><input id="cgProgressTaskInput" type="text" maxlength="120" placeholder="Add a study task…" aria-label="New study task"><button id="cgProgressTaskAdd" type="button">Add Task</button></div>
+        <div class="progress-task-list" id="cgProgressTaskList"></div>
+        <div class="progress-task-empty" id="cgProgressTaskEmpty">No tasks yet. Add something you want to finish today.</div>
+      </div>
+    </section>
+
+    <section class="progress-admin-modal hidden" id="cgProgressAdminModal" aria-hidden="true">
+      <div class="progress-admin-backdrop" data-progress-admin-close></div>
+      <div class="progress-admin-card" role="dialog" aria-modal="true" aria-labelledby="cgProgressAdminTitle">
+        <div class="progress-admin-head">
+          <div><span class="cg-eyebrow">Administrator</span><h3 id="cgProgressAdminTitle">Assign Study Tasks</h3><p>Choose a Google account, create a task, and set the XP reward.</p></div>
+          <button type="button" class="progress-admin-close" id="cgProgressAdminClose" aria-label="Close admin tasks">×</button>
+        </div>
+        <div class="progress-admin-grid">
+          <div class="progress-admin-field progress-admin-wide"><label for="cgAdminStudentSelect">Student Google account</label><select id="cgAdminStudentSelect"><option value="">Loading student accounts…</option></select></div>
+          <div class="progress-admin-field progress-admin-wide"><label for="cgAdminTaskTitle">Task</label><input id="cgAdminTaskTitle" type="text" maxlength="140" placeholder="e.g. Finish Chapter 3 reviewer"></div>
+          <div class="progress-admin-field"><label for="cgAdminTaskXp">EXP reward</label><input id="cgAdminTaskXp" type="number" min="0" max="1000" step="1" value="25" inputmode="numeric"></div>
+          <div class="progress-admin-field"><label for="cgAdminTaskDue">Due date</label><input id="cgAdminTaskDue" type="date"></div>
+          <div class="progress-admin-field progress-admin-wide"><label for="cgAdminTaskNote">Instructions / note</label><textarea id="cgAdminTaskNote" maxlength="300" placeholder="Optional instructions for the student"></textarea></div>
+        </div>
+        <div class="progress-admin-actions"><button type="button" class="progress-admin-secondary" id="cgAdminRefreshUsers">Refresh Accounts</button><button type="button" class="progress-admin-primary" id="cgAdminCreateTask">Create Task</button></div>
+        <div class="progress-admin-status" id="cgAdminStatus" role="status"></div>
+        <div class="progress-admin-section-title"><strong>Recent assignments</strong><span id="cgAdminTaskTotal">0</span></div>
+        <div class="progress-admin-list" id="cgAdminTaskList"></div>
       </div>
     </section>
 
@@ -7155,8 +7274,9 @@ async function initializeStudyAuth(){
   }
 
   window.studyFirebase.onAuthStateChanged(window.studyFirebase.auth,async user=>{
-    if((user?.uid||null)===(currentUser?.uid||null))return;
+    if((user?.uid||null)===(currentUser?.uid||null)){window.refreshProgressAdminVisibility?.();return;}
     await handleAuthUser(user);
+    window.refreshProgressAdminVisibility?.();
   });
 }
 
@@ -7208,6 +7328,169 @@ function updateCgProgressView(){
   }
 }
 
+// Progress task assignments + administrator controls.
+(function(){
+  const q=s=>document.querySelector(s);
+  const progressModal=q('#cgProgressTasksModal');
+  const adminModal=q('#cgProgressAdminModal');
+  const adminBtn=q('#cgProgressAdminBtn');
+  const taskBtn=q('#cgProgressTasksBtn');
+  const taskList=q('#cgProgressTaskList');
+  const taskEmpty=q('#cgProgressTaskEmpty');
+  const taskCount=q('#cgProgressTaskCount');
+  const input=q('#cgProgressTaskInput');
+  const adminStudent=q('#cgAdminStudentSelect');
+  const adminTitle=q('#cgAdminTaskTitle');
+  const adminXp=q('#cgAdminTaskXp');
+  const adminDue=q('#cgAdminTaskDue');
+  const adminNote=q('#cgAdminTaskNote');
+  const adminStatus=q('#cgAdminStatus');
+  const adminList=q('#cgAdminTaskList');
+
+  function uid(){return window.currentUser?.uid||window.studyFirebase?.auth?.currentUser?.uid||''}
+  function taskStorageKey(){return uid()?`cathsProgressTasks:${uid()}`:'cathsProgressTasks:guest'}
+  function readLocalTasks(){try{const x=JSON.parse(localStorage.getItem(taskStorageKey())||'[]');return Array.isArray(x)?x:[]}catch{return []}}
+  function writeLocalTasks(tasks){localStorage.setItem(taskStorageKey(),JSON.stringify(tasks.slice(0,100)))}
+  function safe(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+  function adminLike(data){
+    const roles=[data?.role,data?.accountType,data?.userRole].map(v=>String(v||'').toLowerCase());
+    if(roles.includes('admin')||data?.isAdmin===true||data?.admin===true)return true;
+    const perms=data?.permissions;
+    return Array.isArray(perms)&&perms.map(v=>String(v).toLowerCase()).includes('admin');
+  }
+  async function amIAdmin(){
+    const user=window.currentUser||window.studyFirebase?.auth?.currentUser;
+    if(!user||!window.studyFirebase)return false;
+    try{
+      const {db,doc,getDoc}=window.studyFirebase;
+      const snap=await getDoc(doc(db,'users',user.uid));
+      if(snap.exists()&&adminLike(snap.data()||{}))return true;
+      // Optional dedicated admin allow-list: admins/{uid}.
+      const adminSnap=await getDoc(doc(db,'admins',user.uid));
+      return adminSnap.exists()&&adminLike(adminSnap.data()||{}) || adminSnap.exists();
+    }catch(e){console.warn('Admin check failed:',e);return false}
+  }
+  function openModal(modal){if(!modal)return;modal.classList.remove('hidden');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open')}
+  function closeModal(modal){if(!modal)return;modal.classList.add('hidden');modal.setAttribute('aria-hidden','true');if(!document.querySelector('.progress-tasks-modal:not(.hidden),.progress-admin-modal:not(.hidden)'))document.body.classList.remove('modal-open')}
+
+  async function cloudTasksForMe(){
+    if(!uid()||!window.studyFirebase)return [];
+    try{
+      const {db,collection,getDocs,query,where,limit}=window.studyFirebase;
+      const snap=await getDocs(query(collection(db,'studyTasks'),where('assignedUid','==',uid()),limit(100)));
+      return snap.docs.map(d=>({id:d.id,...(d.data()||{}),cloud:true})).sort((a,b)=>String(a.title||'').localeCompare(String(b.title||'')));
+    }catch(e){console.warn('Could not load assigned tasks:',e);return []}
+  }
+  async function loadMyTasks(){
+    const local=readLocalTasks();
+    const cloud=await cloudTasksForMe();
+    const map=new Map();
+    [...cloud,...local].forEach(t=>map.set(String(t.id||''),t));
+    return [...map.values()].sort((a,b)=>Number(a.completed)-Number(b.completed)||String(a.title||'').localeCompare(String(b.title||'')));
+  }
+  async function renderMyTasks(){
+    const tasks=await loadMyTasks();
+    const pending=tasks.filter(t=>!t.completed).length;
+    if(taskCount)taskCount.textContent=String(pending);
+    if(taskEmpty)taskEmpty.style.display=tasks.length?'none':'block';
+    if(!taskList)return;
+    taskList.innerHTML=tasks.map(t=>{
+      const xpReward=Math.max(0,Number(t.xpReward||0));
+      const due=t.dueDate?` • Due ${safe(t.dueDate)}`:'';
+      return `<div class="progress-task-item ${t.completed?'completed':''}" data-task-id="${safe(t.id)}"><label><input type="checkbox" data-task-complete ${t.completed?'checked':''}><span><strong>${safe(t.title||'Untitled task')}</strong><small>${safe(t.note||'')} ${due}</small></span></label><b class="progress-task-xp">+${xpReward} XP</b><button type="button" class="progress-task-delete" data-task-delete aria-label="Delete task">×</button></div>`;
+    }).join('');
+  }
+  async function rewardTask(task){
+    const id=String(task.id||'');
+    if(task.completed)return;
+    const xpReward=Math.max(0,Math.min(1000,Number(task.xpReward||0)));
+    if(task.cloud&&window.studyFirebase){
+      try{
+        const {db,doc,setDoc,serverTimestamp}=window.studyFirebase;
+        await setDoc(doc(db,'studyTasks',id),{completed:true,completedAt:serverTimestamp()},{merge:true});
+      }catch(e){alert('Could not complete this assigned task yet. Please try again.');return}
+    }
+    const local=readLocalTasks();const idx=local.findIndex(x=>String(x.id)===id);
+    if(idx>=0){local[idx].completed=true;local[idx].completedAt=new Date().toISOString();writeLocalTasks(local)}
+    if(xpReward>0&&typeof addXP==='function')addXP(xpReward);
+    await renderMyTasks();
+  }
+  function deleteTask(id){const local=readLocalTasks().filter(t=>String(t.id)!==String(id));writeLocalTasks(local);renderMyTasks()}
+
+  async function loadAdminStudents(){
+    if(!adminStudent||!window.studyFirebase)return;
+    adminStudent.innerHTML='<option value="">Loading Google accounts…</option>';
+    try{
+      const {db,collection,getDocs}=window.studyFirebase;
+      const snap=await getDocs(collection(db,'users'));
+      const rows=snap.docs.map(d=>({uid:d.id,...(d.data()||{})})).filter(x=>x.uid).sort((a,b)=>String(a.displayName||a.name||a.email||'').localeCompare(String(b.displayName||b.name||b.email||'')));
+      adminStudent.innerHTML='<option value="">Select a student…</option>'+rows.map(r=>`<option value="${safe(r.uid)}">${safe(r.displayName||r.name||'Student')} — ${safe(r.email||'Google account')}</option>`).join('');
+      if(!rows.length)adminStudent.innerHTML='<option value="">No Google accounts found</option>';
+    }catch(e){console.error(e);adminStudent.innerHTML='<option value="">Could not load accounts</option>'}
+  }
+  async function loadAdminAssignments(){
+    if(!adminList||!window.studyFirebase)return;
+    adminList.innerHTML='<div class="progress-admin-item"><small>Loading assignments…</small></div>';
+    try{
+      const {db,collection,getDocs,query,orderBy,limit}=window.studyFirebase;
+      const snap=await getDocs(query(collection(db,'studyTasks'),orderBy('createdAt','desc'),limit(50)));
+      const tasks=snap.docs.map(d=>({id:d.id,...(d.data()||{})}));
+      const ids=[...new Set(tasks.map(t=>t.assignedUid).filter(Boolean))];
+      const users=new Map();
+      for(const id of ids){try{const u=await window.studyFirebase.getDoc(window.studyFirebase.doc(db,'users',id));if(u.exists())users.set(id,u.data()||{})}catch{}}
+      if(q('#cgAdminTaskTotal'))q('#cgAdminTaskTotal').textContent=String(tasks.length);
+      adminList.innerHTML=tasks.length?tasks.map(t=>{const u=users.get(t.assignedUid)||{};return `<div class="progress-admin-item"><div><strong>${safe(t.title||'Untitled task')}</strong><small>${safe(u.displayName||u.name||u.email||t.assignedUid||'Unknown student')} • ${t.completed?'Completed':'Pending'}${t.dueDate?' • Due '+safe(t.dueDate):''}</small></div><b class="progress-admin-xp">+${Math.max(0,Number(t.xpReward||0))} XP</b></div>`}).join(''):'<div class="progress-admin-item"><small>No assignments yet.</small></div>';
+    }catch(e){console.error(e);adminList.innerHTML='<div class="progress-admin-item"><small>Could not load assignments. Check the Firestore rules for studyTasks.</small></div>'}
+  }
+  async function openAdmin(){
+    if(!(await amIAdmin())){alert('Administrator access is not enabled for this Google account.');return}
+    openModal(adminModal);loadAdminStudents();loadAdminAssignments();
+  }
+  async function createAdminTask(){
+    if(!(await amIAdmin())){if(adminStatus)adminStatus.textContent='Administrator access denied.';return}
+    const assignedUid=String(adminStudent?.value||'').trim(), title=String(adminTitle?.value||'').trim();
+    const xpReward=Math.max(0,Math.min(1000,Math.round(Number(adminXp?.value||0))));
+    if(!assignedUid||!title){if(adminStatus)adminStatus.textContent='Select a student and enter a task.';return}
+    if(!window.studyFirebase){if(adminStatus)adminStatus.textContent='Firebase is not connected.';return}
+    try{
+      const {db,collection,addDoc,serverTimestamp}=window.studyFirebase;
+      await addDoc(collection(db,'studyTasks'),{assignedUid,title,note:String(adminNote?.value||'').trim(),xpReward,dueDate:String(adminDue?.value||''),completed:false,createdBy:uid(),createdAt:serverTimestamp()});
+      if(adminStatus)adminStatus.textContent='Task created successfully.';
+      if(adminTitle)adminTitle.value=''; if(adminNote)adminNote.value=''; if(adminXp)adminXp.value='25'; if(adminDue)adminDue.value='';
+      await loadAdminAssignments();
+    }catch(e){console.error(e);if(adminStatus)adminStatus.textContent='Task creation failed. Check your Firestore studyTasks rules.'}
+  }
+
+  document.addEventListener('click',e=>{
+    if(e.target?.closest?.('#cgProgressTasksBtn')){openModal(progressModal);renderMyTasks()}
+    if(e.target?.closest?.('[data-progress-tasks-close]')||e.target?.closest?.('#cgProgressTasksClose'))closeModal(progressModal)
+    if(e.target?.closest?.('#cgProgressAdminBtn'))openAdmin()
+    if(e.target?.closest?.('[data-progress-admin-close]')||e.target?.closest?.('#cgProgressAdminClose'))closeModal(adminModal)
+    const del=e.target?.closest?.('[data-task-delete]');if(del){const item=del.closest('[data-task-id]');if(item)deleteTask(item.dataset.taskId)}
+  });
+  taskList?.addEventListener('change',e=>{
+    if(!e.target.matches('[data-task-complete]'))return;
+    const item=e.target.closest('[data-task-id]');if(!item)return;
+    const id=String(item.dataset.taskId);
+    const localTask=readLocalTasks().find(t=>String(t.id)===id);
+    if(localTask){
+      if(e.target.checked) rewardTask(localTask);
+      else { localTask.completed=false;localTask.completedAt='';writeLocalTasks(readLocalTasks().map(t=>String(t.id)===id?localTask:t));renderMyTasks(); }
+      return;
+    }
+    // Assigned cloud tasks are completed once and cannot be reverted by students.
+    if(!e.target.checked)e.target.checked=true;
+    loadMyTasks().then(ts=>{const t=ts.find(x=>String(x.id)===id);if(t&& !t.completed) rewardTask(t);});
+  });
+  q('#cgProgressTaskAdd')?.addEventListener('click',()=>{const title=String(input?.value||'').trim();if(!title)return;const tasks=readLocalTasks();tasks.unshift({id:'local-task-'+Date.now(),title,note:'',xpReward:0,completed:false,createdAt:new Date().toISOString()});writeLocalTasks(tasks);if(input)input.value='';renderMyTasks()});
+  input?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();q('#cgProgressTaskAdd')?.click()}});
+  q('#cgAdminRefreshUsers')?.addEventListener('click',loadAdminStudents);
+  q('#cgAdminCreateTask')?.addEventListener('click',createAdminTask);
+
+  async function refreshAdminVisibility(){if(adminBtn){const ok=await amIAdmin();adminBtn.classList.toggle('hidden',!ok)}}
+  window.refreshProgressAdminVisibility=refreshAdminVisibility;
+  refreshAdminVisibility();
+})();
 function mergeSavedMaterials(){
   const storageKey=currentUser?('cathsStudyMaterials:'+currentUser.uid):'cathsStudyMaterials:guest';
   let localDocs=[];try{localDocs=JSON.parse(localStorage.getItem(storageKey)||'[]')}catch{localDocs=[]}
@@ -7327,6 +7610,7 @@ function openReviewerBuilderView(){
 document.getElementById('cgProgressLeaderboardBtn')?.addEventListener('click',openLeaderboardModal);
 document.getElementById('cgOpenReviewerBuilder')?.addEventListener('click',openReviewerBuilderView);
 markStudyDay();
+window.refreshProgressAdminVisibility?.();
 
 
 const studyLibraryPanel=document.getElementById('studyLibraryPanel');
@@ -14750,6 +15034,93 @@ body.new-deck-page-open .cg-main{
     try{ addReviewerFormat=format; }catch(_){}
     try{ showDeckPicker(); }catch(err){ console.error('Deck picker failed to open:',err); }
   },true);
+})();
+</script>
+
+<style id="progress-calendar-nav-disabled-fix">.progress-month-btn:disabled{opacity:.38!important;cursor:not-allowed!important;transform:none!important;background:#f2f4f7!important;color:#8a94a4!important}</style>
+
+<script id="progress-calendar-tasks-runtime">
+(function(){
+  'use strict';
+  const $=s=>document.querySelector(s);
+  const pad=n=>String(n).padStart(2,'0');
+  const dateKey=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+  const startOfDay=d=>{const x=new Date(d);x.setHours(0,0,0,0);return x;};
+  const userKey=()=>{const u=window.currentUser||window.studyFirebase?.auth?.currentUser;return u?.uid?String(u.uid):'guest';};
+  const streakStorage=()=>`cathsStudyStreakDates:${userKey()}`;
+  const taskStorage=()=>`cathsProgressTasks:${userKey()}`;
+  let viewDate=startOfDay(new Date());
+  function loadStudyDays(){try{const a=JSON.parse(localStorage.getItem(streakStorage())||'[]');return new Set(Array.isArray(a)?a.map(String):[])}catch{return new Set()}}
+  function localStreak(){const set=loadStudyDays();let n=0,d=startOfDay(new Date());while(set.has(dateKey(d))){n++;d.setDate(d.getDate()-1)}return n}
+  function longestStreak(){const set=loadStudyDays();const days=[...set].sort();if(!days.length)return 0;let best=1,run=1;for(let i=1;i<days.length;i++){const a=new Date(days[i-1]+'T00:00:00'),b=new Date(days[i]+'T00:00:00');const diff=Math.round((b-a)/86400000);if(diff===1){run++;best=Math.max(best,run)}else{run=1}}return best}
+  function monthIndex(d){return d.getFullYear()*12+d.getMonth()}
+  function renderCalendar(){
+    const cal=$('#cgStreakCalendar'),monthLabel=$('#cgCalendarMonth'),period=$('#cgProgressMonthLabel');if(!cal)return;
+    const now=startOfDay(new Date());
+    const currentMonthStart=new Date(now.getFullYear(),now.getMonth(),1);
+    /* Never allow the calendar to display a future month, even after repeated clicks or clock changes. */
+    if(monthIndex(viewDate)>monthIndex(currentMonthStart)) viewDate=new Date(currentMonthStart);
+    const year=viewDate.getFullYear(),month=viewDate.getMonth(),first=new Date(year,month,1),daysInMonth=new Date(year,month+1,0).getDate(),lead=first.getDay();
+    if(monthLabel)monthLabel.textContent=viewDate.toLocaleString(undefined,{month:'long',year:'numeric'});
+    if(period){period.textContent=(year===currentMonthStart.getFullYear()&&month===currentMonthStart.getMonth())?'This month':'Study history';}
+    const prevBtn=$('#cgCalendarPrev'),nextBtn=$('#cgCalendarNext');
+    const atCurrent=monthIndex(viewDate)>=monthIndex(currentMonthStart);
+    if(prevBtn){prevBtn.disabled=false;prevBtn.setAttribute('aria-disabled','false');prevBtn.title='Previous month';}
+    if(nextBtn){nextBtn.disabled=atCurrent;nextBtn.setAttribute('aria-disabled',String(atCurrent));nextBtn.title=atCurrent?'You are viewing the current month':'Next month';}
+    const study=loadStudyDays(),todayKey=dateKey(new Date()),cells=[];
+    const prevDays=new Date(year,month,0).getDate();
+    for(let i=lead-1;i>=0;i--){const d=prevDays-i;cells.push({day:d,other:true,key:dateKey(new Date(year,month-1,d))})}
+    for(let d=1;d<=daysInMonth;d++)cells.push({day:d,key:dateKey(new Date(year,month,d))});
+    while(cells.length<42){const idx=cells.length-(lead+daysInMonth)+1;cells.push({day:idx,other:true,key:dateKey(new Date(year,month+1,idx))})}
+    cal.innerHTML=cells.map(c=>{const studied=study.has(c.key),today=c.key===todayKey;return `<button type="button" class="${c.other?'other-month ':''}${studied?'studied ':''}${today?'today':''}" data-date="${c.key}" aria-label="${c.key}${studied?' — studied':''}">${c.day}</button>`}).join('');
+  }
+  function renderStats(){
+    const s=localStreak(),long=longestStreak(),set=loadStudyDays();
+    [['#cgStreakInline',s],['#cgStreakCta',s],['#cgProgressCurrentStreak',s],['#cgProgressLongestStreak',long],['#cgProgressStudyDays',set.size]].forEach(([sel,val])=>{const el=$(sel);if(el)el.textContent=String(val)});
+    const q=$('#cgStreakQuestions');if(q)q.textContent=s>0?'1':'2';
+  }
+  function loadTasks(){try{const a=JSON.parse(localStorage.getItem(taskStorage())||'[]');return Array.isArray(a)?a.filter(x=>x&&typeof x.text==='string'):[]}catch{return[]}}
+  function saveTasks(tasks){try{localStorage.setItem(taskStorage(),JSON.stringify(tasks))}catch(_){}renderTasks()}
+  function renderTasks(){
+    const list=$('#cgProgressTaskList'),empty=$('#cgProgressTaskEmpty'),count=$('#cgProgressTaskCount');if(!list)return;
+    const tasks=loadTasks(),open=tasks.filter(t=>!t.done).length;
+    list.innerHTML=tasks.map((t,i)=>`<div class="progress-task-row ${t.done?'done':''}" data-task-index="${i}"><button type="button" class="progress-task-check" data-task-toggle aria-label="${t.done?'Mark task incomplete':'Mark task complete'}">${t.done?'✓':''}</button><div class="progress-task-text">${escTask(t.text)}</div><button type="button" class="progress-task-delete" data-task-delete aria-label="Delete task">×</button></div>`).join('');
+    if(empty)empty.style.display=tasks.length?'none':'block';
+    if(count)count.textContent=String(open);
+    list.querySelectorAll('[data-task-toggle]').forEach(b=>b.addEventListener('click',()=>{const i=Number(b.closest('[data-task-index]')?.dataset.taskIndex);const a=loadTasks();if(a[i]){a[i].done=!a[i].done;saveTasks(a)}}));
+    list.querySelectorAll('[data-task-delete]').forEach(b=>b.addEventListener('click',()=>{const i=Number(b.closest('[data-task-index]')?.dataset.taskIndex);const a=loadTasks();a.splice(i,1);saveTasks(a)}));
+  }
+  function escTask(v){return String(v).replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\\':'\\\\','"':'&quot;'}[m]||m))}
+  function openTasks(){const m=$('#cgProgressTasksModal');if(!m)return;m.classList.remove('hidden');m.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');renderTasks();setTimeout(()=>$('#cgProgressTaskInput')?.focus(),50)}
+  function closeTasks(){const m=$('#cgProgressTasksModal');if(!m)return;m.classList.add('hidden');m.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}
+  function addTask(){const input=$('#cgProgressTaskInput');const text=input?.value.trim();if(!text)return;const tasks=loadTasks();tasks.unshift({text,done:false,createdAt:Date.now()});if(input)input.value='';saveTasks(tasks);input?.focus()}
+  function markTodayAndRefresh(){
+    const key=streakStorage(),today=dateKey(new Date());let a=[];try{a=JSON.parse(localStorage.getItem(key)||'[]')}catch{}
+    if(!Array.isArray(a))a=[];if(!a.includes(today)){a.push(today);a.sort();a=a.slice(-365);try{localStorage.setItem(key,JSON.stringify(a))}catch{}}
+  }
+  const originalUpdate=window.updateCgProgressView;
+  window.updateCgProgressView=function(){try{originalUpdate?.()}catch(_){}markTodayAndRefresh();renderStats();renderCalendar()};
+  document.addEventListener('click',e=>{
+    if(e.target?.closest?.('#cgCalendarPrev')){
+      viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth()-1,1);
+      renderCalendar();
+    }
+    if(e.target?.closest?.('#cgCalendarNext')){
+      const currentMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1);
+      const next=new Date(viewDate.getFullYear(),viewDate.getMonth()+1,1);
+      if(monthIndex(next)>monthIndex(currentMonth)) return;
+      viewDate=next;
+      renderCalendar();
+    }
+    if(e.target?.closest?.('#cgProgressTasksBtn')){e.preventDefault();openTasks()}
+    if(e.target?.closest?.('#cgProgressTasksClose,[data-progress-tasks-close]'))closeTasks();
+    if(e.target?.closest?.('#cgProgressTaskAdd'))addTask();
+    if(e.target?.closest?.('#cgStreakShare')){const s=localStreak(),text=`I’m on a ${s}-day study streak!`;if(navigator.share){navigator.share({title:'My Study Streak',text}).catch(()=>{})}else if(navigator.clipboard){navigator.clipboard.writeText(text)}}
+  },true);
+  document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.activeElement?.id==='cgProgressTaskInput'){e.preventDefault();addTask()}if(e.key==='Escape')closeTasks()});
+  function boot(){markTodayAndRefresh();renderStats();renderCalendar();renderTasks()}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+  window.addEventListener('load',boot,{once:true});
 })();
 </script>
 </body>
