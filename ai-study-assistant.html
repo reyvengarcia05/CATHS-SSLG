@@ -15264,35 +15264,69 @@ body.new-deck-page-open .cg-main{
   'use strict';
   const modal=()=>document.getElementById('cgProgressTasksModal');
   const row=()=>document.querySelector('#cgProgressTasksModal .progress-task-add');
-  const ADMIN_EMAILS=new Set(['reyvengarcia15@gmail.com','reyvenbermudo091@gmail.com','reyvgarcia05@gmail.com','chezcadc14@gmail.com','nathanielgarc679@gmail.com','marteena.133@gmail.com','gabbicastillo0126@gmail.com','leddadanielle91@gmail.com','jennapastor062@gmail.com','dhenmark1313@gmail.com','christianangelointes0@gmail.com','alexaislacruz@gmail.com','galangjullianne016@gmail.com','vanessajotic2403@gmail.com','aquinobernardjr0@gmail.com','angellyar0909@gmail.com','vhergelnarciso@gmail.com','sicatmadisson487@gmail.com']);
+  const adminBtn=()=>document.getElementById('cgProgressAdminBtn');
+  const ADMIN_EMAILS=new Set([
+    'reyvengarcia15@gmail.com','reyvenbermudo091@gmail.com','reyvgarcia05@gmail.com','chezcadc14@gmail.com',
+    'nathanielgarc679@gmail.com','marteena.133@gmail.com','gabbicastillo0126@gmail.com','leddadanielle91@gmail.com',
+    'jennapastor062@gmail.com','dhenmark1313@gmail.com','christianangelointes0@gmail.com','alexaislacruz@gmail.com',
+    'galangjullianne016@gmail.com','vanessajotic2403@gmail.com','aquinobernardjr0@gmail.com','angellyar0909@gmail.com',
+    'vhergelnarciso@gmail.com','sicatmadisson487@gmail.com'
+  ]);
+  function getUser(){return window.currentUser||window.studyFirebase?.auth?.currentUser||null}
   async function sync(){
-    const m=modal(),r=row();
-    if(!m||!r)return;
+    const m=modal(),r=row(),b=adminBtn();
+    if(!m||!r)return false;
     let admin=false;
     try{
-      const user=window.currentUser||window.studyFirebase?.auth?.currentUser;
+      const user=getUser();
       const email=String(user?.email||'').trim().toLowerCase();
-      admin=email && ADMIN_EMAILS.has(email);
+      // Email allow-list is the primary client-side admin check.
+      if(email && ADMIN_EMAILS.has(email)) admin=true;
+      // Also keep Firestore/role-based admin support for any additional admins.
       if(!admin && typeof window.refreshProgressAdminVisibility==='function'){
         await window.refreshProgressAdminVisibility();
-        const b=document.getElementById('cgProgressAdminBtn');
         admin=!!b && !b.classList.contains('hidden');
       }
-    }catch(_){admin=false}
+    }catch(err){
+      console.warn('Progress admin visibility check failed:',err);
+    }
+    if(b) b.classList.toggle('hidden',!admin);
     m.classList.toggle('progress-admin-can-create',!!admin);
+    return !!admin;
   }
   window.syncProgressTaskCreatorVisibility=sync;
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync,{once:true});
-  else sync();
+
+  function boot(){sync();}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
+  else boot();
   window.addEventListener('load',sync,{once:true});
   window.addEventListener('resize',sync,{passive:true});
-  const obs=new MutationObserver(()=>sync());
-  const btn=document.getElementById('cgProgressAdminBtn');
-  if(btn)obs.observe(btn,{attributes:true,attributeFilter:['class']});
-  const authWatcher=setInterval(()=>{
-    sync();
-    if(document.getElementById('cgProgressAdminBtn')) clearInterval(authWatcher);
-  },1500);
+
+  // Firebase auth restoration is asynchronous; re-check when auth changes.
+  try{
+    const fb=window.studyFirebase;
+    if(fb?.onAuthStateChanged && fb?.auth){
+      fb.onAuthStateChanged(fb.auth,()=>{sync();setTimeout(sync,250);setTimeout(sync,1000);});
+    }
+  }catch(err){console.warn('Admin auth listener setup failed:',err)}
+
+  // Safety net for slow Firebase/account restoration. Unlike the old watcher,
+  // this does NOT stop merely because the button element exists.
+  let tries=0;
+  const authWatcher=setInterval(async()=>{
+    tries++;
+    await sync();
+    if(getUser() || tries>=30)clearInterval(authWatcher);
+  },1000);
+
+  const observeTarget=adminBtn();
+  if(observeTarget){
+    new MutationObserver(()=>{
+      if(!observeTarget.classList.contains('hidden')){
+        const m=modal(); if(m) m.classList.add('progress-admin-can-create');
+      }
+    }).observe(observeTarget,{attributes:true,attributeFilter:['class']});
+  }
 })();
 </script>
 
