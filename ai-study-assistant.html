@@ -5129,8 +5129,11 @@ html.cathians-native-ad-ready .cathians-bottom-ad-dock .ad-inner{
 .calendar-days button{position:relative;cursor:pointer!important;transition:transform .15s ease,background .15s ease,box-shadow .15s ease}
 .calendar-days button:hover{transform:translateY(-1px)}
 .calendar-days button.other-month{opacity:.36}
-.calendar-days button.studied{background:#dff1d7;color:#4e8d34;box-shadow:inset 0 0 0 1px #c5e3b8}
+.calendar-days button.studied{position:relative;background:radial-gradient(circle at 50% 43%,#fff8a8 0 28%,#ffd84a 46%,#ffb300 72%,#f28c00 100%);color:#6b4300;font-weight:900;box-shadow:inset 0 0 0 2px #fff2a0,0 3px 10px rgba(255,179,0,.30),0 0 0 1px rgba(242,140,0,.22);text-shadow:0 1px 0 rgba(255,255,255,.55)}
+.calendar-days button.studied::before{content:"";position:absolute;left:50%;top:5px;width:9px;height:12px;transform:translateX(-50%) rotate(2deg);border-radius:55% 45% 55% 45%;background:linear-gradient(180deg,#fff59a 0%,#ffc107 58%,#ff7a00 100%);filter:drop-shadow(0 1px 2px rgba(255,115,0,.28));opacity:.88;pointer-events:none}
+.calendar-days button.studied.today{box-shadow:inset 0 0 0 2px #fff8cc,0 0 0 2px #ef9b00,0 4px 12px rgba(255,179,0,.35)}
 .calendar-days button.today{box-shadow:inset 0 0 0 2px #2d6ca3,0 3px 9px rgba(45,108,163,.08)}
+.calendar-days button.studied.today{box-shadow:inset 0 0 0 2px #fff8cc,0 0 0 2px #ef9b00,0 4px 12px rgba(255,179,0,.35)}
 .progress-streak-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:13px}
 .progress-stat{padding:10px 8px;border:1px solid #e1e6ed;border-radius:13px;background:#fafbfd;text-align:center}
 .progress-stat span{display:block;font-size:8px;color:#7b8799;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
@@ -6344,6 +6347,13 @@ function updateGradePill(section){
 let xpSyncQueue = Promise.resolve();
 
 function updateXPUI(){
+  const signed=!!(window.currentUser?.uid||window.studyFirebase?.auth?.currentUser?.uid);
+  if(!signed){
+    if(xpValue)xpValue.textContent='Log in for XP';
+    const top=document.getElementById('cgTopXp');if(top)top.textContent='Log in for XP';
+    const badge=document.getElementById('cgProgressXpBadge');if(badge)badge.textContent='Log in for XP';
+    return;
+  }
   xpValue.textContent=xp.toLocaleString()+' XP';
 }
 function showXPPop(amount){
@@ -6446,6 +6456,8 @@ async function loadCurrentUserXP(user){
 }
 
 function addXP(amount){
+  const signed=!!(window.currentUser?.uid||window.studyFirebase?.auth?.currentUser?.uid);
+  if(!signed)return;
   markStudyDay();
   const value=Math.max(0,Number(amount)||0);
   if(!value)return;
@@ -7431,8 +7443,9 @@ async function initializeStudyAuth(){
   }
 
   window.studyFirebase.onAuthStateChanged(window.studyFirebase.auth,async user=>{
-    if((user?.uid||null)===(currentUser?.uid||null)){window.refreshProgressAdminVisibility?.();return;}
+    if((user?.uid||null)===(currentUser?.uid||null)){window.startOnlineStreakTracking?.();window.refreshProgressAdminVisibility?.();return;}
     await handleAuthUser(user);
+    window.startOnlineStreakTracking?.();
     window.refreshProgressAdminVisibility?.();
   });
 }
@@ -7447,39 +7460,67 @@ function calculateLocalStudyStreak(){
   while(set.has(d.toISOString().slice(0,10))){streak++;d.setDate(d.getDate()-1);}
   return streak;
 }
+let streakDayTicker=null;
+let streakSyncBusy=false;
 function markStudyDay(){
-  const key=currentUser?('cathsStudyStreakDates:'+currentUser.uid):'cathsStudyStreakDates:guest';
+  // A study day is recorded as soon as the signed-in student is online on an
+  // app page. Re-visiting the same day does not add another day.
+  const uid=currentUser?.uid||window.studyFirebase?.auth?.currentUser?.uid||'';
+  if(!uid)return;
+  const key='cathsStudyStreakDates:'+uid;
   let days=[];try{days=JSON.parse(localStorage.getItem(key)||'[]')}catch{days=[]}
+  if(!Array.isArray(days))days=[];
   const today=new Date().toISOString().slice(0,10);
   const wasRecorded=days.includes(today);
   if(!wasRecorded) days.push(today);
-  days=days.slice(-365);
-  localStorage.setItem(key,JSON.stringify(days));
+  days=[...new Set(days.map(String))].sort().slice(-365);
+  try{localStorage.setItem(key,JSON.stringify(days))}catch(_){ }
 
-  // Keep current + longest streak in Firestore. The leaderboard reads these
-  // shared values, so a newly earned streak is visible across devices.
-  if(currentUser&&window.studyFirebase){
-    try{
+  if(window.studyFirebase){
+    if(streakSyncBusy)return;
+    streakSyncBusy=true;
+    Promise.resolve().then(async()=>{
+      const fb=window.studyFirebase;
+      const user=window.currentUser||fb.auth?.currentUser;
+      if(!user)return;
       const currentStreak=Math.max(0,calculateLocalStudyStreak());
-      const longestKey='cathsStudyLongestStreak:'+currentUser.uid;
-      const previousLongest=Number(localStorage.getItem(longestKey)||0);
+      const longestKey='cathsStudyLongestStreak:'+user.uid;
+      const previousLongest=Math.max(0,Number(localStorage.getItem(longestKey)||0));
       const longest=Math.max(previousLongest,currentStreak);
-      localStorage.setItem(longestKey,String(longest));
-      const {db,doc,setDoc,serverTimestamp}=window.studyFirebase;
-      const write=setDoc(doc(db,'studyProfiles',currentUser.uid),{
-        streak:currentStreak,
-        longestStreak:longest,
+      try{localStorage.setItem(longestKey,String(longest))}catch(_){ }
+      const {db,doc,getDoc,setDoc,serverTimestamp}=fb;
+      const ref=doc(db,'studyProfiles',user.uid);
+      let cloud={};
+      try{const snap=await getDoc(ref);if(snap.exists())cloud=snap.data()||{}}catch(_){ }
+      const cloudStreak=Math.max(0,Number(cloud.streak||0));
+      const cloudLongest=Math.max(cloudStreak,Number(cloud.longestStreak||0));
+      // On a fresh device, preserve the stronger streak already stored in the
+      // account. Otherwise, save the locally calculated current streak.
+      const mergedCurrent=Math.max(currentStreak, (!wasRecorded && cloudStreak>currentStreak) ? cloudStreak : currentStreak);
+      const mergedLongest=Math.max(longest,cloudLongest,mergedCurrent);
+      await setDoc(ref,{
+        streak:mergedCurrent,
+        longestStreak:mergedLongest,
+        lastOnlineDate:today,
         streakUpdatedAt:serverTimestamp()
       },{merge:true});
-      // Refresh only after the shared streak values are written. This keeps
-      // the leaderboard from briefly showing the old streak.
-      void write.then(()=>{
-        try{ window.__cathiansRenderAllLeaderboards?.(); }catch(_){}
-        try{ window.loadCATHIANSLeaderboards?.(); }catch(_){}
-      }).catch(e=>console.warn('Streak cloud sync failed:',e));
-    }catch(e){console.warn('Streak cloud sync failed:',e);}
+      try{window.renderStreakUI?.()}catch(_){}
+      try{window.__cathiansRenderAllLeaderboards?.()}catch(_){}
+      try{window.loadCATHIANSLeaderboards?.()}catch(_){}
+      try{window.renderLeaderboardModal?.()}catch(_){}
+    }).catch(e=>console.warn('Streak cloud sync failed:',e)).finally(()=>{streakSyncBusy=false});
   }
+  try{window.renderStreakUI?.()}catch(_){ }
 }
+function startOnlineStreakTracking(){
+  if(streakDayTicker)clearInterval(streakDayTicker);
+  if(!currentUser)return;
+  markStudyDay();
+  streakDayTicker=setInterval(()=>{
+    if(document.visibilityState!=='hidden')markStudyDay();
+  },60000);
+}
+window.markStudyDayForOnlineSession=markStudyDay;window.startOnlineStreakTracking=startOnlineStreakTracking;
 function updateCgProgressView(){
   const currentXp=Math.max(0,Number(xp)||0), streak=Math.max(0,calculateLocalStudyStreak());
   const level=Math.max(1,Math.floor(currentXp/100)+1); const next=(Math.max(1,level))*100; const pct=Math.max(8,Math.min(96,(currentXp%100)));
@@ -7487,13 +7528,10 @@ function updateCgProgressView(){
   const fill=document.getElementById('cgProgressXpBar'); if(fill)fill.style.width=Math.max(12,Math.min(92,pct))+'%';
   const lvl=document.getElementById('cgProgressLevel'); if(lvl)lvl.textContent=level;
   const nextEl=document.getElementById('cgProgressNext'); if(nextEl)nextEl.textContent=next>=1000?(Math.round(next/100)/10)+'k XP':next+' XP';
-  const inline=document.getElementById('cgStreakInline'); if(inline)inline.textContent=Math.max(streak,3);
-  const cta=document.getElementById('cgStreakCta'); if(cta)cta.textContent=Math.max(streak,3);
-  const q=document.getElementById('cgStreakQuestions'); if(q)q.textContent=2;
-  const cal=document.getElementById('cgStreakCalendar'); if(cal){
-    const nums=[9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,1,2,3,4,5];
-    const today=new Date().getDate(); cal.innerHTML=nums.map(n=>`<button type="button" class="${n===today?'today':''} ${[25,26,27,28].includes(n)?'streak':''}">${n}</button>`).join('');
-  }
+  const inline=document.getElementById('cgStreakInline'); if(inline)inline.textContent=streak;
+  const cta=document.getElementById('cgStreakCta'); if(cta)cta.textContent=streak;
+  const q=document.getElementById('cgStreakQuestions'); if(q)q.textContent=streak>0?'1':'2';
+  try{window.renderStreakUI?.()}catch(_){ }
 }
 
 // Progress task assignments + administrator controls.
@@ -9897,8 +9935,8 @@ const oldSet=window.cgSetView;window.cgSetView=function(view){if(view==='leaderb
 function renderFilters(){pageFilters.innerHTML=grades.map(g=>`<button type="button" class="lb-filter ${selected===g?'active':''}" data-lb-grade="${g}">${g==='all'?'Overall':'G'+g}</button>`).join('');pageFilters.querySelectorAll('[data-lb-grade]').forEach(b=>b.addEventListener('click',()=>{selected=b.dataset.lbGrade||'all';renderFilters();loadPage()}))}renderFilters();
 async function getRows(){if(!window.studyFirebase)return[];const{db,collection,getDocs}=window.studyFirebase;const[ps,us]=await Promise.all([getDocs(collection(db,'studyProfiles')),getDocs(collection(db,'users'))]);const um=new Map();us.forEach(d=>um.set(d.id,d.data()||{}));const out=[];ps.forEach(d=>{const data=d.data()||{},u=um.get(d.id)||{},section=String(u.section||data.section||'').trim();const m=section.match(/^(7|8|9|10|11|12|13|14|15|16|17)-/);const g=m?m[1]:String(u.grade||data.grade||'');const xp=Number(data.xp||0),streak=Number(data.streak||0),longest=Math.max(Number(data.longestStreak||0),streak);if(xp>0||streak>0||longest>0)out.push({id:d.id,displayName:u.displayName||u.name||data.displayName||'Student',grade:g,xp,streak,longestStreak:longest})});return out}
 function filt(rows){return selected==='all'?rows:rows.filter(r=>String(r.grade)===selected)}
-function row(r,i,type){const top=i===0,me=window.currentUser&&r.id===window.currentUser.uid,val=type==='xp'?`${r.xp.toLocaleString()} XP`:`${r.longestStreak} day${r.longestStreak===1?'':'s'}`,sub=type==='xp'?`${me?'You • ':''}${r.grade?'G'+r.grade:'Grade unassigned'} • Study XP`:`${me?'You • ':''}${r.grade?'G'+r.grade:'Grade unassigned'} • Longest streak`;let fx=top&&type==='xp'?'<span class="lb-xp-fly">+XP</span>':'';if(top&&type==='streak')fx='<span class="lb-fire-particle" style="right:42px;top:8px;animation-delay:.1s"></span><span class="lb-fire-particle" style="right:27px;top:14px;animation-delay:.42s"></span><span class="lb-fire-particle" style="right:58px;top:12px;animation-delay:.7s"></span>';return`<div class="lb-row ${me?'lb-me ':''}${top&&type==='xp'?'lb-top-xp ':''}${top&&type==='streak'?'lb-top-streak ':''}">${fx}<div class="lb-rank">${i===0?'1':i+1}</div><div class="lb-main-copy"><strong>${esc(r.displayName)}</strong><small>${esc(sub)}</small></div><div class="lb-value ${type==='xp'?'lb-xp-value':'lb-streak-value'}">${val}${type==='streak'&&top?'<span class="lb-fire-mini" aria-hidden="true"></span>':''}</div></div>`}
-function render(rows){const list=filt(rows),xp=[...list].sort((a,b)=>b.xp-a.xp||a.displayName.localeCompare(b.displayName)),st=[...list].sort((a,b)=>b.longestStreak-a.longestStreak||b.streak-a.streak||a.displayName.localeCompare(b.displayName)),scope=selected==='all'?'Overall':`G${selected}`;xpSub.textContent=`${scope} • Study XP`;streakSub.textContent=`${scope} • Longest Streak`;xpList.innerHTML=xp.length?xp.map((r,i)=>row(r,i,'xp')).join(''):'<div class="lb-empty">No XP entries yet for this group.</div>';streakList.innerHTML=st.length?st.map((r,i)=>row(r,i,'streak')).join(''):'<div class="lb-empty">No streak entries yet for this group.</div>'}
+function row(r,i,type){const top=i===0,me=window.currentUser&&r.id===window.currentUser.uid,val=type==='xp'?`${r.xp.toLocaleString()} XP`:`${r.streak} day${r.streak===1?'':'s'}`,sub=type==='xp'?`${me?'You • ':''}${r.grade?'G'+r.grade:'Grade unassigned'} • Study XP`:`${me?'You • ':''}${r.grade?'G'+r.grade:'Grade unassigned'} • Longest streak`;let fx=top&&type==='xp'?'<span class="lb-xp-fly">+XP</span>':'';if(top&&type==='streak')fx='<span class="lb-fire-particle" style="right:42px;top:8px;animation-delay:.1s"></span><span class="lb-fire-particle" style="right:27px;top:14px;animation-delay:.42s"></span><span class="lb-fire-particle" style="right:58px;top:12px;animation-delay:.7s"></span>';return`<div class="lb-row ${me?'lb-me ':''}${top&&type==='xp'?'lb-top-xp ':''}${top&&type==='streak'?'lb-top-streak ':''}">${fx}<div class="lb-rank">${i===0?'1':i+1}</div><div class="lb-main-copy"><strong>${esc(r.displayName)}</strong><small>${esc(sub)}</small></div><div class="lb-value ${type==='xp'?'lb-xp-value':'lb-streak-value'}">${val}${type==='streak'&&top?'<span class="lb-fire-mini" aria-hidden="true"></span>':''}</div></div>`}
+function render(rows){const list=filt(rows),xp=[...list].sort((a,b)=>b.xp-a.xp||a.displayName.localeCompare(b.displayName)),st=[...list].sort((a,b)=>b.streak-a.streak||b.longestStreak-a.longestStreak||a.displayName.localeCompare(b.displayName)),scope=selected==='all'?'Overall':`G${selected}`;xpSub.textContent=`${scope} • Study XP`;streakSub.textContent=`${scope} • Longest Streak`;xpList.innerHTML=xp.length?xp.map((r,i)=>row(r,i,'xp')).join(''):'<div class="lb-empty">No XP entries yet for this group.</div>';streakList.innerHTML=st.length?st.map((r,i)=>row(r,i,'streak')).join(''):'<div class="lb-empty">No streak entries yet for this group.</div>'}
 async function loadPage(){xpList.innerHTML='<div class="lb-empty">Loading XP leaderboard…</div>';streakList.innerHTML='<div class="lb-empty">Loading streak leaderboard…</div>';try{render(await getRows())}catch(e){console.error(e);xpList.innerHTML=streakList.innerHTML='<div class="lb-empty">Shared leaderboard is not connected yet.</div>'}}
 window.loadCATHIANSLeaderboards=loadPage;
 const streakBtn=document.getElementById('cgProgressLeaderboardBtn');
@@ -9912,7 +9950,7 @@ if(streakBtn){
   },{capture:true});
 }
 const panel=document.getElementById('leaderboardPanel'),modalList=document.getElementById('leaderboardList'),modalStatus=document.getElementById('leaderboardStatus'),modalFilters=document.getElementById('gradeFilters'),modalTitle=panel?.querySelector('.panel-title h4');
-async function modalStreak(){if(!panel||!modalList)return;modalList.innerHTML='<div class="leaderboard-status">Loading streak leaderboard…</div>';try{const rows=filt(await getRows()).sort((a,b)=>b.longestStreak-a.longestStreak||b.streak-a.streak||a.displayName.localeCompare(b.displayName)),me=window.currentUser?.uid||'';modalList.innerHTML=rows.length?rows.map((r,i)=>`<div class="leader-row ${r.id===me?'me':''} ${i===0?'streak-ranked-first':''}"><div class="leader-rank">${i===0?'1':i+1}</div><div class="leader-name"><strong>${esc(r.displayName)}</strong><small>${r.id===me?'You • ':''}${r.grade?'Grade '+r.grade:'Grade unassigned'} • Longest streak</small></div><div class="leader-xp" style="color:#ef6a27">${r.longestStreak} day${r.longestStreak===1?'':'s'}</div></div>`).join(''):'<div class="leaderboard-status">No streak entries yet for this group.</div>';modalStatus.textContent=selected==='all'?'Overall longest-streak leaderboard.':`Grade ${selected} longest-streak leaderboard.`}catch(e){console.error(e);modalList.innerHTML='<div class="leaderboard-status">Shared streak leaderboard is not connected yet.</div>'}}
+async function modalStreak(){if(!panel||!modalList)return;modalList.innerHTML='<div class="leaderboard-status">Loading streak leaderboard…</div>';try{const rows=filt(await getRows()).sort((a,b)=>b.streak-a.streak||b.longestStreak-a.longestStreak||a.displayName.localeCompare(b.displayName)),me=window.currentUser?.uid||'';modalList.innerHTML=rows.length?rows.map((r,i)=>`<div class="leader-row ${r.id===me?'me':''} ${i===0?'streak-ranked-first':''}"><div class="leader-rank">${i===0?'1':i+1}</div><div class="leader-name"><strong>${esc(r.displayName)}</strong><small>${r.id===me?'You • ':''}${r.grade?'Grade '+r.grade:'Grade unassigned'} • Longest streak</small></div><div class="leader-xp" style="color:#ef6a27">${r.streak} day${r.streak===1?'':'s'}</div></div>`).join(''):'<div class="leaderboard-status">No streak entries yet for this group.</div>';modalStatus.textContent=selected==='all'?'Overall current-streak leaderboard.':`Grade ${selected} current-streak leaderboard.`}catch(e){console.error(e);modalList.innerHTML='<div class="leaderboard-status">Shared streak leaderboard is not connected yet.</div>'}}
 if(panel&&modalFilters){modalFilters.innerHTML=grades.map(g=>`<button class="grade-filter ${selected===g?'active':''}" type="button" data-grade="${g}">${g==='all'?'Overall':`Grade ${g}`}</button>`).join('');modalFilters.querySelectorAll('.grade-filter').forEach(b=>b.onclick=async()=>{selected=b.dataset.grade||'all';modalFilters.querySelectorAll('.grade-filter').forEach(x=>x.classList.toggle('active',x===b));await modalStreak()});if(modalTitle){const textNode=[...modalTitle.childNodes].find(n=>n.nodeType===3);if(textNode)textNode.textContent='CATHIANS Streak Leaderboard'}}
 const progressLeaderboard=document.getElementById('leaderboardBtn');
 if(progressLeaderboard){
@@ -10275,7 +10313,13 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
       const section=String(u.section||data.section||'').trim();
       const m=section.match(/^(7|8|9|10|11|12)-/); const grade=m?m[1]:String(u.grade||data.grade||'').trim();
       if(!/^(7|8|9|10|11|12)$/.test(grade))return;
-      const xp=Math.max(0,Number(data.xp||0)); const streak=Math.max(0,Number(data.streak||0)); const longest=Math.max(streak,Number(data.longestStreak||0));
+      const cloudXP=Math.max(0,Number(data.xp||0));
+      // The header/progress UI can contain a newer locally saved XP total while
+      // Firestore is still catching up. For the signed-in student, use the newer
+      // local value immediately so the leaderboard never shows an older total.
+      const localXP=(window.currentUser&&d.id===window.currentUser.uid)?Math.max(0,Number(window.xp||0)):0;
+      const xp=Math.max(cloudXP,localXP);
+      const streak=Math.max(0,Number(data.streak||0)); const longest=Math.max(streak,Number(data.longestStreak||0));
       if(xp<=0&&longest<=0)return;
       rows.push({id:d.id,displayName:u.displayName||u.name||data.displayName||'Student',grade,xp,streak,longestStreak:longest});
     });
@@ -10284,8 +10328,8 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
   function filtered(rows){return selectedGrade==='all'?rows:rows.filter(r=>r.grade===selectedGrade)}
   function lbRow(r,i,type){
     const top=i===0,me=window.currentUser?.uid===r.id;
-    const val=type==='xp'?r.xp.toLocaleString()+' XP':r.longestStreak+' day'+(r.longestStreak===1?'':'s');
-    const sub=(me?'You • ':'')+'G'+r.grade+' • '+(type==='xp'?'Study XP':'Longest streak');
+    const val=type==='xp'?r.xp.toLocaleString()+' XP':r.streak+' day'+(r.streak===1?'':'s');
+    const sub=(me?'You • ':'')+'G'+r.grade+' • '+(type==='xp'?'Study XP':'Current streak');
     let fx='';
     if(top&&type==='xp')fx='<span class="lb-xp-fly">+XP</span>';
     if(top&&type==='streak')fx='<span class="lb-fire-particle" style="right:42px;top:8px"></span><span class="lb-fire-particle" style="right:26px;top:15px;animation-delay:.3s"></span><span class="lb-fire-particle" style="right:56px;top:12px;animation-delay:.6s"></span>';
@@ -10293,12 +10337,15 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
   }
   async function renderAllLeaderboards(){
     try{
+      // Reconcile the current account before rendering, without blocking the UI
+      // if Firestore temporarily rejects or delays the write.
+      try{ if(window.currentUser&&Number(window.xp||0)>0) await window.saveXP?.(); }catch(_){}
       const all=await leaderboardRows(), rows=filtered(all);
       const xps=[...rows].sort((a,b)=>b.xp-a.xp||a.displayName.localeCompare(b.displayName));
-      const sts=[...rows].sort((a,b)=>b.longestStreak-a.longestStreak||b.streak-a.streak||a.displayName.localeCompare(b.displayName));
+      const sts=[...rows].sort((a,b)=>b.streak-a.streak||b.longestStreak-a.longestStreak||a.displayName.localeCompare(b.displayName));
       const scope=selectedGrade==='all'?'Overall':'G'+selectedGrade;
       if($('#lbXpSubtitle'))$('#lbXpSubtitle').textContent=scope+' • Study XP';
-      if($('#lbStreakSubtitle'))$('#lbStreakSubtitle').textContent=scope+' • Longest Streak';
+      if($('#lbStreakSubtitle'))$('#lbStreakSubtitle').textContent=scope+' • Current Streak';
       if($('#lbXpList'))$('#lbXpList').innerHTML=xps.length?xps.map((r,i)=>lbRow(r,i,'xp')).join(''):'<div class="lb-empty">No XP entries yet for this group.</div>';
       if($('#lbStreakList'))$('#lbStreakList').innerHTML=sts.length?sts.map((r,i)=>lbRow(r,i,'streak')).join(''):'<div class="lb-empty">No streak entries yet for this group.</div>';
       const meStreak=sts.findIndex(r=>r.id===window.currentUser?.uid);
@@ -10413,7 +10460,7 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
   if(progressLb){document.addEventListener('click',async e=>{if(!e.target?.closest?.('#leaderboardBtn'))return;e.preventDefault();e.stopImmediatePropagation();const panel=$('#leaderboardPanel');panel?.classList.remove('hidden');document.body.classList.add('leaderboard-open');const mf=$('#gradeFilters');if(mf){mf.innerHTML=grades.map(g=>`<button class="grade-filter ${selectedGrade===g?'active':''}" type="button" data-grade="${g}">${g==='all'?'Overall':'G'+g}</button>`).join('');mf.querySelectorAll('[data-grade]').forEach(b=>b.onclick=()=>{selectedGrade=b.dataset.grade||'all';mf.querySelectorAll('.grade-filter').forEach(x=>x.classList.toggle('active',x===b));renderModalStreak()})}await renderModalStreak();},{capture:true})}
   async function renderModalStreak(){
     const list=$('#leaderboardList');if(!list)return;list.innerHTML='<div class="leaderboard-status">Loading streak leaderboard…</div>';
-    try{const all=await leaderboardRows(),rows=filtered(all).sort((a,b)=>b.longestStreak-a.longestStreak||b.streak-a.streak||a.displayName.localeCompare(b.displayName));const me=window.currentUser?.uid||'';list.innerHTML=rows.length?rows.map((r,i)=>`<div class="leader-row ${r.id===me?'me':''} ${i===0?'streak-ranked-first':''}"><div class="leader-rank">${i+1}</div><div class="leader-name"><strong>${esc(r.displayName)}</strong><small>${r.id===me?'You • ':''}G${r.grade} • Longest streak</small></div><div class="leader-xp" style="color:#ef6a27">${r.longestStreak} day${r.longestStreak===1?'':'s'}${i===0?'<span class="lb-fire-mini" aria-hidden="true"></span>':''}</div></div>`).join(''):'<div class="leaderboard-status">No streak entries yet for this group.</div>';const s=$('#leaderboardStatus');if(s)s.textContent=selectedGrade==='all'?'Overall longest-streak leaderboard.':'G'+selectedGrade+' longest-streak leaderboard.'}catch(e){console.error(e);list.innerHTML='<div class="leaderboard-status">Shared streak leaderboard is not connected yet.</div>'}
+    try{const all=await leaderboardRows(),rows=filtered(all).sort((a,b)=>b.streak-a.streak||b.longestStreak-a.longestStreak||a.displayName.localeCompare(b.displayName));const me=window.currentUser?.uid||'';list.innerHTML=rows.length?rows.map((r,i)=>`<div class="leader-row ${r.id===me?'me':''} ${i===0?'streak-ranked-first':''}"><div class="leader-rank">${i+1}</div><div class="leader-name"><strong>${esc(r.displayName)}</strong><small>${r.id===me?'You • ':''}G${r.grade} • Longest streak</small></div><div class="leader-xp" style="color:#ef6a27">${r.streak} day${r.streak===1?'':'s'}${i===0?'<span class="lb-fire-mini" aria-hidden="true"></span>':''}</div></div>`).join(''):'<div class="leaderboard-status">No streak entries yet for this group.</div>';const s=$('#leaderboardStatus');if(s)s.textContent=selectedGrade==='all'?'Overall current-streak leaderboard.':'G'+selectedGrade+' current-streak leaderboard.'}catch(e){console.error(e);list.innerHTML='<div class="leaderboard-status">Shared streak leaderboard is not connected yet.</div>'}
   }
 
   /* Re-render page when navigation lands there. */
@@ -14929,7 +14976,7 @@ body.new-deck-page-open .cg-main{
       const data=activeDeck?.content||{};const source=activeDeck?.source||activeDeck?.type||'Deck';const saved=activeDeck?.savedAt?new Date(activeDeck.savedAt).toLocaleString():((typeof materialSavedDate==='function')?materialSavedDate(activeDeck):'Saved');
       out.innerHTML=`<div class="cat-deck-main-head"><div><h2>Imports</h2><small>Source information for this deck</small></div></div><div class="cat-deck-grid2"><div class="cat-deck-info-card"><strong>Source</strong><small>${esc(source)}</small></div><div class="cat-deck-info-card"><strong>Saved</strong><small>${esc(saved)}</small></div><div class="cat-deck-info-card"><strong>Cards imported</strong><small>${cardsOf(activeDeck).length}</small></div><div class="cat-deck-info-card"><strong>Deck type</strong><small>${esc(data.mode||activeDeck?.type||'deck')}</small></div></div>`;
     }else if(tab==='leaderboards'){
-      out.innerHTML=`<div class="cat-deck-main-head"><div><h2>Leaderboards</h2><small>See how you rank among CATHIANS students</small></div><div class="cat-lb-filters" id="catDeckLbFilters"></div></div><div class="cat-lb-grid"><section class="cat-lb-card"><div class="cat-lb-card-head"><div><strong>Study XP</strong><small>Top students by XP</small></div><span>XP</span></div><div id="catDeckXpList" class="cat-lb-list"><div class="cat-lb-loading">Loading leaderboard…</div></div></section><section class="cat-lb-card"><div class="cat-lb-card-head"><div><strong>Longest Streak</strong><small>Top students by longest streak</small></div><span>🔥</span></div><div id="catDeckStreakList" class="cat-lb-list"><div class="cat-lb-loading">Loading leaderboard…</div></div></section></div>`;
+      out.innerHTML=`<div class="cat-deck-main-head"><div><h2>Leaderboards</h2><small>See how you rank among CATHIANS students</small></div><div class="cat-lb-filters" id="catDeckLbFilters"></div></div><div class="cat-lb-grid"><section class="cat-lb-card"><div class="cat-lb-card-head"><div><strong>Study XP</strong><small>Top students by XP</small></div><span>XP</span></div><div id="catDeckXpList" class="cat-lb-list"><div class="cat-lb-loading">Loading leaderboard…</div></div></section><section class="cat-lb-card"><div class="cat-lb-card-head"><div><strong>Current Streak</strong><small>Top students by current streak</small></div><span>🔥</span></div><div id="catDeckStreakList" class="cat-lb-list"><div class="cat-lb-loading">Loading leaderboard…</div></div></section></div>`;
       renderDeckLeaderboards();
     }else{
       out.innerHTML=`<div class="cat-deck-main-head"><div><h2>Leaderboards</h2><small>Progress for this deck</small></div></div><div class="cat-deck-pane">Deck-specific leaderboard data is not available yet.</div>`;
@@ -15324,6 +15371,7 @@ body.new-deck-page-open .cg-main{
     [['#cgStreakInline',s],['#cgStreakCta',s],['#cgProgressCurrentStreak',s],['#cgProgressLongestStreak',long],['#cgProgressStudyDays',set.size]].forEach(([sel,val])=>{const el=$(sel);if(el)el.textContent=String(val)});
     const q=$('#cgStreakQuestions');if(q)q.textContent=s>0?'1':'2';
   }
+  window.renderStreakUI=function(){renderStats();renderCalendar()};
   async function loadTasks(){
     const local=(()=>{try{const a=JSON.parse(localStorage.getItem(taskStorage())||'[]');return Array.isArray(a)?a:[]}catch{return[]}})();
     const u=window.currentUser||window.studyFirebase?.auth?.currentUser;
@@ -15362,6 +15410,7 @@ body.new-deck-page-open .cg-main{
   function closeTasks(){const m=$('#cgProgressTasksModal');if(!m)return;m.classList.add('hidden');m.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}
   function addTask(){const input=$('#cgProgressTaskInput');const text=input?.value.trim();if(!text)return;const tasks=loadTasks();tasks.unshift({text,done:false,createdAt:Date.now()});if(input)input.value='';saveTasks(tasks);input?.focus()}
   function markTodayAndRefresh(){
+    try{window.markStudyDayForOnlineSession?.()}catch(_){ }
     const key=streakStorage(),today=dateKey(new Date());let a=[];try{a=JSON.parse(localStorage.getItem(key)||'[]')}catch{}
     if(!Array.isArray(a))a=[];if(!a.includes(today)){a.push(today);a.sort();a=a.slice(-365);try{localStorage.setItem(key,JSON.stringify(a))}catch{}}
   }
@@ -15385,7 +15434,7 @@ body.new-deck-page-open .cg-main{
     if(e.target?.closest?.('#cgStreakShare')){const s=localStreak(),text=`I’m on a ${s}-day study streak!`;if(navigator.share){navigator.share({title:'My Study Streak',text}).catch(()=>{})}else if(navigator.clipboard){navigator.clipboard.writeText(text)}}
   },true);
   document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.activeElement?.id==='cgProgressTaskInput'){e.preventDefault();addTask()}if(e.key==='Escape')closeTasks()});
-  function boot(){markTodayAndRefresh();renderStats();renderCalendar();renderTasks()}
+  function boot(){markTodayAndRefresh();renderStats();renderCalendar();renderTasks();try{window.markStudyDayForOnlineSession?.()}catch(_){} try{window.startOnlineStreakTracking?.()}catch(_){} }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
   window.addEventListener('load',boot,{once:true});
 })();
@@ -15945,5 +15994,112 @@ body.new-deck-page-open .cg-main{
   @media(max-width:760px){#cgProgressTasksModal .progress-tasks-card{width:94vw;padding:16px;border-radius:21px}.study-task-card{padding:16px 14px;border-radius:18px}.study-task-card-head{align-items:flex-start}.study-task-description h4{font-size:15px}.study-task-description p{font-size:9px}.study-task-requirements{grid-template-columns:1fr;gap:9px}.study-task-req-box{min-height:64px}.study-task-admin img,.study-task-admin-placeholder{width:32px;height:32px}.study-task-admin strong{font-size:8px;max-width:125px}.study-task-card-foot{align-items:stretch;flex-direction:column}.study-task-card .progress-task-claim{width:100%}}
 </style>
 </main>
+
+<style id="guest-xp-streak-login-gate">
+  .cg-guest-stat-note{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:24px;
+    padding:5px 9px;
+    border:1px solid #dfe5ed;
+    border-radius:999px;
+    background:#f7f9fc;
+    color:#66758a;
+    font-size:8px;
+    font-weight:800;
+    line-height:1.2;
+  }
+  .cg-guest-stat-note strong{color:#172033}
+</style>
+<script id="guest-xp-streak-login-gate-script">
+(function(){
+  'use strict';
+  function signedIn(){
+    try{return !!(window.currentUser?.uid||window.studyFirebase?.auth?.currentUser?.uid);}
+    catch(_){return false;}
+  }
+  function setText(sel,text){
+    try{document.querySelectorAll(sel).forEach(el=>{el.textContent=text;});}catch(_){ }
+  }
+  function gateGuestStats(){
+    if(signedIn()) return false;
+    // Guest accounts must never display locally stored XP/streak as earned stats.
+    setText('#cgTopXp','Log in for XP');
+    setText('#cgProgressXpBadge','Log in for XP');
+    setText('#xpValue','Log in for XP');
+    setText('#cgProgressNext','Log in for XP');
+    setText('#cgProgressLevel','—');
+    setText('#cgStreakInline','Log in for streak');
+    setText('#cgStreakCta','Log in for streak');
+    setText('#cgStreakQuestions','—');
+    const fill=document.getElementById('cgProgressXpBar');
+    if(fill)fill.style.width='0%';
+    const rank=document.getElementById('rankValue');
+    if(rank)rank.textContent='Log in to rank';
+    return true;
+  }
+  function loginGateLeaderboard(){
+    if(signedIn())return false;
+    const xpList=document.getElementById('lbXpList');
+    const streakList=document.getElementById('lbStreakList');
+    const xpMsg='<div class="lb-empty"><strong>Log in for your XP</strong></div>';
+    const streakMsg='<div class="lb-empty"><strong>Log in for your streak</strong></div>';
+    if(xpList)xpList.innerHTML=xpMsg;
+    if(streakList)streakList.innerHTML=streakMsg;
+    const oldSub=document.getElementById('lbXpSubtitle'); if(oldSub)oldSub.textContent='Log in for your XP';
+    const oldStreak=document.getElementById('lbStreakSubtitle'); if(oldStreak)oldStreak.textContent='Log in for your streak';
+    return true;
+  }
+  function refreshGuestGate(){
+    gateGuestStats();
+    loginGateLeaderboard();
+  }
+  const oldReal=window.realXP;
+  // Expose a safe realXP helper for other scripts, but return zero while logged out.
+  window.realXP=function(){
+    if(!signedIn())return 0;
+    try{return Math.max(0,Number(window.xp)||0);}catch{return 0;}
+  };
+  const oldProgress=window.updateCgProgressView;
+  window.updateCgProgressView=function(){
+    if(gateGuestStats())return;
+    try{oldProgress?.();}catch(_){ }
+    gateGuestStats();
+  };
+  const oldLb=window.__cathiansRenderAllLeaderboards;
+  window.__cathiansRenderAllLeaderboards=async function(){
+    if(loginGateLeaderboard())return;
+    return oldLb?.();
+  };
+  const oldLoadLb=window.loadCATHIANSLeaderboards;
+  window.loadCATHIANSLeaderboards=async function(){
+    if(loginGateLeaderboard())return;
+    return oldLoadLb?.();
+  };
+  const oldModalStreak=window.renderModalStreak;
+  if(typeof oldModalStreak==='function'){
+    window.renderModalStreak=async function(){
+      if(loginGateLeaderboard())return;
+      return oldModalStreak?.();
+    };
+  }
+  // Block streak creation while logged out.
+  const oldMark=window.markStudyDay;
+  window.markStudyDay=function(){
+    if(!signedIn())return;
+    return oldMark?.();
+  };
+  refreshGuestGate();
+  document.addEventListener('DOMContentLoaded',refreshGuestGate,{once:true});
+  window.addEventListener('load',refreshGuestGate,{once:true});
+  window.addEventListener('cathians:auth-changed',refreshGuestGate);
+  try{
+    window.studyFirebase?.auth&&window.studyFirebase.onAuthStateChanged?.(window.studyFirebase.auth,()=>setTimeout(refreshGuestGate,0));
+  }catch(_){ }
+  setInterval(refreshGuestGate,1500);
+})();
+</script>
+
 </body>
 </html>
