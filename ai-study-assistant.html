@@ -5212,6 +5212,114 @@ html.cathians-native-ad-ready .cathians-bottom-ad-dock .ad-inner{
 @media(max-width:900px){.progress-admin-page-body{grid-template-columns:1fr}.progress-admin-list{max-height:none}}
 @media(max-width:760px){.progress-admin-page-head{padding:12px 13px;gap:10px}.progress-admin-page-title h1{font-size:20px}.progress-admin-page-title p{font-size:7px}.progress-admin-back{padding:9px 10px;font-size:9px}.progress-admin-page-body{padding:12px 10px 45px;gap:10px}.progress-admin-create-card,.progress-admin-assignments-card{padding:14px;border-radius:18px}.progress-admin-section-head strong{font-size:13px}.progress-admin-task-grid{grid-template-columns:1fr}.progress-admin-reward-grid{grid-template-columns:1fr}.progress-admin-page-actions{display:grid;grid-template-columns:1fr;}.progress-admin-page-actions button{width:100%}}
 </style>
+
+<style id="progress-admin-contrast-and-new-progress">
+/* Add Task admin panel: high-contrast form text */
+#cgProgressAdminPage .progress-admin-task-box input,
+#cgProgressAdminPage .progress-admin-task-box select,
+#cgProgressAdminPage .progress-admin-task-box textarea{
+  color:#172033!important;
+  -webkit-text-fill-color:#172033!important;
+}
+#cgProgressAdminPage .progress-admin-task-box input::placeholder,
+#cgProgressAdminPage .progress-admin-task-box textarea::placeholder{
+  color:#8a95a5!important;
+  opacity:1!important;
+}
+#cgProgressAdminPage .progress-admin-task-box .progress-admin-field label,
+#cgProgressAdminPage .progress-admin-task-box .progress-admin-reward label{
+  color:#26344a!important;
+}
+
+/* Professional custom checkbox for Require New Progress */
+#cgProgressAdminPage .progress-admin-earn-new-toggle{
+  position:relative;
+  align-items:center;
+  gap:12px;
+  padding:13px 14px;
+  border:1px solid #d8e1ec;
+  border-radius:14px;
+  background:linear-gradient(135deg,#f8fbff,#f1f6fc);
+  box-shadow:0 5px 14px rgba(29,45,72,.045);
+  transition:border-color .2s ease,background .2s ease,box-shadow .2s ease,transform .2s ease;
+}
+#cgProgressAdminPage .progress-admin-earn-new-toggle:hover{
+  border-color:#9eb9da;
+  background:linear-gradient(135deg,#fbfdff,#eef5fc);
+  box-shadow:0 8px 20px rgba(29,45,72,.07);
+}
+#cgProgressAdminPage .progress-admin-earn-new-toggle:focus-within{
+  border-color:#6f9fd3;
+  box-shadow:0 0 0 3px rgba(76,130,190,.11),0 8px 20px rgba(29,45,72,.06);
+}
+#cgProgressAdminPage .progress-admin-earn-new-toggle input{
+  position:absolute;
+  opacity:0;
+  width:1px;
+  height:1px;
+  pointer-events:none;
+}
+#cgProgressAdminPage .progress-admin-earn-new-toggle > span{
+  position:relative;
+  display:grid;
+  grid-template-columns:24px minmax(0,1fr);
+  column-gap:10px;
+  align-items:center;
+  width:100%;
+}
+#cgProgressAdminPage .progress-admin-earn-new-toggle > span::before{
+  content:"";
+  width:22px;
+  height:22px;
+  border:1.5px solid #b8c7d9;
+  border-radius:7px;
+  background:#fff;
+  box-shadow:inset 0 1px 2px rgba(23,32,51,.04);
+  transition:all .2s ease;
+}
+#cgProgressAdminPage .progress-admin-earn-new-toggle > span::after{
+  content:"";
+  position:absolute;
+  left:6px;
+  top:5px;
+  width:7px;
+  height:4px;
+  border-left:2px solid #fff;
+  border-bottom:2px solid #fff;
+  transform:rotate(-45deg) scale(0);
+  transform-origin:center;
+  opacity:0;
+  transition:all .18s ease;
+}
+#cgProgressAdminPage .progress-admin-earn-new-toggle input:checked + span::before{
+  background:linear-gradient(135deg,#2f80ff,#165bc7);
+  border-color:#2f80ff;
+  box-shadow:0 5px 12px rgba(47,128,255,.22);
+}
+#cgProgressAdminPage .progress-admin-earn-new-toggle input:checked + span::after{
+  transform:rotate(-45deg) scale(1);
+  opacity:1;
+}
+#cgProgressAdminPage .progress-admin-earn-new-toggle strong{
+  display:block;
+  font-size:10px;
+  line-height:1.2;
+  color:#172033!important;
+  font-weight:900;
+}
+#cgProgressAdminPage .progress-admin-earn-new-toggle small{
+  display:block;
+  grid-column:2;
+  margin-top:3px;
+  font-size:7.5px;
+  line-height:1.5;
+  color:#68778b!important;
+}
+@media(max-width:760px){
+  #cgProgressAdminPage .progress-admin-earn-new-toggle{padding:12px 13px}
+  #cgProgressAdminPage .progress-admin-earn-new-toggle strong{font-size:9.5px}
+}
+</style>
 </head>
 <body>
 <main class="page">
@@ -15137,7 +15245,7 @@ body.new-deck-page-open .cg-main{
       <div class="progress-admin-reward"><label>AI-Coins reward</label><input data-reward-ai type="number" min="0" max="100000" step="1" value="0" inputmode="numeric"></div>
     </div>
     <div class="progress-admin-field" style="margin-top:11px"><label>Instructions (optional)</label><textarea data-task-note maxlength="300" rows="2" placeholder="Optional instructions for the student"></textarea></div>
-    <label class="progress-admin-earn-new-toggle"><input type="checkbox" data-earn-new><span><strong>Earn it as new</strong><small>The required XP and study time must be earned after this task is published. Previous progress will not count.</small></span></label>`;
+    <label class="progress-admin-earn-new-toggle"><input type="checkbox" data-earn-new><span><strong>Require New Progress</strong><small>Only XP and study time earned after publishing this task will count. Previous progress will not be counted.</small></span></label>`;
     wrap.appendChild(el);updateCount();
   }
   function collectBoxes(){return qa('#cgAdminTaskBuilder .progress-admin-task-box').map((box,idx)=>({box,idx,title:String(box.querySelector('[data-task-title]')?.value||'').trim(),goal:Math.max(0,Math.floor(Number(box.querySelector('[data-task-goal]')?.value||0))),studyMinutes:Math.max(0,Math.floor(Number(box.querySelector('[data-study-minutes]')?.value||0))),due:String(box.querySelector('[data-task-due]')?.value||''),color:box.dataset.color||'#3b82f6',xp:Math.max(0,Math.floor(Number(box.querySelector('[data-reward-xp]')?.value||0))),coins:Math.max(0,Math.floor(Number(box.querySelector('[data-reward-coins]')?.value||0))),aiCoins:Math.max(0,Math.floor(Number(box.querySelector('[data-reward-ai]')?.value||0))),note:String(box.querySelector('[data-task-note]')?.value||'').trim(),earnItAsNew:!!box.querySelector('[data-earn-new]')?.checked}));}
@@ -15657,7 +15765,7 @@ body.new-deck-page-open .cg-main{
         <div class="study-task-description"><h4>${safe(t.title||t.text||'Untitled task')}</h4>${t.note?`<p>${safe(t.note)}</p>`:''}</div>
         ${(xpCard||deckCard)?`<div class="study-task-requirements">${xpCard}${deckCard}</div>`:''}
         ${rewards.length?`<div class="study-task-rewards"><span>Rewards</span><div>${rewards.map(r=>`<b>${safe(r)}</b>`).join('')}</div></div>`:''}
-        ${pr.earnNew?`<div class="study-task-new-badge">Earn it as new • only progress after publishing counts</div>`:''}
+        ${pr.earnNew?`<div class="study-task-new-badge">New progress required • only progress after publishing counts</div>`:''}
         <div class="study-task-card-foot"><span class="study-task-status ${statusClass}">${status}</span><button type="button" class="progress-task-claim" data-task-claim-v2 ${done||!ready?'disabled':''}>${done?'Claimed':ready?'Claim Reward':'Locked'}</button></div>
       </article>`;
     }).join('');
@@ -15753,7 +15861,7 @@ body.new-deck-page-open .cg-main{
         if(num(t.goalXp))bits.push(`EXP ${num(t.goalXp).toLocaleString()}`);
         if(mins)bits.push(`Study ${mins} min`);
         if(t.createdByName)bits.push(`By ${safe(t.createdByName)}`);
-        if(t.earnItAsNew)bits.push('Earn it as new');
+        if(t.earnItAsNew)bits.push('New progress required');
         if(t.dueDate)bits.push(`Due ${safe(t.dueDate)}`);
         return `<div class="progress-admin-item" style="--task-border:${safe(t.borderColor||'#dfe4eb')}"><div><strong>${safe(t.title||'Untitled task')}</strong><small>${bits.join(' • ')}</small></div><b class="progress-admin-xp">${num(t.xpReward)?`+${num(t.xpReward).toLocaleString()} XP`:'No XP reward'}</b></div>`;
       }).join(''):'<div class="progress-admin-item"><small>No tasks created yet.</small></div>';
