@@ -7454,7 +7454,7 @@ initializeStudyAuth();
 function calculateLocalStudyStreak(){
   const key=currentUser?('cathsStudyStreakDates:'+currentUser.uid):'cathsStudyStreakDates:guest';
   let days=[]; try{days=JSON.parse(localStorage.getItem(key)||'[]')}catch{days=[]}
-  const set=new Set(days.map(String));
+  const set=new Set(Array.isArray(days)?days.map(String):[]);
   let streak=0;
   const d=new Date(); d.setHours(0,0,0,0);
   while(set.has(d.toISOString().slice(0,10))){streak++;d.setDate(d.getDate()-1);}
@@ -7462,62 +7462,81 @@ function calculateLocalStudyStreak(){
 }
 let streakDayTicker=null;
 let streakSyncBusy=false;
-function markStudyDay(){
-  // A study day is recorded as soon as the signed-in student is online on an
-  // app page. Re-visiting the same day does not add another day.
+function getStreakDatesKey(uid){return 'cathsStudyStreakDates:'+uid}
+function normalizeStreakDates(days){
+  return [...new Set((Array.isArray(days)?days:[]).map(String).filter(Boolean))].sort().slice(-365);
+}
+function computeStreakFromDates(days){
+  const set=new Set(normalizeStreakDates(days));
+  let streak=0;
+  const d=new Date();d.setHours(0,0,0,0);
+  while(set.has(d.toISOString().slice(0,10))){streak++;d.setDate(d.getDate()-1)}
+  return streak;
+}
+async function markStudyDay(){
+  // One online visit = one study day. A missed calendar day breaks the current streak.
   const uid=currentUser?.uid||window.studyFirebase?.auth?.currentUser?.uid||'';
   if(!uid)return;
-  const key='cathsStudyStreakDates:'+uid;
-  let days=[];try{days=JSON.parse(localStorage.getItem(key)||'[]')}catch{days=[]}
-  if(!Array.isArray(days))days=[];
   const today=new Date().toISOString().slice(0,10);
-  const wasRecorded=days.includes(today);
-  if(!wasRecorded) days.push(today);
-  days=[...new Set(days.map(String))].sort().slice(-365);
-  try{localStorage.setItem(key,JSON.stringify(days))}catch(_){ }
+  const key=getStreakDatesKey(uid);
+  let localDays=[];try{localDays=JSON.parse(localStorage.getItem(key)||'[]')}catch{localDays=[]}
+  localDays=normalizeStreakDates(localDays);
+  const wasRecorded=localDays.includes(today);
 
-  if(window.studyFirebase){
-    if(streakSyncBusy)return;
+  if(window.studyFirebase&&!streakSyncBusy){
     streakSyncBusy=true;
-    Promise.resolve().then(async()=>{
-      const fb=window.studyFirebase;
-      const user=window.currentUser||fb.auth?.currentUser;
+    try{
+      const fb=window.studyFirebase,user=window.currentUser||fb.auth?.currentUser;
       if(!user)return;
-      const currentStreak=Math.max(0,calculateLocalStudyStreak());
-      const longestKey='cathsStudyLongestStreak:'+user.uid;
-      const previousLongest=Math.max(0,Number(localStorage.getItem(longestKey)||0));
-      const longest=Math.max(previousLongest,currentStreak);
-      try{localStorage.setItem(longestKey,String(longest))}catch(_){ }
       const {db,doc,getDoc,setDoc,serverTimestamp}=fb;
       const ref=doc(db,'studyProfiles',user.uid);
       let cloud={};
       try{const snap=await getDoc(ref);if(snap.exists())cloud=snap.data()||{}}catch(_){ }
-      const cloudStreak=Math.max(0,Number(cloud.streak||0));
-      const cloudLongest=Math.max(cloudStreak,Number(cloud.longestStreak||0));
-      // On a fresh device, preserve the stronger streak already stored in the
-      // account. Otherwise, save the locally calculated current streak.
-      const mergedCurrent=Math.max(currentStreak, (!wasRecorded && cloudStreak>currentStreak) ? cloudStreak : currentStreak);
-      const mergedLongest=Math.max(longest,cloudLongest,mergedCurrent);
+
+      // `studyDays` is the single source of truth shared by every device/page.
+      // Migrate old accounts once: when no synced history exists, use this device's
+      // real calendar history rather than preserving a stale cloud streak number.
+      let days=Array.isArray(cloud.studyDays)?normalizeStreakDates(cloud.studyDays):localDays;
+      if(!days.includes(today))days.push(today);
+      days=normalizeStreakDates(days);
+
+      const currentStreak=computeStreakFromDates(days);
+      const previousLongest=Math.max(0,Number(cloud.longestStreak||0),Number(localStorage.getItem('cathsStudyLongestStreak:'+user.uid)||0));
+      const longest=Math.max(previousLongest,currentStreak);
+      try{localStorage.setItem(key,JSON.stringify(days));localStorage.setItem('cathsStudyLongestStreak:'+user.uid,String(longest))}catch(_){ }
+
       await setDoc(ref,{
-        streak:mergedCurrent,
-        longestStreak:mergedLongest,
+        studyDays:days,
+        streak:currentStreak,
+        longestStreak:longest,
         lastOnlineDate:today,
         streakUpdatedAt:serverTimestamp()
       },{merge:true});
-      try{window.renderStreakUI?.()}catch(_){}
-      try{window.__cathiansRenderAllLeaderboards?.()}catch(_){}
-      try{window.loadCATHIANSLeaderboards?.()}catch(_){}
-      try{window.renderLeaderboardModal?.()}catch(_){}
-    }).catch(e=>console.warn('Streak cloud sync failed:',e)).finally(()=>{streakSyncBusy=false});
+
+      try{window.renderStreakUI?.()}catch(_){ }
+      try{await window.__cathiansRenderAllLeaderboards?.()}catch(_){ }
+      try{await window.loadCATHIANSLeaderboards?.()}catch(_){ }
+      try{window.renderLeaderboardModal?.()}catch(_){ }
+      return;
+    }catch(e){
+      console.warn('Streak cloud sync failed:',e);
+    }finally{
+      streakSyncBusy=false;
+    }
   }
+
+  // Offline/local fallback: still break after a missed day and start at 1 today.
+  if(!wasRecorded)localDays.push(today);
+  localDays=normalizeStreakDates(localDays);
+  try{localStorage.setItem(key,JSON.stringify(localDays))}catch(_){ }
   try{window.renderStreakUI?.()}catch(_){ }
 }
 function startOnlineStreakTracking(){
   if(streakDayTicker)clearInterval(streakDayTicker);
   if(!currentUser)return;
-  markStudyDay();
+  void markStudyDay();
   streakDayTicker=setInterval(()=>{
-    if(document.visibilityState!=='hidden')markStudyDay();
+    if(document.visibilityState!=='hidden')void markStudyDay();
   },60000);
 }
 window.markStudyDayForOnlineSession=markStudyDay;window.startOnlineStreakTracking=startOnlineStreakTracking;
@@ -10340,6 +10359,7 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
       // Reconcile the current account before rendering, without blocking the UI
       // if Firestore temporarily rejects or delays the write.
       try{ if(window.currentUser&&Number(window.xp||0)>0) await window.saveXP?.(); }catch(_){}
+      try{if(window.currentUser)await window.markStudyDayForOnlineSession?.()}catch(_){}
       const all=await leaderboardRows(), rows=filtered(all);
       const xps=[...rows].sort((a,b)=>b.xp-a.xp||a.displayName.localeCompare(b.displayName));
       const sts=[...rows].sort((a,b)=>b.streak-a.streak||b.longestStreak-a.longestStreak||a.displayName.localeCompare(b.displayName));
@@ -15343,7 +15363,7 @@ body.new-deck-page-open .cg-main{
   const taskStorage=()=>`cathsProgressTasks:${userKey()}`;
   let viewDate=startOfDay(new Date());
   function loadStudyDays(){try{const a=JSON.parse(localStorage.getItem(streakStorage())||'[]');return new Set(Array.isArray(a)?a.map(String):[])}catch{return new Set()}}
-  function localStreak(){const set=loadStudyDays();let n=0,d=startOfDay(new Date());while(set.has(dateKey(d))){n++;d.setDate(d.getDate()-1)}return n}
+  function localStreak(){try{return Math.max(0,Number(typeof calculateLocalStudyStreak==='function'?calculateLocalStudyStreak():0)||0)}catch{return 0}}
   function longestStreak(){const set=loadStudyDays();const days=[...set].sort();if(!days.length)return 0;let best=1,run=1;for(let i=1;i<days.length;i++){const a=new Date(days[i-1]+'T00:00:00'),b=new Date(days[i]+'T00:00:00');const diff=Math.round((b-a)/86400000);if(diff===1){run++;best=Math.max(best,run)}else{run=1}}return best}
   function monthIndex(d){return d.getFullYear()*12+d.getMonth()}
   function renderCalendar(){
@@ -15409,11 +15429,7 @@ body.new-deck-page-open .cg-main{
   function openTasks(){const m=$('#cgProgressTasksModal');if(!m)return;m.classList.remove('hidden');m.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');renderTasks();setTimeout(()=>$('#cgProgressTaskInput')?.focus(),50)}
   function closeTasks(){const m=$('#cgProgressTasksModal');if(!m)return;m.classList.add('hidden');m.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}
   function addTask(){const input=$('#cgProgressTaskInput');const text=input?.value.trim();if(!text)return;const tasks=loadTasks();tasks.unshift({text,done:false,createdAt:Date.now()});if(input)input.value='';saveTasks(tasks);input?.focus()}
-  function markTodayAndRefresh(){
-    try{window.markStudyDayForOnlineSession?.()}catch(_){ }
-    const key=streakStorage(),today=dateKey(new Date());let a=[];try{a=JSON.parse(localStorage.getItem(key)||'[]')}catch{}
-    if(!Array.isArray(a))a=[];if(!a.includes(today)){a.push(today);a.sort();a=a.slice(-365);try{localStorage.setItem(key,JSON.stringify(a))}catch{}}
-  }
+  function markTodayAndRefresh(){try{void window.markStudyDayForOnlineSession?.()}catch(_){ }}
   const originalUpdate=window.updateCgProgressView;
   window.updateCgProgressView=function(){try{originalUpdate?.()}catch(_){}markTodayAndRefresh();renderStats();renderCalendar()};
   document.addEventListener('click',async e=>{
