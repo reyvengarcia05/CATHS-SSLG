@@ -6453,6 +6453,11 @@ function addXP(amount){
   updateXPUI();
   void saveXP();
   showXPPop(value);
+  // Keep both leaderboard views in sync immediately after an XP reward.
+  setTimeout(()=>{
+    try{ window.__cathiansRenderAllLeaderboards?.(); }catch(_){}
+    try{ window.loadCATHIANSLeaderboards?.(); }catch(_){}
+  },0);
 }
 
 async function refreshRankCard(){
@@ -7446,12 +7451,13 @@ function markStudyDay(){
   const key=currentUser?('cathsStudyStreakDates:'+currentUser.uid):'cathsStudyStreakDates:guest';
   let days=[];try{days=JSON.parse(localStorage.getItem(key)||'[]')}catch{days=[]}
   const today=new Date().toISOString().slice(0,10);
-  if(!days.includes(today)) days.push(today);
+  const wasRecorded=days.includes(today);
+  if(!wasRecorded) days.push(today);
   days=days.slice(-365);
   localStorage.setItem(key,JSON.stringify(days));
 
-  // Keep a shared current + longest streak on the student profile so
-  // the new streak leaderboard can rank students across devices.
+  // Keep current + longest streak in Firestore. The leaderboard reads these
+  // shared values, so a newly earned streak is visible across devices.
   if(currentUser&&window.studyFirebase){
     try{
       const currentStreak=Math.max(0,calculateLocalStudyStreak());
@@ -7460,7 +7466,17 @@ function markStudyDay(){
       const longest=Math.max(previousLongest,currentStreak);
       localStorage.setItem(longestKey,String(longest));
       const {db,doc,setDoc,serverTimestamp}=window.studyFirebase;
-      void setDoc(doc(db,'studyProfiles',currentUser.uid),{streak:currentStreak,longestStreak:longest,streakUpdatedAt:serverTimestamp()},{merge:true});
+      const write=setDoc(doc(db,'studyProfiles',currentUser.uid),{
+        streak:currentStreak,
+        longestStreak:longest,
+        streakUpdatedAt:serverTimestamp()
+      },{merge:true});
+      // Refresh only after the shared streak values are written. This keeps
+      // the leaderboard from briefly showing the old streak.
+      void write.then(()=>{
+        try{ window.__cathiansRenderAllLeaderboards?.(); }catch(_){}
+        try{ window.loadCATHIANSLeaderboards?.(); }catch(_){}
+      }).catch(e=>console.warn('Streak cloud sync failed:',e));
     }catch(e){console.warn('Streak cloud sync failed:',e);}
   }
 }
