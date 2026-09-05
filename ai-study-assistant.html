@@ -7415,6 +7415,8 @@ async function initializeStudyAuth(){
         try{await window.cathiansAccountCloud.loadForUser(user);}catch(e){console.warn('Account state restore skipped:',e);}
       }
       await loadCurrentUserXP(user);
+      try{await markStudyDay();}catch(e){console.warn('Initial streak sync skipped:',e);}
+      try{window.renderStreakUI?.();}catch(_){ }
       await refreshRankCard();
       window.cathiansAccountCloud?.schedule?.();
     }else{
@@ -7472,6 +7474,18 @@ function computeStreakFromDates(days){
   const d=new Date();d.setHours(0,0,0,0);
   while(set.has(d.toISOString().slice(0,10))){streak++;d.setDate(d.getDate()-1)}
   return streak;
+}
+function getCanonicalProfileStreak(data, now=new Date()){
+  const profile=data||{};
+  if(Array.isArray(profile.studyDays)) return computeStreakFromDates(profile.studyDays);
+  const last=String(profile.lastOnlineDate||'').trim();
+  if(!last)return 0;
+  const today=new Date(now);today.setHours(0,0,0,0);
+  const yesterday=new Date(today);yesterday.setDate(yesterday.getDate()-1);
+  const todayKey=today.toISOString().slice(0,10);
+  const yesterdayKey=yesterday.toISOString().slice(0,10);
+  if(last!==todayKey&&last!==yesterdayKey)return 0;
+  return Math.max(0,Math.floor(Number(profile.streak||0)));
 }
 async function markStudyDay(){
   // One online visit = one study day. A missed calendar day breaks the current streak.
@@ -9952,7 +9966,7 @@ function setView(view){if(view==='profile'){window.location.href='profile.html';
 const lbNav=nav.find(a=>a.dataset.cgView==='leaderboards');if(lbNav){lbNav.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();setView('leaderboards')},{capture:true});lbNav.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setView('leaderboards')}})}
 const oldSet=window.cgSetView;window.cgSetView=function(view){if(view==='leaderboards')setView('leaderboards');else if(typeof oldSet==='function')oldSet(view)};
 function renderFilters(){pageFilters.innerHTML=grades.map(g=>`<button type="button" class="lb-filter ${selected===g?'active':''}" data-lb-grade="${g}">${g==='all'?'Overall':'G'+g}</button>`).join('');pageFilters.querySelectorAll('[data-lb-grade]').forEach(b=>b.addEventListener('click',()=>{selected=b.dataset.lbGrade||'all';renderFilters();loadPage()}))}renderFilters();
-async function getRows(){if(!window.studyFirebase)return[];const{db,collection,getDocs}=window.studyFirebase;const[ps,us]=await Promise.all([getDocs(collection(db,'studyProfiles')),getDocs(collection(db,'users'))]);const um=new Map();us.forEach(d=>um.set(d.id,d.data()||{}));const out=[];ps.forEach(d=>{const data=d.data()||{},u=um.get(d.id)||{},section=String(u.section||data.section||'').trim();const m=section.match(/^(7|8|9|10|11|12|13|14|15|16|17)-/);const g=m?m[1]:String(u.grade||data.grade||'');const xp=Number(data.xp||0),streak=Number(data.streak||0),longest=Math.max(Number(data.longestStreak||0),streak);if(xp>0||streak>0||longest>0)out.push({id:d.id,displayName:u.displayName||u.name||data.displayName||'Student',grade:g,xp,streak,longestStreak:longest})});return out}
+async function getRows(){if(!window.studyFirebase)return[];const{db,collection,getDocs}=window.studyFirebase;const[ps,us]=await Promise.all([getDocs(collection(db,'studyProfiles')),getDocs(collection(db,'users'))]);const um=new Map();us.forEach(d=>um.set(d.id,d.data()||{}));const out=[];ps.forEach(d=>{const data=d.data()||{},u=um.get(d.id)||{},section=String(u.section||data.section||'').trim();const m=section.match(/^(7|8|9|10|11|12|13|14|15|16|17)-/);const g=m?m[1]:String(u.grade||data.grade||'');const xp=Number(data.xp||0),streak=getCanonicalProfileStreak(data),longest=Math.max(Number(data.longestStreak||0),streak);if(xp>0||streak>0||longest>0)out.push({id:d.id,displayName:u.displayName||u.name||data.displayName||'Student',grade:g,xp,streak,longestStreak:longest})});return out}
 function filt(rows){return selected==='all'?rows:rows.filter(r=>String(r.grade)===selected)}
 function row(r,i,type){const top=i===0,me=window.currentUser&&r.id===window.currentUser.uid,val=type==='xp'?`${r.xp.toLocaleString()} XP`:`${r.streak} day${r.streak===1?'':'s'}`,sub=type==='xp'?`${me?'You • ':''}${r.grade?'G'+r.grade:'Grade unassigned'} • Study XP`:`${me?'You • ':''}${r.grade?'G'+r.grade:'Grade unassigned'} • Longest streak`;let fx=top&&type==='xp'?'<span class="lb-xp-fly">+XP</span>':'';if(top&&type==='streak')fx='<span class="lb-fire-particle" style="right:42px;top:8px;animation-delay:.1s"></span><span class="lb-fire-particle" style="right:27px;top:14px;animation-delay:.42s"></span><span class="lb-fire-particle" style="right:58px;top:12px;animation-delay:.7s"></span>';return`<div class="lb-row ${me?'lb-me ':''}${top&&type==='xp'?'lb-top-xp ':''}${top&&type==='streak'?'lb-top-streak ':''}">${fx}<div class="lb-rank">${i===0?'1':i+1}</div><div class="lb-main-copy"><strong>${esc(r.displayName)}</strong><small>${esc(sub)}</small></div><div class="lb-value ${type==='xp'?'lb-xp-value':'lb-streak-value'}">${val}${type==='streak'&&top?'<span class="lb-fire-mini" aria-hidden="true"></span>':''}</div></div>`}
 function render(rows){const list=filt(rows),xp=[...list].sort((a,b)=>b.xp-a.xp||a.displayName.localeCompare(b.displayName)),st=[...list].sort((a,b)=>b.streak-a.streak||b.longestStreak-a.longestStreak||a.displayName.localeCompare(b.displayName)),scope=selected==='all'?'Overall':`G${selected}`;xpSub.textContent=`${scope} • Study XP`;streakSub.textContent=`${scope} • Longest Streak`;xpList.innerHTML=xp.length?xp.map((r,i)=>row(r,i,'xp')).join(''):'<div class="lb-empty">No XP entries yet for this group.</div>';streakList.innerHTML=st.length?st.map((r,i)=>row(r,i,'streak')).join(''):'<div class="lb-empty">No streak entries yet for this group.</div>'}
@@ -10338,7 +10352,7 @@ qa('.lb-fire-mini').forEach(x=>x.setAttribute('aria-hidden','true'));
       // local value immediately so the leaderboard never shows an older total.
       const localXP=(window.currentUser&&d.id===window.currentUser.uid)?Math.max(0,Number(window.xp||0)):0;
       const xp=Math.max(cloudXP,localXP);
-      const streak=Math.max(0,Number(data.streak||0)); const longest=Math.max(streak,Number(data.longestStreak||0));
+      const streak=getCanonicalProfileStreak(data); const longest=Math.max(streak,Number(data.longestStreak||0));
       if(xp<=0&&longest<=0)return;
       rows.push({id:d.id,displayName:u.displayName||u.name||data.displayName||'Student',grade,xp,streak,longestStreak:longest});
     });
@@ -14954,7 +14968,7 @@ body.new-deck-page-open .cg-main{
       const grade=m?m[1]:String(u.grade||data.grade||'').trim();
       if(!/^(7|8|9|10|11|12)$/.test(grade))return;
       const xp=Math.max(0,Number(data.xp||0));
-      const streak=Math.max(0,Number(data.streak||0));
+      const streak=getCanonicalProfileStreak(data);
       const longest=Math.max(streak,Number(data.longestStreak||0));
       if(xp<=0&&longest<=0)return;
       rows.push({id:d.id,displayName:u.displayName||u.name||data.displayName||'Student',grade,xp,streak,longest});
