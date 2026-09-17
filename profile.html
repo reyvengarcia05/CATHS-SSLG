@@ -1,0 +1,4493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>My Profile | CATHS-MAIN Student Voice</title>
+
+<link rel="icon" type="image/png" href="sslg-logo.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    padding-bottom:90px;
+    color:white;
+    background:linear-gradient(
+        135deg,
+        #00296B,
+        #003DA5,
+        #77c4ff
+    );
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header{
+    position:relative;
+    z-index:1000;
+
+    padding:20px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    background:rgba(255,255,255,.08);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+}
+
+.logo-group{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.logo,
+.caths-logo{
+    width:80px;
+    height:80px;
+    object-fit:contain;
+}
+
+.header-center{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:min(760px,calc(100% - 220px));
+    text-align:center;
+    pointer-events:none;
+}
+
+.header-center h1{
+    font-size:22px;
+    font-weight:700;
+}
+
+.header-center p{
+    font-size:13px;
+    opacity:.9;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.container{
+    width:100%;
+    max-width:1000px;
+    margin:auto;
+    padding:30px 20px 100px;
+}
+
+/* =========================
+   PROFILE CARD
+========================= */
+
+.profile-card{
+    background:rgba(255,255,255,.13);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+
+    border:1px solid rgba(255,255,255,.15);
+
+    border-radius:30px;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,.20),
+        inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+/* COVER */
+
+.cover{
+    height:190px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0,41,107,.9),
+            rgba(0,61,165,.8),
+            rgba(119,196,255,.24)
+        );
+
+    position:relative;
+}
+
+/* PROFILE INFO */
+
+.profile-main{
+    padding:0 35px 30px;
+}
+
+.profile-picture-wrapper{
+    margin-top:-70px;
+    position:relative;
+    width:145px;
+    height:145px;
+}
+
+.profile-picture{
+    width:145px;
+    height:145px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:7px solid rgba(255,255,255,.95);
+
+    background:#e9eef7;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.3);
+}
+
+.profile-picture-placeholder{
+    width:145px;
+    height:145px;
+
+    border-radius:50%;
+
+    border:7px solid white;
+
+    background:#dfe7f5;
+
+    color:#1e3a8a;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:65px;
+}
+
+/* NAME */
+
+.profile-name-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    gap:20px;
+
+    margin-top:15px;
+}
+
+.profile-name{
+    font-size:30px;
+    font-weight:800;
+}
+
+.profile-email{
+    opacity:.8;
+    font-size:13px;
+    margin-top:3px;
+}
+
+.profile-bio{
+    margin-top:15px;
+
+    max-width:700px;
+
+    font-size:14px;
+    line-height:1.7;
+
+    opacity:.9;
+}
+
+/* EDIT */
+
+.edit-btn{
+    border:none;
+
+    background:#4E9EFF;
+    color:#0d2c7a;
+
+    padding:12px 20px;
+
+    border-radius:14px;
+
+    font-weight:700;
+    font-size:14px;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.edit-btn:hover{
+    transform:translateY(-2px);
+    background:#77c4ff;
+}
+
+/* =========================
+   STATS
+========================= */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+
+    margin-top:28px;
+
+    background:rgba(0,0,0,.12);
+
+    border-radius:20px;
+
+    overflow:hidden;
+}
+
+.stat{
+    text-align:center;
+
+    padding:18px 10px;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.stat:hover{
+    background:rgba(255,255,255,.1);
+}
+
+.stat strong{
+    display:block;
+
+    font-size:23px;
+}
+
+.stat span{
+    font-size:12px;
+    opacity:.8;
+}
+
+
+/* =========================
+   POSTS FUNCTIONALITY MOVED TO SCRIPT
+========================= */
+
+async function openReactions(postId){
+    const modal=document.getElementById('reactionsModal');
+    const list=document.getElementById('reactionsList');
+    if(!modal || !list) return;
+    modal.classList.add('open');
+    list.innerHTML='<div style="padding:20px;text-align:center;color:#777">Loading reactions...</div>';
+
+    try{
+        const snap=await getDocs(collection(db,'posts',postId,'reactions'));
+        if(snap.empty){
+            list.innerHTML='<div style="padding:25px;text-align:center;color:#777">No reactions yet.</div>';
+            return;
+        }
+
+        const currentUser=auth.currentUser;
+        const rows=await Promise.all(snap.docs.map(async d=>{
+            const reaction=d.data()||{};
+            const uid=d.id || reaction.uid;
+            let profile={};
+            try{
+                const ps=await getDoc(doc(db,'users',uid));
+                if(ps.exists()) profile=ps.data()||{};
+            }catch(e){ console.error('reaction profile load',e); }
+            const name=profile.name || profile.displayName || reaction.authorName || 'Student';
+            const username=profile.username || '';
+            const photo=profile.photoURL || reaction.photoURL || '';
+            return {uid,name,username,photo,email:profile.email||reaction.email||'',emoji:reaction.emoji || '👍'};
+        }));
+
+        list.innerHTML=rows.map(r=>`
+          <div class="reaction-user-row">
+            <div class="reaction-user-avatar">${r.photo ? `<img src="${escapePostHtml(r.photo)}" alt="">` : '<span class="pro-icon pro-user" aria-hidden="true"></span>'}</div>
+            <div class="reaction-user-info">
+              <strong>${escapePostHtml(r.name)}${verifiedBadgeHtml(r)}</strong>
+              <small>${r.username ? '@'+escapePostHtml(r.username) : 'Student'}</small>
+            </div>
+            <div class="reaction-emoji-big">${escapePostHtml(r.emoji)}</div>
+            ${currentUser && currentUser.uid !== r.uid ? `<button class="add-friend-mini" onclick="addFriendFromReaction('${escapePostHtml(r.uid)}', this)">Add Friend</button>` : ''}
+          </div>
+        `).join('');
+    }catch(error){
+        console.error('Load reactions error:',error);
+        list.innerHTML='<div style="padding:20px;text-align:center;color:#777">Could not load reactions.</div>';
+    }
+}
+window.openReactions=openReactions;
+
+function closeReactions(){
+    document.getElementById('reactionsModal')?.classList.remove('open');
+}
+window.closeReactions=closeReactions;
+
+async function addFriendFromReaction(targetUid, button){
+    const user=auth.currentUser;
+    if(!user || !targetUid) return;
+    if(button){ button.disabled=true; button.textContent='Checking...'; }
+    try{
+        if(targetUid===user.uid) return;
+        const friendRef=doc(db,'friends',user.uid,'list',targetUid);
+        if((await getDoc(friendRef)).exists()){
+            if(button){ button.textContent='✓ Friends'; button.className='add-friend-mini'; }
+            return;
+        }
+
+        const outgoing=await getDocs(query(collection(db,'friendRequests'), where('from','==',user.uid), where('to','==',targetUid), where('status','==','pending'), limit(1)));
+        if(!outgoing.empty){
+            if(button){ button.textContent='Request Sent'; }
+            return;
+        }
+
+        const incoming=await getDocs(query(collection(db,'friendRequests'), where('from','==',targetUid), where('to','==',user.uid), where('status','==','pending'), limit(1)));
+        if(!incoming.empty){
+            if(button){ button.textContent='Respond'; }
+            return;
+        }
+
+        const targetSnap=await getDoc(doc(db,'users',targetUid));
+        const target=targetSnap.exists()?targetSnap.data()||{}:{};
+        const mySnap=await getDoc(doc(db,'users',user.uid));
+        const me=mySnap.exists()?mySnap.data()||{}:{};
+
+        await addDoc(collection(db,'friendRequests'),{
+            from:user.uid,
+            fromUsername:me.username || '',
+            fromNickname:me.nickname || me.name || me.displayName || user.displayName || 'User',
+            fromPhotoURL:me.photoURL || user.photoURL || '',
+            to:targetUid,
+            toUsername:target.username || '',
+            toNickname:target.nickname || target.name || target.displayName || 'Student',
+            toPhotoURL:target.photoURL || '',
+            status:'pending',
+            createdAt:serverTimestamp()
+        });
+
+        if(button){ button.textContent='Request Sent'; }
+        showPostToast('Friend request sent!');
+    }catch(error){
+        console.error('Reaction add-friend error:',error);
+        if(button){ button.disabled=false; button.textContent='Add Friend'; }
+        alert('Could not send friend request.');
+    }
+}
+window.addFriendFromReaction=addFriendFromReaction;
+
+
+
+/* =========================
+   TABS
+========================= */
+
+.tabs{
+    display:flex;
+
+    margin-top:25px;
+
+    border-bottom:1px solid rgba(255,255,255,.2);
+
+    overflow-x:auto;
+}
+
+.tab{
+    flex:1;
+
+    min-width:120px;
+
+    padding:15px;
+
+    border:none;
+
+    background:transparent;
+
+    color:rgba(255,255,255,.7);
+
+    font-size:14px;
+    font-weight:600;
+
+    cursor:pointer;
+
+    position:relative;
+}
+
+.tab.active{
+    color:#4E9EFF;
+}
+
+.tab.active::after{
+    content:"";
+
+    position:absolute;
+
+    bottom:0;
+    left:15%;
+    right:15%;
+
+    height:3px;
+
+    border-radius:10px;
+
+    background:#4E9EFF;
+}
+
+/* =========================
+   CONTENT
+========================= */
+
+.tab-content{
+    padding:30px 0 5px;
+}
+
+.content-box{
+    background:rgba(255,255,255,.10);
+
+    border-radius:22px;
+
+    padding:35px 20px;
+
+    text-align:center;
+
+    border:1px solid rgba(255,255,255,.1);
+}
+
+.empty-icon{
+    font-size:50px;
+    margin-bottom:12px;
+}
+
+.content-box h3{
+    font-size:19px;
+    margin-bottom:8px;
+}
+
+.content-box p{
+    font-size:13px;
+    opacity:.75;
+}
+
+
+/* =========================
+   PROFILE FRIENDS LIST
+========================= */
+.friends-panel{padding:22px 0 5px;text-align:left}
+.friends-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.friends-panel-title{font-size:18px;font-weight:800}
+.friends-panel-count{font-size:11px;padding:5px 10px;border-radius:999px;background:#4E9EFF;color:#183c8c;font-weight:800}
+.friends-list{display:flex;flex-direction:column;gap:10px}
+.friend-profile-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:10px}
+.friend-profile-link{display:flex;align-items:center;gap:10px;flex:1;min-width:0;text-decoration:none;color:#fff}
+.friend-profile-link:hover .friend-profile-name{text-decoration:underline}
+.friend-profile-avatar{width:46px;height:46px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;flex:0 0 46px;background:#e9eef7;color:#183c8c;font-size:20px}
+.friend-profile-avatar img{width:100%;height:100%;object-fit:cover}
+.friend-profile-info{min-width:0}
+.friend-profile-name{display:block;font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.friend-profile-username{display:block;font-size:10px;opacity:.7;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.friend-profile-actions{display:flex;gap:7px;flex:0 0 auto}
+.friend-profile-actions button{border:none;border-radius:10px;padding:8px 10px;font-size:10px;font-weight:800;cursor:pointer;transition:.2s}
+.friend-message-btn{background:#4E9EFF;color:#183c8c}
+.friend-unfriend-btn{background:rgba(255,255,255,.12);color:#fff}
+.friend-profile-actions button:hover{transform:translateY(-1px)}
+.friends-loading{padding:22px 8px;text-align:center;opacity:.85}
+.friends-spinner{width:30px;height:30px;margin:0 auto 9px;border:3px solid rgba(255,255,255,.25);border-top-color:#4E9EFF;border-radius:50%;animation:friendsSpin .8s linear infinite}
+.friends-loading-text{font-size:12px}
+.friends-empty{padding:22px 8px;text-align:center;opacity:.78;font-size:12px}
+@keyframes friendsSpin{to{transform:rotate(360deg)}}
+@media(max-width:768px){.friend-profile-row{align-items:flex-start}.friend-profile-actions{flex-direction:column}.friend-profile-actions button{width:80px}.friend-profile-avatar{width:42px;height:42px;flex-basis:42px}}
+
+/* =========================
+   BOTTOM NAV — MATCH voice.html
+========================= */
+.bottom-nav{
+    position:fixed;left:0;right:0;bottom:0;width:100%;height:76px;
+    padding:5px 16px;display:flex;align-items:center;justify-content:center;gap:8px;
+    border-top:1px solid rgba(255,255,255,.16);border-radius:19px 19px 0 0;
+    background:linear-gradient(180deg,rgba(7,25,58,.94),rgba(2,13,32,.99));
+    backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);
+    box-shadow:0 -12px 30px rgba(0,8,30,.24);z-index:99990;
+    animation:navIn .65s cubic-bezier(.16,1,.3,1) .15s both
+}
+.bottom-nav::after{
+    content:"";position:absolute;left:0;right:0;top:-1px;height:2px;
+    background:linear-gradient(90deg,transparent 3%,rgba(119,196,255,.18) 15%,#77c4ff 50%,rgba(119,196,255,.18) 85%,transparent 97%);
+    box-shadow:0 0 14px rgba(119,196,255,.28)
+}
+.nav-item{
+    position:relative;flex:1;max-width:190px;height:60px;padding:6px 8px;border-radius:14px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    color:rgba(255,255,255,.72);font-size:10px;font-weight:600;text-decoration:none;
+    transition:.2s
+}
+.nav-item:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav-item.active{color:#fff!important;background:linear-gradient(180deg,rgba(87,169,255,.19),rgba(87,169,255,.07))!important;transform:none!important}
+.nav-item.active::after{
+    content:"";position:absolute;left:50%;top:3px;width:30px;height:3px;transform:translateX(-50%);
+    border-radius:999px;background:#77c4ff;box-shadow:0 0 12px rgba(119,196,255,.7)
+}
+.professional-nav-icon{width:28px;height:25px;display:flex;align-items:center;justify-content:center}
+.pro-icon{width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;position:relative;flex:none}
+.profile-nav-icon#profileNavPhoto{
+    width:32px;height:32px;display:grid;place-items:center;border-radius:50%;
+    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);overflow:hidden
+}
+.profile-nav-icon#profileNavPhoto img{width:28px;height:28px;border-radius:50%;object-fit:cover}
+/* PROFILE NAV PHOTO */
+
+#profileNavPhoto{
+    width:32px;
+    height:32px;
+
+    border-radius:50%;
+
+    overflow:hidden;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    margin-bottom:3px;
+
+    font-size:20px;
+}
+
+#profileNavPhoto img{
+    width:32px;
+    height:32px;
+
+    object-fit:cover;
+
+    border-radius:50%;
+}
+
+/* Keep bottom-nav labels slightly lower for a cleaner visual balance. */
+.bottom-nav .nav-item > span {
+    margin-top: 5px !important;
+    transform: translateY(2px);
+}
+#profileNavText {
+    margin-top: 7px !important;
+    transform: translateY(2px);
+}
+
+
+/* =========================
+   POSTS
+========================= */
+.post-composer-card{
+    background:rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:22px;
+    padding:18px;
+    margin-bottom:18px;
+    text-align:left;
+}
+.post-composer-card h3{font-size:17px;margin-bottom:8px}
+.post-composer-card p{font-size:12px;opacity:.78;margin-bottom:14px}
+.post-open-btn{
+    width:100%; border:none; border-radius:14px; padding:13px 16px;
+    background:#fff; color:#183c8c; font-weight:700; cursor:pointer; font-size:14px;
+    transition:.2s;
+}
+.post-open-btn:hover{transform:translateY(-2px)}
+.posts-list{display:flex;flex-direction:column;gap:14px}
+.post-card{
+    background:rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.11);
+    border-radius:20px; padding:18px; text-align:left;
+}
+.post-head{display:flex;align-items:center;gap:10px}
+.post-avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;background:#e9eef7;display:flex;align-items:center;justify-content:center;color:#1e3a8a;font-size:20px;overflow:hidden}
+.post-avatar img{width:100%;height:100%;object-fit:cover}
+.post-author{min-width:0;flex:1}
+.post-author strong{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.post-meta{font-size:10px;opacity:.7;margin-top:2px}
+.post-visibility{font-size:10px;background:rgba(255,255,255,.12);padding:5px 8px;border-radius:999px;white-space:nowrap}
+.post-text{margin:14px 0;font-size:14px;line-height:1.65;white-space:pre-wrap;word-break:break-word}
+.post-actions{display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.10);padding-top:12px}
+.post-action{border:none;background:rgba(255,255,255,.09);color:#fff;border-radius:11px;padding:8px 11px;font-size:12px;cursor:pointer;transition:.2s}
+.post-action:hover{background:rgba(255,255,255,.16);transform:translateY(-1px)}
+.post-action.active{background:#4E9EFF;color:#183c8c;font-weight:700}
+.reaction-wrap{position:relative}
+.reaction-picker{
+    display:none;position:absolute;bottom:calc(100% + 8px);left:0;
+    background:white;border-radius:14px;padding:7px;box-shadow:0 12px 30px rgba(0,0,0,.22);
+    gap:4px;z-index:10
+}
+.reaction-picker.open{display:flex}
+.reaction-emoji{border:none;background:transparent;font-size:20px;padding:6px;cursor:pointer;border-radius:9px}
+.reaction-emoji:hover{background:#eef4ff}
+
+.post-counts{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:11px;opacity:.78;margin:8px 0 0}
+.reaction-summary{display:inline-flex;align-items:center;gap:3px;border:none;background:transparent;color:inherit;font:inherit;cursor:pointer;padding:0}
+.reaction-summary:hover{text-decoration:underline}
+.post-manage{margin-left:auto;position:relative;flex:0 0 auto}
+.post-manage-btn{border:none;background:rgba(255,255,255,.10);color:#fff;width:32px;height:32px;border-radius:10px;cursor:pointer;font-size:17px;transition:.2s;display:flex;align-items:center;justify-content:center}
+.post-manage-btn:hover{background:rgba(255,255,255,.18);transform:translateY(-1px)}
+.post-menu-backdrop{position:absolute;right:0;top:0;width:32px;height:32px;display:none;z-index:100000;pointer-events:none}
+.post-menu-backdrop.open{display:block;pointer-events:auto}
+.post-menu{position:absolute;right:0;top:calc(100% + 8px);width:250px;max-width:min(250px,calc(100vw - 32px));background:#fff;color:#183c8c;border:1px solid #e8edf7;border-radius:16px;padding:8px;box-shadow:0 18px 44px rgba(0,0,0,.24);z-index:100001;animation:postMenuPop .18s ease-out}
+.post-menu button{width:100%;border:none;background:transparent;text-align:left;padding:11px 12px;border-radius:10px;color:#183c8c;font:inherit;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px}.post-menu button:hover{background:#eef4ff}.post-menu button.pin{color:#183c8c}.post-menu button.pin:hover{background:#eef4ff}.post-menu button.danger{color:#c0392b}.post-menu button.danger:hover{background:#fff0ee}
+@keyframes postMenuPop{from{opacity:0;transform:translateY(-4px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:768px){.post-menu{right:0;top:calc(100% + 7px);width:230px;max-width:calc(100vw - 28px)}}
+.manage-modal,.privacy-modal{position:fixed;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:18px;z-index:100002}.manage-modal.open,.privacy-modal.open{display:flex}
+.manage-box,.privacy-box{width:100%;max-width:440px;background:#fff;color:#183c8c;border-radius:24px;padding:24px;box-shadow:0 24px 70px rgba(0,0,0,.35);animation:postPop .22s ease}
+.manage-box h3,.privacy-box h3{font-size:20px;margin-bottom:7px}.manage-box p,.privacy-box p{font-size:12px;color:#6f7b91;line-height:1.55}
+.manage-actions{display:flex;gap:10px;margin-top:18px}.manage-primary,.manage-danger,.manage-cancel{flex:1;height:46px;border:none;border-radius:12px;font-weight:800;cursor:pointer}
+.manage-primary{background:#1e3a8a;color:#fff}.manage-danger{background:#d9534f;color:#fff}.manage-cancel{background:#eef2f8;color:#334}
+.privacy-option-list{display:grid;gap:10px;margin-top:17px}.privacy-option{width:100%;border:1px solid #dfe7f3;background:#f8faff;color:#183c8c;border-radius:14px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;font-weight:700;cursor:pointer}.privacy-option:hover,.privacy-option.active{background:#eef4ff;border-color:#1e3a8a}
+
+.post-counts button{border:none;background:transparent;color:inherit;font:inherit;cursor:pointer;padding:0;margin:0}
+.post-counts button:hover{text-decoration:underline}
+.share-context{
+    margin-top:14px;
+    background:rgba(255,255,255,.97);
+    color:#24458e;
+    border:1px solid rgba(255,255,255,.55);
+    border-radius:20px;
+    padding:18px 18px 20px;
+    box-shadow:0 10px 28px rgba(0,0,0,.10);
+}
+.share-context .share-context-label{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    font-size:13px;
+    font-weight:800;
+    color:#6f84b8;
+    margin-bottom:11px;
+}
+.share-context .share-context-author{
+    font-size:17px;
+    line-height:1.3;
+    font-weight:800;
+    color:#24458e;
+}
+.share-context .share-context-text{
+    font-size:14px;
+    color:#334c7f;
+    line-height:1.65;
+    margin-top:10px;
+    white-space:pre-wrap;
+    word-break:break-word;
+}
+.share-context.deleted{
+    background:#f8fafc;
+    color:#64748b;
+    border-color:#e2e8f0;
+}
+.share-context.deleted .share-context-label,
+.share-context.deleted .share-context-author,
+.share-context.deleted .share-context-text{
+    color:#64748b;
+}
+.add-friend-mini{border:none;background:#1e3a8a;color:#fff;border-radius:10px;padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
+.add-friend-mini:disabled{opacity:.6;cursor:not-allowed}
+.reaction-user-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #edf1f7}
+.reaction-user-row:last-child{border-bottom:none}
+.reaction-user-avatar{width:38px;height:38px;border-radius:50%;overflow:hidden;background:#e9eef7;display:flex;align-items:center;justify-content:center;color:#183c8c;font-size:18px;flex:0 0 38px}
+.reaction-user-avatar img{width:100%;height:100%;object-fit:cover}
+.reaction-user-info{flex:1;min-width:0;color:#183c8c}
+.reaction-user-info strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.reaction-user-info small{font-size:10px;color:#77849b}
+.reaction-emoji-big{font-size:21px;min-width:28px;text-align:center}
+.empty-posts{padding:22px 10px;text-align:center;opacity:.82}
+.post-modal,.comments-modal{
+    position:fixed;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(8px);
+    display:none;align-items:center;justify-content:center;padding:18px;z-index:99999
+}
+.post-modal.open,.comments-modal.open{display:flex}
+.post-modal-box,.comments-modal-box{
+    width:100%;max-width:520px;background:white;color:#183c8c;border-radius:24px;padding:22px;
+    box-shadow:0 24px 70px rgba(0,0,0,.35);animation:postPop .22s ease
+}
+@keyframes postPop{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.post-modal-head,.comments-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.post-modal-head h3,.comments-head h3{font-size:20px}
+.modal-x{border:none;background:#eef4ff;color:#183c8c;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:18px}
+.post-textarea{width:100%;min-height:150px;resize:none;border:1px solid #dbe3f1;border-radius:15px;padding:14px;outline:none;font:inherit;color:#183c8c}
+.post-options{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;margin-top:12px}
+.post-select{width:100%;padding:12px;border:1px solid #dbe3f1;border-radius:12px;color:#183c8c;background:white}
+.char-count{font-size:11px;color:#777;text-align:right;margin-top:5px}
+.publish-btn{width:100%;margin-top:14px;height:50px;border:none;border-radius:13px;background:#1e3a8a;color:#fff;font-weight:700;cursor:pointer}
+.publish-btn:disabled{opacity:.6;cursor:not-allowed}
+.comments-list{max-height:45vh;overflow:auto;display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.reactions-list{max-height:52vh;overflow:auto;margin-bottom:4px}
+.comment-item{background:#f6f8fc;border-radius:13px;padding:10px 12px}
+.comment-item strong{font-size:12px;color:#183c8c}
+.comment-item p{font-size:12px;color:#333;margin-top:4px;white-space:pre-wrap;word-break:break-word}
+.comment-form{display:flex;gap:8px}
+.comment-input{flex:1;border:1px solid #dbe3f1;border-radius:12px;padding:11px;outline:none}
+.comment-send{border:none;border-radius:12px;padding:0 16px;background:#1e3a8a;color:#fff;font-weight:700;cursor:pointer}
+@media(max-width:768px){
+ .post-card{padding:15px}.post-text{font-size:13px}.post-options{grid-template-columns:1fr}.post-modal-box,.comments-modal-box{padding:18px;border-radius:20px}.post-textarea{min-height:130px}.reaction-user-row{gap:8px}.add-friend-mini{padding:7px 8px;font-size:10px}
+}
+
+/* =========================
+   LOGIN OVERLAY
+========================= */
+
+.login-overlay{
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.65);
+
+    backdrop-filter:blur(8px);
+
+    display:none;
+
+    align-items:center;
+    justify-content:center;
+
+    z-index:99999;
+
+    padding:20px;
+}
+
+.login-box{
+    width:100%;
+    max-width:420px;
+
+    background:rgba(34,42,60,.97);
+
+    border-radius:28px;
+
+    padding:35px 30px;
+
+    text-align:center;
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.5);
+}
+
+.login-icon{
+    font-size:60px;
+    margin-bottom:10px;
+}
+
+.login-box h2{
+    font-size:28px;
+    margin-bottom:8px;
+}
+
+.login-box p{
+    font-size:13px;
+    opacity:.8;
+    margin-bottom:25px;
+}
+
+.google-btn{
+    width:100%;
+    height:56px;
+
+    border:none;
+    border-radius:15px;
+
+    background:#4E9EFF;
+
+    color:#0d2c7a;
+
+    font-size:16px;
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.google-btn:hover{
+    transform:translateY(-2px);
+    background:#77c4ff;
+}
+
+/* =========================
+   EDIT PROFILE MODAL
+========================= */
+
+.edit-overlay{
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.65);
+
+    backdrop-filter:blur(8px);
+
+    display:none;
+
+    align-items:center;
+    justify-content:center;
+
+    z-index:99998;
+
+    padding:20px;
+}
+
+.edit-box{
+    width:100%;
+    max-width:500px;
+
+    max-height:85vh;
+    overflow-y:auto;
+
+    background:white;
+
+    color:#183c8c;
+
+    border-radius:25px;
+
+    padding:30px;
+}
+
+.edit-box h2{
+    margin-bottom:20px;
+    text-align:center;
+}
+
+.form-group{
+    margin-bottom:17px;
+}
+
+.form-group label{
+    display:block;
+
+    font-size:13px;
+    font-weight:700;
+
+    margin-bottom:7px;
+}
+
+.form-group input,
+.form-group textarea{
+    width:100%;
+
+    padding:13px;
+
+    border:1px solid #ddd;
+
+    border-radius:12px;
+
+    outline:none;
+
+    font-size:13px;
+}
+
+.form-group textarea{
+    min-height:100px;
+    resize:none;
+}
+
+.save-btn{
+    width:100%;
+
+    height:52px;
+
+    border:none;
+
+    border-radius:13px;
+
+    background:#1e3a8a;
+
+    color:white;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    cursor:pointer;
+}
+
+.cancel-btn{
+    width:100%;
+
+    height:48px;
+
+    margin-top:10px;
+
+    border:none;
+
+    border-radius:13px;
+
+    background:#eee;
+
+    color:#333;
+
+    font-weight:600;
+
+    cursor:pointer;
+}
+
+/* =========================
+   PROFILE PHOTO PICKER — CLEAN BLUE STYLE
+========================= */
+.edit-box .profile-picture-label{
+    display:block;
+    margin-bottom:12px;
+    color:#294f9f;
+    font-size:20px;
+    font-weight:800;
+}
+.photo-picker{
+    display:flex;
+    align-items:center;
+    gap:24px;
+    min-height:178px;
+    padding:28px 24px;
+    border-radius:28px;
+    background:linear-gradient(135deg,#f9fbff 0%,#eef3ff 100%);
+    border:1px solid #d9e4ff;
+    box-shadow:0 12px 30px rgba(41,79,159,.08);
+}
+.photo-picker-preview{
+    width:116px;
+    height:116px;
+    flex:0 0 116px;
+    border-radius:50%;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#e8edff;
+    border:6px solid #fff;
+    box-shadow:0 14px 28px rgba(25,48,98,.16);
+    color:#294f9f;
+}
+.photo-picker-preview svg{
+    width:58px;
+    height:58px;
+    display:block;
+}
+.photo-picker-preview img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+.photo-picker-content{flex:1;min-width:0;}
+.photo-picker-title{
+    color:#294f9f;
+    font-size:21px;
+    line-height:1.2;
+    font-weight:800;
+    margin-bottom:8px;
+}
+.photo-picker-subtitle{
+    color:#7382a4;
+    font-size:15px;
+    line-height:1.5;
+    margin:0;
+    max-width:430px;
+}
+.coming-soon-badge{
+    display:block;
+    margin-top:16px;
+    padding:0;
+    border:0;
+    background:transparent;
+    color:#294f9f;
+    font-size:22px;
+    line-height:1.2;
+    font-weight:400;
+}
+.change-photo-btn,#editPhoto{
+    display:none !important;
+}
+@media(max-width:768px){
+    .edit-box .profile-picture-label{font-size:18px;margin-bottom:10px;}
+    .photo-picker{
+        gap:16px;
+        min-height:150px;
+        padding:20px 16px;
+        border-radius:22px;
+    }
+    .photo-picker-preview{width:88px;height:88px;flex-basis:88px;border-width:5px;}
+    .photo-picker-preview svg{width:44px;height:44px;}
+    .photo-picker-title{font-size:17px;}
+    .photo-picker-subtitle{font-size:12px;}
+    .coming-soon-badge{font-size:18px;margin-top:12px;}
+}
+
+/* SUCCESS POPUP */
+.success-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.58);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:100000;
+    padding:20px;
+}
+.success-box{
+    width:100%;
+    max-width:380px;
+    background:rgba(255,255,255,.98);
+    color:#173875;
+    border-radius:28px;
+    padding:30px 26px;
+    text-align:center;
+    box-shadow:0 24px 70px rgba(0,0,0,.35);
+    animation:successPop .35s cubic-bezier(.16,1,.3,1);
+}
+.success-icon{
+    width:76px;
+    height:76px;
+    margin:0 auto 14px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#20c997,#2fbf71);
+    color:white;
+    font-size:38px;
+    box-shadow:0 12px 24px rgba(32,201,151,.25);
+}
+.success-box h3{font-size:24px;margin-bottom:7px;}
+.success-box p{font-size:13px;color:#6b7891;line-height:1.5;margin-bottom:20px;}
+.post-toast{
+    position:fixed;left:50%;bottom:105px;transform:translate(-50%,20px);
+    background:rgba(24,60,140,.96);color:#fff;padding:12px 18px;border-radius:999px;
+    font-size:12px;font-weight:700;box-shadow:0 12px 30px rgba(0,0,0,.25);
+    opacity:0;pointer-events:none;transition:.25s;z-index:100001;white-space:nowrap;
+}
+.post-toast.show{opacity:1;transform:translate(-50%,0)}
+.profile-setup-required-notice{
+    align-items:flex-start;
+    gap:11px;
+    margin:0 0 18px;
+    padding:13px 14px;
+    border-radius:16px;
+    background:linear-gradient(135deg,rgba(119,196,255,.16),rgba(78,158,255,.08));
+    border:1px solid rgba(119,196,255,.30);
+    color:#dbeeff;
+}
+.profile-setup-required-icon{
+    width:34px;
+    height:34px;
+    border-radius:11px;
+    background:rgba(119,196,255,.14);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 34px;
+    font-size:18px;
+}
+.profile-setup-required-notice strong{
+    display:block;
+    font-size:12px;
+    margin-bottom:2px;
+}
+.profile-setup-required-notice span{
+    display:block;
+    font-size:10px;
+    line-height:1.5;
+    opacity:.9;
+}
+
+.success-ok{
+    width:100%;
+    height:48px;
+    border:none;
+    border-radius:13px;
+    background:#1e3a8a;
+    color:white;
+    font-weight:700;
+    cursor:pointer;
+}
+@keyframes successPop{from{opacity:0;transform:scale(.82) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:768px){
+    .photo-picker{flex-direction:column;align-items:flex-start;}
+    .photo-picker-content{width:100%;}
+    .change-photo-btn{width:100%;}
+
+
+    body{
+        padding-bottom:75px;
+    }
+
+    .header{
+        padding:10px 12px;
+        min-height:68px;
+    }
+
+    .logo,
+    .caths-logo{
+        width:42px;
+        height:42px;
+    }
+
+    .logo-group{
+        gap:5px;
+    }
+
+    .header-center{
+        left:50%;
+        top:50%;
+        width:calc(100% - 130px);
+        padding:0 5px;
+        transform:translate(-50%,-50%);
+    }
+
+    .header-center h1{
+        font-size:14px;
+
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+    }
+
+    .header-center p{
+        font-size:8px;
+
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+    }
+
+    .container{
+        padding:14px 12px 90px;
+    }
+
+    .profile-card{
+        border-radius:22px;
+    }
+
+    .cover{
+        height:135px;
+    }
+
+    .profile-main{
+        padding:0 18px 22px;
+    }
+
+    .profile-picture-wrapper{
+        width:105px;
+        height:105px;
+
+        margin-top:-52px;
+    }
+
+    .profile-picture,
+    .profile-picture-placeholder{
+        width:105px;
+        height:105px;
+    }
+
+    .profile-picture{
+        border-width:5px;
+    }
+
+    .profile-picture-placeholder{
+        border-width:5px;
+        font-size:45px;
+    }
+
+    .profile-name-row{
+        align-items:flex-start;
+        flex-direction:column;
+
+        gap:12px;
+    }
+
+    .profile-name{
+        font-size:24px;
+    }
+
+    .profile-email{
+        font-size:11px;
+    }
+
+    .profile-bio{
+        font-size:12px;
+    }
+
+    .edit-btn{
+        width:100%;
+        height:48px;
+    }
+
+    .stats{
+        margin-top:20px;
+    }
+
+    .stat{
+        padding:14px 5px;
+    }
+
+    .stat strong{
+        font-size:20px;
+    }
+
+    .stat span{
+        font-size:10px;
+    }
+
+    .tabs{
+        margin-top:20px;
+    }
+
+    .tab{
+        font-size:12px;
+        min-width:100px;
+        padding:13px 8px;
+    }
+
+    .content-box{
+        padding:28px 15px;
+    }
+
+    .bottom-nav{
+        height:72px;
+    }
+
+    .nav-item{
+        font-size:9px;
+        min-width:54px;
+    }
+
+    .nav-item div{
+        font-size:21px;
+    }
+
+    #profileNavPhoto{
+        width:25px;
+        height:25px;
+    }
+
+    #profileNavPhoto img{
+        width:25px;
+        height:25px;
+    }
+
+}
+
+@media(max-width:380px){
+
+    .logo,
+    .caths-logo{
+        width:36px;
+        height:36px;
+    }
+
+    .header-center h1{
+        font-size:11px;
+    }
+
+    .header-center p{
+        font-size:7px;
+    }
+
+    .profile-name{
+        font-size:21px;
+    }
+
+    .nav-item{
+        min-width:46px;
+        font-size:8px;
+    }
+
+    .nav-item div{
+        font-size:19px;
+    }
+
+}
+
+
+/* PROFILE UNFRIEND CONFIRMATION */
+.profile-remove-modal{
+  position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+  padding:18px;background:rgba(0,13,38,.62);backdrop-filter:blur(9px);
+  -webkit-backdrop-filter:blur(9px);z-index:100000;
+}
+.profile-remove-modal.show{display:flex;animation:profileRemoveOverlayIn .22s ease forwards}
+.profile-remove-dialog{
+  width:min(420px,100%);background:rgba(255,255,255,.97);color:#0f172a;
+  border-radius:26px;padding:28px 24px 22px;text-align:center;
+  box-shadow:0 26px 70px rgba(0,0,0,.35);
+  border:1px solid rgba(255,255,255,.65);
+  transform:translateY(16px) scale(.96);opacity:0;
+  animation:profileRemoveDialogIn .3s cubic-bezier(.16,1,.3,1) .03s forwards;
+}
+.profile-remove-icon{
+  width:68px;height:68px;margin:0 auto 14px;border-radius:20px;
+  display:flex;align-items:center;justify-content:center;font-size:31px;
+  background:linear-gradient(135deg,#fff1f2,#ffe4e6);
+  box-shadow:inset 0 0 0 1px rgba(220,38,38,.08);
+}
+.profile-remove-dialog h3{font-size:21px;color:#00296B;margin-bottom:7px}
+.profile-remove-dialog p{font-size:13px;line-height:1.6;color:#64748b;margin:0 auto 17px;max-width:330px}
+.profile-remove-preview{
+  display:flex;align-items:center;gap:11px;text-align:left;padding:11px 12px;
+  border-radius:16px;background:#f8fafc;border:1px solid #e2e8f0;margin-bottom:19px;
+}
+.profile-remove-preview img,.profile-remove-preview .profile-remove-avatar{
+  width:48px;height:48px;border-radius:50%;object-fit:cover;flex:0 0 48px;
+}
+.profile-remove-avatar{display:flex;align-items:center;justify-content:center;background:#dfe7f5;color:#183c8c;font-weight:800;font-size:18px}
+.profile-remove-preview strong{display:block;font-size:13px;color:#0f172a}
+.profile-remove-preview span{display:block;font-size:11px;color:#64748b;margin-top:2px}
+.profile-remove-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.profile-remove-actions button{width:100%;border:none;border-radius:14px;padding:12px 14px;font-weight:700;cursor:pointer;transition:.2s ease}
+.profile-remove-cancel{background:#eef2f7;color:#334155}
+.profile-remove-confirm{background:#dc2626;color:#fff;box-shadow:0 7px 18px rgba(220,38,38,.22)}
+.profile-remove-actions button:hover{transform:translateY(-1px)}
+.profile-remove-actions button:active{transform:scale(.98)}
+.profile-remove-actions button:disabled{opacity:.65;cursor:not-allowed;transform:none}
+@keyframes profileRemoveOverlayIn{from{opacity:0}to{opacity:1}}
+@keyframes profileRemoveDialogIn{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:480px){
+  .profile-remove-dialog{border-radius:22px;padding:24px 17px 18px}
+  .profile-remove-dialog h3{font-size:19px}
+  .profile-remove-dialog p{font-size:12px}
+  .profile-remove-actions{grid-template-columns:1fr;gap:8px}
+  .profile-remove-actions button{padding:13px}
+}
+
+.pinned-post-badge{display:inline-flex;align-items:center;gap:5px;margin:0 0 8px;padding:5px 9px;border-radius:999px;background:rgba(119,196,255,.14);color:#dbeeff;font-size:10px;font-weight:800;border:1px solid rgba(119,196,255,.30)}
+.post-card.is-pinned{border:2px solid rgba(119,196,255,.45)!important}
+.verified-badge{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;margin-left:6px;border-radius:50%;background:#1d9bf0;color:#fff;font-size:12px;font-weight:900;line-height:1;vertical-align:middle;box-shadow:0 2px 5px rgba(29,155,240,.25)}
+.profile-name .verified-badge{transform:translateY(-2px)}
+.friend-profile-name .verified-badge,.post-author .verified-badge{margin-left:4px;width:14px;height:14px;font-size:9px}
+/* =========================
+   PROFILE SECTION PICKER
+========================= */
+.profile-section-search-wrapper{
+    position:relative;
+    width:100%;
+    margin-bottom:12px;
+}
+.profile-section-search-wrapper input[type="text"]{
+    width:100%;
+    padding:15px 18px;
+    border:1px solid #dbe3f1;
+    outline:none;
+    border-radius:15px;
+    font-size:14px;
+    background:#fff;
+    color:#222;
+    margin:0;
+    box-shadow:0 4px 14px rgba(0,0,0,.06);
+    transition:box-shadow .25s ease,transform .25s ease;
+}
+.profile-section-search-wrapper input[type="text"]:focus{
+    box-shadow:0 8px 22px rgba(0,0,0,.14);
+    transform:translateY(-1px);
+}
+.profile-section-search-wrapper .section-suggestions{
+    position:absolute;
+    top:100%;
+    left:0;
+    right:0;
+    background:#fff;
+    border-radius:16px;
+    max-height:230px;
+    overflow-y:auto;
+    padding:7px;
+    box-shadow:0 14px 35px rgba(0,0,0,.16),0 4px 12px rgba(0,0,0,.08);
+    z-index:100005;
+    display:none;
+    border:1px solid rgba(24,60,140,.08);
+}
+.profile-section-search-wrapper .section-suggestions.show{
+    display:block !important;
+}
+.profile-section-search-wrapper .section-option{
+    padding:12px 14px;
+    color:#183c8c;
+    background:transparent;
+    font-size:14px;
+    font-weight:500;
+    border-radius:11px;
+    cursor:pointer;
+    transition:background .2s ease,transform .2s ease,color .2s ease;
+}
+.profile-section-search-wrapper .section-option:hover{
+    background:#eef4ff;
+    color:#0d2c7a;
+    transform:translateX(3px);
+}
+.profile-section-search-wrapper .section-option:active{
+    transform:scale(.98);
+}
+.profile-section-search-wrapper .section-option.no-result{
+    color:#777;
+    cursor:default;
+    text-align:center;
+}
+.profile-section-search-wrapper .section-option.no-result:hover{
+    background:transparent;
+    transform:none;
+}
+.profile-section-verification{
+    margin-top:10px;
+    padding:14px;
+    border-radius:16px;
+    background:#f8faff;
+    border:1px solid #dbe6fb;
+}
+.profile-section-verification label{
+    display:block;
+    margin:0 0 8px;
+    color:#183c8c;
+    font-size:12px;
+    font-weight:700;
+}
+.profile-section-verification input{
+    width:100%;
+    padding:13px 14px;
+    border:1px solid #dbe3f1;
+    border-radius:12px;
+    margin:0 0 10px;
+    color:#183c8c;
+    background:#fff;
+}
+.profile-verify-btn{
+    width:100% !important;
+    height:52px !important;
+    margin-top:0 !important;
+    padding:0 14px !important;
+    font-size:14px !important;
+}
+.profile-verification-message{
+    display:none;
+    padding:12px;
+    border-radius:12px;
+    text-align:center;
+    font-weight:600;
+    margin-top:10px;
+    margin-bottom:0;
+    font-size:12px;
+    line-height:1.45;
+}
+.profile-section-required-modal,
+.profile-section-verification-modal{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:rgba(0,0,0,.6);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+    z-index:100004;
+}
+.profile-section-error-popup{
+    max-width:420px;
+    width:90%;
+    padding:35px 30px;
+    border-radius:28px;
+    background:rgba(34,42,60,.97);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,.15);
+    box-shadow:0 25px 70px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.08);
+    text-align:center;
+    color:#fff;
+    animation:profileSectionPopupIn .35s cubic-bezier(.16,1,.3,1);
+}
+.profile-section-error-icon{
+    width:75px;
+    height:75px;
+    margin:0 auto 18px;
+    border-radius:50%;
+    background:rgba(119,196,255,.15);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:40px;
+    box-shadow:0 0 0 8px rgba(119,196,255,.05);
+}
+.profile-section-error-popup h2{
+    color:#fff;
+    font-size:26px;
+    margin-bottom:10px;
+}
+.profile-section-error-popup p{
+    color:rgba(255,255,255,.82);
+    font-size:14px;
+    line-height:1.6;
+    margin-bottom:24px;
+}
+.profile-section-try-btn{
+    width:100%;
+    height:55px;
+    border:none;
+    border-radius:15px;
+    background:#4E9EFF;
+    color:#0d2c7a;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    transition:transform .2s ease,box-shadow .2s ease,background .2s ease;
+}
+.profile-section-try-btn:hover{
+    transform:translateY(-2px);
+    background:#77c4ff;
+    box-shadow:0 8px 20px rgba(255,217,61,.25);
+}
+.profile-section-try-btn:active{transform:scale(.97)}
+@keyframes profileSectionPopupIn{
+    from{opacity:0;transform:translateY(20px) scale(.9)}
+    to{opacity:1;transform:translateY(0) scale(1)}
+}
+@media(max-width:768px){
+    .profile-section-error-popup{
+        width:92%;
+        padding:30px 22px;
+        border-radius:24px;
+    }
+    .profile-section-error-icon{
+        width:65px;height:65px;font-size:34px;
+    }
+    .profile-section-error-popup h2{font-size:23px}
+    .profile-section-error-popup p{font-size:13px}
+    .profile-section-try-btn{height:52px;font-size:15px}
+    .profile-section-search-wrapper input[type="text"]{
+        font-size:13px;
+        padding:13px;
+    }
+    .profile-section-search-wrapper .section-option{font-size:13px}
+}
+
+
+/* ===== VOICE DESIGN SYSTEM APPLIED TO PROFILE ===== */
+:root{--voice-blue:#77c4ff;--voice-blue-2:#4e9eff;--voice-deep:#03152f;--voice-panel:rgba(255,255,255,.085)}
+html,body{width:100%;min-height:100%;background:#03152f}
+body{overflow-x:hidden;color:#fff;background:
+radial-gradient(900px 600px at 8% 8%,rgba(0,120,255,.24),transparent 60%),
+radial-gradient(800px 560px at 92% 14%,rgba(77,169,255,.12),transparent 58%),
+radial-gradient(700px 500px at 78% 92%,rgba(0,77,190,.24),transparent 62%),
+linear-gradient(135deg,#03152f 0%,#062b68 34%,#0a4ca2 66%,#173b78 100%);background-attachment:fixed}
+.header{position:fixed;top:6px;left:50%;transform:translateX(-50%);width:calc(100% - 28px);max-width:1400px;height:82px;padding:9px 14px;border:1px solid rgba(255,255,255,.20);border-radius:20px;background:linear-gradient(135deg,rgba(255,255,255,.13),rgba(255,255,255,.055));backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%);box-shadow:0 16px 36px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.16);animation:headerIn .65s cubic-bezier(.16,1,.3,1) both}
+.header::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(90deg,rgba(77,169,255,.08),transparent 28%,transparent 72%,rgba(77,169,255,.08))}
+.logo-group{width:220px;min-width:220px;display:flex;align-items:center;gap:7px;z-index:2}.logo,.caths-logo{width:52px;height:52px;object-fit:contain;display:block}
+.header-center{max-width:50%;z-index:3}.header-center h1{font-size:18px;line-height:1.15}.header-center p{font-size:11px;line-height:1.2;margin-top:3px}
+.container{position:fixed;top:100px;left:0;right:0;bottom:76px;padding:18px 20px 50px;overflow-x:hidden;overflow-y:auto;scroll-behavior:smooth;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch}
+.profile-card{background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.055));border:1px solid rgba(255,255,255,.15);border-radius:25px;box-shadow:0 18px 45px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.10);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);animation:cardIn .75s cubic-bezier(.16,1,.3,1) .12s both}
+.cover{background:radial-gradient(600px 260px at 15% 30%,rgba(119,196,255,.24),transparent 62%),linear-gradient(135deg,rgba(3,21,47,.96),rgba(9,76,162,.88),rgba(119,196,255,.28));position:relative}
+.profile-main>*{animation:itemIn .55s cubic-bezier(.16,1,.3,1) both}.profile-picture-wrapper{animation:itemIn .55s .08s cubic-bezier(.16,1,.3,1) both}.profile-name-row{animation:itemIn .55s .14s cubic-bezier(.16,1,.3,1) both}.stats{animation:itemIn .55s .20s cubic-bezier(.16,1,.3,1) both}.tabs{animation:itemIn .55s .26s cubic-bezier(.16,1,.3,1) both}.tab-content{animation:itemIn .55s .32s cubic-bezier(.16,1,.3,1) both}
+.edit-btn,.friend-message-btn,.save-btn,.profile-section-try-btn,.publish-btn{background:linear-gradient(135deg,#4e9eff,#1762d2)!important;color:#fff!important;box-shadow:0 10px 24px rgba(30,118,220,.22);transition:transform .22s ease,box-shadow .22s ease,filter .22s ease}.edit-btn:hover,.friend-message-btn:hover,.save-btn:hover,.profile-section-try-btn:hover,.publish-btn:hover{transform:translateY(-2px);filter:brightness(1.05);box-shadow:0 14px 28px rgba(30,118,220,.30)}
+.tab.active{color:#77c4ff!important}.tab.active::after{background:#77c4ff!important;box-shadow:0 0 12px rgba(119,196,255,.7)}
+.stats,.content-box,.post-composer-card,.post-card,.friend-profile-row{background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.045));border:1px solid rgba(255,255,255,.12);box-shadow:0 14px 34px rgba(0,0,0,.13),inset 0 1px 0 rgba(255,255,255,.08)}
+.friends-panel-count{background:rgba(119,196,255,.16)!important;color:#fff!important;border:1px solid rgba(119,196,255,.30)}
+.friends-spinner{border-top-color:#77c4ff!important}.reaction-emoji:hover{background:rgba(119,196,255,.10)}
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;width:100%;height:76px;padding:5px 16px;display:flex;align-items:center;justify-content:center;gap:8px;border-top:1px solid rgba(255,255,255,.16);border-radius:19px 19px 0 0;background:linear-gradient(180deg,rgba(7,25,58,.94),rgba(2,13,32,.99));backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);box-shadow:0 -12px 30px rgba(0,8,30,.24);z-index:99990;animation:navIn .65s cubic-bezier(.16,1,.3,1) .15s both}
+.bottom-nav::after{content:"";position:absolute;left:0;right:0;top:-1px;height:2px;background:linear-gradient(90deg,transparent 3%,rgba(119,196,255,.18) 15%,#77c4ff 50%,rgba(119,196,255,.18) 85%,transparent 97%);box-shadow:0 0 14px rgba(119,196,255,.28)}
+.nav-item{position:relative;flex:1;max-width:190px;height:60px;padding:6px 8px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:rgba(255,255,255,.72);font-size:10px;font-weight:600;text-decoration:none;transition:.2s}.nav-item:hover{background:rgba(255,255,255,.07);color:#fff}.nav-item.active{color:#fff!important;background:linear-gradient(180deg,rgba(87,169,255,.19),rgba(87,169,255,.07))!important;transform:none!important}.nav-item.active::after{content:"";position:absolute;left:50%;top:3px;width:30px;height:3px;transform:translateX(-50%);border-radius:999px;background:#77c4ff;box-shadow:0 0 12px rgba(119,196,255,.7)}
+.professional-nav-icon,.pro-icon{width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;position:relative;flex:none}.pro-icon::before,.professional-nav-icon::before{content:"";width:17px;height:17px;display:block;border:1.8px solid currentColor;border-radius:5px;opacity:.95}.pro-user::before{border-radius:50%;width:15px;height:15px}.pro-edit::before{transform:rotate(-45deg);border-radius:3px}.pro-chat::before{border-radius:6px}.pro-users::before{border-radius:50%}.pro-lock::before{border-radius:4px}.pro-save::before{border-radius:3px}.pro-warning::before{border-radius:50%}.pro-like::before{border-radius:50%}.pro-voice::before{border-radius:8px}.pro-home::before{border-radius:3px;transform:rotate(45deg) scale(.82)}.pro-news::before{border-radius:2px}.pro-share::before{border-radius:3px;transform:rotate(45deg) scale(.82)}.pro-doc::before{border-radius:3px}.pro-icon{vertical-align:middle;margin-right:6px}.empty-icon .pro-icon{width:52px;height:52px}.reaction-label{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:#183c8c;font-weight:700}.reaction-dot-icon{width:10px;height:10px;border-radius:50%;display:inline-block;border:2px solid currentColor}.profile-picture-placeholder{font-size:0}.profile-picture-placeholder .pro-icon{width:68px;height:68px}.profile-picture-placeholder .pro-icon::before{width:40px;height:40px}
+@keyframes headerIn{from{opacity:0;transform:translateX(-50%) translateY(-18px) scale(.98)}to{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
+@keyframes cardIn{from{opacity:0;transform:translateY(28px) scale(.975)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes itemIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes navIn{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:768px){.header{top:5px;width:calc(100% - 14px);height:68px;padding:7px 9px;border-radius:17px}.logo-group{width:90px;min-width:90px;gap:4px}.logo,.caths-logo{width:38px;height:38px}.header-center{max-width:46%}.header-center h1{font-size:14px}.header-center p{font-size:8px}.container{top:82px;bottom:68px;padding:12px 12px 34px}.profile-card{border-radius:21px}.bottom-nav{height:68px;padding:4px 5px;border-radius:16px 16px 0 0}.nav-item{height:56px;padding:4px 3px;border-radius:12px;font-size:8px}.pro-icon{width:22px;height:22px}.pro-icon::before{width:15px;height:15px}}
+
+/* FINAL NAV OVERRIDE — exact voice.html geometry */
+.nav-symbol{font-family:Arial,Helvetica,sans-serif;font-size:25px;line-height:1;font-weight:400;color:currentColor;text-align:center}
+.nav-item.active .nav-symbol{font-size:27px}
+@media(max-width:768px){.nav-symbol{font-size:21px}.nav-item.active .nav-symbol{font-size:23px}}
+@media(max-width:420px){.nav-symbol{font-size:20px}.nav-item.active .nav-symbol{font-size:22px}}
+@keyframes navIn{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
+
+
+/* Professional replacements for emoji-based UI */
+.reaction-prof-icon{width:17px;height:17px;display:inline-flex;align-items:center;justify-content:center;position:relative;flex:0 0 17px}
+.reaction-prof-icon::before{content:"";width:13px;height:13px;border:1.7px solid currentColor;border-radius:4px}
+.reaction-like::before{border-radius:50% 50% 4px 4px;transform:rotate(-8deg)}
+.reaction-love::before{border-radius:50%;width:10px;height:10px;transform:rotate(45deg)}
+.reaction-laugh::before{border-radius:50%}
+.reaction-wow::before{border-radius:50%;box-shadow:inset 0 0 0 2px rgba(255,255,255,.12)}
+.reaction-sad::before{border-radius:50%}
+.pro-pin::before{border-radius:2px;transform:rotate(45deg) scale(.82)}
+.pro-eye::before{width:18px;height:11px;border-radius:50%/60%;}
+.pro-trash::before{border-radius:3px;width:12px;height:14px}
+.profile-remove-icon,.success-icon,.profile-section-error-icon{color:#77c4ff}
+.profile-setup-required-icon{color:#77c4ff}
+
+
+/* FINAL USER REQUEST OVERRIDES */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;background:transparent;border:0;border-radius:0;overflow:visible;box-shadow:none}
+.stat{padding:14px 10px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.18);border-radius:12px;box-shadow:0 8px 22px rgba(0,0,0,.10);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.stat:hover{background:rgba(255,255,255,.09);border-color:rgba(119,196,255,.38)}
+.tabs{display:flex;gap:8px;margin-top:22px;border-bottom:0;overflow-x:auto;padding-bottom:2px}
+.tab{flex:1;min-width:120px;padding:10px 12px;border:1px solid rgba(255,255,255,.16);border-radius:11px;background:rgba(255,255,255,.045);color:rgba(255,255,255,.76);font-size:12px;font-weight:700;cursor:pointer;position:relative;transition:.2s}
+.tab:hover{background:rgba(255,255,255,.08);border-color:rgba(119,196,255,.30)}
+.tab.active{color:#fff!important;background:rgba(119,196,255,.13)!important;border-color:rgba(119,196,255,.42)!important}
+.tab.active::after{display:none}
+
+/* Bottom navigation: clean, flat, professional */
+.bottom-nav{height:76px!important;padding:5px 16px!important;gap:4px!important;border-radius:18px 18px 0 0!important;background:linear-gradient(180deg,rgba(7,25,58,.96),rgba(2,13,32,.99))!important}
+.nav-item{height:60px!important;padding:6px 8px!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;max-width:190px!important;color:rgba(255,255,255,.72)!important}
+.nav-item:hover,.nav-item.active{background:transparent!important}
+.nav-item.active{color:#fff!important}
+
+.professional-nav-icon{width:24px!important;height:24px!important}
+.nav-symbol{font-size:25px!important}
+.nav-svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.profile-nav-icon#profileNavPhoto{background:transparent!important;border:0!important;width:auto!important;height:auto!important;display:flex!important;align-items:center!important;justify-content:center!important}
+.profile-nav-icon#profileNavPhoto img{width:30px!important;height:30px!important;border:0!important;object-fit:cover!important;border-radius:50%!important}
+
+/* Compact login modal */
+.login-overlay{padding:16px!important}
+.login-box{width:min(100%,340px)!important;max-width:340px!important;padding:24px 22px!important;border-radius:18px!important;background:rgba(10,27,58,.96)!important;border:1px solid rgba(119,196,255,.24);box-shadow:0 24px 60px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.08);animation:loginPop .28s ease-out both}
+.login-icon{display:flex;align-items:center;justify-content:center;width:44px;height:44px;margin:0 auto 13px;border-radius:12px;background:rgba(119,196,255,.10);border:1px solid rgba(119,196,255,.22);font-size:0;color:#bfe0ff}
+.login-icon::before{content:"";width:20px;height:20px;border:1.8px solid currentColor;border-radius:5px;box-shadow:0 -6px 0 -4px currentColor}
+.login-box h2{font-size:22px!important;margin-bottom:6px!important}
+.login-box p{font-size:12px!important;line-height:1.55;margin:0 auto 18px!important;max-width:270px}
+.google-btn{height:46px!important;border-radius:11px!important;font-size:13px!important;background:linear-gradient(135deg,#4e9eff,#1762d2)!important;color:#fff!important;box-shadow:0 8px 20px rgba(30,118,220,.20)}
+.google-btn:hover{background:linear-gradient(135deg,#63aaff,#2b73dc)!important;transform:translateY(-1px)}
+@keyframes loginPop{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:768px){.stats{gap:7px}.stat{padding:12px 6px}.tab{min-width:100px;padding:9px 8px}.bottom-nav{height:68px!important;padding:4px 5px!important}.nav-item{height:56px!important;padding:4px 3px!important}.nav-svg{width:19px;height:19px}.login-box{padding:22px 18px!important}}
+
+
+
+/* BOTTOM NAV SYMBOLS — requested glyphs */
+.bottom-nav .nav-item {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+}
+.bottom-nav .nav-item:hover,
+.bottom-nav .nav-item.active {
+    background: transparent !important;
+}
+.bottom-nav .nav-symbol {
+    font-family: Arial, "Segoe UI Symbol", sans-serif;
+    font-size: 25px;
+    line-height: 1;
+    font-weight: 400;
+    color: currentColor;
+    width: auto;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0 3px;
+}
+.bottom-nav .nav-item.active .nav-symbol {
+    font-size: 27px;
+}
+.profile-nav-fallback {
+    width: auto;
+    height: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    color: rgba(255,255,255,.84);
+    font-size: 13px;
+    line-height: 1;
+}
+#profileNavPhotoImg {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+@media (max-width: 768px) {
+    .bottom-nav .nav-symbol { font-size: 21px; }
+    .bottom-nav .nav-item.active .nav-symbol { font-size: 23px; }
+    .profile-nav-fallback { font-size: 12px; }
+    #profileNavPhotoImg { width: 28px; height: 28px; border:0; }
+}
+@media (max-width: 420px) {
+    .bottom-nav .nav-symbol { font-size: 20px; }
+    .bottom-nav .nav-item.active .nav-symbol { font-size: 22px; }
+}
+
+/* FINAL BOTTOM NAV — CLEAN, NO NAV ITEM SHAPES */
+.bottom-nav{
+    height:76px !important;
+    padding:6px 18px !important;
+    gap:8px !important;
+    border-radius:0 !important;
+    border-top:1px solid rgba(255,255,255,.12) !important;
+    background:rgba(3,16,38,.96) !important;
+    box-shadow:0 -8px 24px rgba(0,0,0,.18) !important;
+}
+.bottom-nav::after{display:none !important;}
+.bottom-nav .nav-item,
+.bottom-nav .nav-item:hover,
+.bottom-nav .nav-item.active{
+    background:transparent !important;
+    border:0 !important;
+    border-radius:0 !important;
+    box-shadow:none !important;
+    transform:none !important;
+}
+.bottom-nav .nav-item{
+    height:64px !important;
+    padding:0 6px !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:6px !important;
+}
+.bottom-nav .nav-item.active::after{display:none !important;}
+.bottom-nav .nav-symbol{
+    margin:0 !important;
+    width:auto !important;
+    height:auto !important;
+    font-family:Arial,"Segoe UI Symbol",sans-serif !important;
+    font-size:25px !important;
+    line-height:1 !important;
+    font-weight:400 !important;
+}
+.bottom-nav .nav-item.active .nav-symbol{font-size:25px !important;}
+.bottom-nav .nav-item > span{
+    margin:0 !important;
+    transform:none !important;
+    line-height:1.15 !important;
+    font-size:10px !important;
+    font-weight:500 !important;
+}
+#profileNavText{
+    margin:0 !important;
+    transform:none !important;
+    line-height:1.15 !important;
+}
+.profile-nav-icon#profileNavPhoto,
+#profileNavPhoto{
+    width:30px !important;
+    height:30px !important;
+    padding:0 !important;
+    margin:0 !important;
+    border:0 !important;
+    border-radius:50% !important;
+    background:transparent !important;
+    box-shadow:none !important;
+    overflow:hidden !important;
+}
+.profile-nav-icon#profileNavPhoto img,
+#profileNavPhotoImg{
+    width:30px !important;
+    height:30px !important;
+    display:block;
+    border:0 !important;
+    border-radius:50% !important;
+    object-fit:cover !important;
+}
+@media(max-width:768px){
+    .bottom-nav{height:68px !important;padding:4px 5px !important;gap:4px !important;}
+    .bottom-nav .nav-item{height:60px !important;padding:0 3px !important;gap:5px !important;}
+    .bottom-nav .nav-symbol,.bottom-nav .nav-item.active .nav-symbol{font-size:21px !important;}
+    .bottom-nav .nav-item > span{font-size:8px !important;}
+    .profile-nav-icon#profileNavPhoto,#profileNavPhoto,#profileNavPhotoImg{width:25px !important;height:25px !important;}
+}
+
+
+
+/* =========================================================
+   SHARE UI + SMOOTH MOTION
+   ========================================================= */
+.share-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,10,30,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:100010;opacity:0;transition:opacity .22s ease}
+.share-modal.open{display:flex;opacity:1}
+.share-modal-box{width:min(500px,100%);max-height:min(720px,88vh);overflow:hidden;background:linear-gradient(145deg,rgba(255,255,255,.99),rgba(246,250,255,.98));color:#183c8c;border:1px solid rgba(255,255,255,.76);border-radius:24px;padding:22px;box-shadow:0 28px 80px rgba(0,10,40,.36);transform:translateY(16px) scale(.975);opacity:0;transition:transform .28s cubic-bezier(.16,1,.3,1),opacity .22s ease}
+.share-modal.open .share-modal-box{transform:translateY(0) scale(1);opacity:1}
+.share-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px}
+.share-modal-kicker{display:inline-flex;align-items:center;gap:6px;color:#4e9eff;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px}
+.share-modal-head h3{margin:0;font-size:21px;color:#163b82}
+.share-modal-head p{margin:5px 0 0;color:#71809a;font-size:12px;line-height:1.45}
+.share-choice-grid{display:grid;gap:10px}
+.share-choice{width:100%;display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:12px;padding:13px 14px;border:1px solid #dfe8f7;background:#f8fbff;border-radius:16px;color:#183c8c;text-align:left;cursor:pointer;transition:transform .2s ease,background .2s ease,border-color .2s ease,box-shadow .2s ease}
+.share-choice:hover{transform:translateY(-2px);background:#fff;border-color:#a9c9f7;box-shadow:0 10px 26px rgba(23,79,150,.10)}
+.share-choice:active{transform:scale(.985)}
+.share-choice-icon{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:#e9f2ff;color:#1762d2}
+.share-choice-icon .pro-icon{margin:0;width:20px;height:20px}
+.share-choice strong{display:block;font-size:13px}
+.share-choice small{display:block;margin-top:3px;color:#74839e;font-size:10px}
+.share-choice-arrow{font-size:25px;line-height:1;color:#8fa3c2;margin-right:2px}
+.share-message-box{display:flex;flex-direction:column}
+.share-message-search-wrap{display:flex;align-items:center;gap:9px;border:1px solid #dbe5f2;background:#fff;border-radius:13px;padding:0 12px;margin-bottom:12px}
+.share-message-search-wrap>.pro-icon{width:18px;height:18px;margin:0;color:#8193ae}
+.share-message-search{width:100%;height:44px;border:0;outline:0;background:transparent;color:#183c8c;font:inherit;font-size:12px}
+.share-message-list{max-height:54vh;overflow:auto;padding-right:2px;scrollbar-width:none;-ms-overflow-style:none}
+.share-message-list::-webkit-scrollbar{width:0;height:0}
+.share-target-section{margin:8px 0 7px;color:#8291aa;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em}
+.share-target{width:100%;display:flex;align-items:center;gap:11px;border:0;background:transparent;border-radius:12px;padding:9px 8px;color:#183c8c;text-align:left;cursor:pointer;transition:background .18s ease,transform .18s ease}
+.share-target:hover{background:#eef5ff;transform:translateX(2px)}
+.share-target-avatar{width:40px;height:40px;flex:0 0 40px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:#e5efff;color:#1e3a8a;font-size:13px;font-weight:800}
+.share-target-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.share-target-icon{width:40px;height:40px;flex:0 0 40px;border-radius:50%;display:grid;place-items:center;background:#e8f2ff;color:#1762d2}
+.share-target-info{min-width:0;flex:1}
+.share-target-info strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.share-target-info small{display:block;margin-top:2px;color:#7c8aa2;font-size:10px}
+.share-target-type{font-size:9px;font-weight:800;color:#8b9ab2}
+.share-target-empty{padding:25px 12px;text-align:center;color:#7b889d;font-size:11px}
+
+/* Page-entry and dynamic-content motion. */
+.post-card,.friend-profile-row,.content-box,.post-composer-card{animation:profileFadeUp .45s cubic-bezier(.16,1,.3,1) both}
+.post-card:nth-child(2){animation-delay:.04s}.post-card:nth-child(3){animation-delay:.08s}.post-card:nth-child(4){animation-delay:.12s}.post-card:nth-child(5){animation-delay:.16s}
+.animate-in{animation:profileFadeUp .45s cubic-bezier(.16,1,.3,1) both}
+@keyframes profileFadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+@media(max-width:768px){.share-modal{padding:12px}.share-modal-box{border-radius:20px;padding:18px;max-height:86vh}.share-modal-head h3{font-size:19px}.share-choice{grid-template-columns:44px minmax(0,1fr) auto;padding:12px}.share-choice-icon{width:40px;height:40px}.share-message-list{max-height:55vh}}
+
+/* =========================================================
+   FINAL CLEANUP — SVG ICONS + HIDDEN SCROLLBARS
+   ========================================================= */
+
+/* Never show browser/container scrollbar rails, while keeping scrolling enabled. */
+html,
+body,
+.container,
+.tabs,
+.comments-list,
+.reactions-list,
+.edit-box,
+.profile-section-search-wrapper .section-suggestions{
+    scrollbar-width:none !important;
+    -ms-overflow-style:none !important;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.container::-webkit-scrollbar,
+.tabs::-webkit-scrollbar,
+.comments-list::-webkit-scrollbar,
+.reactions-list::-webkit-scrollbar,
+.edit-box::-webkit-scrollbar,
+.profile-section-search-wrapper .section-suggestions::-webkit-scrollbar{
+    width:0 !important;
+    height:0 !important;
+    display:none !important;
+}
+
+/* Remove every old CSS-drawn pseudo-shape used by the icon system. */
+.pro-icon,
+.professional-nav-icon,
+.reaction-prof-icon{
+    width:22px !important;
+    height:22px !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    position:relative !important;
+    flex:none !important;
+}
+.pro-icon::before,
+.pro-icon::after,
+.professional-nav-icon::before,
+.professional-nav-icon::after,
+.reaction-prof-icon::before,
+.reaction-prof-icon::after{
+    content:none !important;
+    display:none !important;
+}
+
+/* Real SVG icon sizing. */
+.pro-icon > svg,
+.professional-nav-icon > svg,
+.reaction-prof-icon > svg{
+    width:18px !important;
+    height:18px !important;
+    display:block !important;
+    flex:none !important;
+}
+.pro-icon > svg,
+.professional-nav-icon > svg,
+.reaction-prof-icon > svg,
+.nav-svg{
+    fill:none !important;
+    stroke:currentColor !important;
+    stroke-width:1.8 !important;
+    stroke-linecap:round !important;
+    stroke-linejoin:round !important;
+}
+
+/* Navigation is text + SVG only. */
+.bottom-nav .nav-symbol{
+    width:24px !important;
+    height:24px !important;
+    margin:0 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    font-size:0 !important;
+    line-height:0 !important;
+}
+.bottom-nav .nav-symbol .nav-svg{
+    width:22px !important;
+    height:22px !important;
+}
+@media(max-width:768px){
+    .bottom-nav .nav-symbol .nav-svg{
+        width:20px !important;
+        height:20px !important;
+    }
+}
+
+/* Cleaner profile-placeholder icon without any CSS shape. */
+.profile-picture-placeholder{
+    font-size:0 !important;
+}
+.profile-picture-placeholder .pro-icon{
+    width:68px !important;
+    height:68px !important;
+}
+.profile-picture-placeholder .pro-icon > svg{
+    width:46px !important;
+    height:46px !important;
+}
+
+
+/* Scroll behavior: clean, touch-friendly, but visually scrollbar-free. */
+html{
+    scroll-behavior:smooth;
+    overflow-y:auto;
+}
+body{
+    overflow-x:hidden !important;
+    overscroll-behavior-y:none;
+    -webkit-overflow-scrolling:touch;
+}
+.container{
+    overscroll-behavior-y:contain;
+    -webkit-overflow-scrolling:touch;
+    scroll-padding-top:14px;
+}
+
+
+/* ===== FINAL BOTTOM NAV — MATCH INDEX / FRIENDS SIZE + USER-REQUESTED GLYPHS ===== */
+.bottom-nav{
+  height:76px !important;
+  min-height:76px !important;
+  padding:6px 16px !important;
+  gap:8px !important;
+  border-radius:0 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+.bottom-nav .nav-item{
+  flex:1 1 0 !important;
+  max-width:180px !important;
+  min-width:0 !important;
+  height:62px !important;
+  margin:0 !important;
+  padding:7px 10px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:4px !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  transform:none !important;
+  color:rgba(255,255,255,.72) !important;
+  text-decoration:none !important;
+  font-size:10px !important;
+}
+.bottom-nav .nav-item:hover,
+.bottom-nav .nav-item.active{
+  background:transparent !important;
+  box-shadow:none !important;
+}
+.bottom-nav .nav-symbol{
+  width:auto !important;
+  height:24px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  margin:0 0 3px !important;
+  color:inherit !important;
+  font-family:Arial, Helvetica, sans-serif !important;
+  font-size:24px !important;
+  line-height:24px !important;
+  font-weight:400 !important;
+}
+.bottom-nav .nav-item > span{
+  display:block !important;
+  margin:0 !important;
+  padding:0 !important;
+  font-size:10px !important;
+  line-height:1.1 !important;
+  color:inherit !important;
+}
+.bottom-nav .nav-item.active{color:#77c4ff !important;font-weight:700 !important;}
+.bottom-nav .nav-item.active::after{
+  display:none !important;
+  content:none !important;
+}
+.bottom-nav .profile-nav-icon#profileNavPhoto,
+.bottom-nav #profileNavPhoto{
+  width:30px !important;
+  height:30px !important;
+  min-width:30px !important;
+  min-height:30px !important;
+  max-width:30px !important;
+  max-height:30px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  margin:0 !important;
+  padding:0 !important;
+  border-radius:50% !important;
+  overflow:hidden !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+}
+.bottom-nav #profileNavPhoto img,
+.bottom-nav #profileNavPhotoImg{
+  width:30px !important;
+  height:30px !important;
+  border-radius:50% !important;
+  object-fit:cover !important;
+  display:block !important;
+}
+.bottom-nav .nav-item:last-child > span{display:none !important;}
+
+@media(max-width:768px){
+  .bottom-nav{
+    height:74px !important;
+    min-height:74px !important;
+    padding:6px 6px calc(6px + env(safe-area-inset-bottom)) !important;
+    gap:2px !important;
+  }
+  .bottom-nav .nav-item{
+    height:58px !important;
+    padding:5px 3px !important;
+    gap:3px !important;
+    font-size:8.5px !important;
+  }
+  .bottom-nav .nav-symbol{
+    height:21px !important;
+    margin-bottom:3px !important;
+    font-size:21px !important;
+    line-height:21px !important;
+  }
+  .bottom-nav .nav-item > span{
+    font-size:8.5px !important;
+  }
+  .bottom-nav .profile-nav-icon#profileNavPhoto,
+  .bottom-nav #profileNavPhoto{
+    width:30px !important;
+    height:30px !important;
+    min-width:30px !important;
+    min-height:30px !important;
+  }
+  .bottom-nav #profileNavPhoto img,
+  .bottom-nav #profileNavPhotoImg{
+    width:26px !important;
+    height:26px !important;
+  }
+}
+@media(max-width:380px){
+  .bottom-nav{
+    height:70px !important;
+    min-height:70px !important;
+  }
+  .bottom-nav .nav-item{
+    height:54px !important;
+    font-size:7.5px !important;
+  }
+  .bottom-nav .nav-symbol{
+    font-size:20px !important;
+    line-height:20px !important;
+    height:20px !important;
+  }
+  .bottom-nav .nav-item > span{font-size:7.5px !important;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<div class="header">
+
+    <div class="logo-group">
+
+        <img
+            src="sslg-logo.png"
+            class="logo"
+            alt="SSLG Logo">
+
+        <img
+            src="caths-logo.png"
+            class="caths-logo"
+            alt="CATHS Logo">
+
+    </div>
+
+    <div class="header-center">
+
+        <h1>
+            CATHS-MAIN Student Voice
+        </h1>
+
+        <p>
+            Official SSLG Communication Platform
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<div class="container">
+
+    <div class="profile-card">
+
+        <!-- COVER -->
+
+        <div class="cover"></div>
+
+
+        <!-- PROFILE -->
+
+        <div class="profile-main">
+
+            <div class="profile-picture-wrapper">
+
+                <img
+                    id="profilePicture"
+                    class="profile-picture"
+                    src=""
+                    alt="Profile Picture"
+                    style="display:none;">
+
+                <div
+                    id="profilePlaceholder"
+                    class="profile-picture-placeholder">
+                    <span class="pro-icon pro-user" aria-hidden="true"></span>
+                </div>
+
+            </div>
+
+
+            <div class="profile-name-row">
+
+                <div>
+
+                    <div
+                        id="profileName"
+                        class="profile-name">
+                        Loading...
+                    </div>
+
+                    <div
+                        id="profileEmail"
+                        class="profile-email">
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="edit-btn"
+                    onclick="openEditProfile()">
+
+                    <span class="pro-icon pro-edit" aria-hidden="true"></span> Edit Profile
+
+                </button>
+
+            </div>
+
+
+            <div
+                id="profileBio"
+                class="profile-bio">
+
+                Welcome to your CATHS-MAIN Student Voice profile. 
+
+            </div>
+
+
+            <!-- STATS -->
+
+            <div class="stats">
+
+                <div
+                    class="stat"
+                    onclick="showTab('friends')">
+
+                    <strong id="friendsCount">
+                        0
+                    </strong>
+
+                    <span>
+                        Friends
+                    </span>
+
+                </div>
+
+
+                <div
+                    class="stat"
+                    onclick="showTab('posts')">
+
+                    <strong id="postsCount">
+                        0
+                    </strong>
+
+                    <span>
+                        Posts
+                    </span>
+
+                </div>
+
+
+                <div
+                    class="stat"
+                    onclick="showTab('feedbacks')">
+
+                    <strong id="feedbackCount">
+                        0
+                    </strong>
+
+                    <span>
+                        Feedbacks
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- TABS -->
+
+            <div class="tabs">
+
+                <button
+                    class="tab active"
+                    data-tab="posts"
+                    onclick="showTab('posts')">
+
+                    <span class="pro-icon pro-doc" aria-hidden="true"></span> Posts
+
+                </button>
+
+                <button
+                    class="tab"
+                    data-tab="feedbacks"
+                    onclick="showTab('feedbacks')">
+
+                    <span class="pro-icon pro-chat" aria-hidden="true"></span> Feedbacks
+
+                </button>
+
+                <button
+                    class="tab"
+                    data-tab="friends"
+                    onclick="showTab('friends')">
+
+                    <span class="pro-icon pro-users" aria-hidden="true"></span> Friends
+
+                </button>
+
+            </div>
+
+
+            <!-- TAB CONTENT -->
+
+            <div class="tab-content">
+
+                <div id="postsTab">
+
+    <div class="post-composer-card">
+        <h3><span class="pro-icon pro-doc" aria-hidden="true"></span> Share something</h3>
+        <p>Post a text update or message. No photo uploads required.</p>
+        <button class="post-open-btn" type="button" onclick="openPostComposer()"><span class="pro-icon pro-edit" aria-hidden="true"></span> Create Post</button>
+    </div>
+
+    <div id="postsList" class="posts-list">
+        <div class="empty-posts">
+            <div class="empty-icon"><span class="pro-icon pro-doc pro-empty" aria-hidden="true"></span></div>
+            <h3>No Posts Yet</h3>
+            <p>Your future posts will appear here.</p>
+        </div>
+    </div>
+
+</div>
+
+
+                <div
+                    id="feedbacksTab"
+                    class="content-box"
+                    style="display:none;">
+
+                    <div class="empty-icon"><span class="pro-icon pro-chat" aria-hidden="true"></span></div>
+
+                    <h3>
+                        No Feedbacks Yet
+                    </h3>
+
+                    <p>
+                        Your submitted feedbacks will appear here.
+                    </p>
+
+                </div>
+
+
+                <div
+                    id="friendsTab"
+                    class="content-box"
+                    style="display:none;">
+
+                    <div class="friends-panel">
+                        <div class="friends-panel-head">
+                            <div class="friends-panel-title"><span class="pro-icon pro-users" aria-hidden="true"></span> My Friends</div>
+                            <div class="friends-panel-count" id="friendsTabCount">0 Friends</div>
+                        </div>
+                        <div id="profileFriendsList" class="friends-list">
+                            <div class="friends-loading">
+                                <div class="friends-spinner"></div>
+                                <div class="friends-loading-text">Loading friends...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     LOGIN OVERLAY
+========================= -->
+
+<div
+    id="loginOverlay"
+    class="login-overlay">
+
+    <div class="login-box">
+
+        <div class="login-icon" aria-hidden="true"></div>
+
+        <h2>
+            Login Required
+        </h2>
+
+        <p>
+            Please sign in with your Google account
+            to view your profile.
+        </p>
+
+        <button
+            class="google-btn"
+            onclick="googleLogin()">
+
+            Continue with Google
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     EDIT PROFILE
+========================= -->
+
+<div
+    id="editOverlay"
+    class="edit-overlay">
+
+    <div class="edit-box">
+
+        <h2>
+            <span class="pro-icon pro-edit" aria-hidden="true"></span> Edit Profile
+        </h2>
+
+        <div id="profileSetupRequiredNotice" class="profile-setup-required-notice" style="display:none;">
+            <div class="profile-setup-required-icon"><span class="pro-icon pro-warning" aria-hidden="true"></span></div>
+            <div>
+                <strong>Complete your profile first</strong>
+                <span>Your profile must be completed before this window can be closed.</span>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label class="profile-picture-label">Profile Picture</label>
+            <div class="photo-picker coming-soon-card">
+                <div class="photo-picker-preview" aria-hidden="true">
+                    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="32" cy="22" r="10" fill="#294F9F"/>
+                        <path d="M14 54C15.7 43.6 22.3 38 32 38C41.7 38 48.3 43.6 50 54" fill="#294F9F"/>
+                    </svg>
+                </div>
+                <div class="photo-picker-content">
+                    <div class="photo-picker-title">Change Profile Picture</div>
+                    <div class="photo-picker-subtitle">Custom profile picture uploads are currently unavailable.</div>
+                    <div class="coming-soon-badge">Coming Soon</div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Display Name
+            </label>
+
+            <input
+                type="text"
+                id="editName"
+                placeholder="Your name">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Grade & Section
+            </label>
+
+            <div class="section-search-wrapper profile-section-search-wrapper">
+                <input
+                    type="text"
+                    id="editSectionSearch"
+                    placeholder="Search and select your section..."
+                    autocomplete="off"
+                >
+
+                <div id="editSectionSuggestions" class="section-suggestions"></div>
+
+                <input type="hidden" id="editSection">
+            </div>
+
+            <div id="editSectionVerification" class="profile-section-verification" style="display:none;">
+                <label for="editVerificationCode">
+                    <span class="pro-icon pro-lock" aria-hidden="true"></span> Section Verification Code
+                </label>
+
+                <input
+                    type="password"
+                    id="editVerificationCode"
+                    placeholder="Enter your section code"
+                    autocomplete="off"
+                >
+
+                <button
+                    type="button"
+                    id="editVerifySectionBtn"
+                    class="save-btn profile-verify-btn"
+                    onclick="verifyProfileSectionCode()"
+                >
+                    <span class="pro-icon pro-lock" aria-hidden="true"></span> Verify Section
+                </button>
+
+                <div id="editVerificationMessage" class="profile-verification-message"></div>
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Bio
+            </label>
+
+            <textarea
+                id="editBio"
+                placeholder="Tell something about yourself..."></textarea>
+
+        </div>
+
+
+        <button
+            class="save-btn"
+            onclick="saveProfile()">
+
+            <span class="pro-icon pro-save" aria-hidden="true"></span> Save Changes
+
+        </button>
+
+
+        <button
+            class="cancel-btn"
+            onclick="closeEditProfile()">
+
+            Cancel
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     SUCCESS POPUP
+========================= -->
+<div id="successOverlay" class="success-overlay">
+    <div class="success-box">
+        <div class="success-icon">✓</div>
+        <h3>Successfully Changed!</h3>
+        <p>Your profile changes have been saved successfully.</p>
+        <button class="success-ok" onclick="closeSuccessPopup()">Okay</button>
+    </div>
+</div>
+<!-- SECTION REQUIRED POPUP -->
+<div id="profileSectionRequiredPopup" class="profile-section-required-modal">
+    <div class="profile-section-error-popup">
+        <div class="profile-section-error-icon"><span class="pro-icon pro-warning" aria-hidden="true"></span></div>
+        <h2>Section Required</h2>
+        <p>Please select your section from the list.</p>
+        <button type="button" class="profile-section-try-btn" onclick="closeProfileSectionRequiredPopup()">Try Again</button>
+    </div>
+</div>
+
+<!-- SECTION VERIFICATION REQUIRED POPUP -->
+<div id="profileSectionVerificationPopup" class="profile-section-verification-modal">
+    <div class="profile-section-error-popup">
+        <div class="profile-section-error-icon"><span class="pro-icon pro-lock" aria-hidden="true"></span></div>
+        <h2>Verification Required</h2>
+        <p>Please verify your section first.</p>
+        <button type="button" class="profile-section-try-btn" onclick="closeProfileSectionVerificationPopup()">Try Again</button>
+    </div>
+</div>
+
+
+
+<!-- POST PRIVACY / DELETE MODALS -->
+<div id="privacyModal" class="privacy-modal"><div class="privacy-box">
+  <div class="post-modal-head"><h3>Who can see this?</h3><button class="modal-x" type="button" onclick="closePrivacyModal()"><span aria-hidden="true">×</span></button></div>
+  <p>Choose who can see this post. The change is saved immediately.</p>
+  <div class="privacy-option-list">
+    <button class="privacy-option" data-visibility="public" type="button" onclick="savePostVisibility('public')"><span><span class="pro-icon pro-news" aria-hidden="true"></span> Public</span><span>Everyone</span></button>
+    <button class="privacy-option" data-visibility="friends" type="button" onclick="savePostVisibility('friends')"><span><span class="pro-icon pro-users" aria-hidden="true"></span> Friends Only</span><span>Your friends</span></button>
+    <button class="privacy-option" data-visibility="onlyMe" type="button" onclick="savePostVisibility('onlyMe')"><span><span class="pro-icon pro-lock" aria-hidden="true"></span> Only Me</span><span>Private</span></button>
+  </div>
+</div></div>
+<div id="deletePostModal" class="manage-modal"><div class="manage-box">
+  <div class="post-modal-head"><h3>Delete Post?</h3><button class="modal-x" type="button" onclick="closeDeletePostModal()"><span aria-hidden="true">×</span></button></div>
+  <p>This post will be permanently removed from your profile. This action cannot be undone.</p>
+  <div class="manage-actions"><button class="manage-cancel" type="button" onclick="closeDeletePostModal()">Cancel</button><button id="confirmDeletePostBtn" class="manage-danger" type="button" onclick="confirmDeletePost()">Delete Post</button></div>
+</div></div>
+<div id="privacySuccessOverlay" class="manage-modal"><div class="manage-box"><h3>✓ Privacy Updated</h3><p>Your post visibility has been changed successfully.</p><div class="manage-actions"><button class="manage-primary" type="button" onclick="closeSimpleOverlay('privacySuccessOverlay')">Okay</button></div></div></div>
+<div id="deleteSuccessOverlay" class="manage-modal"><div class="manage-box"><h3>✓ Post Deleted</h3><p>Your post has been permanently removed.</p><div class="manage-actions"><button class="manage-primary" type="button" onclick="closeSimpleOverlay('deleteSuccessOverlay')">Okay</button></div></div></div>
+
+<!-- =========================
+     CREATE POST MODAL
+========================= -->
+<div id="postModal" class="post-modal">
+  <div class="post-modal-box">
+    <div class="post-modal-head">
+      <h3><span class="pro-icon pro-edit" aria-hidden="true"></span> Create Post</h3>
+      <button class="modal-x" type="button" onclick="closePostComposer()"><span aria-hidden="true">×</span></button>
+    </div>
+    <textarea id="postText" class="post-textarea" maxlength="500" placeholder="What’s on your mind?"></textarea>
+    <div class="char-count"><span id="postCharCount">0</span>/500</div>
+    <div class="post-options">
+      <div>
+        <label style="display:block;font-size:12px;font-weight:700;margin-bottom:6px;">Who can see this?</label>
+        <select id="postVisibility" class="post-select">
+          <option value="public">Public</option>
+          <option value="friends"><span class="pro-icon pro-users" aria-hidden="true"></span> Friends Only</option>
+          <option value="onlyMe">Only Me</option>
+        </select>
+      </div>
+    </div>
+    <button id="publishPostBtn" class="publish-btn" type="button" onclick="publishPost()">Post</button>
+  </div>
+</div>
+
+<!-- =========================
+     COMMENTS MODAL
+========================= -->
+<div id="commentsModal" class="comments-modal">
+  <div class="comments-modal-box">
+    <div class="comments-head">
+      <h3><span class="pro-icon pro-chat" aria-hidden="true"></span> Comments</h3>
+      <button class="modal-x" type="button" onclick="closeComments()"><span aria-hidden="true">×</span></button>
+    </div>
+    <div id="commentsList" class="comments-list"></div>
+    <div class="comment-form">
+      <input id="commentInput" class="comment-input" maxlength="300" placeholder="Write a comment...">
+      <button class="comment-send" type="button" onclick="submitComment()">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- =========================
+     REACTIONS MODAL
+========================= -->
+<div id="reactionsModal" class="comments-modal">
+  <div class="comments-modal-box">
+    <div class="comments-head">
+      <h3><span class="pro-icon pro-like" aria-hidden="true"></span> People who reacted</h3>
+      <button class="modal-x" type="button" onclick="closeReactions()"><span aria-hidden="true">×</span></button>
+    </div>
+    <div id="reactionsList" class="reactions-list"></div>
+  </div>
+</div>
+
+<!-- =========================
+     COMMENT SUCCESS POPUP
+========================= -->
+<div id="commentSuccessOverlay" class="success-overlay">
+  <div class="success-box">
+    <div class="success-icon">✓</div>
+    <h3>Comment Successfully Added!</h3>
+    <p>Your comment has been posted successfully.</p>
+    <button class="success-ok" onclick="closeCommentSuccessPopup()">Okay</button>
+  </div>
+</div>
+
+
+<!-- =========================
+     SHARE POST MODALS
+========================= -->
+<div id="shareChoiceModal" class="share-modal" aria-hidden="true">
+  <div class="share-modal-box" role="dialog" aria-modal="true" aria-labelledby="shareChoiceTitle">
+    <div class="share-modal-head">
+      <div>
+        <span class="share-modal-kicker"><span class="pro-icon pro-share" aria-hidden="true"></span> Share</span>
+        <h3 id="shareChoiceTitle">Share this post</h3>
+        <p>Choose how you want to share it.</p>
+      </div>
+      <button class="modal-x" type="button" aria-label="Close" onclick="closeShareChoice()">×</button>
+    </div>
+    <div class="share-choice-grid">
+      <button class="share-choice" type="button" onclick="shareAsPost()">
+        <span class="share-choice-icon"><span class="pro-icon pro-share" aria-hidden="true"></span></span>
+        <span><strong>Share as post</strong><small>Post it on your profile</small></span>
+        <span class="share-choice-arrow">›</span>
+      </button>
+      <button class="share-choice" type="button" onclick="openShareAsMessage()">
+        <span class="share-choice-icon"><span class="pro-icon pro-chat" aria-hidden="true"></span></span>
+        <span><strong>Share as message</strong><small>Send it to a friend or group</small></span>
+        <span class="share-choice-arrow">›</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="shareMessageModal" class="share-modal" aria-hidden="true">
+  <div class="share-modal-box share-message-box" role="dialog" aria-modal="true" aria-labelledby="shareMessageTitle">
+    <div class="share-modal-head">
+      <div>
+        <span class="share-modal-kicker"><span class="pro-icon pro-chat" aria-hidden="true"></span> Message</span>
+        <h3 id="shareMessageTitle">Send post to</h3>
+        <p>Select a friend or group conversation.</p>
+      </div>
+      <button class="modal-x" type="button" aria-label="Close" onclick="closeShareMessage()">×</button>
+    </div>
+    <div class="share-message-search-wrap">
+      <span class="pro-icon pro-search" aria-hidden="true"></span>
+      <input id="shareMessageSearch" class="share-message-search" type="text" placeholder="Search friends or groups..." autocomplete="off">
+    </div>
+    <div id="shareMessageList" class="share-message-list"></div>
+  </div>
+</div>
+
+<div id="postToast" class="post-toast"></div>
+
+<!-- =========================
+     BOTTOM NAV
+========================= -->
+
+<div class="bottom-nav" aria-label="Primary navigation">
+    <a href="index.html" class="nav-item" aria-label="Home">
+        <div class="nav-symbol" aria-hidden="true">⌂</div>
+        <span>Home</span>
+    </a>
+    <a href="news-feed.html" class="nav-item" aria-label="News Feed">
+        <div class="nav-symbol" aria-hidden="true">▤</div>
+        <span>News Feed</span>
+    </a>
+    <a href="voice.html" class="nav-item" aria-label="Student Voice">
+        <div class="nav-symbol" aria-hidden="true">◉</div>
+        <span>Student Voice</span>
+    </a>
+    <a href="friends.html" class="nav-item" aria-label="Friends">
+        <div class="nav-symbol" aria-hidden="true">◎</div>
+        <span>Friends</span>
+    </a>
+    <a href="profile.html" class="nav-item active" aria-label="Profile">
+        <div class="profile-nav-icon" id="profileNavPhoto" aria-label="Profile picture">
+            <img id="profileNavPhotoImg" alt="Profile picture" style="display:none;">
+        </div>
+    </a>
+</div>
+
+
+<!-- PROFILE UNFRIEND CONFIRMATION -->
+<div id="profileRemoveFriendModal" class="profile-remove-modal" aria-hidden="true">
+  <div class="profile-remove-dialog" role="dialog" aria-modal="true" aria-labelledby="profileRemoveFriendTitle">
+    <div class="profile-remove-icon"><span class="pro-icon pro-users" aria-hidden="true"></span></div>
+    <h3 id="profileRemoveFriendTitle">Unfriend?</h3>
+    <p>This person will be removed from your friends list. You can send a new friend request later.</p>
+    <div id="profileRemoveFriendPreview" class="profile-remove-preview"></div>
+    <div class="profile-remove-actions">
+      <button type="button" class="profile-remove-cancel" onclick="closeProfileRemoveFriendModal()">Cancel</button>
+      <button type="button" class="profile-remove-confirm" id="confirmProfileRemoveFriendBtn" onclick="confirmProfileUnfriend()">Unfriend</button>
+    </div>
+  </div>
+</div>
+
+<!-- =========================
+     FIREBASE
+========================= -->
+
+<script type="module">
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    collection,
+    getDocs,
+    query,
+    where,
+    orderBy,
+    limit,
+    addDoc,
+    updateDoc,
+    deleteDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",
+
+    authDomain:
+        "caths-page.firebaseapp.com",
+
+    projectId:
+        "caths-page",
+
+    storageBucket:
+        "caths-page.firebasestorage.app",
+
+    messagingSenderId:
+        "945498022620",
+
+    appId:
+        "1:945498022620:web:71aeb4cd2472e061aeca19",
+
+    measurementId:
+        "G-CBG1YSK13G"
+
+};
+
+
+const app =
+    initializeApp(firebaseConfig);
+
+const auth =
+    getAuth(app);
+
+const googleProvider =
+    new GoogleAuthProvider();
+
+const db = getFirestore(app);
+
+
+/* =========================
+   POSTS
+========================= */
+let activeCommentPostId = null;
+
+function escapePostHtml(value){
+    return String(value ?? '')
+      .replaceAll('&','&amp;')
+      .replaceAll('<','&lt;')
+      .replaceAll('>','&gt;')
+      .replaceAll('"','&quot;')
+      .replaceAll("'",'&#039;');
+}
+const VERIFIED_ADMIN_EMAILS = new Set(['reyvengarcia15@gmail.com', 'reyvenbermudo091@gmail.com', 'reyvengarcia05@gmail.com', 'chezcadc14@gmail.com', 'nathanielgarc679@gmail.com', 'marteena.133@gmail.com', 'gabbicastillo0126@gmail.com', 'leddadanielle91@gmail.com', 'jennapastor062@gmail.com', 'dhenmark1313@gmail.com', 'christianangelointes0@gmail.com', 'alexaislacruz@gmail.com', 'galangjullianne016@gmail.com', 'vanessajotic2403@gmail.com', 'aquinobernardjr0@gmail.com', 'angellyar0909@gmail.com', 'vhergelnarciso@gmail.com', 'sicatmadisson487@gmail.com']);
+function isVerifiedAdminEmail(email){return VERIFIED_ADMIN_EMAILS.has(String(email||'').trim().toLowerCase());}
+function reactionIconHtml(label){
+    const map={
+        Like:'<span class="reaction-prof-icon reaction-like" aria-hidden="true"></span>',
+        Love:'<span class="reaction-prof-icon reaction-love" aria-hidden="true"></span>',
+        Laugh:'<span class="reaction-prof-icon reaction-laugh" aria-hidden="true"></span>',
+        Wow:'<span class="reaction-prof-icon reaction-wow" aria-hidden="true"></span>',
+        Sad:'<span class="reaction-prof-icon reaction-sad" aria-hidden="true"></span>'
+    };
+    return map[label]||'<span class="reaction-prof-icon" aria-hidden="true"></span>';
+}
+
+function verifiedBadgeHtml(userOrEmail){const email=typeof userOrEmail==='string'?userOrEmail:(userOrEmail?.email||'');return isVerifiedAdminEmail(email)?'<span class="verified-badge" title="Verified admin" aria-label="Verified admin">✓</span>':'';}
+
+
+function postTimeLabel(ts){
+    try{
+        const date = ts?.toDate ? ts.toDate() : new Date(ts);
+        if(Number.isNaN(date.getTime())) return 'Just now';
+        return date.toLocaleString([], {month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit'});
+    }catch(e){ return 'Just now'; }
+}
+
+function postAvatarHtml(url){
+    return url
+      ? `<div class="post-avatar"><img src="${escapePostHtml(url)}" alt=""></div>`
+      : `<div class="post-avatar"><span class="pro-icon pro-user" aria-hidden="true"></span></div>`;
+}
+
+function openPostComposer(){
+    if(!auth.currentUser){
+        const loginOverlay = document.getElementById('loginOverlay');
+        if(loginOverlay) loginOverlay.style.display='flex';
+        return;
+    }
+    document.getElementById('postText').value='';
+    document.getElementById('postVisibility').value='public';
+    document.getElementById('postCharCount').textContent='0';
+    document.getElementById('postModal').classList.add('open');
+    setTimeout(()=>document.getElementById('postText').focus(),50);
+}
+window.openPostComposer = openPostComposer;
+
+function closePostComposer(){
+    document.getElementById('postModal').classList.remove('open');
+}
+window.closePostComposer = closePostComposer;
+
+document.getElementById('postText')?.addEventListener('input', e=>{
+    document.getElementById('postCharCount').textContent = String(e.target.value.length);
+});
+
+async function publishPost(){
+    const user = auth.currentUser;
+    const text = document.getElementById('postText').value.trim();
+    const visibility = document.getElementById('postVisibility').value;
+    const btn = document.getElementById('publishPostBtn');
+    if(!user){
+        const loginOverlay = document.getElementById('loginOverlay');
+        if(loginOverlay) loginOverlay.style.display='flex';
+        return;
+    }
+    if(!text){ alert('Please write something first.'); return; }
+    if(text.length > 500){ alert('Your post is too long.'); return; }
+
+    btn.disabled = true;
+    btn.textContent = '⏳ Posting...';
+    try{
+        const profileSnap = await getDoc(doc(db,'users',user.uid));
+        const profile = profileSnap.exists() ? (profileSnap.data() || {}) : {};
+
+        await addDoc(collection(db,'posts'),{
+            authorUid: user.uid,
+            authorName: profile.name || profile.displayName || user.displayName || 'User',
+            authorEmail: profile.email || user.email || '',
+            username: profile.username || '',
+            photoURL: profile.photoURL || user.photoURL || '',
+            text,
+            visibility,
+            createdAt: serverTimestamp(),
+            likeCount: 0,
+            commentCount: 0,
+            shareCount: 0
+        });
+
+        closePostComposer();
+        await loadPosts();
+        document.getElementById('postsCount').textContent = document.querySelectorAll('.post-card').length;
+    }catch(error){
+        console.error('Publish post error:', error);
+        alert(error?.code === 'permission-denied' ? 'Firestore rules are blocking posts. Please update your Firestore Rules.' : 'Could not publish your post.');
+    }finally{
+        btn.disabled=false;
+        btn.textContent='Post';
+    }
+}
+window.publishPost = publishPost;
+
+async function loadPosts(){
+    const user = auth.currentUser;
+    const list = document.getElementById('postsList');
+    if(!list || !user) return;
+    list.innerHTML = '<div class="empty-posts">Loading posts...</div>';
+    try{
+        const snap = await getDocs(query(collection(db,'posts'), where('authorUid','==',user.uid), limit(50)));
+        const posts = snap.docs.map(d=>({id:d.id,...d.data(),authorEmail:user.email || ''}));
+        posts.sort((a,b)=>{
+            if(Boolean(a.pinned)!==Boolean(b.pinned)) return a.pinned ? -1 : 1;
+            const ad = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+            const bd = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+            return bd-ad;
+        });
+        document.getElementById('postsCount').textContent = String(posts.length);
+        if(!posts.length){
+            list.innerHTML = `<div class="empty-posts"><div class="empty-icon"><span class="pro-icon pro-doc pro-empty" aria-hidden="true"></span></div><h3>No Posts Yet</h3><p>Your future posts will appear here.</p></div>`;
+            return;
+        }
+        list.innerHTML='';
+        for(const post of posts){
+            list.insertAdjacentHTML('beforeend', renderPost(post));
+        }
+        // populate live reaction/comment counts
+        for(const post of posts){ await refreshPostCounts(post.id); }
+    }catch(error){
+        console.error('Load posts error:',error);
+        list.innerHTML = '<div class="empty-posts">Could not load posts. Check your Firestore Rules.</div>';
+    }
+}
+window.loadPosts = loadPosts;
+
+function renderPost(post){
+    const visibilityLabel = post.visibility === 'friends' ? '<span class="pro-icon pro-users" aria-hidden="true"></span> Friends Only' : post.visibility === 'onlyMe' ? '<span class="pro-icon pro-lock" aria-hidden="true"></span> Only Me' : '<span class="pro-icon pro-news" aria-hidden="true"></span> Public';
+    const sharedContext = post.isShared && post.originalAuthorName ? `
+      <div class="share-context">
+        <div class="share-context-label"><span class="pro-icon pro-share" aria-hidden="true"></span> Shared post</div>
+        <div class="share-context-author">Original post by ${escapePostHtml(post.originalAuthorName || 'User')}</div>
+        <div class="share-context-text">${escapePostHtml(post.originalText || post.text || '')}</div>
+      </div>` : '';
+    const own = auth.currentUser?.uid === post.authorUid;
+    return `
+      <article class="post-card" data-post-id="${escapePostHtml(post.id)}" data-original-post-id="${escapePostHtml(post.originalPostId || '')}">
+        <div class="post-head">
+          ${postAvatarHtml(post.photoURL)}
+          <div class="post-author">
+            <strong>${escapePostHtml(post.authorName || 'User')}${verifiedBadgeHtml(post.authorEmail || post.email || '')}</strong>
+            <div class="post-meta">${escapePostHtml(postTimeLabel(post.createdAt))}</div>
+          </div>
+          <span class="post-visibility">${visibilityLabel}</span>
+          ${own ? `<div class="post-manage">
+            <button class="post-manage-btn" type="button" onclick="togglePostMenu('${escapePostHtml(post.id)}',event)">⋯</button>
+            <div class="post-menu-backdrop" id="menu-backdrop-${escapePostHtml(post.id)}" onclick="closePostMenu('${escapePostHtml(post.id)}',event)">
+              <div class="post-menu" onclick="event.stopPropagation()">
+                <button type="button" onclick="openPrivacyModal('${escapePostHtml(post.id)}','${escapePostHtml(post.visibility)}')"><span class="pro-icon pro-eye" aria-hidden="true"></span> Who can see this?</button>
+                <button class="pin" type="button" onclick="togglePinPost('${escapePostHtml(post.id)}',${post.pinned===true})"><span class="pro-icon pro-pin" aria-hidden="true"></span>${post.pinned===true?'Unpin from top':'Pin to the top'}</button>
+                <button class="danger" type="button" onclick="openDeletePostModal('${escapePostHtml(post.id)}')"><span class="pro-icon pro-trash" aria-hidden="true"></span> Delete</button>
+              </div>
+            </div>
+          </div>` : ''}
+        </div>
+        ${post.isShared ? '' : `<div class="post-text">${escapePostHtml(post.text)}</div>`}
+        ${post.pinned===true ? `<div class="pinned-post-badge"><span class="pro-icon pro-pin" aria-hidden="true"></span> Pinned Post</div>` : ""}
+        ${sharedContext}
+        <div class="post-counts" id="counts-${escapePostHtml(post.id)}">Loading reactions...</div>
+        <div class="post-actions">
+          <div class="reaction-wrap">
+            <button class="post-action" id="react-btn-${escapePostHtml(post.id)}" type="button" onclick="toggleReactionPicker('${escapePostHtml(post.id)}', event)">React</button>
+            <div class="reaction-picker" id="picker-${escapePostHtml(post.id)}">${[['Like','👍'],['Love','❤️'],['Laugh','😂'],['Wow','😮'],['Sad','😢']].map(([label,e])=>`<button class="reaction-emoji reaction-label" type="button" aria-label="${label}" onclick="reactToPost('${escapePostHtml(post.id)}','${e}',event)"><span class="reaction-dot-icon"></span>${label}</button>`).join('')}</div>
+          </div>
+          <button class="post-action" type="button" onclick="openComments('${escapePostHtml(post.id)}')"><span class="pro-icon pro-chat" aria-hidden="true"></span> Comment</button>
+          <button class="post-action" type="button" onclick="sharePost('${escapePostHtml(post.id)}')"><span class="pro-icon pro-share" aria-hidden="true"></span> Share</button>
+        </div>
+      </article>`;
+}
+
+function toggleReactionPicker(postId, event){
+    event.stopPropagation();
+    document.querySelectorAll('.reaction-picker.open').forEach(el=>{ if(el.id !== 'picker-'+postId) el.classList.remove('open'); });
+    document.getElementById('picker-'+postId)?.classList.toggle('open');
+}
+window.toggleReactionPicker = toggleReactionPicker;
+
+document.addEventListener('click',e=>{
+    if(!e.target.closest('.reaction-wrap')) document.querySelectorAll('.reaction-picker.open').forEach(el=>el.classList.remove('open'));
+});
+
+async function reactToPost(postId, emoji, event){
+    event.stopPropagation();
+    const user=auth.currentUser;
+    if(!user)return;
+    try{
+        const ref=doc(db,'posts',postId,'reactions',user.uid);
+        const existing=await getDoc(ref);
+        if(existing.exists()&&existing.data()?.emoji===emoji){await deleteDoc(ref);}
+        else{
+            const snap=await getDoc(doc(db,'users',user.uid));
+            const profile=snap.exists()?snap.data()||{}:{};
+            await setDoc(ref,{uid:user.uid,emoji,authorName:profile.name||profile.nickname||profile.displayName||user.displayName||'User',username:profile.username||'',photoURL:profile.photoURL||user.photoURL||'',updatedAt:serverTimestamp()});
+            const postSnap=await getDoc(doc(db,'posts',postId));
+            if(postSnap.exists()){
+                const postData=postSnap.data()||{};
+                if(postData.authorUid&&postData.authorUid!==user.uid){
+                    await addDoc(collection(db,'notifications'),{recipientUid:postData.authorUid,actorUid:user.uid,actorName:profile.nickname||profile.name||profile.displayName||user.displayName||'Student',type:'reaction',text:`reacted ${emoji} to your post.`,postId,read:false,createdAt:serverTimestamp()});
+                }
+            }
+        }
+        document.getElementById('picker-'+postId)?.classList.remove('open');
+        await refreshPostCounts(postId);
+    }catch(error){console.error(error);alert('Could not update reaction.');}
+}
+window.reactToPost=reactToPost;
+
+async function refreshPostCounts(postId){
+    try{
+        const reactionsSnap=await getDocs(collection(db,'posts',postId,'reactions'));
+        const commentsSnap=await getDocs(collection(db,'posts',postId,'comments'));
+        const postSnap=await getDoc(doc(db,'posts',postId));
+        const tally={'👍':0,'❤️':0,'😂':0,'😮':0,'😢':0};
+        reactionsSnap.docs.forEach(d=>{const e=d.data()?.emoji||'👍';tally[e]=(tally[e]||0)+1;});
+        const parts=Object.entries(tally).filter(([_,n])=>n>0).map(([e,n])=>`<button type="button" class="reaction-summary" onclick="openReactions('${escapePostHtml(postId)}')">${e} ${n}</button>`);
+        const reactionSummary=parts.length?parts.join(' · '):`<button type="button" class="reaction-summary" onclick="openReactions('${escapePostHtml(postId)}')">No reactions yet</button>`;
+        const shareCount=postSnap.exists()?Number(postSnap.data()?.shareCount||0):0;
+        const countsEl=document.getElementById('counts-'+postId);
+        if(countsEl)countsEl.innerHTML=`${reactionSummary} <span>· Comments ${commentsSnap.size}</span> <span>· Shares ${shareCount}</span>`;
+        const btn=document.getElementById('react-btn-'+postId);
+        if(btn&&auth.currentUser){
+            const mine=reactionsSnap.docs.find(d=>d.id===auth.currentUser.uid)?.data()?.emoji;
+            btn.textContent=mine?`${mine} Reacted`:'React';
+            btn.classList.toggle('active',!!mine);
+        }
+    }catch(error){console.error('refresh counts',error);}
+}
+
+let activeManagePostId=null;
+function togglePostMenu(postId,event){
+    event.stopPropagation();
+    const target=document.getElementById('menu-backdrop-'+postId);
+    const wasOpen=target?.classList.contains('open');
+    document.querySelectorAll('.post-menu-backdrop.open').forEach(el=>el.classList.remove('open'));
+    if(target && !wasOpen) target.classList.add('open');
+}
+window.togglePostMenu=togglePostMenu;
+function closePostMenu(postId,event){if(event)event.stopPropagation();document.getElementById('menu-backdrop-'+postId)?.classList.remove('open');}
+window.closePostMenu=closePostMenu;
+document.addEventListener('click',e=>{
+    if(!e.target.closest('.post-manage')) document.querySelectorAll('.post-menu-backdrop.open').forEach(el=>el.classList.remove('open'));
+});
+function openDeletePostModal(postId){activeManagePostId=postId;closePostMenu(postId);document.getElementById('deletePostModal')?.classList.add('open');}
+window.openDeletePostModal=openDeletePostModal;
+function closeDeletePostModal(){activeManagePostId=null;document.getElementById('deletePostModal')?.classList.remove('open');}
+window.closeDeletePostModal=closeDeletePostModal;
+async function confirmDeletePost(){
+    const user=auth.currentUser,postId=activeManagePostId;if(!user||!postId)return;
+    const btn=document.getElementById('confirmDeletePostBtn');if(btn){btn.disabled=true;btn.textContent='Deleting...';}
+    try{
+        const ref=doc(db,'posts',postId),snap=await getDoc(ref);
+        if(!snap.exists())throw new Error('This post no longer exists.');
+        if(snap.data()?.authorUid!==user.uid)throw new Error('You can only delete your own post.');
+        await deleteDoc(ref);
+        document.querySelector(`.post-card[data-post-id="${CSS.escape(postId)}"]`)?.remove();
+        const count=document.getElementById('postsCount');if(count)count.textContent=String(document.querySelectorAll('.post-card').length);
+        closeDeletePostModal();document.getElementById('deleteSuccessOverlay')?.classList.add('open');
+        if(!document.querySelector('.post-card'))document.getElementById('postsList').innerHTML='<div class="empty-posts"><div class="empty-icon"><span class="pro-icon pro-doc pro-empty" aria-hidden="true"></span></div><h3>No Posts Yet</h3><p>Your future posts will appear here.</p></div>';
+    }catch(e){console.error(e);alert(e.message||'Could not delete post.');}
+    finally{if(btn){btn.disabled=false;btn.textContent='Delete Post';}}
+}
+window.confirmDeletePost=confirmDeletePost;
+async function togglePinPost(postId,isPinned){
+    const user=auth.currentUser;if(!user||!postId)return;
+    closePostMenu(postId);
+    try{
+        const ref=doc(db,'posts',postId),snap=await getDoc(ref);
+        if(!snap.exists()||snap.data()?.authorUid!==user.uid)throw new Error('You can only pin your own post.');
+        await updateDoc(ref,{pinned:!isPinned});
+        await loadPosts();
+        // The post list refresh is enough feedback; no bottom pin popup is shown.
+    }catch(e){console.error(e);alert(e?.code==='permission-denied'?'Firestore is blocking this pin change.':'Could not change the post pin.');}
+}
+window.togglePinPost=togglePinPost;
+
+function openPrivacyModal(postId,currentVisibility){activeManagePostId=postId;closePostMenu(postId);document.querySelectorAll('.privacy-option').forEach(b=>b.classList.toggle('active',b.dataset.visibility===currentVisibility));document.getElementById('privacyModal')?.classList.add('open');}
+window.openPrivacyModal=openPrivacyModal;
+function closePrivacyModal(){activeManagePostId=null;document.getElementById('privacyModal')?.classList.remove('open');}
+window.closePrivacyModal=closePrivacyModal;
+async function savePostVisibility(visibility){
+    const user=auth.currentUser,postId=activeManagePostId;if(!user||!postId)return;
+    document.querySelectorAll('.privacy-option').forEach(b=>b.disabled=true);
+    try{
+        const ref=doc(db,'posts',postId),snap=await getDoc(ref);
+        if(!snap.exists()||snap.data()?.authorUid!==user.uid)throw new Error('You can only change your own post privacy.');
+        await updateDoc(ref,{visibility});
+        const card=document.querySelector(`.post-card[data-post-id="${CSS.escape(postId)}"]`);
+        const badge=card?.querySelector('.post-visibility');if(badge)badge.innerHTML=visibility==='friends'?'<span class="pro-icon pro-users" aria-hidden="true"></span> Friends Only':visibility==='onlyMe'?'<span class="pro-icon pro-lock" aria-hidden="true"></span> Only Me':'<span class="pro-icon pro-news" aria-hidden="true"></span> Public';
+        closePrivacyModal();document.getElementById('privacySuccessOverlay')?.classList.add('open');
+    }catch(e){console.error(e);alert(e?.code==='permission-denied'?'Firestore is blocking the privacy change.':'Could not change who can see this post.');}
+    finally{document.querySelectorAll('.privacy-option').forEach(b=>b.disabled=false);}
+}
+window.savePostVisibility=savePostVisibility;
+function closeSimpleOverlay(id){document.getElementById(id)?.classList.remove('open');}
+window.closeSimpleOverlay=closeSimpleOverlay;
+
+async function openComments(postId){
+    activeCommentPostId = postId;
+    document.getElementById('commentsModal').classList.add('open');
+    document.getElementById('commentsList').innerHTML = '<div style="padding:8px;color:#777">Loading comments...</div>';
+    await loadComments(postId);
+}
+window.openComments=openComments;
+
+function closeComments(){
+    activeCommentPostId=null;
+    document.getElementById('commentsModal').classList.remove('open');
+}
+window.closeComments=closeComments;
+
+async function loadComments(postId){
+    try{
+        const snap = await getDocs(query(collection(db,'posts',postId,'comments'), limit(100)));
+        const comments = snap.docs.map(d=>({id:d.id,...d.data()}));
+        comments.sort((a,b)=>{
+            const ad=a.createdAt?.toMillis?a.createdAt.toMillis():0;
+            const bd=b.createdAt?.toMillis?b.createdAt.toMillis():0;
+            return ad-bd;
+        });
+        const list=document.getElementById('commentsList');
+        if(!comments.length){ list.innerHTML='<div style="padding:15px;text-align:center;color:#777">No comments yet.</div>'; return; }
+        list.innerHTML=comments.map(c=>`<div class="comment-item"><strong>${escapePostHtml(c.authorName||'User')}</strong><p>${escapePostHtml(c.text)}</p></div>`).join('');
+    }catch(error){
+        console.error(error);
+        document.getElementById('commentsList').innerHTML='<div style="padding:15px;color:#777">Could not load comments.</div>';
+    }
+}
+
+async function submitComment(){
+    const user=auth.currentUser;
+    const input=document.getElementById('commentInput');
+    const text=input.value.trim();
+    if(!user || !activeCommentPostId || !text) return;
+    const sendBtn=document.querySelector('.comment-send');
+    if(sendBtn){ sendBtn.disabled=true; sendBtn.textContent='Sending...'; }
+    try{
+        const profileSnap=await getDoc(doc(db,'users',user.uid));
+        const profile=profileSnap.exists()?profileSnap.data()||{}:{};
+        await addDoc(collection(db,'posts',activeCommentPostId,'comments'),{
+            authorId:user.uid,
+            uid:user.uid,
+            authorName:profile.name || profile.displayName || user.displayName || 'User',
+            text,
+            createdAt:serverTimestamp()
+        });
+        const postSnap=await getDoc(doc(db,'posts',activeCommentPostId));
+        if(postSnap.exists()){
+            const postData=postSnap.data()||{};
+            if(postData.authorUid && postData.authorUid!==user.uid){
+                await addDoc(collection(db,'notifications'),{
+                    recipientUid:postData.authorUid, actorUid:user.uid,
+                    actorName:profile.nickname||profile.name||profile.displayName||user.displayName||'Student',
+                    type:'comment', text:'commented on your post.',
+                    postId:activeCommentPostId, read:false, createdAt:serverTimestamp()
+                });
+            }
+        }
+        input.value='';
+        await loadComments(activeCommentPostId);
+        await refreshPostCounts(activeCommentPostId);
+        openCommentSuccessPopup();
+    }catch(error){
+        console.error(error);
+        const message = error?.code === 'permission-denied'
+          ? 'Firestore is blocking this comment. Please check your Firestore Rules.'
+          : 'Could not add comment.';
+        alert(message);
+    }finally{
+        if(sendBtn){ sendBtn.disabled=false; sendBtn.textContent='Send'; }
+    }
+}
+window.submitComment=submitComment;
+
+function openCommentSuccessPopup(){
+    const el=document.getElementById('commentSuccessOverlay');
+    if(el) el.style.display='flex';
+}
+window.openCommentSuccessPopup=openCommentSuccessPopup;
+function closeCommentSuccessPopup(){
+    const el=document.getElementById('commentSuccessOverlay');
+    if(el) el.style.display='none';
+}
+window.closeCommentSuccessPopup=closeCommentSuccessPopup;
+window.submitComment=submitComment;
+
+let activeSharePostId = null;
+let shareFriendsCache = [];
+let shareGroupsCache = [];
+
+function openShareModal(id){
+    const el=document.getElementById(id);
+    if(!el)return;
+    el.classList.add('open');
+    el.setAttribute('aria-hidden','false');
+}
+function closeShareChoice(){
+    activeSharePostId=null;
+    const el=document.getElementById('shareChoiceModal');
+    if(el){el.classList.remove('open');el.setAttribute('aria-hidden','true');}
+}
+window.closeShareChoice=closeShareChoice;
+function closeShareMessage(){
+    const el=document.getElementById('shareMessageModal');
+    if(el){el.classList.remove('open');el.setAttribute('aria-hidden','true');}
+    activeSharePostId=null;
+}
+window.closeShareMessage=closeShareMessage;
+
+async function getSharePost(postId){
+    const snap=await getDoc(doc(db,'posts',postId));
+    return snap.exists()?{id:snap.id,...(snap.data()||{})}:null;
+}
+
+async function sharePost(postId){
+    const user=auth.currentUser;
+    if(!user){
+        const loginOverlay=document.getElementById('loginOverlay');
+        if(loginOverlay) loginOverlay.style.display='flex';
+        return;
+    }
+    try{
+        const original=await getSharePost(postId);
+        if(!original){showPostToast('This post no longer exists.');return;}
+        activeSharePostId=postId;
+        openShareModal('shareChoiceModal');
+    }catch(error){
+        console.error('Prepare share error:',error);
+        showPostToast('Could not prepare sharing.');
+    }
+}
+window.sharePost=sharePost;
+
+async function incrementSharedPostCount(postId, original){
+    try{
+        await updateDoc(doc(db,'posts',postId),{shareCount:Number(original?.shareCount||0)+1});
+    }catch(e){console.warn('Could not update share count',e);}
+}
+
+async function shareAsPost(){
+    const user=auth.currentUser;
+    const postId=activeSharePostId;
+    if(!user||!postId)return;
+    try{
+        const original=await getSharePost(postId);
+        if(!original){showPostToast('This post no longer exists.');closeShareChoice();return;}
+        const profileSnap=await getDoc(doc(db,'users',user.uid));
+        const profile=profileSnap.exists()?profileSnap.data()||{}:{};
+        await addDoc(collection(db,'posts'),{
+            authorUid:user.uid,
+            authorName:profile.name || profile.nickname || profile.displayName || user.displayName || 'User',
+            authorEmail:profile.email || user.email || '',
+            username:profile.username || '',
+            photoURL:profile.photoURL || user.photoURL || '',
+            text:original.originalText || original.text || '',
+            visibility:'public',
+            audienceUids:[],
+            mentions:original.mentions || [],
+            isShared:true,
+            originalPostId:postId,
+            originalAuthorUid:original.originalAuthorUid || original.authorUid || '',
+            originalAuthorName:original.originalAuthorName || original.authorName || 'User',
+            originalText:original.originalText || original.text || '',
+            createdAt:serverTimestamp(),
+            likeCount:0,
+            commentCount:0,
+            shareCount:0
+        });
+        await incrementSharedPostCount(postId,original);
+        if(original.authorUid&&original.authorUid!==user.uid){
+            await addDoc(collection(db,'notifications'),{
+                recipientUid:original.authorUid,actorUid:user.uid,
+                actorName:profile.nickname||profile.name||profile.displayName||user.displayName||'Student',
+                type:'share',text:'shared your post.',postId,read:false,createdAt:serverTimestamp()
+            }).catch(()=>{});
+        }
+        closeShareChoice();
+        showPostToast('Post shared as a post.');
+        await loadPosts();
+        const countText=document.getElementById('postsCount');
+        if(countText)countText.textContent=String(document.querySelectorAll('.post-card').length);
+    }catch(error){
+        console.error('Share as post error:',error);
+        showPostToast(error?.code==='permission-denied'?'Firestore blocked this share.':'Could not share as a post.');
+    }
+}
+window.shareAsPost=shareAsPost;
+
+async function loadShareTargets(){
+    const user=auth.currentUser;
+    if(!user)return;
+    try{
+        const friendSnap=await getDocs(query(collection(db,'friends',user.uid,'list'),limit(100)));
+        shareFriendsCache=await Promise.all(friendSnap.docs.map(async d=>{
+            const fid=d.id;
+            let data={...(d.data()||{})};
+            try{const us=await getDoc(doc(db,'users',fid));if(us.exists())data={...data,...(us.data()||{})};}catch(e){}
+            return {uid:data.uid||fid,...data};
+        }));
+        shareFriendsCache.sort((a,b)=>String(a.nickname||a.name||a.username||'').localeCompare(String(b.nickname||b.name||b.username||'')));
+    }catch(e){console.warn('Share friend targets',e);shareFriendsCache=[];}
+    try{
+        const groupSnap=await getDocs(query(collection(db,'groups'),where('memberUids','array-contains',user.uid),limit(100)));
+        shareGroupsCache=groupSnap.docs.map(d=>({id:d.id,...(d.data()||{})})).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||'')));
+    }catch(e){
+        // Older projects may not have groups enabled/rules; keep friend sharing working.
+        console.warn('Share group targets',e);shareGroupsCache=[];
+    }
+}
+
+function shareTargetMarkup(item,kind){
+    if(kind==='group'){
+        const name=item.name||'Group Chat';
+        return `<button type="button" class="share-target" data-share-kind="group" data-share-id="${escapePostHtml(item.id)}">
+            <span class="share-target-icon"><span class="pro-icon pro-users" aria-hidden="true"></span></span>
+            <span class="share-target-info"><strong>${escapePostHtml(name)}</strong><small>${Number(item.memberUids?.length||0)} members</small></span>
+            <span class="share-target-type">GROUP</span>
+        </button>`;
+    }
+    const name=item.nickname||item.name||item.displayName||item.username||'Student';
+    const avatar=item.photoURL?`<img src="${escapePostHtml(item.photoURL)}" alt="">`:escapePostHtml(name.charAt(0).toUpperCase());
+    return `<button type="button" class="share-target" data-share-kind="friend" data-share-id="${escapePostHtml(item.uid)}">
+        <span class="share-target-avatar">${avatar}</span>
+        <span class="share-target-info"><strong>${escapePostHtml(name)}${verifiedBadgeHtml(item.email||'')}</strong><small>${item.username?'@'+escapePostHtml(item.username):'Friend'}</small></span>
+        <span class="share-target-type">FRIEND</span>
+    </button>`;
+}
+
+function renderShareTargets(filter=''){
+    const box=document.getElementById('shareMessageList');
+    if(!box)return;
+    const q=String(filter||'').trim().toLowerCase();
+    const friends=shareFriendsCache.filter(x=>{
+        const n=String(x.nickname||x.name||x.displayName||x.username||'').toLowerCase();
+        return !q||n.includes(q);
+    });
+    const groups=shareGroupsCache.filter(x=>String(x.name||'').toLowerCase().includes(q));
+    let html='';
+    if(friends.length)html+=`<div class="share-target-section">Friends</div>${friends.map(x=>shareTargetMarkup(x,'friend')).join('')}`;
+    if(groups.length)html+=`<div class="share-target-section">Groups</div>${groups.map(x=>shareTargetMarkup(x,'group')).join('')}`;
+    box.innerHTML=html||'<div class="share-target-empty">No friends or groups found.</div>';
+    box.querySelectorAll('[data-share-id]').forEach(btn=>btn.addEventListener('click',()=>shareTarget(btn.dataset.shareKind,btn.dataset.shareId)));
+    box.querySelectorAll('.share-target').forEach((el,i)=>el.style.animationDelay=`${Math.min(i,8)*25}ms`);
+}
+
+async function openShareAsMessage(){
+    const user=auth.currentUser;
+    if(!user||!activeSharePostId)return;
+    const choice=document.getElementById('shareChoiceModal');
+    if(choice){choice.classList.remove('open');choice.setAttribute('aria-hidden','true');}
+    openShareModal('shareMessageModal');
+    const box=document.getElementById('shareMessageList');
+    if(box)box.innerHTML='<div class="share-target-empty">Loading conversations...</div>';
+    const input=document.getElementById('shareMessageSearch');
+    if(input){input.value='';setTimeout(()=>input.focus(),50);}
+    await loadShareTargets();
+    renderShareTargets('');
+}
+window.openShareAsMessage=openShareAsMessage;
+
+async function shareTarget(kind,id){
+    const user=auth.currentUser;
+    const postId=activeSharePostId;
+    if(!user||!postId||!id)return;
+    try{
+        const original=await getSharePost(postId);
+        if(!original){showPostToast('This post no longer exists.');closeShareMessage();return;}
+        const profileSnap=await getDoc(doc(db,'users',user.uid));
+        const profile=profileSnap.exists()?profileSnap.data()||{}:{};
+        const author=original.originalAuthorName||original.authorName||'Student';
+        const body=String(original.originalText||original.text||'').slice(0,900);
+        const text=`↗ Shared post\n\nOriginal post by ${author}:\n${body}`;
+        if(kind==='group'){
+            const group=shareGroupsCache.find(g=>g.id===id);
+            if(!group||!(group.memberUids||[]).includes(user.uid))throw new Error('You are not a member of this group.');
+            await addDoc(collection(db,'groups',id,'messages'),{
+                senderUid:user.uid,
+                senderName:profile.nickname||profile.name||profile.displayName||user.displayName||'Student',
+                text,
+                sharedPost:{postId,authorName:author,text:body},
+                createdAt:serverTimestamp(),
+                hiddenFor:[],unsent:false,readBy:[user.uid]
+            });
+        }else{
+            const friendUid=id;
+            if(friendUid===user.uid)return;
+            const friendRef=doc(db,'friends',user.uid,'list',friendUid);
+            if(!(await getDoc(friendRef)).exists())throw new Error('You can only share to your friends.');
+            const cid=[user.uid,friendUid].sort().join('_');
+            await addDoc(collection(db,'conversations',cid,'messages'),{
+                senderUid:user.uid,
+                receiverUid:friendUid,
+                text,
+                sharedPost:{postId,authorName:author,text:body},
+                createdAt:serverTimestamp(),hiddenFor:[],unsent:false,reactions:{},readBy:[user.uid]
+            });
+            await addDoc(collection(db,'notifications'),{
+                recipientUid:friendUid,actorUid:user.uid,
+                actorName:profile.nickname||profile.name||profile.displayName||user.displayName||'Student',
+                type:'message',text:'shared a post with you.',chatId:cid,postId,read:false,createdAt:serverTimestamp()
+            }).catch(()=>{});
+        }
+        await incrementSharedPostCount(postId,original);
+        closeShareMessage();
+        showPostToast(kind==='group'?'Post shared to the group.':'Post shared as a message.');
+        await loadPosts();
+    }catch(error){
+        console.error('Share target error:',error);
+        showPostToast(error?.code==='permission-denied'?'Firestore blocked this message share.':(error.message||'Could not share the post.'));
+    }
+}
+
+window.shareTarget=shareTarget;
+
+const shareSearch=document.getElementById('shareMessageSearch');
+if(shareSearch)shareSearch.addEventListener('input',e=>renderShareTargets(e.target.value));
+
+document.querySelectorAll('#shareChoiceModal,#shareMessageModal').forEach(modal=>{
+    modal.addEventListener('click',e=>{if(e.target===modal){if(modal.id==='shareChoiceModal')closeShareChoice();else closeShareMessage();}});
+});
+
+
+function showPostToast(message){
+    const toast=document.getElementById('postToast');
+    if(!toast) return;
+    toast.textContent=message;
+    toast.classList.add('show');
+    clearTimeout(window.__postToastTimer);
+    window.__postToastTimer=setTimeout(()=>toast.classList.remove('show'),2200);
+}
+
+
+
+/* =========================
+   GOOGLE LOGIN
+========================= */
+
+window.googleLogin = async function(){
+
+    try{
+
+        await signInWithPopup(
+            auth,
+            googleProvider
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "Google login failed: " +
+            error.message
+        );
+
+    }
+
+};
+
+
+
+let sharedPostRefreshTimer=null;
+async function refreshSharedPosts(){
+    if(!auth.currentUser) return;
+    try{ await loadPosts(); }catch(e){ console.warn('Shared post refresh failed',e); }
+}
+function startSharedPostWatcher(){
+    if(sharedPostRefreshTimer) clearInterval(sharedPostRefreshTimer);
+    sharedPostRefreshTimer=setInterval(refreshSharedPosts,12000);
+}
+
+/* =========================
+   AUTH STATE
+========================= */
+
+document.getElementById('profileRemoveFriendModal')?.addEventListener('click',e=>{
+    if(e.target===e.currentTarget) closeProfileRemoveFriendModal();
+});
+
+onAuthStateChanged(
+    auth,
+    async (user) => {
+
+        const loginOverlay =
+            document.getElementById(
+                "loginOverlay"
+            );
+
+        if(!user){
+            loginOverlay.style.display = "flex";
+            return;
+        }
+
+        loginOverlay.style.display = "none";
+
+        // Keep the signed-in account identity synchronized across the other pages.
+        localStorage.setItem("userName", user.displayName || "User");
+        localStorage.setItem("userPhoto", user.photoURL || "");
+        localStorage.setItem("userEmail", user.email || "");
+
+        document.getElementById("profileName").innerHTML =
+            escapePostHtml(user.displayName || "User") + verifiedBadgeHtml(user.email);
+
+        document.getElementById("profileEmail").textContent =
+            user.email || "";
+
+        // Always start with the Google account photo.
+        // Firestore data may override it only when a saved photoURL exists.
+        applyProfilePhoto(user.photoURL || "");
+
+        await loadProfileData();
+
+        if(profileSetupRequired){
+            await openEditProfile();
+        }
+
+        await loadProfileFriends();
+
+        // Use the saved profile photo from Firestore when available.
+        try{
+            const snap = await getDoc(doc(db, "users", user.uid));
+            if(snap.exists()){
+                const data = snap.data() || {};
+                applyProfilePhoto(data.photoURL || user.photoURL || "");
+            }
+        }catch(error){
+            console.error("Could not load remote profile:", error);
+        }
+
+        await loadPosts();
+        startSharedPostWatcher();
+    }
+);
+
+
+/* =========================
+   PROFILE PHOTO HELPERS
+========================= */
+
+function profileStorageKey(){
+    const email = auth.currentUser?.email || "";
+    return email ? "profileData_" + email : "";
+}
+
+function getGoogleProfilePhotoUrl(photoUrl){
+    if(!photoUrl) return "";
+
+    // Google profile photo URLs commonly contain a small requested size such as
+    // =s96-c. Request a larger source when possible so the displayed avatar is
+    // as sharp as the account photo allows. Other providers/URLs are left intact.
+    try{
+        return String(photoUrl)
+            .replace(/=s\d+(?:-c)?(?:-rw)?$/i, "=s512-c")
+            .replace(/[?&]sz=\d+/i, "?sz=512");
+    }catch(e){
+        return photoUrl;
+    }
+}
+
+function applyProfilePhoto(photoUrl){
+    const picture = document.getElementById("profilePicture");
+    const placeholder = document.getElementById("profilePlaceholder");
+    const navPhoto = document.getElementById("profileNavPhoto");
+    const finalPhotoUrl = getGoogleProfilePhotoUrl(photoUrl);
+
+    if(finalPhotoUrl){
+        picture.src = finalPhotoUrl;
+        picture.alt = "Profile Picture";
+        picture.style.display = "block";
+        picture.style.filter = "none";
+        picture.style.webkitFilter = "none";
+        picture.style.imageRendering = "auto";
+        picture.loading = "eager";
+        picture.decoding = "async";
+        placeholder.style.display = "none";
+
+        if(navPhoto){
+            navPhoto.innerHTML = '';
+            const navImg = document.createElement('img');
+            navImg.id = 'profileNavPhotoImg';
+            navImg.src = finalPhotoUrl;
+            navImg.alt = 'Profile';
+            navImg.loading = 'eager';
+            navImg.decoding = 'async';
+            navImg.referrerPolicy = 'no-referrer';
+            navImg.style.filter = 'none';
+            navImg.style.webkitFilter = 'none';
+            navPhoto.appendChild(navImg);
+        }
+    }else{
+        picture.removeAttribute("src");
+        picture.style.display = "none";
+        placeholder.style.display = "flex";
+
+        if(navPhoto){
+            // Keep the profile navigation clean when no photo is available.
+            // A real account photo is inserted above as soon as Firebase auth/profile data loads.
+            navPhoto.innerHTML = '';
+        }
+    }
+}
+
+
+/* =========================
+   PROFILE SETUP GUARD
+========================= */
+let profileSetupRequired = false;
+
+function isProfileSetupComplete(data = {}, user = auth.currentUser){
+    const name = String(data.name || data.displayName || user?.displayName || "").trim();
+    const section = String(data.section || "").trim();
+    const bio = String(data.bio || "").trim();
+    return Boolean(name && section && bio);
+}
+
+function updateProfileSetupNotice(){
+    const notice = document.getElementById("profileSetupRequiredNotice");
+    if(notice) notice.style.display = profileSetupRequired ? "flex" : "none";
+}
+
+/* =========================
+   LOAD PROFILE DATA
+========================= */
+
+async function loadProfileData(){
+
+    const user = auth.currentUser;
+    if(!user) return;
+
+    let data = {};
+
+    try{
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if(snap.exists()){
+            data = snap.data() || {};
+        }
+    }catch(error){
+        console.error("Firestore profile load error:", error);
+    }
+
+    // LocalStorage remains only as a fallback for older profiles.
+    if(!data.name && !data.bio && !data.photoURL){
+        const saved = localStorage.getItem(profileStorageKey());
+        if(saved){
+            try{ data = JSON.parse(saved) || {}; }catch(error){}
+        }
+    }
+
+    if(data.name){
+        document.getElementById("profileName").innerHTML = escapePostHtml(data.name) + verifiedBadgeHtml(data.email || user.email);
+    }
+
+    if(data.section){
+        document.getElementById("editSection").value = data.section;
+    }
+
+    if(data.bio){
+        document.getElementById("profileBio").textContent = data.bio;
+    }
+
+    // Firestore photoURL has priority, otherwise keep using the Google account photo.
+    applyProfilePhoto(data.photoURL || user.photoURL || "");
+
+    profileSetupRequired = !isProfileSetupComplete(data, user);
+    updateProfileSetupNotice();
+    return data;
+
+}
+
+
+/* =========================
+   LOAD MY FRIENDS
+========================= */
+async function loadProfileFriends(){
+    const user=auth.currentUser;
+    const list=document.getElementById('profileFriendsList');
+    const count=document.getElementById('friendsCount');
+    const tabCount=document.getElementById('friendsTabCount');
+    if(!user || !list) return;
+
+    list.innerHTML=`<div class="friends-loading"><div class="friends-spinner"></div><div class="friends-loading-text">Loading friends...</div></div>`;
+
+    try{
+        const snap=await getDocs(query(collection(db,'friends',user.uid,'list'),limit(100)));
+        const total=snap.size;
+        if(count) count.textContent=String(total);
+        if(tabCount) tabCount.textContent=`${total} Friend${total===1?'':'s'}`;
+
+        if(snap.empty){
+            list.innerHTML=`<div class="friends-empty">You don't have any friends yet.</div>`;
+            return;
+        }
+
+        const baseFriends=snap.docs.map(d=>({id:d.id,...(d.data()||{})}));
+        const friends=await Promise.all(baseFriends.map(async friend=>{
+            const friendId=friend.uid || friend.id;
+            let remote={};
+            try{
+                const userSnap=await getDoc(doc(db,'users',friendId));
+                if(userSnap.exists()) remote=userSnap.data()||{};
+            }catch(e){
+                console.warn('Could not load friend profile',friendId,e);
+            }
+            return {
+                ...friend,
+                ...remote,
+                uid:friendId,
+                email:remote.email || friend.email || ''
+            };
+        }));
+
+        friends.sort((a,b)=>String(a.nickname||a.name||a.username||'').localeCompare(String(b.nickname||b.name||b.username||'')));
+
+        list.innerHTML=friends.map(friend=>{
+            const friendId=friend.uid;
+            const friendName=friend.nickname || friend.name || friend.displayName || friend.username || 'Student';
+            const username=friend.username ? `@${friend.username}` : '';
+            const avatar=friend.photoURL
+              ? `<div class="friend-profile-avatar"><img src="${escapePostHtml(friend.photoURL)}" alt=""></div>`
+              : `<div class="friend-profile-avatar">${escapePostHtml(friendName.charAt(0).toUpperCase())}</div>`;
+            const verified=verifiedBadgeHtml(friend.email || '');
+
+            return `<div class="friend-profile-row" data-friend-id="${escapePostHtml(friendId)}">
+                <a class="friend-profile-link" href="user-profile.html?uid=${encodeURIComponent(friendId)}">
+                    ${avatar}
+                    <div class="friend-profile-info">
+                        <span class="friend-profile-name">${escapePostHtml(friendName)}${verified}</span>
+                        <span class="friend-profile-username">${escapePostHtml(username)}</span>
+                    </div>
+                </a>
+                <div class="friend-profile-actions">
+                    <button class="friend-message-btn" type="button" onclick="messageFriend('${escapePostHtml(friendId)}')"><span class="pro-icon pro-chat" aria-hidden="true"></span> Message</button>
+                    <button class="friend-unfriend-btn" type="button" onclick="unfriendProfileFriend('${escapePostHtml(friendId)}', this)">Unfriend</button>
+                </div>
+            </div>`;
+        }).join('');
+    }catch(error){
+        console.error('Load profile friends error:',error);
+        if(count) count.textContent='0';
+        if(tabCount) tabCount.textContent='0 Friends';
+        list.innerHTML=`<div class="friends-empty">Could not load your friends. Check your Firestore rules.</div>`;
+    }
+}
+window.loadProfileFriends=loadProfileFriends;
+
+window.messageFriend=function(friendId){
+    if(!friendId) return;
+    window.location.href=`messages.html?uid=${encodeURIComponent(friendId)}`;
+};
+
+let pendingProfileUnfriend={friendId:null,button:null,friend:null};
+
+window.unfriendProfileFriend=function(friendId,button){
+    const user=auth.currentUser;
+    if(!user || !friendId) return;
+    const row=button?.closest('.friend-profile-row');
+    const friendName=row?.querySelector('.friend-profile-name')?.textContent || 'this person';
+    const username=row?.querySelector('.friend-profile-username')?.textContent || '';
+    const img=row?.querySelector('.friend-profile-avatar img');
+    const preview=document.getElementById('profileRemoveFriendPreview');
+    if(preview){
+        preview.innerHTML=img
+          ? `<img src="${escapePostHtml(img.src)}" alt="">`
+          : `<div class="profile-remove-avatar">${escapePostHtml(friendName.charAt(0).toUpperCase())}</div>`;
+        preview.innerHTML += `<div><strong>${escapePostHtml(friendName)}</strong><span>${escapePostHtml(username)}</span></div>`;
+    }
+    pendingProfileUnfriend={friendId,button,friend:{name:friendName,username}};
+    const modal=document.getElementById('profileRemoveFriendModal');
+    modal?.classList.add('show');
+    modal?.setAttribute('aria-hidden','false');
+};
+
+window.closeProfileRemoveFriendModal=function(){
+    const modal=document.getElementById('profileRemoveFriendModal');
+    modal?.classList.remove('show');
+    modal?.setAttribute('aria-hidden','true');
+    pendingProfileUnfriend={friendId:null,button:null,friend:null};
+};
+
+window.confirmProfileUnfriend=async function(){
+    const user=auth.currentUser;
+    const {friendId,button}=pendingProfileUnfriend;
+    if(!user || !friendId) return;
+    const confirmBtn=document.getElementById('confirmProfileRemoveFriendBtn');
+    if(confirmBtn){confirmBtn.disabled=true;confirmBtn.textContent='Removing...';}
+    try{
+        await deleteDoc(doc(db,'friends',user.uid,'list',friendId));
+        await deleteDoc(doc(db,'friends',friendId,'list',user.uid));
+        closeProfileRemoveFriendModal();
+        showPostToast('Friend removed.');
+        await loadProfileFriends();
+    }catch(error){
+        console.error('Unfriend error:',error);
+        if(confirmBtn){confirmBtn.disabled=false;confirmBtn.textContent='Unfriend';}
+        alert(error?.code==='permission-denied'?'Firestore is blocking this unfriend action. Please check your Firestore Rules.':'Could not unfriend this person.');
+    }
+};
+
+/* =========================
+   SAVE PROFILE
+========================= */
+
+
+/* =========================
+   PROFILE SECTION PICKER / VERIFICATION
+   Mirrors the section picker and verification flow in voice.html.
+========================= */
+const PROFILE_SECTION_CODES = {
+  "7-Agoncillo": "483721#",
+  "7-Constantino": "C615904",
+  "7-Delos Santos": "827316D",
+  "7-Guillermo": "274856S",
+  "7-Nacpil": "N731492",
+  "7-Ocampo": "958214O",
+  "7-Tolentino": "T346781",
+  "7-Zaide": "Z820563E",
+  "8-Archimedes": "514827S",
+  "8-Bernoulli": "693152I",
+  "8-Pythagoras": "PY428715",
+  "8-Hypatia": "761304IA",
+  "8-Pascal": "235896",
+  "8-Euler": "E847231R",
+  "8-Euclid": "391625D",
+  "8-Ptolemy": "672418MY",
+  "8-Descartes": "CART159734",
+  "9-Aristotle": "RIS583216",
+  "9-Galilei": "724951LEI",
+  "9-Copernicus": "COP316847",
+  "9-Pasteur": "865203TEUR",
+  "9-Mendel": "ME492731L",
+  "9-Faraday": "137568DAY",
+  "9-Newton": "651824TON",
+  "9-Edison": "308475SON",
+  "9-Einstein": "976312TEIN",
+  "10-Aquino": "AQ428163",
+  "10-Bonifacio": "715294CIO",
+  "10-Del Pilar": "PILAR863517",
+  "10-Jacinto": "TO249681",
+  "10-Luna": "LUNA531728",
+  "10-Quezon": "QUE694315",
+  "10-Rizal": "182957AL",
+  "11-Twain": "736481IN",
+  "11-Farmer": "FARM295714",
+  "11-Lovelace": "814326LOVE",
+  "11-Guerrero": "GUER463859",
+  "11-Morgan": "927145MOR",
+  "11-Silverton": "TON351682",
+  "11-Westinghouse": "67823HOUSE4",
+  "12-Ansel": "542813SEL",
+  "12-Babbage": "BAB819365",
+  "12-Javier": "JAV274631",
+  "12-Pacioli": "635927CIOLI",
+  "12-Shakespeare": "391847PEARE",
+  "12-Mendeleev": "758216LEEV"
+};
+
+const PROFILE_SECTIONS = Object.keys(PROFILE_SECTION_CODES);
+let profileSectionVerified = false;
+let profileVerifiedSection = "";
+
+const editSectionSearch = document.getElementById("editSectionSearch");
+const editSectionSuggestions = document.getElementById("editSectionSuggestions");
+const editSectionHidden = document.getElementById("editSection");
+const editSectionVerification = document.getElementById("editSectionVerification");
+const editVerificationCode = document.getElementById("editVerificationCode");
+const editVerificationMessage = document.getElementById("editVerificationMessage");
+const editVerifySectionBtn = document.getElementById("editVerifySectionBtn");
+
+function resetProfileSectionVerification(hideBox = true){
+    profileSectionVerified = false;
+    profileVerifiedSection = "";
+
+    if(editSectionVerification && hideBox){
+        editSectionVerification.style.display = "none";
+    }
+    if(editVerificationCode){
+        editVerificationCode.value = "";
+        editVerificationCode.readOnly = false;
+    }
+    if(editVerificationMessage){
+        editVerificationMessage.style.display = "none";
+        editVerificationMessage.textContent = "";
+    }
+    if(editVerifySectionBtn){
+        editVerifySectionBtn.disabled = false;
+        editVerifySectionBtn.innerHTML = '<span class="pro-icon pro-lock" aria-hidden="true"></span> Verify Section';
+        editVerifySectionBtn.style.background = "#1e3a8a";
+        editVerifySectionBtn.style.color = "white";
+    }
+}
+
+function showProfileSectionSuggestions(searchText = ""){
+    if(!editSectionSuggestions) return;
+    const search = String(searchText || "").trim().toLowerCase();
+    const filtered = PROFILE_SECTIONS.filter(section => section.toLowerCase().includes(search));
+
+    editSectionSuggestions.innerHTML = "";
+
+    if(!filtered.length){
+        const noResult = document.createElement("div");
+        noResult.className = "section-option no-result";
+        noResult.textContent = "No matching section found";
+        editSectionSuggestions.appendChild(noResult);
+    }else{
+        filtered.forEach(section => {
+            const option = document.createElement("div");
+            option.className = "section-option";
+            option.textContent = section;
+            option.addEventListener("click", e => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                editSectionSearch.value = section;
+                editSectionHidden.value = section;
+                editSectionSuggestions.classList.remove("show");
+
+                resetProfileSectionVerification(false);
+
+                if(editSectionVerification){
+                    editSectionVerification.style.display = "block";
+                }
+                if(editVerificationCode){
+                    editVerificationCode.focus();
+                }
+            });
+            editSectionSuggestions.appendChild(option);
+        });
+    }
+
+    editSectionSuggestions.classList.add("show");
+}
+
+if(editSectionSearch){
+    editSectionSearch.addEventListener("input", function(){
+        editSectionHidden.value = "";
+        resetProfileSectionVerification(true);
+        showProfileSectionSuggestions(this.value);
+    });
+
+    editSectionSearch.addEventListener("focus", function(){
+        showProfileSectionSuggestions(this.value);
+    });
+
+    editSectionSearch.addEventListener("click", function(){
+        showProfileSectionSuggestions(this.value);
+    });
+}
+
+document.addEventListener("click", event => {
+    if(!event.target.closest(".profile-section-search-wrapper")){
+        editSectionSuggestions?.classList.remove("show");
+    }
+});
+
+window.verifyProfileSectionCode = function(){
+    const section = String(editSectionHidden?.value || "").trim();
+    const code = String(editVerificationCode?.value || "").trim();
+
+    if(!section){
+        openProfileSectionRequiredPopup();
+        return;
+    }
+
+    if(!code){
+        if(editVerificationMessage){
+            editVerificationMessage.style.display = "block";
+            editVerificationMessage.style.background = "rgba(119,196,255,.14)";
+            editVerificationMessage.style.color = "#dbeeff";
+            editVerificationMessage.textContent = "Please enter your section verification code.";
+        }
+        return;
+    }
+
+    const correctCode = PROFILE_SECTION_CODES[section];
+
+    if(!correctCode){
+        profileSectionVerified = false;
+        profileVerifiedSection = "";
+        if(editVerificationMessage){
+            editVerificationMessage.style.display = "block";
+            editVerificationMessage.style.background = "#ffe5e5";
+            editVerificationMessage.style.color = "#b00020";
+            editVerificationMessage.textContent = "Section code is not configured.";
+        }
+        return;
+    }
+
+    if(code === correctCode){
+        profileSectionVerified = true;
+        profileVerifiedSection = section;
+
+        if(editVerificationMessage){
+            editVerificationMessage.style.display = "block";
+            editVerificationMessage.style.background = "#d4edda";
+            editVerificationMessage.style.color = "#155724";
+            editVerificationMessage.textContent = "Section verified successfully!";
+        }
+
+        if(editVerifySectionBtn){
+            editVerifySectionBtn.textContent = "Section Verified";
+            editVerifySectionBtn.style.background = "#28a745";
+            editVerifySectionBtn.style.color = "white";
+            editVerifySectionBtn.disabled = true;
+        }
+
+        if(editVerificationCode){
+            editVerificationCode.readOnly = true;
+        }
+        return;
+    }
+
+    profileSectionVerified = false;
+    profileVerifiedSection = "";
+
+    if(editVerificationMessage){
+        editVerificationMessage.style.display = "block";
+        editVerificationMessage.style.background = "#ffe5e5";
+        editVerificationMessage.style.color = "#b00020";
+        editVerificationMessage.textContent = "Incorrect section verification code.";
+    }
+
+    if(editVerifySectionBtn){
+        editVerifySectionBtn.disabled = false;
+        editVerifySectionBtn.innerHTML = '<span class="pro-icon pro-lock" aria-hidden="true"></span> Verify Section';
+    }
+};
+
+window.openProfileSectionRequiredPopup = function(){
+    const popup = document.getElementById("profileSectionRequiredPopup");
+    if(popup) popup.style.display = "flex";
+};
+
+window.closeProfileSectionRequiredPopup = function(){
+    const popup = document.getElementById("profileSectionRequiredPopup");
+    if(popup) popup.style.display = "none";
+    editSectionSearch?.focus();
+    showProfileSectionSuggestions(editSectionSearch?.value || "");
+};
+
+window.openProfileSectionVerificationPopup = function(){
+    const popup = document.getElementById("profileSectionVerificationPopup");
+    if(popup) popup.style.display = "flex";
+};
+
+window.closeProfileSectionVerificationPopup = function(){
+    const popup = document.getElementById("profileSectionVerificationPopup");
+    if(popup) popup.style.display = "none";
+    editVerificationCode?.focus();
+};
+
+window.saveProfile = async function(){
+
+    const user = auth.currentUser;
+    if(!user) return;
+
+    const editName = document.getElementById("editName");
+    const editSection = document.getElementById("editSection");
+    const editBio = document.getElementById("editBio");
+    if(!editName || !editSection || !editBio){
+        console.error("Profile editor elements are missing from the page.");
+        alert("The profile editor could not be loaded correctly. Please refresh the page.");
+        return;
+    }
+
+    const name = editName.value.trim();
+    const section = editSection.value.trim();
+    const bio = editBio.value.trim();
+
+    if(!section){
+        openProfileSectionRequiredPopup();
+        return;
+    }
+
+    if(!profileSectionVerified || profileVerifiedSection !== section){
+        openProfileSectionVerificationPopup();
+        return;
+    }
+
+    const saveButton = document.querySelector(".save-btn");
+    if(saveButton){
+        saveButton.disabled = true;
+        saveButton.textContent = "⏳ Saving...";
+    }
+
+    try{
+        const userRef = doc(db, "users", user.uid);
+        const existingSnap = await getDoc(userRef);
+        const existing = existingSnap.exists() ? (existingSnap.data() || {}) : {};
+
+        const data = {
+            ...existing,
+            uid: user.uid,
+            email: user.email || existing.email || "",
+            displayName: name || user.displayName || existing.displayName || "User",
+            name: name || user.displayName || existing.name || "User",
+            section: section,
+            bio: bio || "Welcome to my CATHS-MAIN Student Voice profile. ",
+            // Keep the current saved/Google photo. Custom uploads are Coming Soon.
+            photoURL: existing.photoURL || user.photoURL || "",
+            updatedAt: new Date().toISOString()
+        };
+
+        await setDoc(userRef, data, { merge: true });
+
+        localStorage.setItem(
+            profileStorageKey(),
+            JSON.stringify(data)
+        );
+
+        document.getElementById("profileName").innerHTML = escapePostHtml(data.name) + verifiedBadgeHtml(data.email || user.email);
+        document.getElementById("profileEmail").textContent = data.email;
+        document.getElementById("profileBio").textContent = data.bio;
+        applyProfilePhoto(data.photoURL);
+
+        profileSetupRequired = false;
+        updateProfileSetupNotice();
+        closeEditProfile();
+        openSuccessPopup();
+
+    }catch(error){
+        console.error("Save profile error:", error);
+        let message = "Could not save your profile.";
+        if(error?.code === "permission-denied") {
+            message = "Firestore permission is blocking the profile save. Check your Firestore Rules.";
+        }
+        alert(message);
+    }finally{
+        if(saveButton){
+            saveButton.disabled = false;
+            saveButton.innerHTML = '<span class="pro-icon pro-save" aria-hidden="true"></span> Save Changes';
+        }
+    }
+
+};
+
+window.openSuccessPopup = function(){
+    const overlay = document.getElementById("successOverlay");
+    if(overlay) overlay.style.display = "flex";
+};
+
+window.closeSuccessPopup = function(){
+    const overlay = document.getElementById("successOverlay");
+    if(overlay) overlay.style.display = "none";
+};
+
+/* =========================
+   EDIT PROFILE
+========================= */
+
+window.openEditProfile = async function(){
+
+    const user = auth.currentUser;
+
+    if(!user){
+        const loginOverlay = document.getElementById("loginOverlay");
+        if(loginOverlay) loginOverlay.style.display = "flex";
+        return;
+    }
+
+    let data = {};
+
+    try{
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if(snap.exists()) data = snap.data() || {};
+    }catch(error){
+        console.error("Could not load editable profile:", error);
+    }
+
+    if(!data.name){
+        const saved = localStorage.getItem(profileStorageKey());
+        if(saved){
+            try{ data = { ...data, ...(JSON.parse(saved) || {}) }; }catch(error){}
+        }
+    }
+
+    const editName = document.getElementById("editName");
+    const editSection = document.getElementById("editSection");
+    const editBio = document.getElementById("editBio");
+    const editOverlay = document.getElementById("editOverlay");
+    if(!editName || !editSection || !editBio || !editOverlay){
+        console.error("Required profile editor elements are missing.");
+        return;
+    }
+
+    editName.value =
+        data.name || data.displayName || user.displayName || "";
+
+    resetProfileSectionVerification(true);
+
+    const savedSection = String(data.section || "").trim();
+    editSection.value = savedSection;
+
+    if(editSectionSearch){
+        editSectionSearch.value = savedSection;
+    }
+
+    editBio.value =
+        data.bio || "";
+
+    profileSetupRequired = !isProfileSetupComplete(data, user);
+    updateProfileSetupNotice();
+    editOverlay.style.display = "flex";
+
+};
+
+
+window.closeEditProfile = function(){
+
+    if(profileSetupRequired){
+        updateProfileSetupNotice();
+        return;
+    }
+
+    const editOverlay = document.getElementById("editOverlay");
+    if(editOverlay) editOverlay.style.display = "none";
+
+    resetProfileSectionVerification(true);
+    editSectionSuggestions?.classList.remove("show");
+
+};
+
+
+/* =========================
+   TABS
+========================= */
+
+window.showTab = function(tab){
+
+    const tabs = [
+
+        "posts",
+        "feedbacks",
+        "friends"
+
+    ];
+
+
+    tabs.forEach(item => {
+
+        const content =
+            document.getElementById(
+                item + "Tab"
+            );
+
+        if(content){
+
+            content.style.display =
+                item === tab
+                ? "block"
+                : "none";
+
+        }
+
+    });
+
+
+    document
+        .querySelectorAll(".tab")
+        .forEach(button => {
+
+            button.classList.toggle(
+
+                "active",
+
+                button.dataset.tab === tab
+
+            );
+
+        });
+
+};
+
+
+
+/* =========================
+   CLOSE MODALS
+========================= */
+
+document.addEventListener(
+    "click",
+    function(event){
+
+        const edit =
+            document.getElementById(
+                "editOverlay"
+            );
+
+        const login =
+            document.getElementById(
+                "loginOverlay"
+            );
+
+        const success = document.getElementById("successOverlay");
+        const profileSectionRequired = document.getElementById("profileSectionRequiredPopup");
+        const profileSectionVerification = document.getElementById("profileSectionVerificationPopup");
+
+        if(event.target === edit){
+
+            if(profileSetupRequired){
+                updateProfileSetupNotice();
+            }else{
+                closeEditProfile();
+            }
+
+        }
+
+
+        if(event.target === login && login){
+            login.style.display = "none";
+        }
+
+        const postModal = document.getElementById("postModal");
+        const commentsModal = document.getElementById("commentsModal");
+        if(event.target === postModal) closePostComposer();
+        if(event.target === commentsModal) closeComments();
+
+        if(event.target === success && success){
+            success.style.display = "none";
+        }
+
+        if(event.target === profileSectionRequired && profileSectionRequired){
+            profileSectionRequired.style.display = "none";
+        }
+
+        if(event.target === profileSectionVerification && profileSectionVerification){
+            profileSectionVerification.style.display = "none";
+        }
+
+    }
+);
+
+window.addEventListener("error", event => {
+    console.error("Profile page error:", event.error || event.message);
+});
+
+window.addEventListener("unhandledrejection", event => {
+    console.error("Profile page async error:", event.reason);
+});
+
+document.addEventListener("keydown", e => {
+    if(e.key === "Escape"){
+        if(profileSetupRequired){
+            e.preventDefault();
+            updateProfileSetupNotice();
+        }else{
+            closeEditProfile();
+        }
+        closePostComposer();
+        closeComments();
+        closeProfileSectionRequiredPopup();
+        closeProfileSectionVerificationPopup();
+        closeShareChoice();
+        closeShareMessage();
+    }
+});
+
+</script>
+
+
+<script>
+(function(){
+    const ICONS = {
+        user: '<circle cx="12" cy="8" r="3.25"></circle><path d="M5 20c.8-3.4 3.15-5.35 7-5.35s6.2 1.95 7 5.35"></path>',
+        edit: '<path d="M4 17.2V20h2.8L19 7.8a2 2 0 0 0-2.8-2.8L4 17.2Z"></path><path d="m13.8 6.2 4 4"></path>',
+        chat: '<path d="M4 5.5h16v11H9l-5 3v-3H4z"></path><path d="M8 9.5h8M8 13h5"></path>',
+        users: '<circle cx="9" cy="8.5" r="3"></circle><circle cx="16.5" cy="9.5" r="2.5"></circle><path d="M3.5 19c.7-3.2 2.6-5.2 5.5-5.2s4.8 2 5.5 5.2"></path><path d="M14 14.4c2.2-.3 4.3 1.3 5 4.6"></path>',
+        lock: '<rect x="5.5" y="10" width="13" height="10" rx="2"></rect><path d="M8.5 10V7.7a3.5 3.5 0 0 1 7 0V10"></path>',
+        save: '<path d="M5 4h11l3 3v13H5z"></path><path d="M8 4v5h7V4M8 20v-6h8v6"></path>',
+        warning: '<path d="M12 4 21 19H3L12 4Z"></path><path d="M12 9v4M12 16h.01"></path>',
+        news: '<circle cx="12" cy="12" r="8.5"></circle><path d="M3.5 12h17M12 3.5c2.3 2.35 3.5 5.2 3.5 8.5S14.3 18.15 12 20.5C9.7 18.15 8.5 15.3 8.5 12S9.7 5.85 12 3.5Z"></path>',
+        like: '<path d="M7 10.5V20H4v-9.5zM9 20h5.7c1.35 0 2.5-.85 2.85-2.15l1.1-4.55c.35-1.5-.8-2.95-2.35-2.95h-2.7l.55-2.7c.3-1.5-.85-2.95-2.4-2.95L8.7 9.2"></path>',
+        share: '<circle cx="6" cy="12" r="2"></circle><circle cx="18" cy="6" r="2"></circle><circle cx="18" cy="18" r="2"></circle><path d="m7.7 11 8.45-4M7.7 13l8.45 4"></path>',
+        pin: '<path d="m9 4 6 0 1 5 2 2-5 1v5l-1 3-1-3v-5l-5-1 2-2z"></path>',
+        trash: '<path d="M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13M10 10v7M14 10v7"></path>',
+        eye: '<path d="M2.5 12s3.2-5 9.5-5 9.5 5 9.5 5-3.2 5-9.5 5-9.5-5-9.5-5Z"></path><circle cx="12" cy="12" r="2.5"></circle>',
+        search: '<circle cx="10.8" cy="10.8" r="6.2"></circle><path d="m16 16 4.2 4.2"></path>',
+        doc: '<path d="M7 3.5h7l3 3V20H7z"></path><path d="M14 3.5V7h3M9 11h6M9 14.5h6M9 18h4"></path>'
+    };
+
+    function makeSvg(kind, extraClass){
+        const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+        svg.setAttribute('viewBox','0 0 24 24');
+        svg.setAttribute('aria-hidden','true');
+        svg.setAttribute('focusable','false');
+        svg.classList.add('svg-icon');
+        if(extraClass) svg.classList.add(extraClass);
+        svg.innerHTML = ICONS[kind] || ICONS.doc;
+        return svg;
+    }
+
+    function upgradeIcons(root){
+        const nodes = (root || document).querySelectorAll
+            ? (root || document).querySelectorAll('.pro-icon, .professional-nav-icon, .reaction-prof-icon')
+            : [];
+        nodes.forEach(el=>{
+            if(el.dataset.svgReady === '1') return;
+            const classes = [...el.classList];
+            let kind = classes.find(c => c.startsWith('pro-'))?.replace('pro-','');
+            if(kind === 'empty') kind = 'doc';
+            if(kind === 'voice') kind = 'chat';
+            if(kind === 'pin' || kind === 'trash' || kind === 'eye' || kind === 'share') {}
+            if(el.classList.contains('reaction-like')) kind = 'like';
+            if(el.querySelector('svg')) {
+                el.dataset.svgReady = '1';
+                return;
+            }
+            el.replaceChildren(makeSvg(kind));
+            el.dataset.svgReady = '1';
+        });
+    }
+
+    upgradeIcons(document);
+
+    const motionObserver = new IntersectionObserver(entries=>{
+        entries.forEach(entry=>{
+            if(entry.isIntersecting){
+                entry.target.classList.add('animate-in');
+                motionObserver.unobserve(entry.target);
+            }
+        });
+    },{threshold:.08});
+
+    function observeMotion(root=document){
+        (root||document).querySelectorAll?.('.post-card,.friend-profile-row,.content-box,.post-composer-card,.share-target').forEach(el=>motionObserver.observe(el));
+    }
+    observeMotion(document);
+
+    const observer = new MutationObserver(mutations=>{
+        for(const mutation of mutations){
+            mutation.addedNodes.forEach(node=>{
+                if(node.nodeType === 1){ upgradeIcons(node); observeMotion(node); }
+            });
+        }
+    });
+    observer.observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
+</body>
+</html>

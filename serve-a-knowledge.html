@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Serve a Knowledge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --W:1920px;--H:1080px;
+  --black:#0c0c0c;
+  --white:#fff;
+  --blue:#65b6f0;
+  --blue2:#cfeaff;
+  --red:#ff1d1d;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;background:#080b10;overflow:hidden}
+body{font-family:Fredoka,"Arial Rounded MT Bold","Trebuchet MS",sans-serif;user-select:none;overscroll-behavior:none}
+#viewport{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  padding:8px;overflow:hidden;
+  background:radial-gradient(circle at 50% 50%,rgba(255,255,255,.035),transparent 58%);
+}
+#game{
+  position:relative;width:var(--W);height:var(--H);flex:none;overflow:hidden;
+  background:#000;transform-origin:center center;
+  box-shadow:0 30px 100px rgba(0,0,0,.55);
+  will-change:transform;
+}
+.layer{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.bg{z-index:1}
+.animals-layer{z-index:3}
+.bubbles-layer{z-index:6}
+.timers-layer{z-index:7}
+.ui-base{z-index:8}
+.interactive-ui{z-index:12}
+.answer-layer{z-index:20}
+.overlay{z-index:50}
+img{display:block}
+
+/* Scaling is handled by fitGame() so the same 1920×1080 scene stays centered
+   and fully visible on desktop, tablets, and phones without changing the artwork size. */
+@media(max-width:640px){
+  #viewport{padding:4px}
+}
+
+/* cover the static "LEVEL 1" from the reference UI */
+#levelCover{
+  position:absolute;left:0;top:0;width:215px;height:100px;z-index:10;
+  background-image:url('assets/restaurant.png');background-size:1920px 1080px;background-position:0 0;
+  pointer-events:none;
+}
+#levelText{
+  position:absolute;left:12px;top:5px;z-index:15;
+  color:#fff;font-size:56px;font-weight:700;line-height:1;
+  text-shadow:3px 3px 0 #111,-2px -2px 0 #111,2px -2px 0 #111,-2px 2px 0 #111;
+  letter-spacing:-2px;
+}
+
+/* dynamic hearts cover the static heart strip */
+#hearts{
+  position:absolute;left:827px;top:9px;width:324px;height:70px;z-index:15;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  background:#fff0a3;border:3px solid #000;border-radius:13px;
+  box-shadow:0 3px 0 rgba(0,0,0,.2);
+}
+.heart{width:43px;height:38px;object-fit:contain;image-rendering:auto}
+.heart.lost{filter:grayscale(1);opacity:.24;transform:scale(.94)}
+#arrowButton{
+  position:absolute;right:13px;top:10px;width:100px;height:92px;z-index:16;
+  border:0;background:transparent;cursor:pointer;outline:none;
+}
+#arrowButton:active{transform:scale(.96)}
+
+/* customer slots */
+.customer{
+  position:absolute;top:0;width:570px;height:620px;z-index:4;
+}
+.customer.left{left:18px}
+.customer.center{left:670px}
+.customer.right{left:1325px}
+.animal{
+  position:absolute;left:70px;top:205px;width:405px;height:475px;
+  object-fit:contain;object-position:center bottom;
+  filter:drop-shadow(0 10px 6px rgba(0,0,0,.12));
+  cursor:default;pointer-events:none;
+}
+.customer.center .animal{left:78px}
+.customer.right .animal{left:62px}
+
+.bubble{
+  position:absolute;top:83px;width:478px;height:284px;
+  background-repeat:no-repeat;background-size:100% 100%;
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:32px 42px 0 42px;text-align:center;
+  pointer-events:none;overflow:hidden;
+}
+.customer.left .bubble{left:18px;background-image:url('assets/bubble-yellow.png')}
+.customer.center .bubble{left:4px;background-image:url('assets/bubble-orange.png')}
+.customer.right .bubble{left:2px;background-image:url('assets/bubble-blue.png')}
+.bubbleText{
+  width:100%;font-size:30px;line-height:1.26;font-weight:600;color:#060606;
+  text-shadow:0 1px 0 rgba(255,255,255,.18);
+}
+.bubbleText .term{font-weight:700;white-space:nowrap}
+
+.timer{
+  position:absolute;top:260px;right:10px;width:65px;height:300px;
+  pointer-events:none;
+}
+.timerBase{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;opacity:.28}
+.timerFill{
+  position:absolute;left:0;right:0;bottom:0;height:100%;
+  overflow:hidden;transition:height .2s linear;
+}
+.timerFill img{position:absolute;left:0;bottom:0;width:65px;height:300px;object-fit:fill}
+.expr{
+  position:absolute;right:-41px;width:50px;height:50px;object-fit:contain;
+  filter:drop-shadow(0 3px 2px rgba(0,0,0,.25));opacity:.28;transform:scale(.9);
+  transition:opacity .18s ease,transform .18s ease,filter .18s ease;
+}
+.expr.star{top:-7px}.expr.happy{top:126px}.expr.sad{bottom:-1px}
+.expr.active{opacity:1;transform:scale(1.08);filter:drop-shadow(0 4px 5px rgba(0,0,0,.3))}
+
+.customer.drop-ready .animal{filter:drop-shadow(0 0 18px rgba(84,220,255,.9))}
+.customer.served .animal{animation:served .6s ease both}
+.customer.served .bubble{opacity:.28}
+@keyframes served{0%{transform:scale(1)}45%{transform:scale(1.06) translateY(-7px)}100%{transform:scale(.93) translateY(16px);opacity:.65}}
+
+.customer.feedback-good .bubble{animation:goodPop .35s ease}
+.customer.feedback-bad .bubble{animation:badShake .32s ease}
+@keyframes goodPop{50%{transform:scale(1.035)}}
+@keyframes badShake{25%{transform:translateX(-8px)}50%{transform:translateX(8px)}75%{transform:translateX(-5px)}}
+
+/* instruction pill */
+#instruction{
+  display:none;position:absolute;top:239px;left:1206px;z-index:17;
+  padding:10px 22px;border:3px solid #222;border-radius:27px;
+  background:rgba(255,255,255,.88);color:#171717;
+  font-size:18px;font-weight:700;letter-spacing:.2px;
+  box-shadow:0 3px 0 rgba(0,0,0,.14);
+  pointer-events:none;
+}
+
+/* answer cards cover placeholder "Definition" text from reference UI */
+.choice{
+  position:absolute;width:480px;height:198px;
+  top:756px;
+  border:4px solid #151515;border-radius:35px;
+  background:#fff;box-shadow:0 9px 0 rgba(0,0,0,.12);
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:24px 28px;
+  cursor:grab;touch-action:none;will-change:left,top,transform;
+  transition:box-shadow .16s ease,opacity .22s ease,transform .16s ease;
+  overflow:hidden;
+}
+.choice:active{cursor:grabbing}
+.choice.dragging{
+  z-index:80;box-shadow:0 18px 35px rgba(0,0,0,.26);
+  transform:scale(1); /* fixed size while dragging */
+}
+.choice.locked{pointer-events:none}
+.choice.correct{animation:correctCard .38s ease forwards}
+.choice.wrong{animation:wrongCard .3s ease}
+.choice.hidden{visibility:hidden;opacity:0}
+@keyframes correctCard{50%{transform:scale(1.035);box-shadow:0 0 0 8px rgba(97,240,162,.24),0 18px 34px rgba(0,0,0,.23)}100%{opacity:0;transform:scale(.98)}}
+@keyframes wrongCard{25%{transform:translateX(-9px)}50%{transform:translateX(9px)}75%{transform:translateX(-5px)}100%{transform:translateX(0)}}
+.choice.a{left:343px}.choice.b{left:870px}.choice.c{left:1395px}
+.choiceLabel{
+  position:absolute;top:-57px;left:50%;transform:translateX(-50%);
+  font-size:50px;line-height:1;color:#fff;font-weight:700;
+  -webkit-text-stroke:5px #ee2b2b;paint-order:stroke fill;
+  text-shadow:0 2px 0 rgba(0,0,0,.08);
+}
+.choiceText{font-size:26px;line-height:1.28;font-weight:600;color:#111;max-width:425px}
+.choice.dragging .choiceLabel{top:-57px}
+
+/* EXP display */
+#expBadge{
+  display:none;position:absolute;left:37px;top:902px;z-index:17;
+  padding:7px 12px;border-radius:12px;background:rgba(0,0,0,.45);color:#fff;
+  border:2px solid rgba(255,255,255,.25);font-size:20px;font-weight:700;
+  text-shadow:2px 2px 0 #111;
+}
+#expGain{
+  position:absolute;left:70px;top:520px;z-index:25;font-size:32px;font-weight:700;color:#fff;
+  opacity:0;pointer-events:none;text-shadow:3px 3px 0 #2a6b39;
+}
+#expGain.show{animation:gain .8s ease forwards}
+@keyframes gain{0%{opacity:0;transform:translateY(10px) scale(.85)}18%{opacity:1}75%{opacity:1}100%{opacity:0;transform:translateY(-35px) scale(1.08)}}
+
+#scoreHud{
+  display:none;position:absolute;right:125px;top:118px;z-index:16;
+  display:flex;gap:12px;
+}
+.hudPill{
+  min-width:116px;padding:8px 13px;border-radius:14px;border:2px solid rgba(0,0,0,.5);
+  background:rgba(255,249,202,.92);font-size:19px;font-weight:700;color:#111;
+  text-align:center;box-shadow:0 3px 0 rgba(0,0,0,.12)
+}
+
+/* countdown */
+#countdownOverlay{
+  position:absolute;inset:0;z-index:100;
+  background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;
+}
+#countdownText{
+  font-size:170px;font-weight:700;color:#fff;line-height:1;
+  -webkit-text-stroke:8px #111;paint-order:stroke fill;
+  text-shadow:10px 12px 0 rgba(0,0,0,.25);
+}
+#countdownSub{
+  position:absolute;top:185px;left:0;right:0;text-align:center;
+  color:#fff;font-size:34px;font-weight:600;text-shadow:4px 4px 0 #111;
+}
+@keyframes pop{0%{transform:scale(.45);opacity:0}30%{opacity:1}75%{transform:scale(1.08);opacity:1}100%{transform:scale(1);opacity:1}}
+
+/* feedback */
+#feedback{
+  position:absolute;left:50%;top:470px;transform:translateX(-50%);
+  z-index:90;opacity:0;pointer-events:none;
+  font-size:62px;font-weight:700;color:#fff;
+  -webkit-text-stroke:5px #111;paint-order:stroke fill;text-shadow:6px 7px 0 rgba(0,0,0,.25);
+}
+#feedback.good{color:#72ff8f}
+#feedback.bad{color:#ff7373}
+#feedback.show{animation:feedback .75s ease forwards}
+@keyframes feedback{0%{opacity:0;transform:translate(-50%,-10px) scale(.7)}20%{opacity:1;transform:translate(-50%,0) scale(1.07)}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-35px) scale(1.02)}}
+
+/* level transition & end */
+.modal{
+  position:absolute;inset:0;z-index:120;display:none;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.48);backdrop-filter:blur(3px);
+}
+.modal.show{display:flex}
+.panelCard{
+  width:760px;padding:38px 44px 42px;background:#fff;border:6px solid #111;border-radius:38px;
+  box-shadow:0 20px 0 rgba(0,0,0,.2),0 30px 70px rgba(0,0,0,.3);text-align:center;color:#111;
+}
+.panelCard h2{font-size:58px;margin:0 0 12px;color:#e52828;-webkit-text-stroke:2px #111}
+.panelCard p{font-size:28px;margin:8px 0 24px}
+.statGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin:22px 0 28px}
+.stat{background:#eef7ff;border:3px solid #111;border-radius:20px;padding:14px}
+.stat b{display:block;font-size:34px}.stat span{font-size:18px}
+.bigBtn{
+  border:4px solid #111;border-radius:18px;padding:13px 28px;font:700 26px Fredoka,sans-serif;
+  background:#65b6f0;color:#111;cursor:pointer;box-shadow:0 6px 0 #111;
+}
+.bigBtn:active{transform:translateY(4px);box-shadow:0 2px 0 #111}
+
+/* progress bar on top of timer */
+.timerPct{
+  position:absolute;left:7px;right:7px;top:-23px;text-align:center;font-size:18px;font-weight:700;color:#fff;
+  -webkit-text-stroke:2px #111;paint-order:stroke fill;
+}
+
+/* responsive orientation hint */
+#rotateHint{display:none}
+@media(max-width:480px) and (orientation:portrait){
+  #rotateHint{
+    display:flex;position:fixed;left:10px;right:10px;bottom:10px;z-index:999;
+    min-height:44px;padding:9px 12px;border-radius:14px;
+    background:rgba(7,16,28,.88);color:#fff;align-items:center;justify-content:center;
+    text-align:center;font-size:11px;border:1px solid rgba(255,255,255,.12);
+    box-shadow:0 10px 24px rgba(0,0,0,.28);pointer-events:none;
+  }
+  #rotateHint span{max-width:330px}
+}
+</style>
+</head>
+<body>
+<div id="viewport">
+  <div id="game">
+    <img class="layer bg" src="assets/restaurant.png" alt="">
+    <img class="layer ui-base" src="assets/ui-base.png" alt="">
+
+    <div id="levelCover"></div>
+    <div id="levelText">LEVEL 1</div>
+
+    <div id="hearts"></div>
+    <button id="arrowButton" aria-label="Next level"></button>
+
+    <div id="scoreHud">
+      <div class="hudPill" id="scoreText">SCORE 0</div>
+      <div class="hudPill" id="comboText">COMBO ×1</div>
+    </div>
+
+    <div id="instruction">DRAG EACH DEFINITION TO THE RIGHT CUSTOMER</div>
+
+    <div class="customer left" data-slot="0">
+      <div class="bubble"><div class="bubbleText">Hi I would like to order<br>the definition of<br><span class="term">“TERM”</span></div></div>
+      <img class="animal" src="assets/animal-bear-brown.png" alt="">
+      <div class="timer">
+        <img class="timerBase" src="assets/timer-crop.png" alt="">
+        <div class="timerFill"><img src="assets/timer-crop.png" alt=""></div>
+        <div class="timerPct">15</div>
+        <img class="expr star" src="assets/expr_star.png" alt="">
+        <img class="expr happy active" src="assets/expr_happy.png" alt="">
+        <img class="expr sad" src="assets/expr_sad.png" alt="">
+      </div>
+    </div>
+
+    <div class="customer center" data-slot="1">
+      <div class="bubble"><div class="bubbleText">Hi I would like to order<br>the definition of<br><span class="term">“TERM”</span></div></div>
+      <img class="animal" src="assets/animal-bear-pink.png" alt="">
+      <div class="timer">
+        <img class="timerBase" src="assets/timer-crop.png" alt="">
+        <div class="timerFill"><img src="assets/timer-crop.png" alt=""></div>
+        <div class="timerPct">15</div>
+        <img class="expr star" src="assets/expr_star.png" alt="">
+        <img class="expr happy active" src="assets/expr_happy.png" alt="">
+        <img class="expr sad" src="assets/expr_sad.png" alt="">
+      </div>
+    </div>
+
+    <div class="customer right" data-slot="2">
+      <div class="bubble"><div class="bubbleText">Hi I would like to order<br>the definition of<br><span class="term">“TERM”</span></div></div>
+      <img class="animal" src="assets/animal-bear-black.png" alt="">
+      <div class="timer">
+        <img class="timerBase" src="assets/timer-crop.png" alt="">
+        <div class="timerFill"><img src="assets/timer-crop.png" alt=""></div>
+        <div class="timerPct">15</div>
+        <img class="expr star" src="assets/expr_star.png" alt="">
+        <img class="expr happy active" src="assets/expr_happy.png" alt="">
+        <img class="expr sad" src="assets/expr_sad.png" alt="">
+      </div>
+    </div>
+
+    <div id="expGain"></div>
+    <div id="expBadge">EXP 0 / 100</div>
+
+    <div class="choice a" data-choice="0">
+      <div class="choiceLabel">A</div><div class="choiceText">Definition</div>
+    </div>
+    <div class="choice b" data-choice="1">
+      <div class="choiceLabel">B</div><div class="choiceText">Definition</div>
+    </div>
+    <div class="choice c" data-choice="2">
+      <div class="choiceLabel">C</div><div class="choiceText">Definition</div>
+    </div>
+
+    <div id="feedback"></div>
+
+    <div id="countdownOverlay">
+      <div id="countdownSub">GET READY TO SERVE KNOWLEDGE!</div>
+      <div id="countdownText">3</div>
+    </div>
+
+    <div class="modal" id="levelModal">
+      <div class="panelCard">
+        <h2 id="modalTitle">LEVEL CLEAR!</h2>
+        <p id="modalSubtitle">Great serving!</p>
+        <div class="statGrid">
+          <div class="stat"><b id="modalScore">0</b><span>Score</span></div>
+          <div class="stat"><b id="modalAccuracy">0%</b><span>Accuracy</span></div>
+          <div class="stat"><b id="modalExp">+0</b><span>EXP Earned</span></div>
+        </div>
+        <button class="bigBtn" id="continueBtn">CONTINUE</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="rotateHint"><span>For the best experience, please rotate your device to landscape mode.</span></div>
+
+<script>
+(() => {
+  const A='assets/';
+  const customers=[...document.querySelectorAll('.customer')];
+  const choices=[...document.querySelectorAll('.choice')];
+  const heartsEl=document.getElementById('hearts');
+  const levelText=document.getElementById('levelText');
+  const scoreText=document.getElementById('scoreText');
+  const comboText=document.getElementById('comboText');
+  const expBadge=document.getElementById('expBadge');
+  const expGain=document.getElementById('expGain');
+  const feedback=document.getElementById('feedback');
+  const countdownOverlay=document.getElementById('countdownOverlay');
+  const countdownText=document.getElementById('countdownText');
+  const levelModal=document.getElementById('levelModal');
+  const modalTitle=document.getElementById('modalTitle');
+  const modalSubtitle=document.getElementById('modalSubtitle');
+  const modalScore=document.getElementById('modalScore');
+  const modalAccuracy=document.getElementById('modalAccuracy');
+  const modalExp=document.getElementById('modalExp');
+  const continueBtn=document.getElementById('continueBtn');
+  const arrowButton=document.getElementById('arrowButton');
+  const viewport=document.getElementById('viewport');
+  const gameEl=document.getElementById('game');
+
+  function fitGame(){
+    const vw=Math.max(1,viewport.clientWidth-8);
+    const vh=Math.max(1,viewport.clientHeight-8);
+    const scale=Math.min(vw/1920,vh/1080);
+    gameEl.style.transform=`scale(${Math.max(0.01,scale)})`;
+  }
+  window.addEventListener('resize',fitGame,{passive:true});
+  window.addEventListener('orientationchange',()=>setTimeout(fitGame,80),{passive:true});
+  fitGame();
+
+  const animals=[
+    'animal-bear-brown.png','animal-bear-pink.png','animal-bear-black.png',
+    'animal-fox.png','animal-panda.png','animal-bear-blue.png',
+    'animal-cat-black.png','animal-cat-orange.png','animal-cat-sleepy.png'
+  ];
+
+  const pools=[
+    [
+      ['Term','A word or phrase used to describe a particular concept.'],
+      ['Theme','The central idea or message explored in a work.'],
+      ['Plot','The sequence of events that make up a story.'],
+      ['Setting','The time and place in which a story happens.'],
+      ['Character','A person, animal, or figure who takes part in a story.'],
+      ['Narrator','The voice or person that tells a story.']
+    ],
+    [
+      ['Simile','A comparison between two unlike things using “like” or “as.”'],
+      ['Metaphor','A direct comparison that describes one thing as another.'],
+      ['Hyperbole','An intentional exaggeration used for emphasis.'],
+      ['Personification','Giving human qualities, actions, or feelings to nonhuman things.'],
+      ['Symbolism','Using an object, image, or action to represent a deeper idea.'],
+      ['Tone','The writer’s attitude or feeling toward a subject.']
+    ],
+    [
+      ['Mood','The feeling or atmosphere a work creates for its audience.'],
+      ['Conflict','A struggle between opposing forces that drives a story.'],
+      ['Point of View','The perspective from which a story is narrated.'],
+      ['Foreshadowing','Hints or clues that suggest what may happen later.'],
+      ['Irony','A contrast between what is expected and what actually happens.'],
+      ['Alliteration','The repetition of beginning consonant sounds in nearby words.']
+    ],
+    [
+      ['Imagery','Descriptive language that helps readers picture, hear, feel, taste, or smell something.'],
+      ['Onomatopoeia','A word that imitates or echoes a sound.'],
+      ['Oxymoron','A phrase that combines two words with seemingly opposite meanings.'],
+      ['Allegory','A story in which characters and events represent broader ideas.'],
+      ['Motif','A recurring element that supports a larger theme or idea.'],
+      ['Flashback','A scene that returns to an earlier time or event.']
+    ],
+    [
+      ['Dramatic Irony','A situation where the audience knows something a character does not.'],
+      ['Juxtaposition','Placing contrasting ideas, images, or characters close together.'],
+      ['Paradox','A statement that seems contradictory but may reveal a deeper truth.'],
+      ['Diction','The writer’s deliberate choice and use of words.'],
+      ['Unreliable Narrator','A narrator whose account cannot be fully trusted.'],
+      ['Free Verse','Poetry that does not follow a regular rhyme or meter pattern.']
+    ],
+    [
+      ['Satire','A work that uses humor or irony to criticize people, ideas, or society.'],
+      ['Elegy','A poem or work that expresses sorrow, often for someone who has died.'],
+      ['Soliloquy','A speech in which a character reveals thoughts, usually while alone.'],
+      ['Catharsis','An emotional release experienced by an audience during or after a dramatic work.'],
+      ['Archetype','A recurring character, image, situation, or pattern recognizable across stories.'],
+      ['Ambiguity','A quality of having more than one possible meaning or interpretation.']
+    ]
+  ];
+
+  let level=1, lives=5, score=0, exp=0, combo=0, servedTotal=0, correctTotal=0, levelAttempts=0, levelCorrect=0;
+  let previousAnimalSet=[];
+  let previousQuestionTerms=[];
+  let orders=[null,null,null];
+  let timers=[0,0,0];
+  let timerHandles=[null,null,null];
+  let choiceHome=[...choices].map(c=>({left:parseFloat(getComputedStyle(c).left),top:756}));
+  let dragging=null;
+  let gameRunning=false, levelLocked=true;
+  let totalLevelOrders=0, completedLevelOrders=0;
+
+  function shuffle(arr){ return [...arr].sort(()=>Math.random()-.5); }
+  function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+
+  function makeHearts(){
+    heartsEl.innerHTML='';
+    for(let i=0;i<5;i++){
+      const img=document.createElement('img');
+      img.className='heart'+(i>=lives?' lost':'');
+      img.src=A+'heart.png';
+      img.alt='';
+      heartsEl.appendChild(img);
+    }
+  }
+
+  function updateHud(){
+    levelText.textContent=`LEVEL ${level}`;
+    scoreText.textContent=`SCORE ${score}`;
+    comboText.textContent=`COMBO ×${Math.max(1,combo)}`;
+    expBadge.textContent=`EXP ${exp % 100} / 100`;
+    makeHearts();
+  }
+
+  function levelTime(){
+    return Math.max(7, 15 - (level-1)*1.3);
+  }
+
+  function pickAnimalSet(){
+    if(animals.length<3) return shuffle(animals).slice(0,3);
+    const previous=new Set(previousAnimalSet);
+    let selected=[];
+    for(let attempt=0;attempt<20;attempt++) {
+      const candidate=shuffle(animals).slice(0,3);
+      const same=candidate.length===3 && candidate.every(x=>previous.has(x)) && previous.size===3;
+      if(!same){ selected=candidate; break; }
+      selected=candidate;
+    }
+    previousAnimalSet=[...selected];
+    return selected;
+  }
+
+  function pickQuestions(){
+    const pool=pools[Math.min(pools.length-1,level-1)];
+    const previous=new Set(previousQuestionTerms);
+    let shuffled=shuffle(pool);
+    let selected=shuffled.filter(q=>!previous.has(q[0])).slice(0,3);
+    if(selected.length<3) selected=shuffled.slice(0,3);
+    previousQuestionTerms=selected.map(q=>q[0]);
+    return selected;
+  }
+
+  function setCustomer(slot, animal, term, startTimer=true){
+    const c=customers[slot];
+    c.querySelector('.animal').src=A+animal;
+    c.querySelector('.term').textContent=`“${term}”`;
+    c.classList.remove('served','feedback-good','feedback-bad','drop-ready');
+    c.dataset.active='1';
+    orders[slot]={term,definition:currentDefinitions[slot], animal};
+    if(startTimer) startTimerFor(slot);
+  }
+
+  function renderDefinitions(){
+    const randomized=shuffle(orders.map((o,i)=>({slot:i, definition:o.definition, term:o.term})));
+    randomized.forEach((item,idx)=>{
+      const card=choices[idx];
+      card.dataset.slot=String(item.slot);
+      card.classList.remove('hidden','correct','wrong','locked','dragging');
+      card.querySelector('.choiceText').textContent=item.definition;
+      card.style.left=choiceHome[idx].left+'px';
+      card.style.top='756px';
+      card.style.transform='';
+      if(orders[item.slot]?.served){card.classList.add('hidden','locked');}
+    });
+  }
+
+  let currentDefinitions=[];
+  function startLevel(){
+    levelLocked=true; gameRunning=false;
+    clearAllTimers();
+    completedLevelOrders=0; totalLevelOrders=3; currentDefinitions=[]; levelAttempts=0; levelCorrect=0;
+    const qs=pickQuestions();
+    const as=pickAnimalSet();
+    orders=[null,null,null];
+    qs.forEach(q=>currentDefinitions.push(q[1]));
+    for(let i=0;i<3;i++){
+      orders[i]={term:qs[i][0],definition:qs[i][1],animal:as[i],served:false};
+      const c=customers[i];
+      c.querySelector('.animal').src=A+as[i];
+      c.querySelector('.term').textContent=`“${qs[i][0]}”`;
+      c.classList.remove('served','feedback-good','feedback-bad','drop-ready');
+      c.dataset.active='1';
+      timers[i]=levelTime();
+      updateTimerVisual(i);
+    }
+    renderDefinitions();
+    updateHud();
+    countdownOverlay.style.display='flex';
+    countdownSub.textContent=`LEVEL ${level} • GET READY TO SERVE KNOWLEDGE!`;
+    countdownText.textContent='3';
+    startCountdown();
+  }
+
+  function startCountdown(){
+    const seq=['3','2','1','GO!'];
+    let i=0;
+    function tick(){
+      countdownText.textContent=seq[i];
+      countdownText.style.animation='none';
+      void countdownText.offsetWidth;
+      countdownText.style.animation='pop .65s ease both';
+      i++;
+      if(i<seq.length) setTimeout(tick,720);
+      else {
+        setTimeout(()=>{countdownOverlay.style.display='none';beginLevel();},700);
+      }
+    }
+    tick();
+  }
+
+  function beginLevel(){
+    levelLocked=false;gameRunning=true;
+    for(let i=0;i<3;i++) startTimerFor(i);
+  }
+
+  // Difficulty scales automatically with level: timer gets shorter and later pools use harder concepts.
+
+
+  function startTimerFor(slot){
+    clearInterval(timerHandles[slot]);
+    timers[slot]=levelTime();
+    updateTimerVisual(slot);
+    const c=customers[slot], pct=c.querySelector('.timerPct');
+    timerHandles[slot]=setInterval(()=>{
+      if(levelLocked || c.classList.contains('served')) return;
+      timers[slot]=Math.max(0,timers[slot]-.1);
+      updateTimerVisual(slot);
+      if(timers[slot]<=0){
+        clearInterval(timerHandles[slot]);
+        handleTimeout(slot);
+      }
+    },100);
+  }
+
+  function updateTimerVisual(slot){
+    const c=customers[slot];
+    const max=levelTime();
+    const ratio=clamp(timers[slot]/max,0,1);
+    const fill=c.querySelector('.timerFill');
+    fill.style.height=(ratio*100)+'%';
+    c.querySelector('.timerPct').textContent=String(Math.ceil(timers[slot]));
+    const ex=[c.querySelector('.star'),c.querySelector('.happy'),c.querySelector('.sad')];
+    ex.forEach(e=>e.classList.remove('active'));
+    if(ratio>.64) ex[0].classList.add('active');
+    else if(ratio>.33) ex[1].classList.add('active');
+    else ex[2].classList.add('active');
+  }
+
+  function clearAllTimers(){
+    timerHandles.forEach(h=>h&&clearInterval(h));
+    timerHandles=[null,null,null];
+  }
+
+  function handleTimeout(slot){
+    if(levelLocked || customers[slot].classList.contains('served')) return;
+    lives=Math.max(0,lives-1); combo=0; levelAttempts++; updateHud();
+    showFeedback('TIME OUT!','bad');
+    const c=customers[slot];
+    c.classList.add('feedback-bad');
+    setTimeout(()=>{
+      if(lives<=0){gameOver();return;}
+      // Give the customer a fresh order so the level can continue
+      const pool=shuffle(pools[Math.min(pools.length-1,level-1)]);
+      const used=orders.map((o,i)=>i!==slot && o?o.term:'');
+      const replacement=pool.find(x=>!used.includes(x[0])) || pool[0];
+      const newAnimal=shuffle(animals.filter(a=>!customers.map(x=>x.querySelector('.animal').getAttribute('src')).includes(A+a)))[0] || animals[0];
+      orders[slot]={term:replacement[0],definition:replacement[1],animal:newAnimal,served:false};
+      currentDefinitions[slot]=replacement[1];
+      c.querySelector('.animal').src=A+newAnimal;
+      c.querySelector('.term').textContent=`“${replacement[0]}”`;
+      c.classList.remove('feedback-bad');
+      renderDefinitions();
+      startTimerFor(slot);
+    },450);
+  }
+
+  function dragToPoint(card, clientX, clientY){
+    const gr=document.getElementById('game').getBoundingClientRect();
+    const scaleX=gr.width/1920, scaleY=gr.height/1080;
+    const x=(clientX-gr.left)/scaleX;
+    const y=(clientY-gr.top)/scaleY;
+    card.style.left=(x-dragging.offsetX)+'px';
+    card.style.top=(y-dragging.offsetY)+'px';
+  }
+
+  function pointInside(el,x,y){
+    const r=el.getBoundingClientRect();
+    return x>=r.left && x<=r.right && y>=r.top && y<=r.bottom;
+  }
+
+  function endDrag(clientX,clientY){
+    if(!dragging) return;
+    const card=dragging.card;
+    card.classList.remove('dragging');
+    document.body.style.cursor='';
+    const target=customers.find((c,idx)=>!c.classList.contains('served')&&pointInside(c,clientX,clientY));
+    const slot=Number(card.dataset.slot);
+    dragging=null;
+    if(target){
+      const targetSlot=Number(target.dataset.slot);
+      if(targetSlot===slot) handleCorrect(card,slot);
+      else handleWrong(card);
+    }else{
+      resetCard(card);
+    }
+  }
+
+  function resetCard(card){
+    const idx=Number(card.dataset.choice);
+    card.style.left=choiceHome[idx].left+'px';
+    card.style.top='756px';
+    card.style.transform='';
+  }
+
+  function handleCorrect(card,slot){
+    card.classList.add('correct','locked');
+    customers[slot].classList.add('served','feedback-good');
+    clearInterval(timerHandles[slot]);
+    completedLevelOrders++;
+    correctTotal++;
+    levelAttempts++;
+    levelCorrect++;
+    orders[slot].served=true;
+    servedTotal++;
+    combo++;
+    const bonus=Math.round(100 + timers[slot]*8 + Math.min(combo,10)*15 + (level-1)*10);
+    score+=bonus;
+    const gained=10 + Math.min(combo,5);
+    exp+=gained;
+    expGain.textContent=`+${gained} EXP`;
+    expGain.classList.remove('show'); void expGain.offsetWidth; expGain.classList.add('show');
+    showFeedback(`SERVED! +${bonus}`,'good');
+    updateHud();
+    setTimeout(()=>{
+      if(completedLevelOrders>=totalLevelOrders){
+        clearAllTimers();
+        showLevelClear();
+      }
+    },520);
+  }
+
+  function handleWrong(card){
+    lives=Math.max(0,lives-1);
+    levelAttempts++;
+    combo=0;
+    card.classList.add('wrong');
+    showFeedback('WRONG ORDER!','bad');
+    updateHud();
+    setTimeout(()=>{card.classList.remove('wrong'); resetCard(card); if(lives<=0) gameOver();},320);
+  }
+
+  function showFeedback(text,type){
+    feedback.textContent=text;
+    feedback.className=type+' show';
+    setTimeout(()=>feedback.className='',760);
+  }
+
+  function showLevelClear(){
+    levelLocked=true; gameRunning=false;
+    const levelExp=30 + levelCorrect*10 + Math.min(combo,10)*5;
+    exp += levelExp;
+    showFeedback(`LEVEL ${level} CLEAR! +${levelExp} EXP`,'good');
+    updateHud();
+    setTimeout(()=>nextLevel(),1050);
+  }
+
+  function nextLevel(){
+    level++;
+    levelModal.classList.remove('show');
+    startLevel();
+  }
+
+  function gameOver(){
+    levelLocked=true; gameRunning=false; clearAllTimers();
+    modalTitle.textContent='GAME OVER';
+    modalSubtitle.textContent='Keep studying and try again!';
+    modalScore.textContent=score.toLocaleString();
+    modalAccuracy.textContent=Math.round((correctTotal/Math.max(1,level*3))*100)+'%';
+    modalExp.textContent='+'+Math.max(0,exp);
+    continueBtn.textContent='PLAY AGAIN';
+    levelModal.classList.add('show');
+  }
+
+  function restart(){
+    level=1;lives=5;score=0;exp=0;combo=0;servedTotal=0;correctTotal=0;levelAttempts=0;levelCorrect=0;previousAnimalSet=[];previousQuestionTerms=[];
+    levelModal.classList.remove('show');
+    startLevel();
+  }
+
+  choices.forEach((card,idx)=>{
+    card.dataset.choice=String(idx);
+    card.addEventListener('pointerdown',e=>{
+      if(levelLocked || card.classList.contains('locked') || card.classList.contains('hidden')) return;
+      dragging={card,offsetX:0,offsetY:0};
+      const rr=card.getBoundingClientRect();
+      const gr=document.getElementById('game').getBoundingClientRect();
+      const scaleX=gr.width/1920, scaleY=gr.height/1080;
+      dragging.offsetX=(e.clientX-rr.left)/scaleX;
+      dragging.offsetY=(e.clientY-rr.top)/scaleY;
+      card.setPointerCapture(e.pointerId);
+      card.classList.add('dragging');
+      document.body.style.cursor='grabbing';
+    });
+    card.addEventListener('pointermove',e=>{
+      if(!dragging || dragging.card!==card) return;
+      dragToPoint(card,e.clientX,e.clientY);
+      customers.forEach(c=>c.classList.remove('drop-ready'));
+      customers.forEach((c,slot)=>{
+        if(!c.classList.contains('served')){
+          if(pointInside(c,e.clientX,e.clientY)) c.classList.add('drop-ready');
+        }
+      });
+    });
+    card.addEventListener('pointerup',e=>{
+      if(!dragging || dragging.card!==card) return;
+      try{card.releasePointerCapture(e.pointerId)}catch{}
+      endDrag(e.clientX,e.clientY);
+    });
+    card.addEventListener('pointercancel',()=>{
+      if(dragging && dragging.card===card){dragging=null;card.classList.remove('dragging');resetCard(card);}
+    });
+  });
+
+  continueBtn.addEventListener('click',()=>{
+    if(continueBtn.textContent==='PLAY AGAIN') restart();
+    else nextLevel();
+  });
+
+  arrowButton.addEventListener('click',()=>{
+    if(!levelLocked && completedLevelOrders===3) showLevelClear();
+  });
+
+  updateHud();
+  startLevel();
+})();
+</script>
+</body>
+</html>

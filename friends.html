@@ -1,0 +1,2107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CATHS-MAIN • Friends</title>
+<link rel="icon" type="image/png" href="sslg-logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --blue:#003DA5;
+  --darkblue:#00296B;
+  --yellow:#FFD700;
+  --white:#fff;
+  --glass:rgba(255,255,255,.13);
+  --muted:#64748b;
+  --danger:#dc2626;
+  --success:#16a34a;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
+body{
+  min-height:100vh;
+  color:#fff;
+  background:linear-gradient(135deg,#001F54,#003DA5,#FFD700);
+  padding-bottom:95px;
+}
+.header{
+  padding:14px 20px;
+  display:grid;
+  grid-template-columns:220px 1fr 220px;
+  align-items:center;
+  gap:15px;
+  background:rgba(255,255,255,.08);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  position:sticky;
+  top:0;
+  z-index:50;
+}
+.logo-group{display:flex;align-items:center;gap:8px}
+.logo{width:58px;height:58px;object-fit:contain}
+.caths-logo{transform:scale(1.12)}
+.header-center{text-align:center}
+.header-center h1{font-size:19px;font-weight:700;line-height:1.2}
+.header-center p{font-size:11px;opacity:.9;margin-top:3px}
+.header-right{display:flex;justify-content:flex-end;position:relative}
+.login-btn{
+  border:none;border-radius:12px;padding:9px 14px;cursor:pointer;
+  background:rgba(255,255,255,.15);color:#fff;font-weight:600;
+  display:flex;align-items:center;gap:7px;white-space:nowrap
+}
+.login-btn img{width:27px;height:27px;border-radius:50%;object-fit:cover}
+
+.container{max-width:980px;margin:0 auto;padding:28px 18px}
+.page-title{margin-bottom:18px}
+.page-title h2{font-size:29px}
+.page-title p{font-size:13px;opacity:.9;margin-top:5px}
+
+.card{
+  background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.15);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  box-shadow:0 16px 45px rgba(0,0,0,.16);
+  border-radius:22px;
+  padding:20px;
+  margin-bottom:18px;
+}
+.card h3{font-size:18px;margin-bottom:5px}
+.card .sub{font-size:12px;opacity:.82;margin-bottom:15px}
+
+.profile-grid{display:grid;grid-template-columns:80px 1fr 170px;gap:15px;align-items:center}
+.avatar{width:80px;height:80px;border-radius:50%;object-fit:cover;background:#eef4ff}
+.fallback-avatar{display:flex;align-items:center;justify-content:center;color:var(--darkblue);font-size:34px;font-weight:700;background:#fff}
+
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{font-size:12px;font-weight:600;display:block;margin:0 0 7px}
+input{
+  width:100%;padding:13px 14px;border:none;outline:none;border-radius:13px;
+  font-size:13px;color:#0f172a;background:#fff;
+}
+.helper{font-size:10px;color:#e2e8f0;margin-top:6px}
+.btn{
+  border:none;border-radius:13px;padding:12px 15px;cursor:pointer;font-weight:700;
+  transition:.2s ease
+}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:#1976ff;color:#fff;box-shadow:0 8px 18px rgba(25,118,255,.20)}
+.btn-primary:hover{background:#1267e8;transform:translateY(-1px)}
+.btn-secondary{background:#fff;color:var(--darkblue)}
+.btn-danger{background:#fee2e2;color:#991b1b}
+.btn-success{background:#dcfce7;color:#166534}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+.search-box{position:relative}
+.search-box input{padding-left:42px}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#64748b}
+.search-icon svg{width:18px;height:18px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.results{display:flex;flex-direction:column;gap:10px;margin-top:15px}
+.user-row{
+  background:#fff;color:#0f172a;border-radius:16px;padding:12px;
+  display:flex;align-items:center;gap:12px;
+}
+.user-row img,.mini-avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#e2e8f0}
+.user-main{min-width:0;flex:1}
+.user-main strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-main small{color:#64748b;font-size:11px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.status{font-size:11px;font-weight:700;color:#64748b}
+
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.count-badge{background:#1976ff;color:#fff;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:800}
+.list{display:flex;flex-direction:column;gap:10px}
+.empty{
+  text-align:center;padding:24px 12px;background:rgba(255,255,255,.08);
+  border-radius:16px;color:rgba(255,255,255,.9);font-size:13px
+}
+.sent-request-row{background:#fff;color:#0f172a;border-radius:16px;padding:12px;display:flex;align-items:center;gap:12px}
+
+.request-row,.friend-row{
+  background:#fff;color:#0f172a;border-radius:16px;padding:12px;
+  display:flex;align-items:center;gap:12px
+}
+.row-info{flex:1;min-width:0}
+
+.friend-profile-link{
+  display:flex;align-items:center;gap:12px;flex:1;min-width:0;
+  text-decoration:none;color:inherit;border-radius:12px;padding:4px;
+  transition:.2s ease;
+}
+.friend-profile-link:hover{background:#eef4ff;transform:translateX(2px)}
+.friend-profile-link:active{transform:scale(.99)}
+.friend-profile-link .row-info{min-width:0}
+.row-info strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-info small{display:block;color:#64748b;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.actions{display:flex;gap:7px}
+.actions .btn{padding:8px 11px;font-size:11px}
+
+.toast{
+  position:fixed;left:50%;bottom:95px;transform:translate(-50%,20px);
+  background:#0f172a;color:#fff;padding:11px 16px;border-radius:12px;font-size:12px;
+  opacity:0;pointer-events:none;transition:.25s ease;z-index:100
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+.profile-menu{
+  display:none;position:absolute;top:calc(100% + 8px);right:0;width:290px;
+  background:#fff;color:var(--darkblue);border-radius:18px;padding:14px;
+  box-shadow:0 20px 50px rgba(0,0,0,.28);z-index:60;
+  opacity:0;transform:translateY(-12px) scale(.96);transform-origin:top right;
+  pointer-events:none;
+}
+.profile-menu.open{display:block;pointer-events:auto;animation:profileMenuIn .42s cubic-bezier(.16,1,.3,1) forwards}
+.profile-menu.closing{display:block;pointer-events:none;animation:profileMenuOut .38s cubic-bezier(.4,0,.2,1) forwards}
+.profile-info{display:flex;align-items:center;gap:11px;opacity:0;transform:translateY(-8px)}
+.profile-menu.open .profile-info{animation:profileItemIn .38s cubic-bezier(.16,1,.3,1) .05s forwards}
+.profile-info img{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#e2e8f0}
+.profile-details{min-width:0}
+.profile-details strong,.profile-details small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.profile-details strong{font-size:14px}
+.profile-details small{font-size:10px;color:#64748b;margin-top:2px}
+.profile-divider{height:1px;background:#e5e7eb;margin:12px 0;opacity:0}
+.profile-menu.open .profile-divider{animation:profileFadeIn .30s ease .14s forwards}
+.profile-link{display:flex;gap:10px;align-items:center;padding:11px 12px;border-radius:12px;text-decoration:none;color:var(--darkblue);font-size:12px;font-weight:600;opacity:0;transform:translateX(14px)}
+.profile-menu.open .profile-link:nth-of-type(1){animation:profileItemIn .38s cubic-bezier(.16,1,.3,1) .17s forwards}
+.profile-menu.open .profile-link:nth-of-type(2){animation:profileItemIn .38s cubic-bezier(.16,1,.3,1) .24s forwards}
+.profile-menu.open .profile-link:nth-of-type(3){animation:profileItemIn .38s cubic-bezier(.16,1,.3,1) .31s forwards}
+.profile-link:hover{background:#eef4ff;transform:translateX(3px)}
+.logout-button{width:100%;border:none;border-radius:12px;padding:11px;background:var(--darkblue);color:#fff;font-weight:600;cursor:pointer;opacity:0;transform:translateY(8px)}
+.profile-menu.open .logout-button{animation:profileItemIn .38s cubic-bezier(.16,1,.3,1) .38s forwards}
+.profile-menu.closing .logout-button{animation:profileItemOut .16s cubic-bezier(.4,0,.2,1) 0s forwards}
+.profile-menu.closing .profile-link:nth-of-type(3){animation:profileItemOut .16s cubic-bezier(.4,0,.2,1) .035s forwards}
+.profile-menu.closing .profile-link:nth-of-type(2){animation:profileItemOut .16s cubic-bezier(.4,0,.2,1) .07s forwards}
+.profile-menu.closing .profile-link:nth-of-type(1){animation:profileItemOut .16s cubic-bezier(.4,0,.2,1) .105s forwards}
+.profile-menu.closing .profile-info{animation:profileInfoOut .18s cubic-bezier(.4,0,.2,1) .14s forwards}
+@keyframes profileMenuIn{0%{opacity:0;transform:translateY(-12px) scale(.96)}60%{opacity:1;transform:translateY(2px) scale(1.01)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes profileMenuOut{0%{opacity:1;transform:translateY(0) scale(1)}65%{opacity:1;transform:translateY(-2px) scale(.995)}100%{opacity:0;transform:translateY(-10px) scale(.97)}}
+@keyframes profileItemIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes profileFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes profileItemOut{from{opacity:1;transform:translateX(0) translateY(0) scale(1)}to{opacity:0;transform:translateX(8px) translateY(-4px) scale(.98)}}
+@keyframes profileInfoOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-6px)}}
+
+.bottom-nav{
+  position:fixed;left:0;right:0;bottom:0;height:76px;
+  background:rgba(0,0,0,.28);backdrop-filter:blur(18px);
+  display:flex;justify-content:space-around;align-items:center;z-index:55
+}
+.nav-item{text-decoration:none;color:#fff;font-size:10px;text-align:center;padding:4px 8px}
+.nav-item div{font-size:22px;line-height:1;margin-bottom:4px}
+.nav-item.active{
+  color:var(--yellow);
+  transform:translateY(-6px) scale(1.12);
+  font-weight:700;
+}
+.nav-item.active div{
+  font-size:28px;
+  margin-bottom:5px;
+}
+@media (max-width:768px){
+  .nav-item.active{transform:translateY(-5px) scale(1.08)}
+  .nav-item.active div{font-size:25px}
+}
+
+#profileNavPhoto{display:flex;align-items:center;justify-content:center;width:24px;height:24px;margin:0 auto 4px}
+#profileNavPhoto img{width:24px;height:24px;border-radius:50%;object-fit:cover}
+
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:9999999;justify-content:center;align-items:center;padding:15px}
+.login-popup{position:relative;width:100%;max-width:420px;padding:35px 30px;border-radius:28px;background:rgba(34,42,60,.96);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.12);box-shadow:0 20px 60px rgba(0,0,0,.45);text-align:center;color:#fff;animation:pop .3s ease}
+.login-popup h2{font-size:42px;font-weight:700;margin-bottom:8px;color:#fff}
+.login-popup p{color:rgba(255,255,255,.85);font-size:17px;margin-bottom:22px}
+.login-close{position:absolute;top:14px;right:16px;background:transparent;border:none;padding:0;margin:0;width:28px;height:28px;font-size:20px;line-height:1;font-weight:500;color:#FFD93D;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s ease}
+.login-close:hover{color:#FFE66D;transform:scale(1.08)}
+#googleLoginBtn{width:100%;height:58px;border:none;border-radius:16px;background:#1976ff;color:#fff;font-size:18px;font-weight:700;cursor:pointer;margin:0;transition:.2s ease}
+#googleLoginBtn:hover{transform:translateY(-2px);filter:brightness(1.03)}
+@keyframes pop{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+
+.loading{padding:20px;text-align:center;color:#64748b;font-size:12px}
+.hidden{display:none!important}
+
+@media(max-width:768px){
+  body{padding-bottom:82px}
+  .header{grid-template-columns:auto 1fr auto;padding:9px 11px;gap:8px}
+  .logo{width:42px;height:42px}.caths-logo{transform:scale(1.06)}
+  .header-center h1{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .header-center p{font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .login-btn{font-size:10px;padding:7px 8px;max-width:110px;overflow:hidden;text-overflow:ellipsis}
+  .container{padding:20px 12px}
+  .page-title h2{font-size:23px}.page-title p{font-size:11px}
+  .profile-grid{grid-template-columns:60px 1fr}.profile-grid > .btn{grid-column:1/-1}
+  .avatar{width:60px;height:60px}.fallback-avatar{font-size:25px}
+  .field-row{grid-template-columns:1fr}
+  .user-row,.request-row,.friend-row{padding:10px}.user-row img,.mini-avatar{width:44px;height:44px}
+  .actions{flex-direction:column}
+  .actions .btn{width:100%}
+  .profile-menu{width:calc(100vw - 20px);max-width:300px}
+  .login-popup{width:100%;max-width:350px;padding:28px 20px;border-radius:22px}
+  .login-popup h2{font-size:30px}
+  .login-popup p{font-size:13px;margin-bottom:20px}
+  #googleLoginBtn{height:54px;font-size:15px;border-radius:15px}
+  .login-close{top:12px;right:12px}
+  .bottom-nav{height:70px}.nav-item{font-size:9px;min-width:52px;padding:4px 2px}.nav-item div{font-size:21px}
+}
+
+/* REMOVE FRIEND CONFIRMATION */
+.remove-modal{
+  position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+  padding:18px;background:rgba(0,13,38,.62);backdrop-filter:blur(9px);
+  -webkit-backdrop-filter:blur(9px);z-index:9999;
+}
+.remove-modal.show{display:flex;animation:removeOverlayIn .22s ease forwards}
+.remove-dialog{
+  width:min(420px,100%);background:rgba(255,255,255,.97);color:#0f172a;
+  border-radius:26px;padding:28px 24px 22px;text-align:center;
+  box-shadow:0 26px 70px rgba(0,0,0,.35);
+  border:1px solid rgba(255,255,255,.65);
+  transform:translateY(16px) scale(.96);opacity:0;
+  animation:removeDialogIn .3s cubic-bezier(.16,1,.3,1) .03s forwards;
+}
+.remove-icon{
+  width:68px;height:68px;margin:0 auto 14px;border-radius:20px;
+  display:flex;align-items:center;justify-content:center;font-size:31px;
+  background:linear-gradient(135deg,#fff1f2,#ffe4e6);
+  box-shadow:inset 0 0 0 1px rgba(220,38,38,.08);
+}
+.remove-icon svg{width:30px;height:30px;fill:none;stroke:#dc2626;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.remove-dialog h3{font-size:21px;color:#00296B;margin-bottom:7px}
+.remove-dialog p{font-size:13px;line-height:1.6;color:#64748b;margin:0 auto 17px;max-width:330px}
+.remove-friend-preview{
+  display:flex;align-items:center;gap:11px;text-align:left;padding:11px 12px;
+  border-radius:16px;background:#f8fafc;border:1px solid #e2e8f0;margin-bottom:19px;
+}
+.remove-friend-preview img,.remove-friend-preview .fallback-avatar{
+  width:48px;height:48px;border-radius:50%;object-fit:cover;flex:0 0 48px;
+}
+.remove-friend-preview strong{display:block;font-size:13px;color:#0f172a}
+.remove-friend-preview span{display:block;font-size:11px;color:#64748b;margin-top:2px}
+.remove-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.remove-actions button{width:100%;border:none;border-radius:14px;padding:12px 14px;font-weight:700;cursor:pointer;transition:.2s ease}
+.remove-cancel{background:#eef2f7;color:#334155}
+.remove-confirm{background:#dc2626;color:#fff;box-shadow:0 7px 18px rgba(220,38,38,.22)}
+.remove-actions button:hover{transform:translateY(-1px)}
+.remove-actions button:active{transform:scale(.98)}
+@keyframes removeOverlayIn{from{opacity:0}to{opacity:1}}
+@keyframes removeDialogIn{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:480px){
+  .remove-dialog{border-radius:22px;padding:24px 17px 18px}
+  .remove-dialog h3{font-size:19px}
+  .remove-dialog p{font-size:12px}
+  .remove-actions{grid-template-columns:1fr;gap:8px}
+  .remove-actions button{padding:13px}
+}
+
+
+/* =========================================================
+   INDEX.HTML BOTTOM NAVIGATION — MATCHED ON FRIENDS PAGE
+   ========================================================= */
+.bottom-nav{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    height:75px;
+    background:rgba(0,0,0,.25);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    z-index:9000;
+}
+
+.bottom-nav a,
+.bottom-nav a:link,
+.bottom-nav a:visited,
+.bottom-nav a:hover,
+.bottom-nav a:active{
+    text-decoration:none;
+    color:white;
+}
+
+.bottom-nav .nav-item{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    min-width:72px;
+    padding:5px 8px;
+    line-height:1.1;
+    text-align:center;
+    font-size:12px;
+    cursor:pointer;
+    transition:transform .22s ease,color .22s ease;
+}
+
+.bottom-nav .nav-item div{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:30px;
+    height:28px;
+    font-size:22px;
+    line-height:1;
+    margin-bottom:3px;
+}
+
+.bottom-nav .nav-item.active{
+    color:var(--yellow);
+    transform:translateY(-5px) scale(1.08);
+}
+
+.bottom-nav .nav-item.active div{
+    font-size:25px;
+}
+
+.bottom-nav .profile-nav-icon{
+    width:30px !important;
+    height:28px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    margin:0 0 3px 0 !important;
+    background:transparent !important;
+}
+
+.bottom-nav .profile-nav-icon img,
+.bottom-nav #profileNavPhoto img{
+    width:28px !important;
+    height:28px !important;
+    min-width:28px !important;
+    min-height:28px !important;
+    max-width:28px !important;
+    max-height:28px !important;
+    border-radius:50% !important;
+    object-fit:cover !important;
+    display:block !important;
+    background:transparent !important;
+    border:none !important;
+    box-shadow:none !important;
+}
+
+@media(max-width:768px){
+    .bottom-nav{
+        height:70px;
+        padding:5px 3px calc(5px + env(safe-area-inset-bottom));
+        z-index:9000;
+    }
+
+    .bottom-nav .nav-item{
+        min-width:48px;
+        flex:1 1 0;
+        max-width:88px;
+        padding:4px 2px;
+        font-size:8px;
+    }
+
+    .bottom-nav .nav-item div{
+        width:27px;
+        height:24px;
+        font-size:21px;
+        margin-bottom:2px;
+    }
+
+    .bottom-nav .nav-item.active{
+        transform:translateY(-4px) scale(1.06);
+    }
+
+    .bottom-nav .nav-item.active div{
+        font-size:24px;
+    }
+
+    .bottom-nav .profile-nav-icon{
+        width:27px !important;
+        height:24px !important;
+        padding:0 !important;
+        border:none !important;
+        box-shadow:none !important;
+        background:transparent !important;
+    }
+
+    .bottom-nav .profile-nav-icon img,
+    .bottom-nav #profileNavPhoto img{
+        width:25px !important;
+        height:25px !important;
+        min-width:25px !important;
+        min-height:25px !important;
+        max-width:25px !important;
+        max-height:25px !important;
+    }
+}
+
+@media(max-width:380px){
+    .bottom-nav .nav-item{
+        min-width:44px;
+        padding-left:2px;
+        padding-right:2px;
+        font-size:7px;
+    }
+
+    .bottom-nav .nav-item div{
+        font-size:19px;
+    }
+}
+
+
+/* =========================================================
+   MOBILE-FIRST FRIENDS PAGE POLISH
+   ========================================================= */
+*{box-sizing:border-box}
+html{width:100%;overflow-x:hidden}
+body{
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+  -webkit-text-size-adjust:100%;
+  padding-bottom:92px;
+}
+
+img{max-width:100%;height:auto}
+
+.container,
+.main-container,
+.page-container,
+.content,
+main{
+  width:100%;
+  max-width:100%;
+}
+
+@media (max-width:768px){
+  body{
+    padding-bottom:86px;
+  }
+
+  .header,
+  header{
+    width:100%;
+    padding-left:14px !important;
+    padding-right:14px !important;
+  }
+
+  .header-left,
+  .header-right{
+    min-width:0;
+  }
+
+  .header-left{
+    gap:8px !important;
+  }
+
+  .logo,
+  .brand-logo{
+    max-width:42px !important;
+    max-height:42px !important;
+  }
+
+  .header-title,
+  .brand-title,
+  header h1{
+    font-size:16px !important;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .container,
+  .main-container,
+  .page-container,
+  .content,
+  main{
+    width:100% !important;
+    max-width:100% !important;
+    padding-left:12px !important;
+    padding-right:12px !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+  }
+
+  .card{
+    width:100% !important;
+    max-width:100% !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+    padding:15px !important;
+    border-radius:18px !important;
+  }
+
+  .section-head{
+    gap:8px !important;
+    flex-wrap:wrap;
+  }
+
+  .section-head h3{
+    font-size:17px !important;
+    line-height:1.25;
+  }
+
+  .sub{
+    font-size:12px !important;
+    line-height:1.45;
+  }
+
+  /* Search area */
+  #searchInput{
+    width:100% !important;
+    min-width:0 !important;
+    font-size:16px !important; /* prevents iOS zoom */
+  }
+
+  .search-row,
+  .search-box,
+  .field-row{
+    width:100% !important;
+    min-width:0 !important;
+  }
+
+  /* Request/friend rows become compact mobile cards */
+  .request-row,
+  .sent-request-row,
+  .friend-row{
+    width:100% !important;
+    min-width:0 !important;
+    gap:10px !important;
+    padding:11px !important;
+    align-items:center !important;
+    overflow:hidden;
+  }
+
+  .row-info{
+    min-width:0 !important;
+    flex:1 1 auto !important;
+    overflow:hidden;
+  }
+
+  .row-info strong,
+  .row-info small{
+    display:block;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  .row-info strong{
+    font-size:13px !important;
+  }
+
+  .row-info small{
+    font-size:11px !important;
+  }
+
+  .actions{
+    flex:0 0 auto !important;
+    display:flex !important;
+    gap:5px !important;
+  }
+
+  .actions .btn{
+    min-height:36px !important;
+    padding:7px 9px !important;
+    font-size:11px !important;
+    white-space:nowrap;
+  }
+
+  .friend-profile-link{
+    min-width:0 !important;
+    flex:1 1 auto !important;
+    overflow:hidden;
+    display:flex !important;
+    align-items:center !important;
+    gap:10px !important;
+  }
+
+  /* Profile/setup fields */
+  .profile-grid{
+    grid-template-columns:1fr !important;
+    gap:12px !important;
+  }
+
+  .profile-grid > *{
+    min-width:0 !important;
+  }
+
+  input,
+  select,
+  textarea,
+  button{
+    max-width:100%;
+  }
+
+  input,
+  select,
+  textarea{
+    font-size:16px !important;
+  }
+
+  /* Keep the bottom nav usable with a thumb */
+  .bottom-nav{
+    height:70px !important;
+    padding:4px 2px calc(5px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .bottom-nav .nav-item{
+    min-width:0 !important;
+    width:20% !important;
+    max-width:none !important;
+    padding:4px 1px !important;
+    font-size:8px !important;
+    overflow:hidden;
+  }
+
+  .bottom-nav .nav-item span{
+    max-width:100%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  /* Prevent horizontal overflow from wide badges/buttons */
+  .count-badge{
+    flex:0 0 auto;
+  }
+
+  .toast{
+    left:12px !important;
+    right:12px !important;
+    bottom:82px !important;
+    width:auto !important;
+    max-width:none !important;
+    text-align:center;
+  }
+}
+
+@media (max-width:430px){
+  .card{
+    padding:13px !important;
+    border-radius:16px !important;
+  }
+
+  .request-row,
+  .sent-request-row,
+  .friend-row{
+    padding:9px !important;
+  }
+
+  .actions .btn{
+    min-height:34px !important;
+    padding:6px 8px !important;
+    font-size:10px !important;
+  }
+
+  .bottom-nav .nav-item div{
+    font-size:20px !important;
+  }
+
+  .bottom-nav .nav-item.active div{
+    font-size:23px !important;
+  }
+}
+
+@media (max-width:360px){
+  .card{
+    padding:11px !important;
+  }
+
+  .request-row,
+  .sent-request-row,
+  .friend-row{
+    gap:7px !important;
+  }
+
+  .actions{
+    gap:3px !important;
+  }
+
+  .actions .btn{
+    padding:6px 6px !important;
+    font-size:9px !important;
+  }
+
+  .row-info strong{
+    font-size:12px !important;
+  }
+
+  .row-info small{
+    font-size:10px !important;
+  }
+}
+
+
+/* =========================================================
+   MOBILE TOAST — CENTERED ABOVE BOTTOM NAV
+   ========================================================= */
+@media (max-width:768px){
+  .toast{
+    left:50% !important;
+    right:auto !important;
+    bottom:82px !important;
+    width:max-content !important;
+    max-width:calc(100vw - 32px) !important;
+    transform:translateX(-50%) translateY(10px) !important;
+    text-align:center !important;
+    white-space:normal !important;
+    overflow-wrap:anywhere;
+    z-index:10000 !important;
+  }
+
+  .toast.show{
+    transform:translateX(-50%) translateY(0) !important;
+  }
+}
+
+@media (max-width:430px){
+  .toast{
+    bottom:82px !important;
+    max-width:calc(100vw - 28px) !important;
+    padding:10px 16px !important;
+    border-radius:999px !important;
+    font-size:12px !important;
+  }
+}
+
+
+.message-btn{
+  white-space:nowrap;
+  min-height:36px;
+  background:#e0f2fe;
+  color:#075985;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+}
+.message-btn:hover{background:#bae6fd}
+
+
+/* ACTIVE BOTTOM NAV */
+.bottom-nav .nav-item{color:#fff;text-decoration:none;transition:transform .22s ease,color .22s ease}
+.bottom-nav .nav-item.active{color:#FFD700 !important;transform:translateY(-7px) scale(1.08);font-weight:700}
+.bottom-nav .nav-item.active div{font-size:26px !important;color:#FFD700 !important}
+@media(max-width:768px){
+  .bottom-nav .nav-item.active{transform:translateY(-6px) scale(1.08)}
+  .bottom-nav .nav-item.active div{font-size:25px !important}
+}
+.profile-btn{
+  background:rgba(255,255,255,.14);
+  color:#fff;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  white-space:nowrap;
+  min-height:36px;
+}
+.profile-btn:hover{background:rgba(255,255,255,.22)}
+
+.verified-badge{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;margin-left:5px;border-radius:50%;background:#1d9bf0;color:#fff;font-size:10px;font-weight:900;line-height:1;vertical-align:middle;box-shadow:0 1px 3px rgba(29,155,240,.28)}
+
+
+/* =========================================================
+   INDEX.HTML VISUAL MATCH — FRIENDS PAGE
+   Keep all Friends functionality; align shell/UI with index.html.
+   ========================================================= */
+body{
+  background:
+    radial-gradient(900px 600px at 8% 8%, rgba(0,120,255,.28), transparent 60%),
+    radial-gradient(800px 560px at 92% 14%, rgba(255,215,0,.16), transparent 58%),
+    radial-gradient(700px 500px at 78% 92%, rgba(0,77,190,.24), transparent 62%),
+    linear-gradient(135deg, #03152f 0%, #062b68 34%, #0a4ca2 66%, #173b78 100%) !important;
+  background-attachment:fixed !important;
+  background-size:cover !important;
+  padding-bottom:106px !important;
+  overflow-x:hidden !important;
+}
+body::before{
+  content:"";
+  position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:
+    radial-gradient(circle at 20% 25%, rgba(100,180,255,.10) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 78% 72%, rgba(255,215,0,.10) 0 1px, transparent 1.5px);
+  background-size:180px 180px,240px 240px;opacity:.5;
+}
+body::after{
+  content:"";position:fixed;inset:-15%;pointer-events:none;z-index:-1;
+  background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.035) 48%,transparent 60%);
+  transform:rotate(-4deg);opacity:.7;
+}
+.header{
+  position:sticky !important;top:2px !important;z-index:9990 !important;
+  width:calc(100% - 24px) !important;max-width:1400px !important;min-height:76px !important;
+  margin:10px auto 0 !important;padding:12px 18px !important;
+  display:grid !important;grid-template-columns:220px 1fr 220px !important;align-items:center !important;gap:15px !important;
+  border:1px solid rgba(255,255,255,.20) !important;border-radius:22px !important;
+  background:linear-gradient(135deg,rgba(255,255,255,.13),rgba(255,255,255,.055)) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(145%) !important;backdrop-filter:blur(22px) saturate(145%) !important;
+  box-shadow:0 16px 34px rgba(0,8,30,.20),inset 0 1px 0 rgba(255,255,255,.18) !important;
+}
+.header::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(90deg,rgba(80,170,255,.08),transparent 28%,transparent 72%,rgba(80,170,255,.08));
+}
+.header-left,.header-right,.title{position:relative;z-index:1}
+.header-left{display:flex !important;align-items:center !important;gap:10px !important}
+.logo{width:58px !important;height:58px !important;object-fit:contain !important}
+.caths-logo{transform:none !important}
+.title{text-align:center !important}
+.title h1{font-size:18px !important;font-weight:700 !important}
+.title p{font-size:12px !important;opacity:.9 !important}
+.header-right{display:flex !important;align-items:center !important;justify-content:flex-end !important;gap:12px !important;position:relative !important}
+.login-btn{
+  width:auto !important;margin:0 !important;padding:9px 14px !important;
+  min-height:46px !important;border:1px solid rgba(255,255,255,.16) !important;border-radius:14px !important;
+  background:linear-gradient(145deg,rgba(255,255,255,.15),rgba(255,255,255,.07)) !important;
+  color:#fff !important;font-weight:700 !important;display:flex !important;align-items:center !important;gap:8px !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 8px 20px rgba(0,0,0,.12) !important;
+}
+.login-btn img{width:34px !important;height:34px !important;border-radius:50% !important;object-fit:cover !important}
+.login-icon{font-size:18px;line-height:1}
+.header .notification-wrap{position:relative !important;display:flex !important;align-items:center !important}
+.header .notification-btn{
+  width:46px !important;height:46px !important;margin:0 !important;padding:0 !important;
+  border:1px solid rgba(255,255,255,.17) !important;border-radius:50% !important;
+  background:linear-gradient(145deg,rgba(255,255,255,.15),rgba(255,255,255,.07)) !important;
+  color:#fff !important;display:grid !important;place-items:center !important;position:relative !important;cursor:pointer !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 8px 20px rgba(0,0,0,.14) !important;
+}
+.header .notification-btn .ui-svg{width:21px !important;height:21px !important;fill:none !important;stroke:currentColor !important;stroke-width:1.9 !important;stroke-linecap:round !important;stroke-linejoin:round !important}
+.notification-badge{
+  position:absolute !important;top:-2px !important;right:-2px !important;min-width:19px !important;height:19px !important;
+  padding:0 5px !important;border:2px solid #10295c !important;border-radius:999px !important;
+  background:linear-gradient(135deg,#ffe66a,#ffd21f) !important;color:#17315e !important;
+  font-size:8px !important;font-weight:800 !important;display:none !important;align-items:center !important;justify-content:center !important;
+}
+.notification-badge.show{display:flex !important}
+.notification-panel{
+  display:none;position:absolute !important;top:56px !important;right:0 !important;width:340px !important;max-width:calc(100vw - 24px) !important;
+  background:rgba(248,250,255,.98) !important;color:#152a4d !important;border:1px solid rgba(255,255,255,.22) !important;
+  border-radius:20px !important;overflow:hidden !important;box-shadow:0 20px 50px rgba(0,0,0,.28),0 3px 12px rgba(0,0,0,.10) !important;z-index:99999 !important}
+.notification-panel.open{display:block !important;animation:profileMenuIn .24s ease forwards}
+.notification-head{display:flex;align-items:center;justify-content:space-between;padding:15px 16px;min-height:52px;background:linear-gradient(180deg,#fff,#f7f9ff)}
+.notification-head strong{font-size:14px !important;color:#0f274f !important}
+.notification-head button{border:0;background:none;color:#2a5ea8;font-size:10px;font-weight:800;cursor:pointer;padding:7px 8px;border-radius:8px}
+.notification-list{max-height:370px;overflow:auto;background:#fff}
+.notification-item{display:flex;gap:11px;padding:12px 14px;border-bottom:1px solid #edf1f7;transition:background .18s ease}
+.notification-item:hover{background:#f8fbff}
+.notification-item.unread{background:#fffaf0}
+.notification-icon{width:38px;height:38px;flex:0 0 38px;border-radius:12px;background:linear-gradient(145deg,#eef4ff,#e5edfb);border:1px solid #dce6f7;display:grid;place-items:center}
+.notification-icon span{width:8px;height:8px;border-radius:50%;background:#4d98ff;box-shadow:0 0 10px rgba(77,152,255,.35)}
+.notification-content{min-width:0}.notification-content strong{display:block;font-size:11px;color:#152a4d}.notification-content p{margin-top:3px;font-size:10px;line-height:1.45;color:#6a7890}
+.notification-empty{padding:34px 18px;text-align:center;color:#718096;font-size:11px}
+
+.bottom-nav{
+  position:fixed !important;left:0 !important;right:0 !important;bottom:0 !important;width:100% !important;max-width:none !important;
+  height:82px !important;min-height:82px !important;margin:0 !important;padding:8px 16px calc(8px + env(safe-area-inset-bottom)) !important;
+  display:flex !important;align-items:center !important;justify-content:center !important;gap:8px !important;
+  border:0 !important;border-top:1px solid rgba(255,255,255,.18) !important;border-radius:22px 22px 0 0 !important;
+  background:linear-gradient(180deg,rgba(5,22,52,.93),rgba(2,13,32,.98)) !important;
+  -webkit-backdrop-filter:blur(22px) saturate(150%) !important;backdrop-filter:blur(22px) saturate(150%) !important;
+  box-shadow:0 -14px 35px rgba(0,8,30,.22),inset 0 1px 0 rgba(255,255,255,.10) !important;
+  z-index:99990 !important;overflow:visible !important
+}
+.bottom-nav .nav-item{
+  position:relative !important;z-index:1 !important;flex:1 1 0 !important;width:auto !important;max-width:180px !important;min-width:0 !important;height:62px !important;margin:0 !important;
+  padding:7px 10px !important;border-radius:16px !important;display:flex !important;flex-direction:column !important;align-items:center !important;justify-content:center !important;gap:4px !important;
+  color:rgba(255,255,255,.72) !important;font-size:10px !important;font-weight:600 !important;text-decoration:none !important;white-space:nowrap !important;
+  transition:background .20s ease,color .20s ease,transform .20s ease !important;
+}
+.bottom-nav .nav-item:hover{color:#fff !important;background:rgba(255,255,255,.07) !important;transform:translateY(-2px) !important}
+.bottom-nav .nav-item.active{
+  color:#8fd0ff !important;background:linear-gradient(180deg,rgba(87,169,255,.19),rgba(87,169,255,.07)) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 8px 22px rgba(20,120,255,.12) !important;transform:none !important
+}
+.bottom-nav .nav-item.active::after{
+  content:"";position:absolute;left:50%;bottom:4px;width:24px;height:3px;border-radius:999px;transform:translateX(-50%);
+  background:#77c4ff;box-shadow:0 0 12px rgba(119,196,255,.65)
+}
+.bottom-nav .nav-item .nav-icon-placeholder{display:none !important}
+.bottom-nav .nav-item::before{font-size:20px !important;line-height:1 !important;opacity:.92 !important;margin:0 !important}
+.bottom-nav .nav-item:nth-child(1)::before{content:"⌂" !important}
+.bottom-nav .nav-item:nth-child(2)::before{content:"◫" !important}
+.bottom-nav .nav-item:nth-child(3)::before{content:"◌" !important}
+.bottom-nav .nav-item:nth-child(4)::before{content:"◉" !important}
+.bottom-nav .nav-item:nth-child(5)::before{content:none !important;display:none !important}
+.bottom-nav .nav-item:nth-child(5) .profile-nav-icon{
+  width:34px !important;height:34px !important;min-width:34px !important;min-height:34px !important;max-width:34px !important;max-height:34px !important;
+  margin:0 !important;padding:2px !important;display:grid !important;place-items:center !important;border-radius:50% !important;overflow:hidden !important;
+  background:rgba(255,255,255,.10) !important;border:1px solid rgba(255,255,255,.18) !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12) !important;font-size:0 !important
+}
+.bottom-nav .nav-item:nth-child(5) .profile-nav-icon img{width:30px !important;height:30px !important;min-width:30px !important;min-height:30px !important;max-width:30px !important;max-height:30px !important;display:block !important;object-fit:cover !important;border-radius:50% !important}
+
+@media(max-width:768px){
+  body{padding-bottom:94px !important}
+  .header{top:1px !important;width:calc(100% - 16px) !important;min-height:66px !important;margin:8px auto 0 !important;padding:8px 10px !important;border-radius:18px !important;grid-template-columns:auto 1fr auto !important;gap:8px !important}
+  .logo{width:42px !important;height:42px !important}.header-left{gap:7px !important}.title h1{font-size:14px !important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.title p{font-size:8px !important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .header-right{gap:7px !important}.login-btn{min-height:40px !important;font-size:10px !important;padding:7px 8px !important;max-width:120px !important;overflow:hidden;text-overflow:ellipsis}.login-icon{font-size:16px}.header .notification-btn{width:40px !important;height:40px !important}.header .notification-btn .ui-svg{width:19px !important;height:19px !important}
+  .notification-panel{position:fixed !important;top:72px !important;right:10px !important;left:auto !important;width:min(330px,calc(100vw - 20px)) !important;max-width:none !important}
+  .bottom-nav{height:74px !important;min-height:74px !important;padding:6px 6px calc(6px + env(safe-area-inset-bottom)) !important;gap:2px !important;border-radius:18px 18px 0 0 !important}
+  .bottom-nav .nav-item{height:58px !important;padding:5px 3px !important;border-radius:13px !important;gap:3px !important;font-size:8.5px !important}
+  .bottom-nav .nav-item::before{font-size:17px !important}.bottom-nav .nav-item:nth-child(5) .profile-nav-icon{width:30px !important;height:30px !important;min-width:30px !important;min-height:30px !important;max-width:30px !important;max-height:30px !important}.bottom-nav .nav-item:nth-child(5) .profile-nav-icon img{width:26px !important;height:26px !important;min-width:26px !important;min-height:26px !important;max-width:26px !important;max-height:26px !important}
+}
+@media(max-width:380px){
+  .header{width:calc(100% - 12px) !important;padding-left:8px !important;padding-right:8px !important}.bottom-nav{height:70px !important;min-height:70px !important}.bottom-nav .nav-item{height:54px !important;font-size:7.5px !important}.bottom-nav .nav-item::before{font-size:16px !important}
+}
+
+
+/* =========================================================
+   POLISHED PAGE FADE + MOBILE HEADER PROFILE
+   ========================================================= */
+body{animation:pageFadeIn .48s ease both}
+.header{animation:headerFadeIn .52s cubic-bezier(.16,1,.3,1) .03s both}
+.container{animation:contentFadeIn .58s cubic-bezier(.16,1,.3,1) .08s both}
+.card{animation:cardFadeIn .52s cubic-bezier(.16,1,.3,1) both}
+.card:nth-of-type(2){animation-delay:.05s}.card:nth-of-type(3){animation-delay:.10s}.card:nth-of-type(4){animation-delay:.15s}.card:nth-of-type(5){animation-delay:.20s}
+@keyframes pageFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes headerFadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes contentFadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes cardFadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.header-right .login-btn{overflow:hidden}
+.header-right .login-btn span:not(.login-icon):not(.profile-chevron){max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.profile-chevron{display:inline-grid;place-items:center;width:18px;height:18px;flex:0 0 auto}
+.profile-chevron svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.admin-badge{display:inline-flex;align-items:center;gap:4px;margin-left:6px;padding:2px 8px;border-radius:999px;background:#e8f2ff;color:#1769d1;border:1px solid #cfe2ff;font-size:9px;font-weight:800;line-height:1.5;vertical-align:middle;white-space:nowrap}
+.admin-check{display:inline-grid;place-items:center;width:13px;height:13px;border-radius:50%;background:#2b86ff;color:#fff;font-size:8px;font-weight:900}
+.verified-badge{display:none!important}
+.user-row .user-main strong,.row-info strong,.remove-friend-preview strong{display:flex!important;align-items:center;flex-wrap:wrap;gap:2px}
+.button-icon{display:inline-grid;place-items:center;width:15px;height:15px;flex:0 0 auto}
+.button-icon svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.remove-confirm{background:#dc2626;color:#fff;box-shadow:0 7px 18px rgba(220,38,38,.22)}
+.remove-confirm:hover{background:#b91c1c}
+@media(max-width:768px){
+  .header-right{min-width:0}
+  .header-right .login-btn{width:42px!important;min-width:42px!important;height:42px!important;min-height:42px!important;padding:3px!important;border-radius:50%!important;justify-content:center!important;gap:0!important}
+  .header-right .login-btn img{width:34px!important;height:34px!important;border-radius:50%!important;display:block!important;flex:0 0 34px!important}
+  .header-right .login-btn .login-icon{width:34px!important;height:34px!important;display:grid!important;place-items:center!important;border-radius:50%!important;background:rgba(255,255,255,.11)!important;font-size:14px!important}
+  .header-right .login-btn span:not(.login-icon):not(.profile-chevron){display:none!important}
+  .header-right .login-btn .profile-chevron{display:none!important}
+  .profile-menu{right:0!important;width:min(310px,calc(100vw - 20px))!important}
+  .user-row,.request-row,.sent-request-row,.friend-row{align-items:flex-start!important}
+  .actions{flex:0 0 auto!important}
+  .message-btn,.actions .btn{min-height:36px!important}
+}
+@media(prefers-reduced-motion:reduce){body,.header,.container,.card{animation:none!important}}
+
+</style>
+</head>
+<body>
+
+<header class="header">
+
+  <div class="header-left">
+    <img src="sslg-logo.png" class="logo" alt="SSLG">
+    <img src="caths-logo.png" class="logo caths-logo" alt="CATHS">
+  </div>
+
+  <div class="title">
+    <h1>CATHS-MAIN</h1>
+    <p>Official SSLG Communication Platform</p>
+  </div>
+
+  <div class="header-right">
+    <div class="notification-wrap">
+      <button id="notificationBtn" class="notification-btn" type="button" aria-label="Notifications" onclick="toggleNotifications()">
+        <svg class="ui-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+        <span id="notificationBadge" class="notification-badge">0</span>
+      </button>
+      <div id="notificationPanel" class="notification-panel" aria-live="polite">
+        <div class="notification-head">
+          <strong>Notifications</strong>
+          <button type="button" onclick="markNotificationsRead()">Mark read</button>
+        </div>
+        <div id="notificationList" class="notification-list">
+          <div class="notification-empty">No notifications yet.</div>
+        </div>
+      </div>
+    </div>
+
+    <button id="headerLoginBtn" class="login-btn" type="button" onclick="toggleHeaderProfile()">
+      <span class="login-icon" aria-hidden="true">U</span>
+      <span>Login</span>
+    </button>
+
+    <div id="profileMenu" class="profile-menu">
+      <div class="profile-info">
+        <img id="menuPhoto" src="" alt="Profile">
+        <div class="profile-details">
+          <strong id="menuName">User</strong>
+          <small id="menuUsername">@username</small>
+        </div>
+      </div>
+      <div class="profile-divider"></div>
+      <a href="profile.html" class="profile-link">Profile</a>
+      <a href="friends.html" class="profile-link">Friends</a>
+      <a href="voice.html" class="profile-link">Your Concern</a>
+      <div class="profile-divider"></div>
+      <button class="logout-button" type="button" onclick="logoutUser()">Log Out</button>
+    </div>
+  </div>
+
+</header>
+
+<main class="container">
+  <div class="page-title">
+    <h2>Friends</h2>
+    <p>Find classmates using their username or nickname.</p>
+  </div>
+
+  <section class="card" id="profileSetupCard">
+    <h3>Create your username</h3>
+    <div class="sub">Your username and nickname are what other students will use to find you.</div>
+
+    <div class="profile-grid">
+      <div id="setupAvatar" class="avatar fallback-avatar">U</div>
+      <div>
+        <div class="field-row">
+          <div>
+            <label for="usernameInput">Username</label>
+            <input id="usernameInput" maxlength="30" placeholder="e.g. reyven123" autocomplete="off">
+            <div class="helper">3–20 characters. Letters, numbers, periods and underscores only.</div>
+          </div>
+          <div>
+            <label for="nicknameInput">Nickname</label>
+            <input id="nicknameInput" maxlength="20" placeholder="e.g. Reyven" autocomplete="off">
+<small id="nickname-limit-note" class="sub">Nickname: up to 20 characters.</small>
+            <div class="helper">This is the name shown to your friends.</div>
+          </div>
+        </div>
+      </div>
+      <button id="saveProfileBtn" class="btn btn-primary" type="button" onclick="saveProfile()">Save Profile</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>Find Friends</h3>
+    <div class="sub">Search by username or nickname.</div>
+    <div class="search-box">
+      <span class="search-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"></circle><path d="M16 16l4.5 4.5"></path></svg></span>
+      <input id="searchInput" placeholder="Search username or nickname..." autocomplete="off">
+    </div>
+    <div id="searchResults" class="results">
+      <div class="empty">Start typing to search students.</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="section-head">
+      <h3>Friend Requests</h3>
+      <span class="count-badge" id="requestCount">0</span>
+    </div>
+    <div id="requestsList" class="list">
+      <div class="loading">Loading requests...</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="section-head">
+      <h3>Sent Friend Requests</h3>
+      <span class="count-badge" id="sentRequestCount">0</span>
+    </div>
+    <div class="sub">See the students you have requested to add.</div>
+    <div id="sentRequestsList" class="list">
+      <div class="loading">Loading sent requests...</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="section-head">
+      <h3>My Friends</h3>
+      <span class="count-badge" id="friendCount">0</span>
+    </div>
+    <div id="friendsList" class="list">
+      <div class="loading">Loading friends...</div>
+    </div>
+  </section>
+</main>
+
+<div class="bottom-nav">
+
+  <a href="index.html" class="nav-item">
+    <div class="nav-icon-placeholder" aria-hidden="true"></div>
+    <span>Home</span>
+  </a>
+
+  <a href="news-feed.html" class="nav-item">
+    <div class="nav-icon-placeholder" aria-hidden="true"></div>
+    <span>News Feed</span>
+  </a>
+
+  <a href="voice.html" class="nav-item">
+    <div class="nav-icon-placeholder" aria-hidden="true"></div>
+    <span>Student Voice</span>
+  </a>
+
+  <a href="friends.html" class="nav-item active" onclick="event.preventDefault(); window.location.href='friends.html';">
+    <div class="nav-icon-placeholder" aria-hidden="true"></div>
+    <span>Friends</span>
+  </a>
+
+  <a href="profile.html" class="nav-item">
+    <div class="profile-nav-icon" id="profileNavPhoto">U</div>
+    <span>Profile</span>
+  </a>
+
+</div>
+
+
+<div id="removeFriendModal" class="remove-modal" aria-hidden="true">
+  <div class="remove-dialog" role="dialog" aria-modal="true" aria-labelledby="removeFriendTitle">
+    <div class="remove-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M8 10v8M12 10v8M16 10v8M6 7l1 13h10l1-13"></path></svg></div>
+    <h3 id="removeFriendTitle">Remove Friend?</h3>
+    <p>This person will be removed from your friends list. You can send a new friend request later.</p>
+    <div id="removeFriendPreview" class="remove-friend-preview"></div>
+    <div class="remove-actions">
+      <button type="button" class="remove-cancel" onclick="closeRemoveFriendModal()">Cancel</button>
+      <button type="button" class="remove-confirm" id="confirmRemoveFriendBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<div id="loginOverlay" class="overlay">
+  <div class="login-popup">
+    <button class="login-close" type="button" onclick="closeLoginDialog()">✕</button>
+
+    <h2>Welcome Back</h2>
+
+    <p>Sign in to continue</p>
+
+    <button id="googleLoginBtn" type="button" onclick="googleLogin()">
+      Continue with Google
+    </button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+import {
+  getFirestore,
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  deleteDoc,
+  addDoc,
+  query,
+  where,
+  orderBy,
+  limit,
+  getDocs,
+  serverTimestamp,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB2Jmyc1qzDtrgbgbE_jOmSVz604YHLbDc",
+  authDomain: "caths-page.firebaseapp.com",
+  projectId: "caths-page",
+  storageBucket: "caths-page.firebasestorage.app",
+  messagingSenderId: "945498022620",
+  appId: "1:945498022620:web:71aeb4cd2472e061aeca19",
+  measurementId: "G-CBG1YSK13G"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
+const authPersistenceReady = setPersistence(auth, browserLocalPersistence).catch(error => {
+  console.warn("Firebase auth persistence setup failed:", error);
+});
+
+// Reuse the same real-time notifications behavior as index.html.
+window.__cathsFirebase = {db, collection, doc, updateDoc, query, where, limit, onSnapshot};
+let notificationUnsubscribe = null;
+let notificationItems = [];
+
+window.userLoggedIn = false;
+
+window.toggleNotifications = function(){
+  if(!window.userLoggedIn){
+    showToast('Please log in to view notifications.');
+    return;
+  }
+  document.getElementById('notificationPanel')?.classList.toggle('open');
+};
+window.closeNotifications = function(){
+  document.getElementById('notificationPanel')?.classList.remove('open');
+};
+window.markNotificationsRead = async function(){
+  const unread = notificationItems.filter(n=>!n.read);
+  if(!unread.length){ renderNotifications(); return; }
+  try{
+    await Promise.all(unread.map(n=>updateDoc(doc(db,'notifications',n.id),{read:true})));
+    notificationItems = notificationItems.map(n=>({...n,read:true}));
+    renderNotifications();
+  }catch(error){
+    console.warn('Mark notifications read failed:',error);
+  }
+};
+
+function escapeNotificationText(value=''){
+  return String(value ?? '').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+}
+function renderNotifications(){
+  const list=document.getElementById('notificationList');
+  const badge=document.getElementById('notificationBadge');
+  if(!list||!badge) return;
+  const unread=notificationItems.filter(n=>!n.read).length;
+  badge.textContent=unread>99?'99+':String(unread);
+  badge.classList.toggle('show',unread>0);
+  if(!notificationItems.length){list.innerHTML='<div class="notification-empty">No notifications yet.</div>';return;}
+  list.innerHTML=notificationItems.slice(0,50).map(n=>`<div class="notification-item ${n.read?'':'unread'}"><div class="notification-icon"><span></span></div><div class="notification-content"><strong>${escapeNotificationText(n.title||'Notification')}</strong><p>${escapeNotificationText(n.text||'')}</p></div></div>`).join('');
+}
+function startNotificationListener(uid){
+  if(notificationUnsubscribe) notificationUnsubscribe();
+  const q=query(collection(db,'notifications'),where('recipientUid','==',uid),limit(50));
+  notificationUnsubscribe=onSnapshot(q,snap=>{
+    notificationItems=snap.docs.map(d=>{const n=d.data()||{};return {id:d.id,createdAt:n.createdAt?.toMillis?.()||0,title:n.actorName?String(n.actorName):(n.title||'Notification'),text:n.text||({reaction:'reacted to your post.',comment:'commented on your post.',share:'shared your post.',message:'sent you a message.'}[n.type]||'You have a new notification.'),read:n.read===true};}).sort((a,b)=>b.createdAt-a.createdAt);
+    renderNotifications();
+  },err=>{console.warn('Notification listener:',err);renderNotifications();});
+}
+
+document.addEventListener('click',e=>{const wrap=document.querySelector('.notification-wrap');if(wrap&&!wrap.contains(e.target))window.closeNotifications();});
+
+let firebaseUser = null;
+let currentProfile = null;
+let searchTimer = null;
+
+const $ = (id) => document.getElementById(id);
+const VERIFIED_ADMIN_EMAILS = new Set(['reyvengarcia15@gmail.com','reyvenbermudo091@gmail.com','reyvengarcia05@gmail.com','chezcadc14@gmail.com','nathanielgarc679@gmail.com','marteena.133@gmail.com','gabbicastillo0126@gmail.com','leddadanielle91@gmail.com','jennapastor062@gmail.com','dhenmark1313@gmail.com','christianangelointes0@gmail.com','alexaislacruz@gmail.com','galangjullianne016@gmail.com','vanessajotic2403@gmail.com','aquinobernardjr0@gmail.com','angellyar0909@gmail.com','vhergelnarciso@gmail.com','sicatmadisson487@gmail.com']);
+function isVerifiedAdminEmail(email){return VERIFIED_ADMIN_EMAILS.has(String(email||'').trim().toLowerCase());}
+function isVerifiedAdminUser(user){
+  if(!user) return false;
+  if(user.isAdmin === true || user.admin === true || String(user.role||'').trim().toLowerCase() === 'admin') return true;
+  return isVerifiedAdminEmail(user.email || user.fromEmail || user.toEmail || '');
+}
+function verifiedBadgeHtml(user){
+  return isVerifiedAdminUser(user) ? '<span class="admin-badge"><span class="admin-check">✓</span>ADMIN</span>' : '';
+}
+function verifiedNameHtml(user){
+  if(typeof user === 'string') return escapeHtml(user);
+  const name = user?.nickname || user?.name || user?.displayName || 'Student';
+  return `${escapeHtml(name)}${verifiedBadgeHtml(user)}`;
+}
+async function enrichUser(uid, base={}){
+  if(!uid) return base;
+  if(isVerifiedAdminUser(base) || base.email) return {...base,uid};
+  try{
+    const snap = await getDoc(doc(db,'users',uid));
+    if(snap.exists()) return {...base,...snap.data(),uid,id:uid};
+  }catch(error){
+    console.warn('Could not load profile for verification:',error);
+  }
+  return {...base,uid,id:uid};
+}
+
+
+function escapeHtml(value=''){
+  return String(value)
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'",'&#039;');
+}
+
+function normalize(value=''){
+  return String(value).trim().toLowerCase();
+}
+
+function validUsername(value){
+  return /^[a-zA-Z0-9._]{3,20}$/.test(value);
+}
+
+function showToast(message){
+  const toast = $('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => toast.classList.remove('show'), 2600);
+}
+
+function avatarHtml(user, className='mini-avatar'){
+  if(user.photoURL){
+    return `<img class="${className}" src="${escapeHtml(user.photoURL)}" alt="Profile">`;
+  }
+  const letter = escapeHtml((user.nickname || user.username || user.displayName || 'U').charAt(0).toUpperCase());
+  return `<div class="${className} fallback-avatar">${letter}</div>`;
+}
+
+function setHeaderUser(user, profile){
+  const btn = $('headerLoginBtn');
+  const photo = $('menuPhoto');
+  const nav = $('profileNavPhoto');
+  if(user){
+    btn.innerHTML = user.photoURL
+      ? `<img src="${escapeHtml(user.photoURL)}" alt="Profile"><span>${escapeHtml(user.displayName || 'User')}</span><span class="profile-chevron" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg></span>`
+      : `<span class="login-icon" aria-hidden="true">U</span><span>${escapeHtml(user.displayName || 'User')}</span><span class="profile-chevron" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg></span>`;
+    $('menuName').textContent = profile?.nickname || user.displayName || 'User';
+    $('menuUsername').textContent = profile?.username ? '@' + profile.username : '@username';
+    if(user.photoURL){
+      photo.src = user.photoURL;
+      nav.innerHTML = `<img src="${escapeHtml(user.photoURL)}" alt="Profile">`;
+    }else{
+      photo.src = '';
+      nav.textContent = 'U';
+    }
+  }else{
+    btn.innerHTML = '<span class="login-icon" aria-hidden="true">U</span><span>Login</span>';
+    nav.textContent = 'Login';
+  }
+}
+
+window.toggleHeaderProfile = function(){
+  if(!firebaseUser){
+    $('loginOverlay').style.display = 'flex';
+    return;
+  }
+  const menu = $('profileMenu');
+  if(!menu) return;
+  if(menu.classList.contains('open')){
+    menu.classList.remove('open');
+    menu.classList.add('closing');
+    menu.addEventListener('animationend', function handleClose(e){
+      if(e.animationName !== 'profileMenuOut') return;
+      menu.style.display = 'none';
+      menu.classList.remove('closing');
+      menu.removeEventListener('animationend', handleClose);
+    });
+    return;
+  }
+  menu.style.display = 'block';
+  menu.classList.remove('closing');
+  requestAnimationFrame(() => menu.classList.add('open'));
+};
+
+window.closeLoginDialog = function(){
+  $('loginOverlay').style.display = 'none';
+};
+
+window.googleLogin = async function(){
+  try{
+    await authPersistenceReady;
+    await signInWithPopup(auth, googleProvider);
+    closeLoginDialog();
+  }catch(error){
+    console.error(error);
+    showToast('Google login failed.');
+  }
+};
+
+window.logoutUser = async function(){
+  try{
+    await signOut(auth);
+    $('profileMenu').classList.remove('open');
+  }catch(error){
+    console.error(error);
+    showToast('Logout failed.');
+  }
+};
+
+async function ensureSignedIn(){
+  if(firebaseUser) return true;
+  $('loginOverlay').style.display = 'flex';
+  return false;
+}
+
+async function loadCurrentProfile(){
+  if(!firebaseUser) return;
+  const ref = doc(db, 'users', firebaseUser.uid);
+  const snap = await getDoc(ref);
+  currentProfile = snap.exists() ? {id:snap.id, ...snap.data()} : null;
+
+  $('usernameInput').value = currentProfile?.username || '';
+  $('nicknameInput').value = currentProfile?.nickname || firebaseUser.displayName || '';
+
+  const avatar = $('setupAvatar');
+  if(firebaseUser.photoURL){
+    avatar.className = 'avatar';
+    avatar.innerHTML = `<img class="avatar" src="${escapeHtml(firebaseUser.photoURL)}" alt="Profile">`;
+  }else{
+    avatar.className = 'avatar fallback-avatar';
+    avatar.textContent = (currentProfile?.nickname || firebaseUser.displayName || 'U').charAt(0).toUpperCase();
+  }
+
+  setHeaderUser(firebaseUser, currentProfile);
+}
+
+window.saveProfile = async function(){
+  if(!(await ensureSignedIn())) return;
+
+  const username = normalize($('usernameInput').value);
+  const nickname = $('nicknameInput').value.trim();
+
+  if(!validUsername(username)){
+    showToast('Username must be 3–20 characters using letters, numbers, . or _.');
+    return;
+  }
+  if(nickname.length < 2 || nickname.length > 30){
+    showToast('Nickname must be 2–30 characters.');
+    return;
+  }
+
+  const existing = await getDocs(query(
+    collection(db,'users'),
+    where('username','==',username),
+    limit(1)
+  ));
+  const conflict = existing.docs.find(d => d.id !== firebaseUser.uid);
+  if(conflict){
+    showToast('That username is already taken.');
+    return;
+  }
+
+  const data = {
+    username,
+    nickname,
+    displayName: firebaseUser.displayName || nickname,
+    email: firebaseUser.email || '',
+    photoURL: firebaseUser.photoURL || '',
+    updatedAt: serverTimestamp()
+  };
+
+  try{
+    await setDoc(doc(db,'users',firebaseUser.uid), {
+      ...data,
+      createdAt: currentProfile?.createdAt || serverTimestamp()
+    }, {merge:true});
+    currentProfile = {id:firebaseUser.uid, ...data, createdAt: currentProfile?.createdAt};
+    setHeaderUser(firebaseUser, currentProfile);
+    showToast('Profile saved! Your username is now searchable.');
+    await loadRequests();
+    await loadFriends();
+  }catch(error){
+    console.error(error);
+    showToast('Could not save profile. Check Firestore setup/rules.');
+  }
+};
+
+async function findUsers(term){
+  if(!term || term.length < 2){
+    $('searchResults').innerHTML = '<div class="empty">Type at least 2 characters to search.</div>';
+    return;
+  }
+
+  if(!firebaseUser){
+    $('searchResults').innerHTML = '<div class="empty">Please log in first to search for friends.</div>';
+    return;
+  }
+
+  $('searchResults').innerHTML = '<div class="loading">Searching...</div>';
+
+  try{
+    const qUsername = query(
+      collection(db,'users'),
+      where('username','>=',term),
+      where('username','<=',term + '\uf8ff'),
+      limit(20)
+    );
+    const qNickname = query(
+      collection(db,'users'),
+      where('nickname','>=',term),
+      where('nickname','<=',term + '\uf8ff'),
+      limit(20)
+    );
+
+    const [usernameSnap, nicknameSnap] = await Promise.all([
+      getDocs(qUsername),
+      getDocs(qNickname)
+    ]);
+
+    const map = new Map();
+    [...usernameSnap.docs, ...nicknameSnap.docs].forEach(snap => {
+      if(snap.id !== firebaseUser.uid) map.set(snap.id, {id:snap.id,...snap.data()});
+    });
+
+    const users = [...map.values()].sort((a,b)=>String(a.nickname||'').localeCompare(String(b.nickname||'')));
+    renderSearchResults(users);
+  }catch(error){
+    console.error(error);
+    $('searchResults').innerHTML = '<div class="empty">Search failed. Make sure Firestore is enabled and the rules are published.</div>';
+  }
+}
+
+async function renderSearchResults(users){
+  if(!users.length){
+    $('searchResults').innerHTML = '<div class="empty">No students found.</div>';
+    return;
+  }
+
+  $('searchResults').innerHTML = '<div class="loading">Loading profiles...</div>';
+  const enrichedUsers = await Promise.all(users.map(user=>enrichUser(user.id,user)));
+  $('searchResults').innerHTML = '';
+
+  enrichedUsers.forEach(user => {
+    const row = document.createElement('div');
+    row.className = 'user-row';
+    row.innerHTML = `
+      ${avatarHtml(user)}
+      <div class="user-main">
+        <strong>${verifiedNameHtml(user)}</strong>
+        <small>@${escapeHtml(user.username || '')}</small>
+      </div>
+      <button class="btn btn-primary" data-user-id="${escapeHtml(user.id)}">Add Friend</button>
+    `;
+    row.querySelector('button').addEventListener('click', ()=>handleRelationshipAction(user, row.querySelector('button')));
+
+    const messageLink = document.createElement('a');
+    messageLink.className = 'btn message-btn';
+    messageLink.href = `messages.html?uid=${encodeURIComponent(user.id)}`;
+    messageLink.innerHTML = '<span class="button-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 5.5h14v10H10l-5 3v-3H5z"></path></svg></span>Message';
+    messageLink.title = `Message ${user.nickname || user.username || 'student'}`;
+    row.appendChild(messageLink);
+
+    $('searchResults').appendChild(row);
+    row.querySelectorAll('.row-info, .avatar, img').forEach(el=>{
+      el.style.cursor='pointer';
+      el.addEventListener('click', event=>{
+        if(event.target.closest('.actions')) return;
+        location.href=`user-profile.html?uid=${encodeURIComponent(user.id)}`;
+      });
+    });
+
+    refreshRelationshipButton(user.id, row.querySelector('button'));
+  });
+}
+
+async function getRequestBetween(otherUid){
+  if(!firebaseUser) return null;
+
+  // Only a CURRENT pending request should affect the search button.
+  // Old accepted/rejected requests must not make the button say Respond.
+  const sent = await getDocs(query(
+    collection(db,'friendRequests'),
+    where('from','==',firebaseUser.uid),
+    where('to','==',otherUid),
+    where('status','==','pending'),
+    limit(1)
+  ));
+  if(!sent.empty) return {id:sent.docs[0].id,...sent.docs[0].data()};
+
+  const incoming = await getDocs(query(
+    collection(db,'friendRequests'),
+    where('from','==',otherUid),
+    where('to','==',firebaseUser.uid),
+    where('status','==','pending'),
+    limit(1)
+  ));
+  if(!incoming.empty) return {id:incoming.docs[0].id,...incoming.docs[0].data()};
+
+  return null;
+}
+
+async function areFriends(otherUid){
+  if(!firebaseUser) return false;
+  const ref = doc(db,'friends',firebaseUser.uid,'list',otherUid);
+  return (await getDoc(ref)).exists();
+}
+
+async function refreshRelationshipButton(otherUid, button){
+  try{
+    if(await areFriends(otherUid)){
+      button.textContent = '✓ Friends';
+      button.disabled = true;
+      button.className = 'btn btn-success';
+      return;
+    }
+    const req = await getRequestBetween(otherUid);
+    if(req){
+      if(req.from === firebaseUser.uid && req.status === 'pending'){
+        button.textContent = 'Cancel Request';
+        button.disabled = false;
+        button.className = 'btn btn-secondary';
+      }else{
+        button.textContent = 'Respond';
+        button.disabled = false;
+        button.className = 'btn btn-primary';
+      }
+    }
+  }catch(error){ console.error(error); }
+}
+
+async function handleRelationshipAction(user, button){
+  if(!(await ensureSignedIn())) return;
+  try{
+    if(await areFriends(user.id)){
+      button.textContent = '✓ Friends';
+      button.disabled = true;
+      button.className = 'btn btn-success';
+      return;
+    }
+
+    const req = await getRequestBetween(user.id);
+    if(req && req.from === firebaseUser.uid && req.status === 'pending'){
+      await cancelFriendRequest(req, user);
+      return;
+    }
+
+    if(req && req.from !== firebaseUser.uid){
+      showToast('You have a friend request from this user. Check Friend Requests below.');
+      return;
+    }
+
+    await sendFriendRequest(user);
+  }catch(error){
+    console.error(error);
+    showToast('Could not update friend request.');
+  }
+}
+
+async function cancelFriendRequest(req, user){
+  if(!req?.id || !firebaseUser) return;
+  try{
+    await deleteDoc(doc(db,'friendRequests',req.id));
+    showToast(`Friend request to ${user.nickname || user.username} cancelled.`);
+    await loadSentRequests();
+    await findUsers(normalize($('searchInput').value));
+  }catch(error){
+    console.error(error);
+    showToast('Could not cancel friend request.');
+  }
+}
+
+async function sendFriendRequest(user){
+  if(!(await ensureSignedIn())) return;
+  if(!currentProfile?.username){
+    showToast('Save your username first.');
+    $('usernameInput').focus();
+    return;
+  }
+  if(user.id === firebaseUser.uid) return;
+
+  try{
+    if(await areFriends(user.id)){
+      showToast('You are already friends.');
+      return;
+    }
+    const existing = await getRequestBetween(user.id);
+    if(existing){
+      showToast(existing.from === firebaseUser.uid ? 'Friend request already sent.' : 'You already have a request from this user.');
+      return;
+    }
+
+    await addDoc(collection(db,'friendRequests'), {
+      from: firebaseUser.uid,
+      fromUsername: currentProfile.username,
+      fromNickname: currentProfile.nickname,
+      fromPhotoURL: firebaseUser.photoURL || '',
+      to: user.id,
+      toUsername: user.username,
+      toNickname: user.nickname,
+      toPhotoURL: user.photoURL || '',
+      status: 'pending',
+      createdAt: serverTimestamp()
+    });
+
+    try{
+      await addDoc(collection(db,'notifications'),{
+        recipientUid:user.id,
+        actorUid:firebaseUser.uid,
+        actorName:currentProfile.nickname || currentProfile.name || currentProfile.displayName || 'Student',
+        type:'friend_request',
+        text:'sent you a friend request.',
+        read:false,
+        createdAt:serverTimestamp()
+      });
+    }catch(notificationError){
+      console.warn('Friend request notification:',notificationError);
+    }
+
+    showToast(`Friend request sent to ${user.nickname || user.username}.`);
+    await loadSentRequests();
+    await findUsers(normalize($('searchInput').value));
+  }catch(error){
+    console.error(error);
+    showToast('Could not send friend request.');
+  }
+}
+
+async function loadRequests(){
+  if(!firebaseUser){
+    $('requestsList').innerHTML = '<div class="empty">Log in to see friend requests.</div>';
+    $('requestCount').textContent = '0';
+    return;
+  }
+  try{
+    const snap = await getDocs(query(
+      collection(db,'friendRequests'),
+      where('to','==',firebaseUser.uid),
+      where('status','==','pending'),
+      limit(50)
+    ));
+    $('requestCount').textContent = String(snap.size);
+
+    if(snap.empty){
+      $('requestsList').innerHTML = '<div class="empty">No new friend requests.</div>';
+      return;
+    }
+
+    const requests = await Promise.all(snap.docs.map(async d=>{
+      const req={id:d.id,...d.data()};
+      const profile=await enrichUser(req.from,{uid:req.from,email:req.fromEmail||'',photoURL:req.fromPhotoURL||'',nickname:req.fromNickname||'',username:req.fromUsername||''});
+      return {...req,...profile};
+    }));
+
+    $('requestsList').innerHTML = '';
+    requests.forEach(req=>{
+      const row = document.createElement('div');
+      row.className = 'request-row';
+      row.innerHTML = `
+        ${avatarHtml({photoURL:req.photoURL||req.fromPhotoURL,nickname:req.nickname||req.fromNickname,username:req.username||req.fromUsername})}
+        <div class="row-info">
+          <strong>${verifiedNameHtml({...req,email:req.email||req.fromEmail})}</strong>
+          <small>@${escapeHtml(req.username || req.fromUsername || '')} sent you a friend request.</small>
+        </div>
+        <div class="actions">
+          <button class="btn btn-success">Accept</button>
+          <button class="btn btn-danger">Reject</button>
+        </div>
+      `;
+      row.querySelector('.btn-success').addEventListener('click',()=>acceptRequest(req,row));
+      row.querySelector('.btn-danger').addEventListener('click',()=>rejectRequest(req,row));
+      $('requestsList').appendChild(row);
+    });
+  }catch(error){
+    console.error(error);
+    $('requestsList').innerHTML = '<div class="empty">Could not load requests. Check Firestore rules.</div>';
+  }
+}
+
+async function acceptRequest(req,row){
+  try{
+    await setDoc(doc(db,'friends',firebaseUser.uid,'list',req.from), {
+      uid:req.from,
+      username:req.fromUsername || '',
+      nickname:req.fromNickname || '',
+      photoURL:req.fromPhotoURL || '',
+      since:serverTimestamp()
+    });
+    await setDoc(doc(db,'friends',req.from,'list',firebaseUser.uid), {
+      uid:firebaseUser.uid,
+      username:currentProfile.username,
+      nickname:currentProfile.nickname,
+      photoURL:firebaseUser.photoURL || '',
+      since:serverTimestamp()
+    });
+    await updateDoc(doc(db,'friendRequests',req.id), {status:'accepted',respondedAt:serverTimestamp()});
+    try{
+      await addDoc(collection(db,'notifications'),{
+        recipientUid:req.from,
+        actorUid:firebaseUser.uid,
+        actorName:currentProfile.nickname || currentProfile.name || currentProfile.displayName || 'Student',
+        type:'friend_accepted',
+        text:'accepted your friend request.',
+        read:false,
+        createdAt:serverTimestamp()
+      });
+    }catch(notificationError){
+      console.warn('Friend accepted notification:',notificationError);
+    }
+    row.remove();
+    showToast('Friend request accepted!');
+    const remaining = Math.max(0, Number($('requestCount').textContent)-1);
+    $('requestCount').textContent = String(remaining);
+    await loadFriends();
+  }catch(error){
+    console.error(error);
+    showToast('Could not accept request.');
+  }
+}
+
+async function rejectRequest(req,row){
+  try{
+    await updateDoc(doc(db,'friendRequests',req.id), {status:'rejected',respondedAt:serverTimestamp()});
+    row.remove();
+    showToast('Friend request rejected.');
+    const remaining = Math.max(0, Number($('requestCount').textContent)-1);
+    $('requestCount').textContent = String(remaining);
+  }catch(error){
+    console.error(error);
+    showToast('Could not reject request.');
+  }
+}
+
+async function loadSentRequests(){
+  if(!firebaseUser){
+    $('sentRequestsList').innerHTML = '<div class="empty">Log in to see sent friend requests.</div>';
+    $('sentRequestCount').textContent = '0';
+    return;
+  }
+
+  try{
+    const snap = await getDocs(query(
+      collection(db,'friendRequests'),
+      where('from','==',firebaseUser.uid),
+      where('status','==','pending'),
+      limit(50)
+    ));
+
+    $('sentRequestCount').textContent = String(snap.size);
+
+    if(snap.empty){
+      $('sentRequestsList').innerHTML = '<div class="empty">You have not sent any pending friend requests.</div>';
+      return;
+    }
+
+    const requests = await Promise.all(snap.docs.map(async d=>{
+      const req={id:d.id,...d.data()};
+      const profile=await enrichUser(req.to,{uid:req.to,email:req.toEmail||'',photoURL:req.toPhotoURL||'',nickname:req.toNickname||'',username:req.toUsername||''});
+      return {...req,...profile};
+    }));
+    requests.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+
+    $('sentRequestsList').innerHTML = '';
+    requests.forEach(req=>{
+      const row = document.createElement('div');
+      row.className = 'sent-request-row';
+      const profileLink = document.createElement('a');
+      profileLink.href = `user-profile.html?uid=${encodeURIComponent(req.to)}`;
+      profileLink.className = 'friend-profile-link';
+      profileLink.innerHTML = `
+        ${avatarHtml({photoURL:req.photoURL||req.toPhotoURL,nickname:req.nickname||req.toNickname,username:req.username||req.toUsername})}
+        <div class="row-info">
+          <strong>${verifiedNameHtml({...req,email:req.email||req.toEmail})}</strong>
+          <small>@${escapeHtml(req.username || req.toUsername || '')} • Request pending</small>
+        </div>
+      `;
+
+      const actions=document.createElement('div');
+      actions.className='actions';
+      const cancelBtn=document.createElement('button');
+      cancelBtn.className='btn btn-secondary';
+      cancelBtn.textContent='Cancel';
+      actions.appendChild(cancelBtn);
+      row.appendChild(profileLink);
+      row.appendChild(actions);
+
+      cancelBtn.addEventListener('click',async ()=>{
+        cancelBtn.disabled=true;
+        cancelBtn.textContent='Cancelling...';
+        try{
+          await deleteDoc(doc(db,'friendRequests',req.id));
+          showToast(`Friend request to ${req.nickname || req.toNickname || req.username || req.toUsername || 'student'} cancelled.`);
+          await loadSentRequests();
+          await findUsers(normalize($('searchInput').value));
+        }catch(error){
+          console.error(error);
+          cancelBtn.disabled=false;
+          cancelBtn.textContent='Cancel';
+          showToast('Could not cancel friend request.');
+        }
+      });
+      $('sentRequestsList').appendChild(row);
+    });
+  }catch(error){
+    console.error(error);
+    $('sentRequestsList').innerHTML = '<div class="empty">Could not load sent requests. Check Firestore rules.</div>';
+  }
+}
+
+async function loadFriends(){
+  if(!firebaseUser){
+    $('friendsList').innerHTML = '<div class="empty">Log in to see your friends.</div>';
+    $('friendCount').textContent = '0';
+    return;
+  }
+  try{
+    const snap = await getDocs(query(collection(db,'friends',firebaseUser.uid,'list'), limit(100)));
+    $('friendCount').textContent = String(snap.size);
+    if(snap.empty){
+      $('friendsList').innerHTML = '<div class="empty">You have no friends yet. Search for students above to add someone.</div>';
+      return;
+    }
+
+    const friends = await Promise.all(snap.docs.map(async d=>{
+      const base={id:d.id,...d.data()};
+      return await enrichUser(base.uid||d.id,base);
+    }));
+    friends.sort((a,b)=>String(a.nickname||a.username||'').localeCompare(String(b.nickname||b.username||'')));
+    $('friendsList').innerHTML = '';
+
+    friends.forEach(friend=>{
+      const row = document.createElement('div');
+      row.className = 'friend-row';
+      row.innerHTML = `
+        <a class="friend-profile-link" href="user-profile.html?uid=${encodeURIComponent(friend.uid)}" aria-label="View ${escapeHtml(friend.nickname || friend.username || 'student')} profile">
+          ${avatarHtml(friend)}
+          <div class="row-info">
+            <strong>${verifiedNameHtml(friend)}</strong>
+            <small>@${escapeHtml(friend.username || '')}</small>
+          </div>
+        </a>
+        <div class="actions">
+          <button class="btn btn-danger">Delete</button>
+        </div>
+      `;
+      row.querySelector('.btn-danger').addEventListener('click',()=>openRemoveFriendModal(friend,row));
+      $('friendsList').appendChild(row);
+    });
+  }catch(error){
+    console.error(error);
+    $('friendsList').innerHTML = '<div class="empty">Could not load friends. Check Firestore rules.</div>';
+  }
+}
+
+let pendingRemoveFriend = null;
+
+function openRemoveFriendModal(friend,row){
+  pendingRemoveFriend = {friend,row};
+  const preview = $('removeFriendPreview');
+  preview.innerHTML = `
+    ${avatarHtml({photoURL:friend.photoURL,nickname:friend.nickname,username:friend.username}, 'mini-avatar')}
+    <div>
+      <strong>${verifiedNameHtml(friend)}</strong>
+      <span>@${escapeHtml(friend.username || '')}</span>
+    </div>
+  `;
+  const modal = $('removeFriendModal');
+  modal.classList.add('show');
+  modal.setAttribute('aria-hidden','false');
+}
+
+function closeRemoveFriendModal(){
+  const modal = $('removeFriendModal');
+  modal.classList.remove('show');
+  modal.setAttribute('aria-hidden','true');
+  pendingRemoveFriend = null;
+}
+window.closeRemoveFriendModal = closeRemoveFriendModal;
+
+async function removeFriend(friend,row){
+  try{
+    await deleteDoc(doc(db,'friends',firebaseUser.uid,'list',friend.uid));
+    await deleteDoc(doc(db,'friends',friend.uid,'list',firebaseUser.uid));
+    row.remove();
+    const count = Math.max(0, Number($('friendCount').textContent)-1);
+    $('friendCount').textContent = String(count);
+    if(count === 0) $('friendsList').innerHTML = '<div class="empty">You have no friends yet.</div>';
+    closeRemoveFriendModal();
+    showToast('Friend removed successfully.');
+  }catch(error){
+    console.error(error);
+    closeRemoveFriendModal();
+    showToast('Could not remove friend.');
+  }
+}
+
+$('confirmRemoveFriendBtn').addEventListener('click',()=>{
+  if(!pendingRemoveFriend || !firebaseUser) return;
+  const {friend,row} = pendingRemoveFriend;
+  const button = $('confirmRemoveFriendBtn');
+  button.disabled = true;
+  button.textContent = 'Removing...';
+  removeFriend(friend,row).finally(()=>{
+    button.disabled = false;
+    button.textContent = 'Delete';
+  });
+});
+
+$('removeFriendModal').addEventListener('click',(event)=>{
+  if(event.target === $('removeFriendModal')) closeRemoveFriendModal();
+});
+
+document.addEventListener('keydown',(event)=>{
+  if(event.key !== 'Escape') return;
+  if($('removeFriendModal').classList.contains('show')) closeRemoveFriendModal();
+  if($('loginOverlay').style.display === 'flex') closeLoginDialog();
+  const menu=$('profileMenu');
+  if(menu?.classList.contains('open')){
+    menu.classList.remove('open');
+    menu.classList.add('closing');
+  }
+});
+
+$('searchInput').addEventListener('input',()=>{
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(()=>findUsers(normalize($('searchInput').value)),350);
+});
+
+document.addEventListener('click',(event)=>{
+  const menu = $('profileMenu');
+  const headerRight = document.querySelector('.header-right');
+  if(menu.classList.contains('open') && !headerRight.contains(event.target)){
+    menu.classList.remove('open');
+    menu.classList.add('closing');
+    menu.addEventListener('animationend', function handleClose(e){
+      if(e.animationName !== 'profileMenuOut') return;
+      menu.style.display = 'none';
+      menu.classList.remove('closing');
+      menu.removeEventListener('animationend', handleClose);
+    });
+  }
+});
+
+$('loginOverlay').addEventListener('click',(event)=>{
+  if(event.target === $('loginOverlay')) closeLoginDialog();
+});
+
+authPersistenceReady.finally(()=>onAuthStateChanged(auth, async (user)=>{
+  firebaseUser = user;
+  window.userLoggedIn = !!user;
+  if(user?.uid){
+    startNotificationListener(user.uid);
+  }else{
+    if(notificationUnsubscribe) notificationUnsubscribe();
+    notificationUnsubscribe = null;
+    notificationItems = [];
+    renderNotifications();
+    window.closeNotifications();
+  }
+  if(!user){
+    currentProfile = null;
+    setHeaderUser(null,null);
+    $('profileSetupCard').innerHTML = `
+      <h3>Login Login to use Friends</h3>
+      <div class="sub">Sign in with Google first, then create your username/nickname.</div>
+      <button class="btn btn-primary" onclick="googleLogin()">Continue with Google</button>
+    `;
+    $('searchResults').innerHTML = '<div class="empty">Please log in first to search students.</div>';
+    await loadRequests();
+    await loadFriends();
+    return;
+  }
+
+  $('profileSetupCard').innerHTML = `
+    <h3>Your Friends Profile</h3>
+    <div class="sub">Choose the username and nickname that other students will search for.</div>
+    <div class="profile-grid">
+      <div id="setupAvatar" class="avatar fallback-avatar">U</div>
+      <div>
+        <div class="field-row">
+          <div>
+            <label for="usernameInput">Username</label>
+            <input id="usernameInput" maxlength="20" placeholder="e.g. reyven123" autocomplete="off">
+            <div class="helper">3–20 characters. Letters, numbers, periods and underscores only.</div>
+          </div>
+          <div>
+            <label for="nicknameInput">Nickname</label>
+            <input id="nicknameInput" maxlength="30" placeholder="e.g. Reyven" autocomplete="off">
+            <div class="helper">This is the name shown to your friends.</div>
+          </div>
+        </div>
+      </div>
+      <button id="saveProfileBtn" class="btn btn-primary" type="button" onclick="saveProfile()">Save Profile</button>
+    </div>
+  `;
+
+  await loadCurrentProfile();
+  await loadRequests();
+  await loadSentRequests();
+  await loadFriends();
+}));
+</script>
+
+</body>
+</html>
