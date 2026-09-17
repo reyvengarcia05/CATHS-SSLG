@@ -461,6 +461,96 @@ a{-webkit-tap-highlight-color:transparent}
 .manage-menu button:hover{background:#eef4ff}
 .manage-menu .danger{color:#b91c1c}
 
+/* ADMIN POST PANEL */
+.admin-panel-modal{
+  align-items:flex-start !important;
+  padding:clamp(18px,4vw,42px) 14px 100px !important;
+  overflow-y:auto !important;
+}
+.admin-panel-box{
+  width:min(1040px,100%);
+  max-width:1040px;
+  max-height:calc(100vh - 40px);
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  background:#f7faff !important;
+}
+.admin-panel-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:19px 20px;
+  background:linear-gradient(135deg,#06265d,#0c56bd);
+  color:#fff;
+}
+.admin-panel-head-copy{min-width:0}
+.admin-panel-kicker{
+  display:block;
+  font-size:8px;
+  font-weight:800;
+  letter-spacing:.17em;
+  text-transform:uppercase;
+  opacity:.72;
+  margin-bottom:4px;
+}
+.admin-panel-head h3{font-size:20px;font-weight:800;line-height:1.2}
+.admin-panel-head p{font-size:9px;opacity:.78;margin-top:4px;line-height:1.45}
+.admin-panel-close{
+  flex:0 0 auto;
+  width:36px;height:36px;border:1px solid rgba(255,255,255,.22);
+  border-radius:12px;background:rgba(255,255,255,.12);color:#fff;
+  cursor:pointer;font-size:17px;
+}
+.admin-panel-close:hover{background:rgba(255,255,255,.2)}
+.admin-panel-toolbar{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  padding:12px 14px;border-bottom:1px solid #dfe8f5;background:#fff;
+}
+.admin-panel-search{
+  flex:1 1 260px;min-width:180px;height:40px;border:1px solid #d9e3f1;
+  border-radius:12px;padding:0 13px;outline:none;font:600 11px Poppins,sans-serif;color:#17325f;background:#f8fbff;
+}
+.admin-panel-search:focus{border-color:#7eb6ff;box-shadow:0 0 0 3px rgba(0,89,196,.08)}
+.admin-panel-refresh{
+  height:40px;padding:0 13px;border:1px solid #d9e3f1;border-radius:12px;
+  background:#fff;color:#17478f;font:800 10px Poppins,sans-serif;cursor:pointer;
+}
+.admin-panel-refresh:hover{background:#eef6ff}
+.admin-panel-stats{
+  padding:10px 14px;font-size:9px;font-weight:700;color:#71819a;background:#f8fbff;
+  border-bottom:1px solid #e4ebf5;
+}
+.admin-post-list{padding:12px;overflow:auto;display:flex;flex-direction:column;gap:9px}
+.admin-post-item{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;
+  background:#fff;border:1px solid #dce7f3;border-radius:15px;padding:12px;
+}
+.admin-post-main{min-width:0}
+.admin-post-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:5px}
+.admin-post-author{font-size:11px;font-weight:800;color:#173d78}
+.admin-post-username{font-size:9px;color:#7b8ca6}
+.admin-post-badge{display:inline-flex;align-items:center;padding:3px 7px;border-radius:999px;font-size:8px;font-weight:800;background:#edf5ff;color:#2a65aa}
+.admin-post-badge.private{background:#f2f3f6;color:#68758a}
+.admin-post-preview{font-size:10px;line-height:1.55;color:#334765;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap}
+.admin-post-date{font-size:8px;color:#94a1b3;margin-top:6px}
+.admin-post-delete{
+  min-width:84px;height:36px;padding:0 10px;border:1px solid #f2c8c8;border-radius:11px;
+  background:#fff5f5;color:#b42323;font:800 9px Poppins,sans-serif;cursor:pointer;
+}
+.admin-post-delete:hover{background:#ffeaea;border-color:#ecacac}
+.admin-empty{padding:38px 18px;text-align:center;color:#7b8aa0;font-size:10px;line-height:1.6}
+@media(max-width:640px){
+  .admin-panel-box{max-height:calc(100vh - 20px);border-radius:20px !important}
+  .admin-panel-head{padding:15px 15px}
+  .admin-panel-head h3{font-size:17px}
+  .admin-panel-toolbar{padding:10px}
+  .admin-post-list{padding:10px}
+  .admin-post-item{grid-template-columns:1fr;gap:9px}
+  .admin-post-delete{width:100%}
+}
+
 .bottom-nav{
   position:fixed;
   left:0;right:0;bottom:0;
@@ -1947,7 +2037,10 @@ body{scroll-padding-top:96px !important}
       <h2>News Feed</h2>
       <p>See public posts and posts shared by your friends.</p>
     </div>
-    <button class="post-top-btn" type="button" onclick="openPostComposer()">+ Post</button>
+    <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end">
+      <button id="adminPanelBtn" class="post-top-btn" type="button" onclick="openAdminPanel()" style="display:none">Admin Panel</button>
+      <button class="post-top-btn" type="button" onclick="openPostComposer()">+ Post</button>
+    </div>
   </div>
 
   <div class="composer-shortcut" onclick="openPostComposer()">
@@ -2124,6 +2217,29 @@ body{scroll-padding-top:96px !important}
     <button type="button" onclick="openPrivacyForPost()">👁️ Change Privacy</button>
     <button type="button" onclick="togglePinFromMenu()">📌 Pin / Unpin Post</button>
     <button class="danger" type="button" onclick="deletePostFromMenu()">🗑️ Delete Post</button>
+    <button id="adminDeleteMenuBtn" class="danger" type="button" onclick="deletePostAsAdminFromMenu()" style="display:none;border-top:1px solid #eef2f7;margin-top:4px;padding-top:15px">Admin Delete Post</button>
+  </div>
+</div>
+
+<!-- ADMIN POST PANEL -->
+<div id="adminPanelModal" class="modal admin-panel-modal">
+  <div class="modal-box admin-panel-box" onclick="event.stopPropagation()">
+    <div class="admin-panel-head">
+      <div class="admin-panel-head-copy">
+        <span class="admin-panel-kicker">CATHS-MAIN Administration</span>
+        <h3>Post Management</h3>
+        <p>Review posts from the community and remove posts that need to be taken down.</p>
+      </div>
+      <button class="admin-panel-close" type="button" onclick="closeAdminPanel()" aria-label="Close admin panel">✕</button>
+    </div>
+    <div class="admin-panel-toolbar">
+      <input id="adminPostSearch" class="admin-panel-search" type="search" placeholder="Search by name, username, or post text…" autocomplete="off" aria-label="Search posts in admin panel">
+      <button id="adminPanelRefreshBtn" class="admin-panel-refresh" type="button" onclick="loadAdminPosts(true)">↻ Refresh</button>
+    </div>
+    <div id="adminPanelStats" class="admin-panel-stats">0 posts</div>
+    <div id="adminPostList" class="admin-post-list">
+      <div class="admin-empty">Loading posts…</div>
+    </div>
   </div>
 </div>
 
@@ -2609,6 +2725,138 @@ async function getVerifiedEmailForUid(uid){
   }catch(e){ console.warn('verification lookup failed',uid,e); verifiedEmailCache.set(uid,false); return false; }
 }
 function isAdminEmailForUser(profile){return !!profile && ADMIN_EMAILS.has(String(profile.email||'').trim().toLowerCase());}
+
+function isCurrentUserAdmin(){
+  const authEmail=String(firebaseUser?.email||'').trim().toLowerCase();
+  const profileEmail=String(currentProfile?.email||'').trim().toLowerCase();
+  return ADMIN_EMAILS.has(authEmail) || ADMIN_EMAILS.has(profileEmail);
+}
+
+function updateAdminControls(){
+  const admin=isCurrentUserAdmin();
+  const button=$('adminPanelBtn');
+  if(button) button.style.display=admin ? 'inline-flex' : 'none';
+  const adminMenuButton=$('adminDeleteMenuBtn');
+  if(adminMenuButton) adminMenuButton.style.display=admin ? 'block' : 'none';
+}
+
+let allAdminPosts=[];
+
+function getPostDateValue(post){
+  const ts=post?.createdAt || post?.updatedAt;
+  try{
+    if(ts?.toMillis) return ts.toMillis();
+    if(ts?.toDate) return ts.toDate().getTime();
+    const value=new Date(ts||0).getTime();
+    return Number.isFinite(value) ? value : 0;
+  }catch(_){return 0;}
+}
+
+function renderAdminPosts(){
+  const list=$('adminPostList');
+  const stats=$('adminPanelStats');
+  if(!list) return;
+  const term=String($('adminPostSearch')?.value||'').trim().toLowerCase();
+  const posts=allAdminPosts.filter(post=>{
+    if(!term) return true;
+    return [post.authorName,post.username,post.text,post.visibility].some(v=>String(v||'').toLowerCase().includes(term));
+  });
+  if(stats) stats.textContent=`${posts.length} ${posts.length===1?'post':'posts'} shown${term ? ` · ${allAdminPosts.length} total` : ''}`;
+  if(!posts.length){
+    list.innerHTML='<div class="admin-empty">No posts matched your search.</div>';
+    return;
+  }
+  list.innerHTML=posts.map(post=>{
+    const visibility=post.visibility==='friends'?'Friends Only':post.visibility==='onlyMe'?'Only Me':'Public';
+    const privateClass=post.visibility==='onlyMe'?' private':'';
+    const date=formatExactTime(post.createdAt || post.updatedAt);
+    return `<div class="admin-post-item">
+      <div class="admin-post-main">
+        <div class="admin-post-meta">
+          <span class="admin-post-author">${esc(post.authorName||'User')}</span>
+          ${post.username?`<span class="admin-post-username">@${esc(post.username)}</span>`:''}
+          <span class="admin-post-badge${privateClass}">${esc(visibility)}</span>
+          ${post.pinned?'<span class="admin-post-badge">Pinned</span>':''}
+        </div>
+        <div class="admin-post-preview">${esc(post.text||'[Shared post]')}</div>
+        <div class="admin-post-date">${esc(date)} · ID: ${esc(post.id)}</div>
+      </div>
+      <button class="admin-post-delete" type="button" onclick="adminDeletePost('${esc(post.id)}')">Delete</button>
+    </div>`;
+  }).join('');
+}
+
+window.openAdminPanel=async function(){
+  if(!isCurrentUserAdmin()){
+    showToast('Admin access only.');
+    return;
+  }
+  $('adminPanelModal')?.classList.add('open');
+  if($('adminPostSearch')) $('adminPostSearch').value='';
+  await loadAdminPosts(false);
+};
+
+window.closeAdminPanel=function(){
+  $('adminPanelModal')?.classList.remove('open');
+};
+
+window.loadAdminPosts=async function(showRefreshToast=true){
+  if(!isCurrentUserAdmin()){
+    showToast('Admin access only.');
+    return;
+  }
+  const list=$('adminPostList');
+  const refresh=$('adminPanelRefreshBtn');
+  if(list) list.innerHTML='<div class="admin-empty">Loading all posts…</div>';
+  if(refresh){refresh.disabled=true;refresh.textContent='Loading…';}
+  try{
+    const snap=await getDocs(query(collection(db,'posts'),limit(300)));
+    allAdminPosts=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{
+      const pinA=Boolean(a.pinned),pinB=Boolean(b.pinned);
+      if(pinA!==pinB) return pinA ? -1 : 1;
+      return getPostDateValue(b)-getPostDateValue(a);
+    });
+    renderAdminPosts();
+    if(showRefreshToast) showToast('Admin posts refreshed.');
+  }catch(e){
+    console.error('Admin post load failed:',e);
+    if(list) list.innerHTML=`<div class="admin-empty">${e?.code==='permission-denied' ? 'Firestore denied the admin post query. Update your Firestore rules so verified admins can read the posts collection.' : 'Could not load the admin posts right now.'}</div>`;
+  }finally{
+    if(refresh){refresh.disabled=false;refresh.textContent='↻ Refresh';}
+  }
+};
+
+window.adminDeletePost=async function(postId){
+  if(!isCurrentUserAdmin()){showToast('Admin access only.');return;}
+  const post=allAdminPosts.find(p=>p.id===postId);
+  if(!post) return;
+  const author=post.authorName||'this user';
+  const ok=window.confirm(`Delete ${author}'s post permanently?\n\nThis action cannot be undone.`);
+  if(!ok) return;
+  try{
+    await deleteDoc(doc(db,'posts',postId));
+    allAdminPosts=allAdminPosts.filter(p=>p.id!==postId);
+    renderAdminPosts();
+    showToast('Post deleted by admin.');
+    await loadFeed();
+  }catch(e){
+    console.error('Admin delete failed:',e);
+    showToast(e?.code==='permission-denied'
+      ? 'Firestore blocked admin deletion. Publish the admin delete rule first.'
+      : 'Could not delete the post.');
+  }
+};
+
+window.deletePostAsAdminFromMenu=async function(){
+  const postId=activeManagePostId;
+  if(!isCurrentUserAdmin() || !postId){showToast('Admin access only.');return;}
+  $('manageMenuBackdrop')?.classList.remove('open');
+  await adminDeletePost(postId);
+};
+
+if($('adminPostSearch')){
+  $('adminPostSearch').addEventListener('input',renderAdminPosts);
+}
 
 function canSeePost(post){
   if(!firebaseUser) return post.visibility === 'public';
@@ -3227,6 +3475,8 @@ window.openEditPost=function(){
 window.openManageMenu=function(postId,pinned){
   activeManagePostId=postId;
   activeManagePostIdPinned=Boolean(pinned);
+  const adminButton=$('adminDeleteMenuBtn');
+  if(adminButton) adminButton.style.display=isCurrentUserAdmin() ? 'block' : 'none';
   $('manageMenuBackdrop').classList.add('open');
 };
 
@@ -3350,6 +3600,7 @@ onAuthStateChanged(auth,async user=>{
 
     // Then load the actual Firestore profile and update the header.
     await loadCurrentProfile();
+    updateAdminControls();
 
     // Feed-only data loads happen after the account is already visible.
     await loadFriendIds();
@@ -3358,6 +3609,7 @@ onAuthStateChanged(auth,async user=>{
   }else{
     currentProfile = null;
     setHeaderUser(null, null);
+    updateAdminControls();
     await loadFeed();
   }
 });
