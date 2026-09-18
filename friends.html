@@ -1662,14 +1662,47 @@ async function handleRelationshipAction(user, button){
 
 async function cancelFriendRequest(req, user){
   if(!req?.id || !firebaseUser) return;
+
   try{
-    await deleteDoc(doc(db,'friendRequests',req.id));
+    const requestRef = doc(db,'friendRequests',req.id);
+    const latestSnap = await getDoc(requestRef);
+
+    if(!latestSnap.exists()){
+      await loadSentRequests();
+      await findUsers(normalize($('searchInput').value));
+      showToast('This friend request is already gone.');
+      return;
+    }
+
+    const latest = latestSnap.data() || {};
+
+    if(latest.from !== firebaseUser.uid){
+      showToast('You can only cancel requests you sent.');
+      return;
+    }
+
+    if(latest.status !== 'pending'){
+      await loadSentRequests();
+      await findUsers(normalize($('searchInput').value));
+      showToast('This friend request is no longer pending.');
+      return;
+    }
+
+    // Use an update instead of delete so cancellation is explicit
+    // and can be safely authorized for the sender.
+    await updateDoc(requestRef,{
+      status:'cancelled',
+      respondedAt:serverTimestamp()
+    });
+
     showToast(`Friend request to ${user.nickname || user.username} cancelled.`);
     await loadSentRequests();
     await findUsers(normalize($('searchInput').value));
   }catch(error){
-    console.error(error);
-    showToast('Could not cancel friend request.');
+    console.error('CANCEL FRIEND REQUEST FAILED:',error);
+    console.error('Firebase error code:',error?.code);
+    console.error('Firebase error message:',error?.message);
+    showToast(error?.code ? `Cancel failed: ${error.code}` : 'Could not cancel friend request.');
   }
 }
 
@@ -1927,15 +1960,63 @@ async function acceptRequest(req,row){
 }
 
 async function rejectRequest(req,row){
+  if(!firebaseUser || !req?.id){
+    showToast('Invalid friend request.');
+    return;
+  }
+
+  const rejectButton = row?.querySelector('.btn-danger');
+
   try{
-    await updateDoc(doc(db,'friendRequests',req.id), {status:'rejected',respondedAt:serverTimestamp()});
-    row.remove();
-    showToast('Friend request rejected.');
-    const remaining = Math.max(0, Number($('requestCount').textContent)-1);
+    if(rejectButton){
+      rejectButton.disabled = true;
+      rejectButton.textContent = 'Rejecting...';
+    }
+
+    const requestRef = doc(db,'friendRequests',req.id);
+    const latestSnap = await getDoc(requestRef);
+
+    if(!latestSnap.exists()){
+      await loadRequests();
+      showToast('This friend request is already gone.');
+      return;
+    }
+
+    const latest = latestSnap.data() || {};
+
+    if(latest.to !== firebaseUser.uid){
+      showToast('You can only reject requests sent to you.');
+      return;
+    }
+
+    if(latest.status !== 'pending'){
+      await loadRequests();
+      showToast('This friend request is no longer pending.');
+      return;
+    }
+
+    await updateDoc(requestRef,{
+      status:'rejected',
+      respondedAt:serverTimestamp()
+    });
+
+    if(row) row.remove();
+
+    const remaining = Math.max(0, Number($('requestCount').textContent || 0)-1);
     $('requestCount').textContent = String(remaining);
+
+    showToast('Friend request rejected.');
   }catch(error){
-    console.error(error);
-    showToast('Could not reject request.');
+    console.error('REJECT FRIEND REQUEST FAILED:',error);
+    console.error('Firebase error code:',error?.code);
+    console.error('Firebase error message:',error?.message);
+
+    if(rejectButton){
+      rejectButton.disabled = false;
+      rejectButton.textContent = 'Reject';
+    }
+
+    showToast(error?.code ? `Reject failed: ${error.code}` : 'Could not reject friend request.');
   }
 }
 
@@ -1995,17 +2076,13 @@ async function loadSentRequests(){
       cancelBtn.addEventListener('click',async ()=>{
         cancelBtn.disabled=true;
         cancelBtn.textContent='Cancelling...';
-        try{
-          await deleteDoc(doc(db,'friendRequests',req.id));
-          showToast(`Friend request to ${req.nickname || req.toNickname || req.username || req.toUsername || 'student'} cancelled.`);
-          await loadSentRequests();
-          await findUsers(normalize($('searchInput').value));
-        }catch(error){
-          console.error(error);
-          cancelBtn.disabled=false;
-          cancelBtn.textContent='Cancel';
-          showToast('Could not cancel friend request.');
-        }
+        await cancelFriendRequest(req,{
+          nickname:req.nickname || req.toNickname,
+          username:req.username || req.toUsername
+        });
+        // cancelFriendRequest reloads the lists after success/failure.
+        cancelBtn.disabled=false;
+        cancelBtn.textContent='Cancel';
       });
       $('sentRequestsList').appendChild(row);
     });
@@ -2086,19 +2163,37 @@ function closeRemoveFriendModal(){
 window.closeRemoveFriendModal = closeRemoveFriendModal;
 
 async function removeFriend(friend,row){
+  if(!firebaseUser || !friend?.uid){
+    closeRemoveFriendModal();
+    showToast('Invalid friend.');
+    return;
+  }
+
   try{
-    await deleteDoc(doc(db,'friends',firebaseUser.uid,'list',friend.uid));
-    await deleteDoc(doc(db,'friends',friend.uid,'list',firebaseUser.uid));
-    row.remove();
-    const count = Math.max(0, Number($('friendCount').textContent)-1);
+    const batch = writeBatch(db);
+
+    batch.delete(doc(db,'friends',firebaseUser.uid,'list',friend.uid));
+    batch.delete(doc(db,'friends',friend.uid,'list',firebaseUser.uid));
+
+    await batch.commit();
+
+    if(row) row.remove();
+
+    const count = Math.max(0, Number($('friendCount').textContent || 0)-1);
     $('friendCount').textContent = String(count);
-    if(count === 0) $('friendsList').innerHTML = '<div class="empty">You have no friends yet.</div>';
+
+    if(count === 0){
+      $('friendsList').innerHTML = '<div class="empty">You have no friends yet.</div>';
+    }
+
     closeRemoveFriendModal();
     showToast('Friend removed successfully.');
   }catch(error){
-    console.error(error);
+    console.error('REMOVE FRIEND FAILED:',error);
+    console.error('Firebase error code:',error?.code);
+    console.error('Firebase error message:',error?.message);
     closeRemoveFriendModal();
-    showToast('Could not remove friend.');
+    showToast(error?.code ? `Remove failed: ${error.code}` : 'Could not remove friend.');
   }
 }
 
