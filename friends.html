@@ -1660,7 +1660,7 @@ async function handleRelationshipAction(user, button){
   }
 }
 
-async function cancelFriendRequest(req, user){
+async function cancelFriendRequest(req,user){
   if(!req?.id || !firebaseUser) return;
 
   try{
@@ -1688,16 +1688,13 @@ async function cancelFriendRequest(req, user){
       return;
     }
 
-    // Use an update instead of delete so cancellation is explicit
-    // and can be safely authorized for the sender.
-    await updateDoc(requestRef,{
-      status:'cancelled',
-      respondedAt:serverTimestamp()
-    });
+    // Cancel = remove the pending request.
+    await deleteDoc(requestRef);
 
-    showToast(`Friend request to ${user.nickname || user.username} cancelled.`);
+    showToast(`Friend request to ${user.nickname || user.username || 'student'} cancelled.`);
     await loadSentRequests();
     await findUsers(normalize($('searchInput').value));
+
   }catch(error){
     console.error('CANCEL FRIEND REQUEST FAILED:',error);
     console.error('Firebase error code:',error?.code);
@@ -1819,126 +1816,79 @@ async function acceptRequest(req,row){
     return;
   }
 
-  if(!req?.id || !req?.from){
-    showToast('Invalid friend request.');
+  if(!req?.id || !req?.from || req.to !== firebaseUser.uid || req.status !== 'pending'){
+    showToast('This friend request is no longer available.');
+    await loadRequests();
     return;
   }
 
-  if(req.to !== firebaseUser.uid){
-    showToast('You cannot accept this request.');
-    return;
-  }
-
-  if(req.status !== 'pending'){
-    showToast('This friend request is no longer pending.');
-    return;
-  }
-
-  const acceptButton = row?.querySelector('.btn-success');
+  const button = row?.querySelector('.btn-success');
 
   try{
-    if(acceptButton){
-      acceptButton.disabled = true;
-      acceptButton.textContent = 'Accepting...';
+    if(button){
+      button.disabled = true;
+      button.textContent = 'Accepting...';
     }
 
-    // Always refresh the current user's profile before writing
-    // the reciprocal friend record. This prevents a stale/null
-    // currentProfile from breaking the Accept action.
-    const myProfileSnap = await getDoc(
-      doc(db,'users',firebaseUser.uid)
-    );
+    const myProfileSnap = await getDoc(doc(db,'users',firebaseUser.uid));
+    const myProfile = myProfileSnap.exists() ? myProfileSnap.data() : {};
 
-    const myProfile = myProfileSnap.exists()
-      ? myProfileSnap.data()
-      : {};
-
-    const myUsername =
-      myProfile.username ||
-      currentProfile?.username ||
-      '';
-
-    const myNickname =
-      myProfile.nickname ||
-      currentProfile?.nickname ||
-      firebaseUser.displayName ||
-      'Student';
-
-    const myPhotoURL =
-      myProfile.photoURL ||
-      firebaseUser.photoURL ||
-      '';
+    const myUsername = myProfile.username || currentProfile?.username || firebaseUser.displayName || '';
+    const myNickname = myProfile.nickname || currentProfile?.nickname || firebaseUser.displayName || 'Student';
+    const myPhotoURL = myProfile.photoURL || firebaseUser.photoURL || '';
 
     const batch = writeBatch(db);
 
-    // Add requester to the current user's friend list.
+    // My friend list: requester becomes my friend.
     batch.set(
       doc(db,'friends',firebaseUser.uid,'list',req.from),
       {
-        uid: req.from,
-        username: req.fromUsername || '',
-        nickname: req.fromNickname || '',
-        photoURL: req.fromPhotoURL || '',
-        since: serverTimestamp()
+        uid:req.from,
+        username:req.fromUsername || '',
+        nickname:req.fromNickname || '',
+        photoURL:req.fromPhotoURL || '',
+        since:serverTimestamp()
       }
     );
 
-    // Add the current user to the requester's friend list.
+    // Requester's friend list: I become their friend.
     batch.set(
       doc(db,'friends',req.from,'list',firebaseUser.uid),
       {
-        uid: firebaseUser.uid,
-        username: myUsername,
-        nickname: myNickname,
-        photoURL: myPhotoURL,
-        since: serverTimestamp()
+        uid:firebaseUser.uid,
+        username:myUsername,
+        nickname:myNickname,
+        photoURL:myPhotoURL,
+        since:serverTimestamp()
       }
     );
 
-    // Mark the request as accepted in the same atomic batch.
-    batch.update(
-      doc(db,'friendRequests',req.id),
-      {
-        status: 'accepted',
-        respondedAt: serverTimestamp()
-      }
-    );
+    // Remove the pending request instead of updating its status.
+    // This avoids permission failures caused by legacy request documents.
+    batch.delete(doc(db,'friendRequests',req.id));
 
     await batch.commit();
 
-    // Notification is intentionally separate. If notification
-    // creation fails, the friendship itself remains successful.
+    // Notification is independent from the friendship operation.
     try{
       await addDoc(collection(db,'notifications'),{
-        recipientUid: req.from,
-        actorUid: firebaseUser.uid,
-        actorName: myNickname,
-        type: 'friend_accepted',
-        text: 'accepted your friend request.',
-        read: false,
-        createdAt: serverTimestamp()
+        recipientUid:req.from,
+        actorUid:firebaseUser.uid,
+        actorName:myNickname,
+        type:'friend_accepted',
+        text:'accepted your friend request.',
+        read:false,
+        createdAt:serverTimestamp()
       });
     }catch(notificationError){
-      console.warn(
-        'Friend accepted notification failed:',
-        notificationError
-      );
+      console.warn('Friend accepted notification failed:',notificationError);
     }
 
-    if(row){
-      row.remove();
-    }
-
-    const currentCount = Number(
-      $('requestCount').textContent || 0
-    );
-
-    $('requestCount').textContent = String(
-      Math.max(0,currentCount - 1)
-    );
+    if(row) row.remove();
+    const remaining = Math.max(0,Number($('requestCount').textContent || 0)-1);
+    $('requestCount').textContent = String(remaining);
 
     showToast('Friend request accepted!');
-
     await loadFriends();
 
   }catch(error){
@@ -1946,16 +1896,12 @@ async function acceptRequest(req,row){
     console.error('Firebase error code:',error?.code);
     console.error('Firebase error message:',error?.message);
 
-    if(acceptButton){
-      acceptButton.disabled = false;
-      acceptButton.textContent = 'Accept';
+    if(button){
+      button.disabled = false;
+      button.textContent = 'Accept';
     }
 
-    showToast(
-      error?.code
-        ? `Accept failed: ${error.code}`
-        : 'Accept failed. Check the browser console.'
-    );
+    showToast(error?.code ? `Accept failed: ${error.code}` : 'Accept failed. Check the browser console.');
   }
 }
 
@@ -1965,12 +1911,12 @@ async function rejectRequest(req,row){
     return;
   }
 
-  const rejectButton = row?.querySelector('.btn-danger');
+  const button = row?.querySelector('.btn-danger');
 
   try{
-    if(rejectButton){
-      rejectButton.disabled = true;
-      rejectButton.textContent = 'Rejecting...';
+    if(button){
+      button.disabled = true;
+      button.textContent = 'Rejecting...';
     }
 
     const requestRef = doc(db,'friendRequests',req.id);
@@ -1984,36 +1930,28 @@ async function rejectRequest(req,row){
 
     const latest = latestSnap.data() || {};
 
-    if(latest.to !== firebaseUser.uid){
-      showToast('You can only reject requests sent to you.');
-      return;
-    }
-
-    if(latest.status !== 'pending'){
+    if(latest.to !== firebaseUser.uid || latest.status !== 'pending'){
       await loadRequests();
-      showToast('This friend request is no longer pending.');
+      showToast('This friend request is no longer available.');
       return;
     }
 
-    await updateDoc(requestRef,{
-      status:'rejected',
-      respondedAt:serverTimestamp()
-    });
+    // Reject = remove the pending request.
+    await deleteDoc(requestRef);
 
     if(row) row.remove();
-
-    const remaining = Math.max(0, Number($('requestCount').textContent || 0)-1);
+    const remaining = Math.max(0,Number($('requestCount').textContent || 0)-1);
     $('requestCount').textContent = String(remaining);
-
     showToast('Friend request rejected.');
+
   }catch(error){
     console.error('REJECT FRIEND REQUEST FAILED:',error);
     console.error('Firebase error code:',error?.code);
     console.error('Firebase error message:',error?.message);
 
-    if(rejectButton){
-      rejectButton.disabled = false;
-      rejectButton.textContent = 'Reject';
+    if(button){
+      button.disabled = false;
+      button.textContent = 'Reject';
     }
 
     showToast(error?.code ? `Reject failed: ${error.code}` : 'Could not reject friend request.');
