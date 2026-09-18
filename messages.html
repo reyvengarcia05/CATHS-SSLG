@@ -3023,6 +3023,102 @@ function setReplyTarget(messageId){
 window.clearReplyTarget=clearReplyTarget;
 window.setReplyTarget=setReplyTarget;
 
+// ============================================================
+// MESSAGE CONTENT MODERATION
+// Blocks common profanity, threats, and self-harm/suicide-related
+// phrases before a message or forwarded message is sent.
+// ============================================================
+const MESSAGE_MODERATION_PATTERNS = [
+  {type:'profanity', patterns:[
+    /\bfuck\b/i, /\bfucking\b/i, /\bshit\b/i, /\bshitty\b/i,
+    /\bbitch\b/i, /\bbastard\b/i, /\basshole\b/i, /\bdumbass\b/i,
+    /\bputangina\b/i, /\btangina\b/i, /\bgago\b/i, /\bgaga\b/i,
+    /\btanga\b/i, /\bulol\b/i, /\bbwisit\b/i, /\bleche\b/i,
+    /\blintik\b/i
+  ]},
+  {type:'threat', patterns:[
+    /\bkill you\b/i, /\bkill u\b/i, /\bi(?:'|’)ll kill you\b/i, /\bim kill you\b/i,
+    /\bi will kill you\b/i, /\bi(?:'|’)m going to kill you\b/i,
+    /\bim going to kill you\b/i, /\bim gonna kill you\b/i, /\bi am going to kill you\b/i,
+    /\bhurt you\b/i, /\bi(?:'|’)ll hurt you\b/i, /\bi will hurt you\b/i,
+    /\bim going to hurt you\b/i, /\bim gonna hurt you\b/i,
+    /\bpatayin kita\b/i, /\bpapatayin kita\b/i, /\bsasaktan kita\b/i,
+    /\bsaktan kita\b/i, /\bbugbogin kita\b/i
+  ]},
+  {type:'selfHarm', patterns:[
+    /\bsuicide\b/i, /\bsuicidal\b/i, /\bkill myself\b/i, /\bkill yourself\b/i,
+    /\bwant to die\b/i, /\bwanna die\b/i, /\bend my life\b/i, /\bending my life\b/i,
+    /\bmagpakamatay\b/i, /\bpagpapakamatay\b/i,
+    /\bpatayin ko ang sarili ko\b/i, /\bpatayin ko sarili ko\b/i,
+    /\bmamatay na lang ako\b/i
+  ]}
+];
+
+function normalizeModerationText(value){
+  return String(value||'')
+    .normalize('NFKC')
+    .toLowerCase()
+    .replace(/[\u200B-\u200D\uFEFF]/g,'')
+    .replace(/[0]/g,'o')
+    .replace(/[1]/g,'i')
+    .replace(/[3]/g,'e')
+    .replace(/[4]/g,'a')
+    .replace(/[5]/g,'s')
+    .replace(/[7]/g,'t')
+    .replace(/[^a-z0-9\s]/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+function moderationResult(value){
+  const normalized=normalizeModerationText(value);
+  if(!normalized) return {blocked:false,type:null};
+  const compact=normalized.replace(/\s+/g,'');
+
+  for(const group of MESSAGE_MODERATION_PATTERNS){
+    for(const pattern of group.patterns){
+      if(pattern.test(normalized) || pattern.test(compact)){
+        return {blocked:true,type:group.type};
+      }
+    }
+  }
+  return {blocked:false,type:null};
+}
+
+function moderationMessage(type){
+  if(type==='threat') return 'Message blocked: threatening language is not allowed.';
+  if(type==='selfHarm') return 'Message blocked: self-harm or suicide-related language is not allowed.';
+  return 'Message blocked: inappropriate language is not allowed.';
+}
+
+function updateMessageModerationUI(input){
+  const btn=$('sendBtn');
+  if(!input || !btn) return {blocked:false,type:null};
+  const result=moderationResult(input.value);
+  btn.disabled=result.blocked;
+  btn.textContent=result.blocked?'Blocked':'Send';
+  input.setAttribute('aria-invalid',result.blocked?'true':'false');
+  input.dataset.moderationBlocked=result.blocked?'true':'false';
+  input.dataset.moderationType=result.type||'';
+  return result;
+}
+
+document.addEventListener('input',ev=>{
+  const input=ev.target?.id==='messageInput'?ev.target:null;
+  if(input) updateMessageModerationUI(input);
+},true);
+
+function validateMessageBeforeSend(text){
+  const result=moderationResult(text);
+  if(result.blocked){
+    showToast(moderationMessage(result.type));
+    $('messageInput')?.focus();
+    updateMessageModerationUI($('messageInput'));
+    return false;
+  }
+  return true;
+}
+
 function deliveryLabel(msg,currentUid){
   if(msg.senderUid!==currentUid) return '';
   const readBy=Array.isArray(msg.readBy)?msg.readBy:[];
@@ -3711,6 +3807,7 @@ async function sendMessage(e){
   e.preventDefault();
   const me=auth.currentUser;if(!me||!activeConversation)return;
   const input=$('messageInput'),btn=$('sendBtn'),text=input.value.trim();if(!text)return;
+  if(!validateMessageBeforeSend(text)) return;
   btn.disabled=true;btn.textContent='Sending...';
   try{
     if(activeConversation.kind==='friend'){
@@ -3891,6 +3988,8 @@ async function forwardTo(kind,id){
   if(!pendingActionMessage){showToast('Select a message first.');return}
   const item=await getMessageData(pendingActionMessage);if(!item)return;
   const me=auth.currentUser, text=String(item.data.text||'');if(!text){showToast('This message cannot be forwarded.');return}
+  const moderation=moderationResult(text);
+  if(moderation.blocked){showToast(moderationMessage(moderation.type));return}
   try{
     if(kind==='friend'){
       if(!(await ensureFriend(id))){showToast('You can only forward to your friends.');return}
