@@ -1782,7 +1782,7 @@ async function loadRequests(){
     const requests = await Promise.all(snap.docs.map(async d=>{
       const req={id:d.id,...d.data()};
       const profile=await enrichUser(req.from,{uid:req.from,email:req.fromEmail||'',photoURL:req.fromPhotoURL||'',nickname:req.fromNickname||'',username:req.fromUsername||''});
-      return {...req,...profile};
+      return {...profile,...req};
     }));
 
     $('requestsList').innerHTML = '';
@@ -1983,7 +1983,7 @@ async function loadSentRequests(){
     const requests = await Promise.all(snap.docs.map(async d=>{
       const req={id:d.id,...d.data()};
       const profile=await enrichUser(req.to,{uid:req.to,email:req.toEmail||'',photoURL:req.toPhotoURL||'',nickname:req.toNickname||'',username:req.toUsername||''});
-      return {...req,...profile};
+      return {...profile,...req};
     }));
     requests.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
 
