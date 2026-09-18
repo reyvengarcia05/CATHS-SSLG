@@ -1193,6 +1193,7 @@ import {
   updateDoc,
   deleteDoc,
   addDoc,
+  writeBatch,
   query,
   where,
   orderBy,
@@ -1780,43 +1781,148 @@ async function loadRequests(){
 }
 
 async function acceptRequest(req,row){
+  if(!firebaseUser){
+    showToast('Please log in again.');
+    return;
+  }
+
+  if(!req?.id || !req?.from){
+    showToast('Invalid friend request.');
+    return;
+  }
+
+  if(req.to !== firebaseUser.uid){
+    showToast('You cannot accept this request.');
+    return;
+  }
+
+  if(req.status !== 'pending'){
+    showToast('This friend request is no longer pending.');
+    return;
+  }
+
+  const acceptButton = row?.querySelector('.btn-success');
+
   try{
-    await setDoc(doc(db,'friends',firebaseUser.uid,'list',req.from), {
-      uid:req.from,
-      username:req.fromUsername || '',
-      nickname:req.fromNickname || '',
-      photoURL:req.fromPhotoURL || '',
-      since:serverTimestamp()
-    });
-    await setDoc(doc(db,'friends',req.from,'list',firebaseUser.uid), {
-      uid:firebaseUser.uid,
-      username:currentProfile.username,
-      nickname:currentProfile.nickname,
-      photoURL:firebaseUser.photoURL || '',
-      since:serverTimestamp()
-    });
-    await updateDoc(doc(db,'friendRequests',req.id), {status:'accepted',respondedAt:serverTimestamp()});
+    if(acceptButton){
+      acceptButton.disabled = true;
+      acceptButton.textContent = 'Accepting...';
+    }
+
+    // Always refresh the current user's profile before writing
+    // the reciprocal friend record. This prevents a stale/null
+    // currentProfile from breaking the Accept action.
+    const myProfileSnap = await getDoc(
+      doc(db,'users',firebaseUser.uid)
+    );
+
+    const myProfile = myProfileSnap.exists()
+      ? myProfileSnap.data()
+      : {};
+
+    const myUsername =
+      myProfile.username ||
+      currentProfile?.username ||
+      '';
+
+    const myNickname =
+      myProfile.nickname ||
+      currentProfile?.nickname ||
+      firebaseUser.displayName ||
+      'Student';
+
+    const myPhotoURL =
+      myProfile.photoURL ||
+      firebaseUser.photoURL ||
+      '';
+
+    const batch = writeBatch(db);
+
+    // Add requester to the current user's friend list.
+    batch.set(
+      doc(db,'friends',firebaseUser.uid,'list',req.from),
+      {
+        uid: req.from,
+        username: req.fromUsername || '',
+        nickname: req.fromNickname || '',
+        photoURL: req.fromPhotoURL || '',
+        since: serverTimestamp()
+      }
+    );
+
+    // Add the current user to the requester's friend list.
+    batch.set(
+      doc(db,'friends',req.from,'list',firebaseUser.uid),
+      {
+        uid: firebaseUser.uid,
+        username: myUsername,
+        nickname: myNickname,
+        photoURL: myPhotoURL,
+        since: serverTimestamp()
+      }
+    );
+
+    // Mark the request as accepted in the same atomic batch.
+    batch.update(
+      doc(db,'friendRequests',req.id),
+      {
+        status: 'accepted',
+        respondedAt: serverTimestamp()
+      }
+    );
+
+    await batch.commit();
+
+    // Notification is intentionally separate. If notification
+    // creation fails, the friendship itself remains successful.
     try{
       await addDoc(collection(db,'notifications'),{
-        recipientUid:req.from,
-        actorUid:firebaseUser.uid,
-        actorName:currentProfile.nickname || currentProfile.name || currentProfile.displayName || 'Student',
-        type:'friend_accepted',
-        text:'accepted your friend request.',
-        read:false,
-        createdAt:serverTimestamp()
+        recipientUid: req.from,
+        actorUid: firebaseUser.uid,
+        actorName: myNickname,
+        type: 'friend_accepted',
+        text: 'accepted your friend request.',
+        read: false,
+        createdAt: serverTimestamp()
       });
     }catch(notificationError){
-      console.warn('Friend accepted notification:',notificationError);
+      console.warn(
+        'Friend accepted notification failed:',
+        notificationError
+      );
     }
-    row.remove();
+
+    if(row){
+      row.remove();
+    }
+
+    const currentCount = Number(
+      $('requestCount').textContent || 0
+    );
+
+    $('requestCount').textContent = String(
+      Math.max(0,currentCount - 1)
+    );
+
     showToast('Friend request accepted!');
-    const remaining = Math.max(0, Number($('requestCount').textContent)-1);
-    $('requestCount').textContent = String(remaining);
+
     await loadFriends();
+
   }catch(error){
-    console.error(error);
-    showToast('Could not accept request.');
+    console.error('ACCEPT FRIEND REQUEST FAILED:',error);
+    console.error('Firebase error code:',error?.code);
+    console.error('Firebase error message:',error?.message);
+
+    if(acceptButton){
+      acceptButton.disabled = false;
+      acceptButton.textContent = 'Accept';
+    }
+
+    showToast(
+      error?.code
+        ? `Accept failed: ${error.code}`
+        : 'Accept failed. Check the browser console.'
+    );
   }
 }
 
