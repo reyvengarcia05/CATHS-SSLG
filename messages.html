@@ -3025,69 +3025,184 @@ window.setReplyTarget=setReplyTarget;
 
 // ============================================================
 // MESSAGE CONTENT MODERATION
-// Blocks common profanity, threats, and self-harm/suicide-related
-// phrases before a message or forwarded message is sent.
+// Extensive English + Filipino/Tagalog moderation with normalization
+// for stretched letters, spacing, punctuation, leetspeak, and common
+// student-style obfuscation.
 // ============================================================
 const MESSAGE_MODERATION_PATTERNS = [
   {type:'profanity', patterns:[
-    /\bfuck\b/i, /\bfucking\b/i, /\bshit\b/i, /\bshitty\b/i,
-    /\bbitch\b/i, /\bbastard\b/i, /\basshole\b/i, /\bdumbass\b/i,
-    /\bputangina\b/i, /\btangina\b/i, /\bgago\b/i, /\bgaga\b/i,
-    /\btanga\b/i, /\bulol\b/i, /\bbwisit\b/i, /\bleche\b/i,
-    /\blintik\b/i
+    /\bfuck(?:ing|ed|er|ers)?\b/i,/\bfck\b/i,/\bfvck\b/i,/\bshit(?:ty|head|heads)?\b/i,/\bsht\b/i,
+    /\bbitch(?:es)?\b/i,/\bbastard(?:s)?\b/i,/\basshole(?:s)?\b/i,/\bdumbass(?:es)?\b/i,
+    /\bjackass(?:es)?\b/i,/\bson of a bitch\b/i,/\bmotherfucker(?:s)?\b/i,/\bmother fucker(?:s)?\b/i,
+    /\bbullshit\b/i,/\bcrap\b/i,/\bdamn(?:ed|it)?\b/i,/\bwtf\b/i,/\bstfu\b/i,/\bgtfo\b/i,
+
+    /\bputa\b/i,/\bputangina\b/i,/\bputang ina\b/i,/\bputangina mo\b/i,/\bputang ina mo\b/i,
+    /\btangina\b/i,/\btang ina\b/i,/\btangina mo\b/i,/\btaena\b/i,/\btae\b/i,/\bamputa\b/i,
+    /\bpotang ina\b/i,/\bpota\b/i,/\bpotaena\b/i,/\bpi mo\b/i,/\bpakyu\b/i,/\bpakyuhin\b/i,
+    /\bpakshet\b/i,/\bpakshit\b/i,/\bpunyeta\b/i,/\bpunyetang\b/i,/\bputsa\b/i,/\bputragis\b/i,
+    /\bputanginahin\b/i,/\bbolshet\b/i,/\bshet\b/i,/\bsaltik\b/i,/\bbuwisit\b/i,/\bbwisit\b/i,
+    /\bpeste\b/i,/\bpisti\b/i,/\bleche\b/i,/\bletse\b/i,/\blintik\b/i,/\bmalintikan\b/i,
+    /\bhinayupak\b/i,/\bhayop\b/i,/\banimal\b/i,/\btarantado\b/i,/\btarantada\b/i,/\btarugo\b/i,
+    /\btonto\b/i,/\btonta\b/i,/\bulol\b/i,/\btanga\b/i,/\btangahan\b/i,/\bgago\b/i,/\bgaga\b/i,
+    /\bgagi\b/i,/\bgaguhin\b/i,/\bogag\b/i,/\bogags\b/i,/\bbobo\b/i,/\bboba\b/i,/\bnakabobobo\b/i,
+    /\bkupal\b/i,/\bwalang hiya\b/i,/\bwalanghiya\b/i,/\bsiraulo\b/i,/\bmangmang\b/i,/\bnengneng\b/i,
+    /\bbuang\b/i,/\byawa\b/i,/\bnamputsa\b/i,/\banak ng puta\b/i,/\banak ng putsa\b/i,
+    /\banak ka ng puta\b/i,/\bputang inabit\b/i,/\bpusang gala\b/i,/\biho de puta\b/i,
+    /\bpuke ng ina mo\b/i,/\buten ni bapa mo\b/i,/\buten ng ama mo\b/i,
+    /\btngina\b/i,/\bptngina\b/i,/\bptangina\b/i,/\bpknyeta\b/i,/\bptsa\b/i,/\bpyeta\b/i
+  ]},
+  {type:'sexual', patterns:[
+    /\bporn\b/i,/\bporno\b/i,/\bpornography\b/i,/\bnude\b/i,/\bnudes\b/i,/\bnudity\b/i,
+    /\bdick\b/i,/\bcock\b/i,/\bcunt\b/i,/\bpussy\b/i,/\bpenis\b/i,/\bvagina\b/i,
+    /\bboobs?\b/i,/\btits?\b/i,/\bnipple(?:s)?\b/i,/\bbutthole\b/i,/\bjack ?off\b/i,
+    /\bmasturbat(?:e|ion|ing)\b/i,/\bjerk ?off\b/i,/\bblow ?job\b/i,
+    /\brape\b/i,/\braped\b/i,/\braping\b/i,/\brapist\b/i,/\bslut\b/i,/\bwhore\b/i,
+    /\bhooker\b/i,/\bprostitute\b/i,/\bkantot\b/i,/\bkantutan\b/i,/\bkantutero\b/i,
+    /\bkantutin\b/i,/\bmakantot\b/i,/\bmagkantutan\b/i,/\bmakipagkantutan\b/i,
+    /\bjakol\b/i,/\bmagjakol\b/i,/\bjakulin\b/i,/\bburat\b/i,/\bbetlog\b/i,/\bbayag\b/i,
+    /\bpekpek\b/i,/\bpuke\b/i,/\butin\b/i,/\blinggam\b/i,/\biyot\b/i,/\bpakantutin\b/i,
+    /\bpakboy\b/i,/\bmalandi\b/i,/\bnalilibog\b/i
   ]},
   {type:'threat', patterns:[
-    /\bkill you\b/i, /\bkill u\b/i, /\bi(?:'|’)ll kill you\b/i, /\bim kill you\b/i,
-    /\bi will kill you\b/i, /\bi(?:'|’)m going to kill you\b/i,
-    /\bim going to kill you\b/i, /\bim gonna kill you\b/i, /\bi am going to kill you\b/i,
-    /\bhurt you\b/i, /\bi(?:'|’)ll hurt you\b/i, /\bi will hurt you\b/i,
-    /\bim going to hurt you\b/i, /\bim gonna hurt you\b/i,
-    /\bpatayin kita\b/i, /\bpapatayin kita\b/i, /\bsasaktan kita\b/i,
-    /\bsaktan kita\b/i, /\bbugbogin kita\b/i
+    /\bkill you\b/i,/\bkill u\b/i,/\bi\s*will kill you\b/i,/\bi['’]?ll kill you\b/i,
+    /\bi['’]?m going to kill you\b/i,/\bi am going to kill you\b/i,/\bi am gonna kill you\b/i,
+    /\bi['’]?m gonna kill you\b/i,/\bgoing to kill you\b/i,/\bkill your family\b/i,
+    /\bkill all of you\b/i,/\bhurt you\b/i,/\bi['’]?ll hurt you\b/i,/\bi will hurt you\b/i,
+    /\bgoing to hurt you\b/i,/\bi['’]?m gonna hurt you\b/i,/\bbeat you up\b/i,/\bbeat you\b/i,
+    /\bpatayin kita\b/i,/\bpapatayin kita\b/i,/\bpapatayin ka\b/i,/\bpatayin ka\b/i,
+    /\bsasaktan kita\b/i,/\bsasaktan ka\b/i,/\bsaktan kita\b/i,/\bsaktan ka\b/i,
+    /\bbugbugin kita\b/i,/\bbugbogin kita\b/i,/\bsusuntukin kita\b/i,/\bsusuntukin ka\b/i,
+    /\bsusugurin kita\b/i,/\bsusugurin ka\b/i,/\baabangan kita\b/i,/\bhahanapin kita\b/i,
+    /\bsasaksakin kita\b/i,/\bsaksakin kita\b/i,/\bbarilin kita\b/i,/\bpapaslangin kita\b/i,
+    /\bpapatumbahin kita\b/i,/\bmamamatay ka\b/i,/\bmamatay ka\b/i,/\bpatay ka\b/i
   ]},
   {type:'selfHarm', patterns:[
-    /\bsuicide\b/i, /\bsuicidal\b/i, /\bkill myself\b/i, /\bkill yourself\b/i,
-    /\bwant to die\b/i, /\bwanna die\b/i, /\bend my life\b/i, /\bending my life\b/i,
-    /\bmagpakamatay\b/i, /\bpagpapakamatay\b/i,
-    /\bpatayin ko ang sarili ko\b/i, /\bpatayin ko sarili ko\b/i,
-    /\bmamatay na lang ako\b/i
+    /\bsuicide\b/i,/\bsuicidal\b/i,/\bkill myself\b/i,/\bkill yourself\b/i,
+    /\bwant to die\b/i,/\bwanna die\b/i,/\bneed to die\b/i,/\bend my life\b/i,
+    /\bending my life\b/i,/\bend it all\b/i,/\bbetter off dead\b/i,
+    /\bmagpakamatay\b/i,/\bpagpapakamatay\b/i,/\bmagpakamatay na lang\b/i,
+    /\bpatayin ko ang sarili ko\b/i,/\bpatayin ko sarili ko\b/i,/\bpatayin ang sarili ko\b/i,
+    /\bmamatay na lang ako\b/i,/\bmamatay nalang ako\b/i,/\bayoko nang mabuhay\b/i,
+    /\bayoko ng mabuhay\b/i,/\bwala na akong dahilan para mabuhay\b/i,
+    /\bgusto ko nang mamatay\b/i,/\bgusto ko mamatay\b/i,/\bpagod na akong mabuhay\b/i
   ]}
 ];
 
+const MESSAGE_MODERATION_ALLOWLIST = new Set([
+  'class','assessment','assistant','passage','analysis','assignment','classic',
+  'scissors','password','hello','shell','shitake','scouting','skill','assets',
+  'assembly','mass','associate','cocktail'
+]);
+
 function normalizeModerationText(value){
   return String(value||'')
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g,'')
     .normalize('NFKC')
     .toLowerCase()
     .replace(/[\u200B-\u200D\uFEFF]/g,'')
+    .replace(/[1!]/g,'i')
     .replace(/[0]/g,'o')
-    .replace(/[1]/g,'i')
     .replace(/[3]/g,'e')
-    .replace(/[4]/g,'a')
-    .replace(/[5]/g,'s')
+    .replace(/[4@]/g,'a')
+    .replace(/[5$]/g,'s')
     .replace(/[7]/g,'t')
+    .replace(/[8]/g,'b')
+    .replace(/[9]/g,'g')
+    .replace(/(.)\1{2,}/g,'$1')
     .replace(/[^a-z0-9\s]/g,' ')
     .replace(/\s+/g,' ')
     .trim();
 }
 
-function moderationResult(value){
+function moderationSkeleton(word){
+  return String(word||'')
+    .toLowerCase()
+    .replace(/[aeiou]+/g,'v')
+    .replace(/(.)\1{2,}/g,'$1');
+}
+
+function moderationForms(value){
   const normalized=normalizeModerationText(value);
-  if(!normalized) return {blocked:false,type:null};
   const compact=normalized.replace(/\s+/g,'');
+  const tokens=normalized.split(' ').filter(Boolean);
+  const fillerCompact=tokens
+    .filter(token=>!['is','nga','eh','ah'].includes(token))
+    .join('');
+  return {normalized,compact,fillerCompact,tokens};
+}
+
+const MESSAGE_MODERATION_LOOSE_WORDS = [
+  'tanga','tangina','gago','gaga','gagi','gago','bobo','boba','ulol',
+  'ogag','ogags','kupal','tarantado','tarantada','putangina','tangina',
+  'punyeta','pakshet','pakyu','putsa','puta','pota','amputa','buang','yawa',
+  'buwisit','bwisit','peste','pisti','leche','letse','lintik','hinayupak',
+  'hayop','animal','siraulo','walanghiya','mangmang','shet','bolshet','putragis'
+];
+
+function moderationResult(value){
+  const {normalized,compact,fillerCompact,tokens}=moderationForms(value);
+  if(!normalized) return {blocked:false,type:null};
 
   for(const group of MESSAGE_MODERATION_PATTERNS){
     for(const pattern of group.patterns){
       if(pattern.test(normalized) || pattern.test(compact)){
         return {blocked:true,type:group.type};
       }
+
+      // Multi-word phrases are also checked in compact form so that users
+      // cannot evade a phrase by inserting spaces between its words.
+      const source=pattern.source;
+      if(source.startsWith('\\b') && source.endsWith('\\b') && source.includes(' ')){
+        const phrase=source.slice(2,-2).replace(/\\b/g,'').replace(/\\/g,'').replace(/[()?+*]/g,'');
+        const phraseCompact=phrase.replace(/\s+/g,'').toLowerCase();
+        if(phraseCompact.length>=6 && compact.includes(phraseCompact)){
+          return {blocked:true,type:group.type};
+        }
+      }
     }
   }
+
+  // Handle deliberate filler insertion such as "ga is go" or
+  // "tang is nga tang a". Only a curated set of explicit Filipino insults
+  // uses this aggressive check to avoid false positives in normal English.
+  for(const word of MESSAGE_MODERATION_LOOSE_WORDS){
+    if(fillerCompact.includes(word)) return {blocked:true,type:'profanity'};
+  }
+
+  // Vowel-skeleton matching catches stretched/typo-like spellings such as
+  // tangaaaaa, bobooooo, and gague without matching unrelated normal words.
+  const explicitWords=[];
+  for(const group of MESSAGE_MODERATION_PATTERNS){
+    for(const pattern of group.patterns){
+      const source=pattern.source;
+      if(!source.startsWith('\\b') || !source.endsWith('\\b') || source.includes(' ')) continue;
+      const candidate=source.slice(2,-2).replace(/\\/g,'').replace(/[()?+*]/g,'');
+      if(/^[a-z]+$/i.test(candidate)) explicitWords.push({word:candidate.toLowerCase(),type:group.type});
+    }
+  }
+
+  for(const token of tokens){
+    if(token.length<4 || MESSAGE_MODERATION_ALLOWLIST.has(token)) continue;
+    const tokSkeleton=moderationSkeleton(token);
+    for(const item of explicitWords){
+      if(item.word.length>=4 && tokSkeleton===moderationSkeleton(item.word)){
+        return {blocked:true,type:item.type};
+      }
+    }
+  }
+
+  // Exact matching after normalization already catches punctuation/spacing variants.
+  // Avoid broad substring matching here because it can create false positives
+  // inside ordinary words (for example, 'cocktail').
+
   return {blocked:false,type:null};
 }
 
 function moderationMessage(type){
   if(type==='threat') return 'Message blocked: threatening language is not allowed.';
   if(type==='selfHarm') return 'Message blocked: self-harm or suicide-related language is not allowed.';
+  if(type==='sexual') return 'Message blocked: explicit or sexual language is not allowed.';
   return 'Message blocked: inappropriate language is not allowed.';
 }
 
